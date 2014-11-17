@@ -73,8 +73,9 @@
     <link rel="stylesheet" href="../include/css/xchart.css" type="text/css">
     <!-- spiderGraph -->
     <script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>
-	<script type="text/javascript" src="main.js"></script>
+	<script type="text/javascript" src="reporting.js"></script>
     <link rel="stylesheet" href="../include/css/spider.css" type="text/css">
+    <link rel="stylesheet" href="reporting.css" type="text/css">
     
   </head>
 
@@ -177,7 +178,7 @@
 		  <div id="div_content">
 		  </div>
 		  
-		  <iframe id="iframe_content" name="iframe_content" style="width:100%;min-height:400px;border:0;padding:0;margin:0;overflow: hidden;">
+		  <iframe id="iframe_content" name="iframe_content">
 		  </iframe>
 		  
         </div>

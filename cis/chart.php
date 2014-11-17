@@ -36,4 +36,7 @@ else
 }
 
 echo $chart->get_htmlhead();
-echo $chart->get_htmldiv();
+echo $chart->get_htmldiv(); ?>
+<script type="text/javascript">
+	loadChart(source);
+</script>

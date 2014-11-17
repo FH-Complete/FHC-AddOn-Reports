@@ -34,32 +34,18 @@ $(function() {
 		var statistik_kurzbz = $(this).attr('data-statistik-kurzbez'),
 			chart_id = $(this).attr('data-chart-id');
 
+		$('#welcome').hide();
+		$('#iframe_content').show();
+
 		if(statistik_kurzbz) {
 
-			$('#welcome').hide();
-			$('#div_content').empty().hide();
 			$('#div_filter').show();
-			$('#iframe_content').show();
 			$('#div_filter').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz);
 
 		} else {
 
-			$('#welcome').hide();
-			$('#div_content').show();
 			$('#div_filter').hide();
-			$('#iframe_content').hide();
-
-			$.ajax({
-				url: 'chart.php',
-				data: {chart_id: chart_id},
-				success: function(data) {
-					$('#div_content').empty();
-					$('#div_content').html(data);
-					loadChart(source);
-				}
-			});
+			$('#iframe_content').attr('src', 'chart.php?' + $.param({chart_id: chart_id}));
 		}
-
 	});
-
 });
