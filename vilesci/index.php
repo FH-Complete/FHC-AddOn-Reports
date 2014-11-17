@@ -17,7 +17,7 @@
  *
  * Authors: Christian Paminger, 
  */
-// echo dirname(__FILE__);
+ 
 require_once('../reports.config.inc.php');
 require_once(FHC_ROOT.'config/vilesci.config.inc.php');
 require_once(FHC_ROOT.'include/functions.inc.php');
