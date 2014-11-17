@@ -17,9 +17,11 @@
  *
  * Authors: Christian Paminger, 
  */
-require_once('../../../config/vilesci.config.inc.php');
-require_once('../../../include/functions.inc.php');
-require_once('../../../include/benutzerberechtigung.class.php');
+// echo dirname(__FILE__);
+require_once('../reports.config.inc.php');
+require_once(FHC_ROOT.'config/vilesci.config.inc.php');
+require_once(FHC_ROOT.'include/functions.inc.php');
+require_once(FHC_ROOT.'include/benutzerberechtigung.class.php');
 
 // Rechte pruefen
 $uid = get_uid();
