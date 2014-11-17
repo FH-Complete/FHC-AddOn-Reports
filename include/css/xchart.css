@@ -1,0 +1,77 @@
+html, body {
+  font: 14px/20px Helvetica, Arial, Verdana, sans-serif;
+}
+
+#xChart1 {
+  width: 800px;
+  height: 400px;
+}
+
+.xchart .axis text {
+  fill: #BBB;
+  font-size: 12px;
+}
+.xchart .axis .domain {
+  fill: none;
+}
+.xchart .axis .tick {
+  stroke: #DDD;
+  stroke-width: 1px;
+}
+.xchart .axisZero line {
+  stroke: #BBB;
+  stroke-width: 2px;
+}
+
+.xchart .line {
+  fill: none;
+}
+
+.xchart .color1 .line {
+  stroke: #4da944;
+}
+.xchart .color1 rect {
+  fill: #4da944;
+}
+.xchart .color1 .fill {
+  fill: rgba(77, 169, 68, 0.1);
+}
+.xchart .color1 circle {
+  fill: #4da944;
+}
+.xchart .color1.comp .line {
+  stroke: #9dd597;
+}
+.xchart .color1.comp rect {
+  fill: #9dd597;
+}
+.xchart .color1.comp .fill {
+  display: none;
+}
+.xchart .color1.comp circle {
+  fill: #9dd597;
+}
+.xchart .color0 .line {
+  stroke: #3880aa;
+}
+.xchart .color0 rect {
+  fill: #3880aa;
+}
+.xchart .color0 .fill {
+  fill: rgba(56, 128, 170, 0.1);
+}
+.xchart .color0 circle {
+  fill: #3880aa;
+}
+.xchart .color0.comp .line {
+  stroke: #89bbd8;
+}
+.xchart .color0.comp rect {
+  fill: #89bbd8;
+}
+.xchart .color0.comp .fill {
+  display: none;
+}
+.xchart .color0.comp circle {
+  fill: #89bbd8;
+}

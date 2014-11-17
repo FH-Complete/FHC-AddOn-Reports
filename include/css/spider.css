@@ -1,0 +1,10 @@
+#spidergraphcontainer 
+{
+	width: 500px;
+	height: 500px;
+	position: absolute;
+	top: 60%;
+	left: 50%;
+	margin-top: -300px;
+	margin-left: -300px;
+}
