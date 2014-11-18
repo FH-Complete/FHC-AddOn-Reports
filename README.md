@@ -3,7 +3,7 @@ FHC-AddOn-Reports
 
 FH-Complete AddOn for creating Charts and Reports
 
-Features:
+####Features
 - Create and Manage Views from FH-Complete´s Database
 - Create and Manage Filters for the Views, Charts and Reports
 - Create and Manage Charts. JS-Bib for v0.9 will be a subset of highcharts.com
