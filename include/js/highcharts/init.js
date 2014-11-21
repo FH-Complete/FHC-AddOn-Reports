@@ -1,5 +1,3 @@
-<?php
-
 /* 
  * Copyright (C) 2014 fhcomplete.org
  *
@@ -19,20 +17,16 @@
  * Authors: Robert Hofer <robert.hofer@technikum-wien.at>
  */
 
-require_once('../../../config/vilesci.config.inc.php');
-require_once('../../../include/functions.inc.php');
-require_once('../../../include/benutzerberechtigung.class.php');
-require_once('../../../include/filter.class.php');
-require_once('../include/chart.class.php');
 
-$chart=new chart();
-if (isset($_GET['chart_id']))
-{
-	$chart->load($_GET['chart_id']);
-}
-else
-{
-	return;
+if(typeof charts === 'undefined') {
+
+	charts = [];
 }
 
-echo $chart->getHtmlDiv();
+charts.push({
+	init: function() {
+		loadChart(this.source, this.chart);
+	},
+	source: source,
+	chart: chart
+});

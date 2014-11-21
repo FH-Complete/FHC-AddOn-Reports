@@ -134,7 +134,7 @@ if ($htmlbody)
 	$html.="\n\t</body>\n</html>";
 */
 if ($html=='')
-	$statistik->print_png();
+	$statistik->printPng();
 else
 	echo $html;
 ?>
