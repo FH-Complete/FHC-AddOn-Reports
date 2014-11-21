@@ -17,15 +17,15 @@
  * Authors: Robert Hofer <robert.hofer@technikum-wien.at>
  */
 
-function convertQueryResult() {
+function convertQueryResult(chart) {
 
 	var categories = [],
 		series = [];
 
-	for(var i = 0; i < chart.data.raw.length; i++)
+	for(var i = 0; i < chart.raw.data.length; i++)
 	{
 
-		var zeile = chart.data.raw[i],
+		var zeile = chart.raw.data[i],
 			count_spalte = 0;
 
 		for(var spalte in zeile)
@@ -35,6 +35,7 @@ function convertQueryResult() {
 			if(count_spalte === 1)
 			{
 				categories.push(zeile[spalte]);
+				chart.categories.title = spalte;
 			}
 			else
 			{
@@ -58,20 +59,20 @@ function convertQueryResult() {
 		}
 	}
 
-	chart.data.series = series;
-	chart.data.categories = categories;
+	chart.series.data = series;
+	chart.categories.data = categories;
 }
 
-function hcdrillCreate() {
+function hcdrillCreate(chart) {
 
 	var level_one = {},
 		level_one_chart_data = [],
 		level_two = {},
 		level_two_chart_data = [];
 
-	for(var i = 0; i < chart.data.raw.length; i++)
+	for(var i = 0; i < chart.raw.data.length; i++)
 	{
-		var zeile = chart.data.raw[i],
+		var zeile = chart.raw.data[i],
 			count_spalte = 0,
 			l1_bezeichnung,
 			l2_bezeichnung;
@@ -137,7 +138,7 @@ function hcdrillCreate() {
 	chart.highchart = new Highcharts.Chart({
 		chart: {
 			type: 'column',
-			renderTo: 'hcdrillChart'
+			renderTo: chart.div_id
 		},
 		title: {
 			text: chart.title
@@ -149,9 +150,6 @@ function hcdrillCreate() {
 			title: {
 				text: ''
 			}
-		},
-		legend: {
-			enabled: false
 		},
 		plotOptions: {
 			series: {
@@ -185,42 +183,40 @@ function hcdrillCreate() {
 	});
 }
 
-function hclineCreate() {
+function hclineCreate(chart) {
 
-	convertQueryResult();
+	convertQueryResult(chart);
 
-	hcCreate('line', 'hclineChart');
+	hcCreate(chart, 'line');
 }
 
-function hccolumnCreate() {
+function hccolumnCreate(chart) {
 
-	convertQueryResult();
+	convertQueryResult(chart);
 
-	hcCreate('column', 'hccolumnChart');
+	hcCreate(chart, 'column');
 }
 
-function hcCreate(hctype, selector) {
+function hcCreate(chart, hctype) {
 	
 	var options = {
 		chart: {
 			type: hctype,
-			renderTo: selector
+			renderTo: chart.div_id
 		},
 		title: {
 			text: chart.title
 		},
 		xAxis: {
-			categories: chart.data.categories
+			categories: chart.categories.data,
+			title: ''
 		},
 		yAxis: {
 			title: {
 				text: ''
 			}
 		},
-		legend: {
-			enabled: false
-		},
-		series: chart.data.series
+		series: chart.series.data
 	};
 
 	if(typeof highchart_colors !== 'undefined' && $.isArray(highchart_colors)) {
@@ -234,26 +230,37 @@ function hcCreate(hctype, selector) {
 	chart.highchart = new Highcharts.Chart(options);
 }
 
-function loadChart(url) {
+function loadChart(url, chart) {
 
 	$.ajax({
 		url: url,
 		success: function(data) {
 
-			chart.data.raw = data;
+			chart.raw.data = data;
 
 			if(chart.type === 'hcdrill')
 			{
-				hcdrillCreate();
+				hcdrillCreate(chart);
 			}
 			else if(chart.type === 'hcline')
 			{
-				hclineCreate();
+				hclineCreate(chart);
 			}
 			else if(chart.type === 'hccolumn')
 			{
-				hccolumnCreate();
+				hccolumnCreate(chart);
 			}
 		}
 	});
+}
+
+function initCharts() {
+
+	if(typeof charts !== 'undefined') {
+
+		for(var i = 0; i < charts.length; i++) {
+
+			charts[i].init();
+		}
+	}
 }

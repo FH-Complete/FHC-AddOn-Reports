@@ -362,10 +362,10 @@ EOT;
 		return $this->chart_id;
 	}
 	
-	public function get_htmlhead()
+	public function getHtmlHead()
 	{
 		$html='';
-		$html.='<script src="../include/js/jquery1.7.1.min.js" type="application/javascript"></script>';
+		$html.='<script src="../include/js/jquery.min.js" type="application/javascript"></script>';
 		switch ($this->type)
 		{
 			case 'spider':
@@ -383,20 +383,44 @@ EOT;
 				$html.="\n\t\t".'<script src="../include/js/ngGrid/ng-grid.debug.js" type="application/javascript"></script>';
 				$html.="\n\t\t".'<script src="../include/js/ngGrid/main.js" type="application/javascript"></script>';
 				break;
+			case 'hcdrill':
+				$html.="\n\t\t".'<script src="../include/js/highcharts/highcharts.js" type="application/javascript"></script>';
+				$html.="\n\t\t".'<script src="../include/js/highcharts/drilldown.js" type="application/javascript"></script>';
+				$html.="\n\t\t".'<script src="../include/js/highcharts/main.js" type="application/javascript"></script>';
+				$html.="\n\t\t".'<script src="../include/js/highcharts/exporting.js" type="application/javascript"></script>';
+				break;
+			case 'hcline':
+			case 'hccolumn':
+				$html.="\n\t\t".'<script src="../include/js/highcharts/highcharts.js" type="application/javascript"></script>';
+				$html.="\n\t\t".'<script src="../include/js/highcharts/main.js" type="application/javascript"></script>';
+				$html.="\n\t\t".'<script src="../include/js/highcharts/exporting.js" type="application/javascript"></script>';
+				break;
 		}
-
-		$html.="\n\t\t".'<script type="text/javascript">
-					var chart = {
-						title: "' . $this->title . '",
-						type: "' . $this->type . '",
-						data: {}
-					};
-				</script>';
 
 		return $html;
 	}
-	
-	public function get_htmlform()
+
+	public static function getAllHtmlHead()
+	{
+		$html='';
+		$html.='<script src="../include/js/jquery.min.js" type="application/javascript"></script>';
+		$html.='<script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>';
+		$html.='<link rel="stylesheet" href="../include/css/spider.css" type="text/css">';
+		$html.='<link rel="stylesheet" href="../include/css/xchart.css" type="text/css" />';
+		$html.='<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ng-grid.css" />';
+		$html.='<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ngstyle.css" />';
+		$html.='<script src="../include/js/ngGrid/angular.min.js" type="application/javascript"></script>';
+		$html.='<script src="../include/js/ngGrid/ng-grid.debug.js" type="application/javascript"></script>';
+		$html.='<script src="../include/js/ngGrid/main.js" type="application/javascript"></script>';
+		$html.='<script src="../include/js/highcharts/highcharts.js" type="application/javascript"></script>';
+		$html.='<script src="../include/js/highcharts/drilldown.js" type="application/javascript"></script>';
+		$html.='<script src="../include/js/highcharts/main.js" type="application/javascript"></script>';
+		$html.='<script src="../include/js/highcharts/exporting.js" type="application/javascript"></script>';
+
+		return $html;
+	}
+
+	public function getHtmlForm()
 	{
 		$html="\n\t\t<form>";
 		$filter=new filter();
@@ -408,7 +432,7 @@ EOT;
 		return $html."\n\t\t</form>";
 	}
 	
-	public function get_htmldiv()
+	public function getHtmlDiv()
 	{
 		$html='';
 		switch ($this->type)
@@ -440,32 +464,40 @@ EOT;
 						</div>';
 				break;
 			case 'hcdrill':
-				$html.="\n\t\t".'<div id="hcdrillChart"></div>';
-				$html.="\n\t\t".'<script src="../include/js/highcharts/highcharts.js" type="application/javascript"></script>';
-				$html.="\n\t\t".'<script src="../include/js/highcharts/drilldown.js" type="application/javascript"></script>';
-				$html.= '<script type="application/javascript">
-						var source="'.$this->datasource.$this->vars.'";
-						'.$this->preferences.'
-						</script>';
-				$html.="\n\t\t".'<script src="../include/js/highcharts/main.js" type="application/javascript"></script>'
-						. "\n\t\t" . '<script src="../include/js/highcharts/exporting.js"></script>';
-				break;
 			case 'hcline':
 			case 'hccolumn':
-				$html.="\n\t\t".'<div id="' . $this->type . 'Chart"></div>';
-				$html.="\n\t\t".'<script src="../include/js/highcharts/highcharts.js" type="application/javascript"></script>';
-				$html.= '<script type="application/javascript">
-						var source="'.$this->datasource.$this->vars.'";
-						'.$this->preferences.'
+				$chart_div_id = 'hcChart' . $this->chart_id;
+				$html .= "\n\t\t".'<div id="' . $chart_div_id . '"></div>';
+				$html .= '<script type="application/javascript">
+							var source="'.$this->datasource.$this->vars.'",
+								chart = {
+									title: "' . $this->title . '",
+									type: "' . $this->type . '",
+									div_id: "' . $chart_div_id . '",
+									raw: {},
+									categories: {},
+									series: {}
+								};
+							'.$this->preferences.';
+
 						</script>';
-				$html.="\n\t\t".'<script src="../include/js/highcharts/main.js" type="application/javascript"></script>'
-						. "\n\t\t" . '<script src="../include/js/highcharts/exporting.js"></script>';
+				$html .= '<script src="../include/js/highcharts/init.js" type="application/javascript"></script>';
 				break;
 		}
 		return $html;
 	}
-	
-	public function print_png()
+
+	public function getFooter() {
+
+		$html = '<script type="application/javascript">
+					initCharts();
+				</script>';
+
+
+		return $html;
+	}
+
+	public function printPng()
 	{
 		switch ($this->type)
 		{

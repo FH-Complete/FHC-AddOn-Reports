@@ -19,6 +19,19 @@
 
 $(function() {
 
+	$('#sidebar div').hide();
+	$('#div_content').hide();
+	$('#iframe_content').hide();
+	$('#div_filter').hide();
+
+	$('.navbar-brand').on('click', function() {
+		$('#sidebar div').hide();
+		$('#div_content').hide();
+		$('#iframe_content').hide();
+		$('#div_filter').hide();
+		$("#welcome").show();
+	});
+
 	$('.nav ul li a').on('click', function() {
 
 		var gruppe = $(this).attr('data-gruppe'),
@@ -35,17 +48,38 @@ $(function() {
 			chart_id = $(this).attr('data-chart-id');
 
 		$('#welcome').hide();
-		$('#iframe_content').show();
 
 		if(statistik_kurzbz) {
 
+			$('#iframe_content').show();
 			$('#div_filter').show();
 			$('#div_filter').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz);
 
 		} else {
 
+			$('#iframe_content').hide();
 			$('#div_filter').hide();
-			$('#iframe_content').attr('src', 'chart.php?' + $.param({chart_id: chart_id}));
+
+			charts = [];
+
+			$.ajax({
+				url: 'chart.php?' + $.param({chart_id: chart_id}),
+				success: function(data) {
+
+					$('#div_content').html(data).show();
+					initCharts();
+				}
+			});
 		}
+	});
+
+	$('#welcome button').on('click', function() {
+
+		var link = $('ul.nav li.dropdown [href="#' + $(this).attr('data-dropdown') + '"]');
+
+		$('.navbar-collapse').collapse('show');
+
+		link.dropdown('toggle');
+		return false;
 	});
 });

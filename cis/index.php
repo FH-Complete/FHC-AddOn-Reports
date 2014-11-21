@@ -48,8 +48,6 @@
 
     <!-- Bootstrap core CSS -->
     <link href="../include/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
     <link href="../include/css/offcanvas.css" rel="stylesheet">
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
@@ -61,25 +59,11 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <!-- ngGrid -->
-    <link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ng-grid.css" />
-	<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/gridstyle.css" />
-	<script type="text/javascript" src="../include/js/jquery.min.js"></script>
-	<script type="text/javascript" src="../include/js/ngGrid/angular.min.js"></script>
-	<script type="text/javascript" src="../include/js/ngGrid/ng-grid.js"></script>
-    <!-- xChart -->    
-    <!--<script src="../include/js/jquery.min.js"></script>-->
-    <script src="../include/js/d3.min.js" type="application/javascript"></script>
-    <script src="../include/js/xcharts/xcharts.min.js" type="application/javascript"></script>
-    <link rel="stylesheet" href="../include/css/xchart.css" type="text/css">
-    <!-- spiderGraph -->
-    <script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>
-	<script type="text/javascript" src="reporting.js"></script>
-    <link rel="stylesheet" href="../include/css/spider.css" type="text/css">
     <link rel="stylesheet" href="reporting.css" type="text/css">
-    
+	<?php echo chart::getAllHtmlHead() ?>
   </head>
 
-  <body onload="$('#sidebar div').hide();$('#div_content').hide();$('#iframe_content').hide();$('#div_filter').hide();">
+  <body>
 	 <div id="test">
     <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
       <div class="container">
@@ -90,12 +74,12 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#" onclick='$("#welcome").show();'><img src="../data/fhtw_logo_white.png" height="25" />&nbsp;&nbsp;&nbsp;Reporting </a>
+          <a class="navbar-brand" href="#"><img src="../data/fhtw_logo_white.png" height="25" />&nbsp;&nbsp;&nbsp;Reporting </a>
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="dropdown">
-			  <a href="#data" class="dropdown-toggle" data-toggle="dropdown">Data <span class="caret"></span></a>
+			  <a href="#data" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">Data <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu" data-name="data">
                 <?php foreach ($statistik->result AS $gruppen): ?>
 					<li><a href="#" data-gruppe="<?php echo str_replace(' ','',$gruppen->gruppe) ?>">
@@ -108,10 +92,8 @@
               </ul>
             </li>
             <li class="dropdown">
-				<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">Charts <span class="caret"></span></a>
+				<a href="#charts" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">Charts <span class="caret"></span></a>
 				<ul class="dropdown-menu" role="menu" data-name="charts">
-					<?php // var_dump($chart->getAnzahlGruppe(true));
-					?>
                 <?php foreach ($chart->result AS $gruppen): ?>
 					<li><a href="#" data-gruppe="<?php echo str_replace(' ','',$gruppen->gruppe) ?>">
 						<?php echo $gruppen->gruppe?>
@@ -123,7 +105,7 @@
               </ul>
 			</li>
             <li class="dropdown">
-			  <a href="#reports" class="dropdown-toggle" data-toggle="dropdown">Reports <span class="caret"></span></a>
+			  <a href="#reports" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">Reports <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
                 <li><a href="#" onclick='$("#test").show();'>Studierende <span class="badge">3</span></a></li>
                 <li><a href="#" onclick='$("#test2").hide();'>Mitarbeiter <span class="badge">5</span></a></li>
@@ -156,17 +138,17 @@
 				<div class="col-6 col-sm-6 col-lg-4">
 				  <h2>Data</h2>
 				  <p>Auswertungen werden in einer Tabelle mittels Zahlen gezeigt. Klassische Features wie Sortierten und Gruppieren sind hier möglich.</p>
-				  <p><a class="btn btn-default" href="#data" role="button" onclick="$('#a_dropdown_data').dropdown();">Jump &raquo;</a></p>
+				  <p><button class="btn btn-default" type="button" data-dropdown="data">Jump &raquo;</button></p>
 				</div>
 				<div class="col-6 col-sm-6 col-lg-4">
 				  <h2>Charts</h2>
 				  <p>Um Daten schneller zu Überblicken sind Charts sehr behilflich. Diversen Ansichten wie Bar-Diagramme oder Spidergraphs sind hier in Verwendung.</p>
-				  <p><a class="btn btn-default" href="#charts" role="button">Jump &raquo;</a></p>
+				  <p><button class="btn btn-default" type="button" data-dropdown="charts">Jump &raquo;</button></p>
 				</div>
 				<div class="col-6 col-sm-6 col-lg-4">
 				  <h2>Reports</h2>
 				  <p>Speziell angefertigte Reports sind ein Kombination aus Daten, Charts und Texten. Teilweise sind diese auch in anderen Formaten wie zB. PDF verfügbar.</p>
-				  <p><a class="btn btn-default" href="#reports" role="button">Jump &raquo;</a></p>
+				  <p><button class="btn btn-default" type="button" data-dropdown="reports">Jump &raquo;</button></p>
 				</div>
 			  </div>
 		  </div>
@@ -177,7 +159,7 @@
 		  
 		  <div id="div_content">
 		  </div>
-		  
+
 		  <iframe id="iframe_content" name="iframe_content">
 		  </iframe>
 		  
@@ -212,13 +194,6 @@
 					</ul>
 				</div>
 			<?php endforeach; ?>
-          <div id="test" class="list-group">
-			  <ul class="nav">
-				<li><a href="#" onclick='$("#welcome").hide();$("#div_content").load("../vilesci/chart.php?chart_id=1");' class="list-group-item">DropOut-Spider</a></li>
-				<li><a href="#" onclick='$("#welcome").hide();$("#div_content").load("../vilesci/chart.php?chart_id=2");' class="list-group-item">DropOut-Chart</a></li>
-				<li><a href="#" onclick='$("#welcome").hide();$("#div_content").load("../vilesci/chart.php?chart_id=3&Studiengang=227");' class="list-group-item">Abbrecher</a></li>
-            </ul>
-          </div>
         </div>
       </div>
       
@@ -233,6 +208,7 @@
 	
     <script src="../include/js/bootstrap.min.js"></script>
     <script src="../include/js/offcanvas.js"></script>
+	<script type="text/javascript" src="reporting.js"></script>
     </div>
   </body>
 </html>

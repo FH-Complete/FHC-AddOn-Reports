@@ -71,17 +71,17 @@ if ($htmlbody)
 		<link rel="stylesheet" href="../../../skin/fhcomplete.css" type="text/css" />
 		';
 if ($htmlbody)
-	$html.=$chart->get_htmlhead();
+	$html.=$chart->getHtmlHead();
 if ($htmlbody)
 	$html.="\n\t\t<title>".$chart->title."</title>\n\t</head>\n\t<body style='height:100%'>";
 //$html.=$chart->get_htmlform();
-$html.=$chart->get_htmldiv();
-$html.='<script>$(function () { loadChart(source); });</script>';
+$html.=$chart->getHtmlDiv();
+$html.=$chart->getFooter();
 if ($htmlbody)
 	$html.="\n\t</body>\n</html>";
 
 if ($html=='')
-	$chart->print_png();
+	$chart->printPng();
 else
 	echo $html;
 ?>
