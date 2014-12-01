@@ -44,16 +44,12 @@ $(function() {
 
 		$('#welcome').hide();
 
-		if(statistik_kurzbz) {
-
-			$('#iframe_content').show();
-			$('#filter').show();
-			$('#filter-input').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz);
-			$('#filter-input').attr({
-				'data-chart-id': chart_id,
-				'data-statistik-kurzbz': statistik_kurzbz
-			});
-		}
+		$('#filter').show();
+		$('#filter-input').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz);
+		$('#filter-input').attr({
+			'data-chart-id': chart_id,
+			'data-statistik-kurzbz': statistik_kurzbz
+		});
 	});
 
 	$('#welcome button').on('click', function() {
@@ -67,6 +63,8 @@ $(function() {
 	});
 
 	$('#run-filter').on('click', function() {
+
+		$('#filter').hide();
 
 		var inputs = $('#filter-input > *'),
 			chart_id = $('#filter-input').attr('data-chart-id'),

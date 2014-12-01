@@ -49,6 +49,7 @@
     <!-- Bootstrap core CSS -->
     <link href="../include/css/bootstrap.min.css" rel="stylesheet">
     <link href="../include/css/offcanvas.css" rel="stylesheet">
+    <link href="../include/js/pivottable/pivot.css" rel="stylesheet">
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <!--<script src="../include/js/ie10-viewport-bug-workaround.js"></script>-->
@@ -61,6 +62,8 @@
     <!-- ngGrid -->
     <link rel="stylesheet" href="reporting.css" type="text/css">
 	<?php echo chart::getAllHtmlHead() ?>
+	<script type="text/javascript" src="../include/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../include/js/pivottable/pivot.js"></script>
   </head>
 
   <body>
@@ -171,7 +174,7 @@
 						$data=new statistik();
 						$data->getGruppe($gruppen->gruppe, true);
 						foreach ($data->result AS $dat): ?>
-							<li><a href="#data" data-statistik-kurzbez="<?php echo urlencode($dat->statistik_kurzbz) ?>" class="list-group-item">
+							<li><a href="#" data-statistik-kurzbez="<?php echo urlencode($dat->statistik_kurzbz) ?>" class="list-group-item">
 								<?php echo $dat->bezeichnung ?>
 							</a></li>
 						<?php endforeach; ?>

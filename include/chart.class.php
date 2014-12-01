@@ -199,15 +199,21 @@ class chart extends basis_db
 	 * Laedt alle Statistik Gruppen, Parameter publish zum Filtern.
 	 * @return true wenn ok, sonst false
 	 */
-	public function getAnzahlGruppe($publish=null)
+	public function getAnzahlGruppe($publish = null)
 	{
 		$qry = 'SELECT gruppe, count(*) AS anzahl FROM public.tbl_statistik JOIN addon.tbl_rp_chart USING (statistik_kurzbz) ';
-		if ($publish==true)
-			$qry.='WHERE tbl_rp_chart.publish ';
-		elseif ($publish==false)
-			$qry.='WHERE NOT tbl_rp_chart.publish ';
-		$qry.=' GROUP BY gruppe ORDER BY gruppe;';
-		// echo $qry;
+
+		if($publish === true)
+		{
+			$qry .= 'WHERE tbl_rp_chart.publish ';
+		}
+		elseif($publish === false)
+		{
+			$qry .= 'WHERE NOT tbl_rp_chart.publish ';
+		}
+
+		$qry .= ' GROUP BY gruppe ORDER BY gruppe;';
+
 		if($result = $this->db_query($qry))
 		{
 			while($row = $this->db_fetch_object($result))
@@ -241,7 +247,6 @@ class chart extends basis_db
 			'hcline' => 'Highcharts Line',
 			'hccolumn' => 'Highcharts Column',
 			'hcdrill' => 'Highcharts Drilldown',
-			'pivottable' => 'Pivot Table',
 		);
 
 	}
@@ -283,19 +288,12 @@ EOT;
 // Der Winkel der X-Achsenbeschriftung
 EOT;
 
-		$pivot_default = <<<EOT
-// chart.rows = ['jahr'];
-// chart.cols = ['jahr'];
-// Standardauswahl wenn PivotTable geladen wird.
-EOT;
-
 		return array(
 			'xchart' => "",
 			'spider' => "",
 			'hcline' => $hc_default,
 			'hccolumn' => $hc_default,
 			'hcdrill' => $hc_drill,
-			'pivottable' => $pivot_default,
 		);
 
 	}
@@ -420,12 +418,6 @@ EOT;
 				$html.="\n\t\t".'<script src="../include/js/highcharts/main.js" type="application/javascript"></script>';
 				$html.="\n\t\t".'<script src="../include/js/highcharts/exporting.js" type="application/javascript"></script>';
 				break;
-			case 'pivottable':
-				$html.="\n\t\t".'<link rel="stylesheet" type="text/css" href="../include/js/pivottable/pivot.css" />';
-				$html.="\n\t\t".'<script src="../include/js/jquery-ui.min.js" type="application/javascript"></script>';
-				$html.="\n\t\t".'<script src="../include/js/pivottable/pivot.js" type="application/javascript"></script>';
-				$html.="\n\t\t".'<script src="../include/js/pivottable/main.js" type="application/javascript"></script>';
-				break;
 		}
 
 		return $html;
@@ -439,7 +431,6 @@ EOT;
 		$html .= '<link rel="stylesheet" href="../include/css/spider.css" type="text/css">';
 		$html .= '<link rel="stylesheet" href="../include/css/xchart.css" type="text/css" />';
 		$html .= '<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ng-grid.css" />';
-		$html .= '<link rel="stylesheet" type="text/css" href="../include/js/pivottable/pivot.css" />';
 		$html .= '<script src="../include/js/ngGrid/angular.min.js" type="application/javascript"></script>';
 		$html .= '<script src="../include/js/ngGrid/ng-grid.debug.js" type="application/javascript"></script>';
 		$html .= '<script src="../include/js/ngGrid/main.js" type="application/javascript"></script>';
@@ -447,9 +438,6 @@ EOT;
 		$html .= '<script src="../include/js/highcharts/drilldown.js" type="application/javascript"></script>';
 		$html .= '<script src="../include/js/highcharts/main.js" type="application/javascript"></script>';
 		$html .= '<script src="../include/js/highcharts/exporting.js" type="application/javascript"></script>';
-		$html .= '<script src="../include/js/jquery-ui.min.js" type="application/javascript"></script>';
-		$html .= '<script src="../include/js/pivottable/pivot.js" type="application/javascript"></script>';
-		$html .= '<script src="../include/js/pivottable/main.js" type="application/javascript"></script>';
 
 		return $html;
 	}
@@ -519,24 +507,6 @@ EOT;
 
 						</script>';
 				$html .= '<script src="../include/js/highcharts/init.js" type="application/javascript"></script>';
-				break;
-			case 'pivottable':
-				$chart_div_id = 'pivotTable' . $this->chart_id;
-				$html .= "\n\t\t".'<div id="' . $chart_div_id . '"></div>';
-				$html .= '<script type="application/javascript">
-							var source="'.$this->datasource.$this->vars.'",
-								chart = {
-									title: "' . $this->title . '",
-									type: "' . $this->type . '",
-									div_id: "' . $chart_div_id . '",
-									raw: {},
-									rows: [],
-									cols: []
-								};
-							'.$this->preferences.';
-
-						</script>';
-				$html .= '<script src="../include/js/pivottable/init.js" type="application/javascript"></script>';
 				break;
 		}
 		return $html;

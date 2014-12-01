@@ -68,65 +68,38 @@ while(isset($_GET['varname' . $i]))
 
 $statistik->loadData();
 
-$html = '';
-if($htmlbody)
-{
-	$html .= '<html>
+ob_start(); ?>
+
+<?php if($htmlbody): ?>
+<html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<!-- ***************** NG-Grid ****************** -->
-		<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ng-grid.css" />
-        <link rel="stylesheet" type="text/css" href="../include/js/ngGrid/gridstyle.css" />
-        <script type="text/javascript" src="../include/js/jquery.min.js"></script>
-        <script type="text/javascript" src="../include/js/ngGrid/angular.min.js"></script>
-        <script type="text/javascript" src="../include/js/ngGrid/ng-grid-csv-export.js"></script>
-        
-        <script type="text/javascript" src="../include/js/ngGrid/ng-grid.debug.js"></script>
-        ';
-}
+		<link rel="stylesheet" href="../include/js/pivottable/pivot.css" />
+		<script type="text/javascript" src="../include/js/jquery.min.js"></script>
+		<script type="text/javascript" src="../include/js/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="../include/js/pivottable/pivot.js"></script>
+	</head>
+	<body>
+<?php endif; ?>
 
-if($htmlbody)
-{
-	$html .= '</head><body>';
-}
-$html .= '<div ng-app="ngApp">
-		<div ng-controller="ngCtrl">
-			<div class="gridStyle" ng-grid="gridOptions" style="height:400px;">
-			</div>
+		<div id="pivot">
 		</div>
-	  </div>';
+		<script type="text/javascript">
+			var options = {
+//				rows: chart.rows,
+//				cols: chart.cols,
+//				aggregatorName: 'Integer Sum'
+			};
 
-$html .= '<script type="text/javascript">
-	//alert ("test");
-	var data = ' . ($statistik->db_getResultJSON($statistik->data)) . ',
-		app = angular.module("ngApp", ["ngGrid"]);
+			$('#pivot').pivotUI(<?php echo $statistik->db_getResultJSON($statistik->data) ?>, options);
 
-	app.run(function($rootScope) {
-		console.log(321);
-		console.log($("#content"));
-		$rootScope.$apply($("#content"));
-	});
+		</script>
 
-	app.controller("ngCtrl", function($scope) {
-		$scope.ngData = data;
-		$scope.gridOptions = {
-			data: "ngData",
-			plugins: [new ngGridCsvExportPlugin()],
-			showFooter: true,
-			showGroupPanel: true,
-			enableColumnReordering: true,
-			enableColumnResize: true,
-			showColumnMenu: true,
-			showFilter: true
-		};
-	});
-</script>
-<!--<script src="../include/js/nggrid.js" type="application/javascript"></script>-->
-';
-if($htmlbody)
-{
-	$html .= '</body>';
-}
+<?php if($htmlbody): ?>
+	</body>
+</html>
+<?php endif;
+
+$html = ob_get_clean();
 
 /* if ($htmlbody)
   $html.=$statistik->get_htmlhead();
