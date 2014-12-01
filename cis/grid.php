@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2014 fhcomplete.org
  *
  * This program is free software; you can redistribute it and/or modify
@@ -99,7 +98,7 @@ $html .= '<div ng-app="ngApp">
 
 $html .= '<script type="text/javascript">
 	//alert ("test");
-	var data = '.($statistik->db_getResultJSON($statistik->data)).',
+	var data = ' . ($statistik->db_getResultJSON($statistik->data)) . ',
 		app = angular.module("ngApp", ["ngGrid"]);
 
 	app.run(function($rootScope) {
