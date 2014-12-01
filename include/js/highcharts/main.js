@@ -236,7 +236,7 @@ function hcCreate(chart, hctype) {
 	chart.highchart = new Highcharts.Chart(options);
 }
 
-function loadChart(url, chart) {
+function loadHcChart(url, chart) {
 
 	$.ajax({
 		url: url,

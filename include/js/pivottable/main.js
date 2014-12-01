@@ -17,15 +17,33 @@
  * Authors: Robert Hofer <robert.hofer@technikum-wien.at>
  */
 
-if(typeof charts === 'undefined') {
+function loadPivotTable(url, chart) {
 
-	charts = [];
+	$.ajax({
+		url: url,
+		success: function(data) {
+
+			var options = {
+				rows: chart.rows,
+				cols: chart.cols,
+				aggregatorName: 'Integer Sum'
+			};
+
+			chart.raw.data = data;
+
+			$('#' + chart.div_id).pivotUI(data, options);
+		}
+	});
+
 }
 
-charts.push({
-	init: function() {
-		loadHcChart(this.source, this.chart);
-	},
-	source: source,
-	chart: chart
-});
+function initCharts() {
+
+	if(typeof charts !== 'undefined') {
+
+		for(var i = 0; i < charts.length; i++) {
+
+			charts[i].init();
+		}
+	}
+}

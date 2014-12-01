@@ -24,7 +24,7 @@ if(typeof charts === 'undefined') {
 
 charts.push({
 	init: function() {
-		loadHcChart(this.source, this.chart);
+		loadPivotTable(this.source, this.chart);
 	},
 	source: source,
 	chart: chart

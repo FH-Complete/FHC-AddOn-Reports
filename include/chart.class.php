@@ -241,6 +241,7 @@ class chart extends basis_db
 			'hcline' => 'Highcharts Line',
 			'hccolumn' => 'Highcharts Column',
 			'hcdrill' => 'Highcharts Drilldown',
+			'pivottable' => 'Pivot Table',
 		);
 
 	}
@@ -263,7 +264,7 @@ class chart extends basis_db
 	public static function getDefaultPreferences()
 	{
 
-		$hcdrill = <<<EOT
+		$hc_drill = <<<EOT
 var	level_one_format = '{point.y}',
 	level_two_format = '{point.y}';
 // Ganze Zahlen: {point.y}
@@ -271,7 +272,8 @@ var	level_one_format = '{point.y}',
 // 3 Nachkommastellen: {point.y:.3f}
 // Einheiten oder Prozentzeichen: {point.y}% oder {point.y}km/h
 EOT;
-		$hcdefault = <<<EOT
+
+		$hc_default = <<<EOT
 // chart.colors = ['#8d4653', '#91e8e1'];
 // HEX-Codes die die Farben der Charts bestimmen:
 // 1. Code -> 1. Spalte
@@ -281,12 +283,19 @@ EOT;
 // Der Winkel der X-Achsenbeschriftung
 EOT;
 
+		$pivot_default = <<<EOT
+// chart.rows = ['jahr'];
+// chart.cols = ['jahr'];
+// Standardauswahl wenn PivotTable geladen wird.
+EOT;
+
 		return array(
 			'xchart' => "",
 			'spider' => "",
-			'hcline' => $hcdefault,
-			'hccolumn' => $hcdefault,
-			'hcdrill' => $hcdrill,
+			'hcline' => $hc_default,
+			'hccolumn' => $hc_default,
+			'hcdrill' => $hc_drill,
+			'pivottable' => $pivot_default,
 		);
 
 	}
@@ -411,6 +420,12 @@ EOT;
 				$html.="\n\t\t".'<script src="../include/js/highcharts/main.js" type="application/javascript"></script>';
 				$html.="\n\t\t".'<script src="../include/js/highcharts/exporting.js" type="application/javascript"></script>';
 				break;
+			case 'pivottable':
+				$html.="\n\t\t".'<link rel="stylesheet" type="text/css" href="../include/js/pivottable/pivot.css" />';
+				$html.="\n\t\t".'<script src="../include/js/jquery-ui.min.js" type="application/javascript"></script>';
+				$html.="\n\t\t".'<script src="../include/js/pivottable/pivot.js" type="application/javascript"></script>';
+				$html.="\n\t\t".'<script src="../include/js/pivottable/main.js" type="application/javascript"></script>';
+				break;
 		}
 
 		return $html;
@@ -418,19 +433,23 @@ EOT;
 
 	public static function getAllHtmlHead()
 	{
-		$html='';
-		$html.='<script src="../include/js/jquery.min.js" type="application/javascript"></script>';
-		$html.='<script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>';
-		$html.='<link rel="stylesheet" href="../include/css/spider.css" type="text/css">';
-		$html.='<link rel="stylesheet" href="../include/css/xchart.css" type="text/css" />';
-		$html.='<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ng-grid.css" />';
-		$html.='<script src="../include/js/ngGrid/angular.min.js" type="application/javascript"></script>';
-		$html.='<script src="../include/js/ngGrid/ng-grid.debug.js" type="application/javascript"></script>';
-		$html.='<script src="../include/js/ngGrid/main.js" type="application/javascript"></script>';
-		$html.='<script src="../include/js/highcharts/highcharts.js" type="application/javascript"></script>';
-		$html.='<script src="../include/js/highcharts/drilldown.js" type="application/javascript"></script>';
-		$html.='<script src="../include/js/highcharts/main.js" type="application/javascript"></script>';
-		$html.='<script src="../include/js/highcharts/exporting.js" type="application/javascript"></script>';
+		$html = '';
+		$html .= '<script src="../include/js/jquery.min.js" type="application/javascript"></script>';
+		$html .= '<script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>';
+		$html .= '<link rel="stylesheet" href="../include/css/spider.css" type="text/css">';
+		$html .= '<link rel="stylesheet" href="../include/css/xchart.css" type="text/css" />';
+		$html .= '<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ng-grid.css" />';
+		$html .= '<link rel="stylesheet" type="text/css" href="../include/js/pivottable/pivot.css" />';
+		$html .= '<script src="../include/js/ngGrid/angular.min.js" type="application/javascript"></script>';
+		$html .= '<script src="../include/js/ngGrid/ng-grid.debug.js" type="application/javascript"></script>';
+		$html .= '<script src="../include/js/ngGrid/main.js" type="application/javascript"></script>';
+		$html .= '<script src="../include/js/highcharts/highcharts.js" type="application/javascript"></script>';
+		$html .= '<script src="../include/js/highcharts/drilldown.js" type="application/javascript"></script>';
+		$html .= '<script src="../include/js/highcharts/main.js" type="application/javascript"></script>';
+		$html .= '<script src="../include/js/highcharts/exporting.js" type="application/javascript"></script>';
+		$html .= '<script src="../include/js/jquery-ui.min.js" type="application/javascript"></script>';
+		$html .= '<script src="../include/js/pivottable/pivot.js" type="application/javascript"></script>';
+		$html .= '<script src="../include/js/pivottable/main.js" type="application/javascript"></script>';
 
 		return $html;
 	}
@@ -500,6 +519,24 @@ EOT;
 
 						</script>';
 				$html .= '<script src="../include/js/highcharts/init.js" type="application/javascript"></script>';
+				break;
+			case 'pivottable':
+				$chart_div_id = 'pivotTable' . $this->chart_id;
+				$html .= "\n\t\t".'<div id="' . $chart_div_id . '"></div>';
+				$html .= '<script type="application/javascript">
+							var source="'.$this->datasource.$this->vars.'",
+								chart = {
+									title: "' . $this->title . '",
+									type: "' . $this->type . '",
+									div_id: "' . $chart_div_id . '",
+									raw: {},
+									rows: [],
+									cols: []
+								};
+							'.$this->preferences.';
+
+						</script>';
+				$html .= '<script src="../include/js/pivottable/init.js" type="application/javascript"></script>';
 				break;
 		}
 		return $html;
