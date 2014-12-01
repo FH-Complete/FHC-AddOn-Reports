@@ -22,6 +22,7 @@
 	require_once('../../../include/globals.inc.php');
 	require_once('../../../include/functions.inc.php');
 	require_once('../../../include/benutzerberechtigung.class.php');
+	require_once('../../../include/statistik.class.php');
 	require_once('../include/chart.class.php');
 	
 	if (!$db = new basis_db())
@@ -70,6 +71,7 @@
 			$chart->sourcetype = $_POST["sourcetype"];
 			$chart->preferences = $_POST["preferences"];
 			$chart->statistik_kurzbz = $_POST["statistik_kurzbz"];
+			$chart->datasource = $_POST["datasource"];
 			$chart->datasource_type = $_POST["datasource_type"];
 			$chart->publish = $_POST["publish"] ? true : false;
 		
@@ -165,7 +167,9 @@ var charts = {
 						<select name="type" id="chart_type">
 							<option value=""></option>
 							<?php foreach(chart::getPlugins() as $abk => $plugin): ?>
-							<option value="<?php echo $abk; ?>"<?php echo ($chart->type === $abk ? ' selected' : ''); ?>><?php echo $plugin; ?></option>
+								<option value="<?php echo $abk; ?>"<?php echo ($chart->type === $abk ? ' selected' : ''); ?>>
+									<?php echo $plugin; ?>
+								</option>
 							<?php endforeach; ?>
 						</select>
 					</td>
@@ -177,11 +181,30 @@ var charts = {
 					</td>
 				</tr>
 				<tr>
-					<td valign='top'>Statistik Kurzbez</td>
-					<td valign='top' colspan='2'><input class='detail' type='text' name='statistik_kurzbz' size='55' maxlength='256' value='<?php echo $chart->statistik_kurzbz; ?>' onchange='submitable()'></td>
-					<td></td>
 					<td>Datasource Type</td>
-					<td><input class='detail' type='text' name='datasource_type' size='8' maxlength='32' value='<?php echo $chart->datasource_type; ?>' onchange='submitable()'></td>
+					<td>
+						<select name="datasource_type" id="datasource_type">
+							<?php foreach(chart::getDataSourceTypes() as $abk => $datasource_type): ?>
+								<option value="<?php echo $abk; ?>"<?php echo ($chart->datasource_type === $abk ? ' selected' : ''); ?>>
+									<?php echo $datasource_type; ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+					</td>
+					<td valign='top' class="statistik_kurzbz">Statistik</td>
+					<td valign='top' class="statistik_kurzbz" colspan='3'>
+						<?php $statistik = new statistik; ?>
+						<?php $statistik->getAll('bezeichnung'); ?>
+						<select name="statistik_kurzbz" style="width: 100%;">
+							<?php foreach($statistik->result as $stat): ?>
+								<option value="<?php echo $stat->statistik_kurzbz ?>"<?php echo ($chart->statistik_kurzbz === $stat->statistik_kurzbz ? ' selected' : ''); ?>><?php echo $stat->bezeichnung ?></option>
+							<?php endforeach; ?>
+						</select>
+					</td>
+					<td valign='top' class="datasource">DataSource</td>
+					<td valign='top' class="datasource" colspan='3'>
+						<input class='detail' type='text' name='datasource' size='55' maxlength='256' value='<?php echo $chart->datasource; ?>' onchange='submitable()'>
+					</td>
 				</tr>
 				<tr>
 					<td valign='top'>Description</td>

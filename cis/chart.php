@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2014 fhcomplete.org
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,14 +25,16 @@ require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../../../include/filter.class.php');
 require_once('../include/chart.class.php');
 
-$chart=new chart();
-if (isset($_GET['chart_id']))
-{
-	$chart->load($_GET['chart_id']);
-}
-else
-{
-	return;
-}
+$chart = new chart();
 
-echo $chart->getHtmlDiv();
+$chart_id = filter_input(INPUT_GET, 'chart_id', FILTER_VALIDATE_INT);
+
+$filter = $_GET;
+unset($filter['chart_id']);
+
+$chart->vars = '&' . http_build_query($filter);
+
+if($chart->load($chart_id))
+{
+	echo $chart->getHtmlDiv();
+}

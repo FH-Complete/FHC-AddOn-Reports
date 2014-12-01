@@ -19,16 +19,11 @@
 
 $(function() {
 
-	$('#sidebar div').hide();
-	$('#div_content').hide();
-	$('#iframe_content').hide();
-	$('#div_filter').hide();
-
 	$('.navbar-brand').on('click', function() {
 		$('#sidebar div').hide();
-		$('#div_content').hide();
+		$('#content').hide();
 		$('#iframe_content').hide();
-		$('#div_filter').hide();
+		$('#filter').hide();
 		$("#welcome").show();
 	});
 
@@ -38,8 +33,8 @@ $(function() {
 			menu = $(this).closest('ul').attr('data-name');
 
 		$('#sidebar div').hide();
+		$('#sidebar').attr('data-menu', menu);
 		$('#' + menu + 'group_' + gruppe).show();
-
 	});
 
 	$('#sidebar a').on('click', function() {
@@ -52,23 +47,11 @@ $(function() {
 		if(statistik_kurzbz) {
 
 			$('#iframe_content').show();
-			$('#div_filter').show();
-			$('#div_filter').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz);
-
-		} else {
-
-			$('#iframe_content').hide();
-			$('#div_filter').hide();
-
-			charts = [];
-
-			$.ajax({
-				url: 'chart.php?' + $.param({chart_id: chart_id}),
-				success: function(data) {
-
-					$('#div_content').html(data).show();
-					initCharts();
-				}
+			$('#filter').show();
+			$('#filter-input').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz);
+			$('#filter-input').attr({
+				'data-chart-id': chart_id,
+				'data-statistik-kurzbz': statistik_kurzbz
 			});
 		}
 	});
@@ -81,5 +64,42 @@ $(function() {
 
 		link.dropdown('toggle');
 		return false;
+	});
+
+	$('#run-filter').on('click', function() {
+
+		var inputs = $('#filter-input > *'),
+			chart_id = $('#filter-input').attr('data-chart-id'),
+			data_statistik_kurzbz = $('#filter-input').attr('data-statistik-kurzbz'),
+			get_params = {},
+			url;
+
+		for(var i = 0; i < inputs.length; i++) {
+
+			var input = $(inputs[i]);
+
+			get_params[input.attr('id')] = input.val();
+		}
+
+		if($('#sidebar').attr('data-menu') === 'charts') {
+
+			url = 'chart.php';
+			get_params.chart_id = chart_id;
+
+		} else {
+
+			url = 'grid.php';
+			get_params.statistik_kurzbz = data_statistik_kurzbz;
+		}
+
+		$.ajax({
+			url: url,
+			data: get_params,
+			success: function(data) {
+				charts = [];
+				$('#content').html(data).show();
+				initCharts();
+			}
+		});
 	});
 });

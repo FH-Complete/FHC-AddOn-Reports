@@ -21,12 +21,29 @@ $(function() {
 
 	$('#chart_type').on('change', function() {
 
-		var type = $('#chart_type').val(),
+		var type = $(this).val(),
 			pref = charts.default_preferences[type];
 
 		if(type)
 		{
-			$('#preferences').val(charts.default_preferences[type]);
+			$('#preferences').val(pref);
+		}
+
+	});
+
+	$('#datasource_type').on('change', function() {
+
+		var type = $(this).val();
+
+		if(type === 'intern') {
+
+			$('table td.datasource').hide();
+			$('table td.statistik_kurzbz').show();
+
+		} else {
+
+			$('table td.datasource').show();
+			$('table td.statistik_kurzbz').hide();
 		}
 
 	});

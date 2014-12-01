@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (C) 2014 fhcomplete.org
  *
  * This program is free software; you can redistribute it and/or modify
@@ -24,82 +25,71 @@ require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../../../include/statistik.class.php');
 require_once('../../../include/filter.class.php');
 
-if (!$db = new basis_db())
+$db = new basis_db();
+
+if(!$db)
+{
 	die('Es konnte keine Verbindung zum Server aufgebaut werden.');
+}
 
 $user = get_uid();
 $rechte = new benutzerberechtigung();
 $rechte->getBerechtigungen($user);
 
 if(!$rechte->isBerechtigt('basis/statistik'))
-	die('Sie haben keine Berechtigung fuer diese Seite!');
-
-if(!isset($_GET['htmlbody']))
-	$htmlbody='false';
-else
-	$htmlbody=$_GET['htmlbody'];
-	
-if(!isset($_GET['type']))
-	die('type is not set');
-	
-$filter=new filter();
-$filter->loadAll();
-$getvars=$filter->getVars();
-$statistik=new statistik();
-$action='';
-//$chart=new chart();
-switch ($_GET['type'])
 {
-	case 'data':
-		if (isset($_GET['statistik_kurzbz']))
-			if ($statistik->load($_GET['statistik_kurzbz']))
-			{
-				$vars = $statistik->parseVars($statistik->sql);
-				$action='grid.php?htmlbody=true';
-				//var_dump($vars);
-				//var_dump($statistik);
-			}
-			else
-				die('Statistik not found in DB!');
+	die('Sie haben keine Berechtigung fuer diese Seite!');
 }
 
-$action.=$getvars;
+$filter = new filter();
+$filter->loadAll();
+$statistik = new statistik();
 
-$html='';
+$statistik_kurzbz = filter_input(INPUT_GET, 'statistik_kurzbz');
+$htmlbody = filter_input(INPUT_GET, 'htmlbody', FILTER_VALIDATE_BOOLEAN);
+
+if(!isset($statistik_kurzbz))
+{
+	die('"statistik_kurzbz" is not set!');
+}
+elseif(!$statistik->load($statistik_kurzbz))
+{
+	die('Statistik not found in DB!');
+}
+
+$vars = $statistik->parseVars($statistik->sql);
+
+$html = '';
 
 if($htmlbody)
-$html='
-<!DOCTYPE HTML>
-<html>
-	<head>
-	<title>Filter</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<link rel="stylesheet" href="../../skin/vilesci.css" type="text/css">
-</head>
-<body>
-';
-// onsubmit='alert(\"$action\");'
-$html.="
-	<form action='$action' method='POST' target='iframe_content' >
-	<table>
-";
+{
+	$html = '
+		<!DOCTYPE HTML>
+		<html>
+			<head>
+			<title>Filter</title>
+			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+			<link rel="stylesheet" href="../../skin/vilesci.css" type="text/css">
+		</head>
+		<body>';
+}
+
 // Filter parsen
-$html.= '<tr>';
 foreach($vars as $var)
 {
-	if ($filter->isFilter($var))
-		$html.= "<td>$var</td><td>".$filter->getHtmlWidget($var)."</td>\n";
+	if($filter->isFilter($var))
+	{
+		$html .= $var . ': ' . $filter->getHtmlWidget($var);
+	}
 	else
-		$html.= "<td>$var</td><td><input type=\"text\" id=\"$var\" name=\"$var\" value=\"\"></td>";
+	{
+		$html .= $var . ': <input type="text" id="' . $var . '" name="' . $var . '" value="">';
+	}
 }
-//$html.='</tr><tr>';
-$html.='
-		<td></td>
-		<td><input class="btn btn-default" type="submit" value="Run >>"></td>
-	</tr>
-	</table>
-</form>';
-if ($htmlbody)
-	$html.= '</body></html>';
+
+if($htmlbody)
+{
+	$html .= '</body></html>';
+}
+
 echo $html;
-?>

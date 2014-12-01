@@ -153,21 +153,19 @@
 			  </div>
 		  </div>
 			
-		  <div id="div_filter" class="col-xs-12 col-sm-9">
-			  Filter
+		  <div style="display: none;" id="filter" class="col-xs-12 col-sm-9">
+			  <div id="filter-input"></div>
+			  <button id="run-filter" class="btn btn-default" type="submit">Run</button>
 		  </div>
 		  
-		  <div id="div_content">
+		  <div style="display: none;" id="content">
 		  </div>
 
-		  <iframe id="iframe_content" name="iframe_content">
-		  </iframe>
-		  
         </div>
 
         <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
 			<?php foreach ($statistik->result AS $gruppen): ?>
-				<div id="datagroup_<?php echo str_replace(' ','',$gruppen->gruppe) ?>" class="list-group">
+				<div style="display: none;" id="datagroup_<?php echo str_replace(' ','',$gruppen->gruppe) ?>" class="list-group">
 					<ul class="nav">
 						<?php
 						$data=new statistik();
@@ -181,13 +179,13 @@
 				</div>
 			<?php endforeach; ?>
 			<?php foreach ($chart->result AS $gruppen): ?>
-				<div id="chartsgroup_<?php echo str_replace(' ','',$gruppen->gruppe) ?>" class="list-group">
+				<div style="display: none;" id="chartsgroup_<?php echo str_replace(' ','',$gruppen->gruppe) ?>" class="list-group">
 					<ul class="nav">
 						<?php
 						$data=new chart();
 						$data->getGruppe($gruppen->gruppe, true);
 						foreach ($data->result AS $dat): ?>
-							<li><a href="#" class="list-group-item" data-chart-id="<?php echo $dat->chart_id ?>">
+							<li><a href="#" data-statistik-kurzbez="<?php echo urlencode($dat->statistik_kurzbz) ?>" class="list-group-item" data-chart-id="<?php echo $dat->chart_id ?>">
 								<?php echo $dat->title ?>
 							</a></li>
 						<?php endforeach; ?>

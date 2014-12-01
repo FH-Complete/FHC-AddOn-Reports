@@ -245,6 +245,18 @@ class chart extends basis_db
 
 	}
 	/**
+	 * Liefert die unterstützten Datenformate
+	 * @return array
+	 */
+	public static function getDataSourceTypes()
+	{
+		return array(
+			'intern' => 'Interne Statistik (JSON)',
+			'extern_json' => 'Extern JSON',
+			'extern_csv' => 'Extern CSV',
+		);
+	}
+	/**
 	 * Default preferences für Plugins/Chart-Varianten
 	 * @return array
 	 */
@@ -284,7 +296,10 @@ EOT;
 	 */
 	public function save()
 	{
-		$this->datasource = '../../../vilesci/statistik/statistik_sql.php?statistik_kurzbz=' . $this->statistik_kurzbz . '&outputformat=json';
+		if($this->datasource_type === 'intern') {
+
+			$this->datasource = '../../../vilesci/statistik/statistik_sql.php?statistik_kurzbz=' . $this->statistik_kurzbz . '&outputformat=json';
+		}
 
 		if($this->new)
 		{
@@ -377,7 +392,6 @@ EOT;
 				break;
 			case 'ngGrid':
 				$html.="\n\t\t".'<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ng-grid.css" />';
-				$html.="\n\t\t".'<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ngstyle.css" />';
 				//$html.="\n\t\t".'<script src="../include/js/ngGrid/jquery.min.js" type="application/javascript"></script>';
 				$html.="\n\t\t".'<script src="../include/js/ngGrid/angular.min.js" type="application/javascript"></script>';
 				$html.="\n\t\t".'<script src="../include/js/ngGrid/ng-grid.debug.js" type="application/javascript"></script>';
@@ -408,7 +422,6 @@ EOT;
 		$html.='<link rel="stylesheet" href="../include/css/spider.css" type="text/css">';
 		$html.='<link rel="stylesheet" href="../include/css/xchart.css" type="text/css" />';
 		$html.='<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ng-grid.css" />';
-		$html.='<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ngstyle.css" />';
 		$html.='<script src="../include/js/ngGrid/angular.min.js" type="application/javascript"></script>';
 		$html.='<script src="../include/js/ngGrid/ng-grid.debug.js" type="application/javascript"></script>';
 		$html.='<script src="../include/js/ngGrid/main.js" type="application/javascript"></script>';

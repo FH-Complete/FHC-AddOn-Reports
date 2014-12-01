@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (C) 2014 fhcomplete.org
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,11 +18,11 @@
  *
  * Authors: Christian Paminger, 
  */
- 
+
 // pChart library inclusions 
 require_once("../include/pChart/class/pData.class.php");
 require_once("../include/pChart/class/pDraw.class.php");
-require_once("../include/pChart/class/pImage.class.php"); 
+require_once("../include/pChart/class/pImage.class.php");
 
 require_once('../../../config/vilesci.config.inc.php');
 require_once('../../../include/functions.inc.php');
@@ -32,45 +33,46 @@ require_once('../../../include/statistik.class.php');
 $uid = get_uid();
 $rechte = new benutzerberechtigung();
 $rechte->getBerechtigungen($uid);
-/*if(!$rechte->isBerechtigt('addon/reports'))
-{
-	die('Sie haben keine Berechtigung fuer dieses AddOn');
-}*/
+/* if(!$rechte->isBerechtigt('addon/reports'))
+  {
+  die('Sie haben keine Berechtigung fuer dieses AddOn');
+  } */
 
-$statistik=new statistik();
-if (isset($_GET['statistik_kurzbz']))
-	$statistik->load($_GET['statistik_kurzbz']);
-else
-	die('"statistik_kurzbz" is not set!');
-	
-$i=0;
-while (isset($_GET['varname'.$i]))
+$statistik = new statistik();
+
+$statistik_kurzbz = filter_input(INPUT_GET, 'statistik_kurzbz');
+$htmlbody = filter_input(INPUT_GET, 'htmlbody', FILTER_VALIDATE_BOOLEAN);
+
+if(isset($statistik_kurzbz))
 {
-	$statistik->vars.='&'.$_GET['varname'.$i].'=';
-	if (isset($_GET['var'.$i]))
-		$statistik->vars.=$_GET['var'.$i];
+	$statistik->load($statistik_kurzbz);
+}
+else
+{
+	die('"statistik_kurzbz" is not set!');
+}
+
+$i = 0;
+while(isset($_GET['varname' . $i]))
+{
+	$statistik->vars.='&' . $_GET['varname' . $i] . '=';
+	if(isset($_GET['var' . $i]))
+	{
+		$statistik->vars.=$_GET['var' . $i];
+	}
 	else
-		die('"var"'.$i.' is not set!');
+	{
+		die('"var"' . $i . ' is not set!');
+	}
 	$i++;
 }
 
-if (isset($_REQUEST['htmlbody']))
-{
-	if ($_REQUEST['htmlbody']=='true')
-		$htmlbody=true;
-	else
-		$htmlbody=false;
-}
-else
-	$htmlbody=false;
-
 $statistik->loadData();
-//var_dump($statistik->data);
-//echo $statistik->db_getResultJSON($statistik->data);die(); 
 
-$html='';
-if ($htmlbody)
-	$html.='<html>
+$html = '';
+if($htmlbody)
+{
+	$html .= '<html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<!-- ***************** NG-Grid ****************** -->
@@ -82,31 +84,33 @@ if ($htmlbody)
         
         <script type="text/javascript" src="../include/js/ngGrid/ng-grid.debug.js"></script>
         ';
+}
 
-if ($htmlbody)		
-	$html.='</head><body>
-<div ng-app="ngApp" >
-    <div ng-controller="ngCtrl">
-        <div class="gridStyle" ng-grid="gridOptions">
-        </div>
-	</div>
-</div>';
-else
-	$html.='<div ng-app="ngApp" >
-			<div  ng-controller="ngCtrl">
-				<div class="gridStyle" ng-grid="gridOptions" style="height:400px;">
-					
-				</div>
+if($htmlbody)
+{
+	$html .= '</head><body>';
+}
+$html .= '<div ng-app="ngApp">
+		<div ng-controller="ngCtrl">
+			<div class="gridStyle" ng-grid="gridOptions" style="height:400px;">
 			</div>
-		  </div>';
-		  
-$html.='<script type="text/javascript">
+		</div>
+	  </div>';
+
+$html .= '<script type="text/javascript">
 	//alert ("test");
-	var data='.($statistik->db_getResultJSON($statistik->data)).';
-	var app = angular.module("ngApp", ["ngGrid"]);
+	var data = '.($statistik->db_getResultJSON($statistik->data)).',
+		app = angular.module("ngApp", ["ngGrid"]);
+
+	app.run(function($rootScope) {
+		console.log(321);
+		console.log($("#content"));
+		$rootScope.$apply($("#content"));
+	});
+
 	app.controller("ngCtrl", function($scope) {
 		$scope.ngData = data;
-		$scope.gridOptions = { 
+		$scope.gridOptions = {
 			data: "ngData",
 			plugins: [new ngGridCsvExportPlugin()],
 			showFooter: true,
@@ -116,25 +120,29 @@ $html.='<script type="text/javascript">
 			showColumnMenu: true,
 			showFilter: true
 		};
-	});	
+	});
 </script>
 <!--<script src="../include/js/nggrid.js" type="application/javascript"></script>-->
 ';
-if ($htmlbody)
-$html.='
-</body>';
+if($htmlbody)
+{
+	$html .= '</body>';
+}
 
-/*if ($htmlbody)
-	$html.=$statistik->get_htmlhead();
-if ($htmlbody)
-	$html.="\n\t\t<title>".$statistik->title."</title>\n\t</head>\n\t<body style='height:100%'>";
-$html.=$statistik->get_htmlform();
-$html.=$statistik->get_htmldiv();
-if ($htmlbody)
-	$html.="\n\t</body>\n</html>";
-*/
-if ($html=='')
+/* if ($htmlbody)
+  $html.=$statistik->get_htmlhead();
+  if ($htmlbody)
+  $html.="\n\t\t<title>".$statistik->title."</title>\n\t</head>\n\t<body style='height:100%'>";
+  $html.=$statistik->get_htmlform();
+  $html.=$statistik->get_htmldiv();
+  if ($htmlbody)
+  $html.="\n\t</body>\n</html>";
+ */
+if($html == '')
+{
 	$statistik->printPng();
+}
 else
+{
 	echo $html;
-?>
+}
