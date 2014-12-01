@@ -214,7 +214,7 @@ function hcCreate(chart, hctype) {
 			categories: chart.categories.data,
 			title: '',
 			labels: {
-				rotation: chart.x.winkel
+				rotation: chart.x.rotation
 			}
 		},
 		yAxis: {

@@ -277,7 +277,7 @@ EOT;
 // 1. Code -> 1. Spalte
 // 2. Code -> 2. Spalte usw.
 //
-// chart.x.winkel = 45;
+// chart.x.rotation = 45;
 // Der Winkel der X-Achsenbeschriftung
 EOT;
 
