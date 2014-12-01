@@ -272,11 +272,13 @@ var	level_one_format = '{point.y}',
 // Einheiten oder Prozentzeichen: {point.y}% oder {point.y}km/h
 EOT;
 		$hcdefault = <<<EOT
-// var	highchart_colors = ['#8d4653', '#91e8e1'];
-// Es können hier beliebig viele HEX-Codes eingetragen werden die
-// verwendet werden um die Charts zu zeichnen.
+// chart.colors = ['#8d4653', '#91e8e1'];
+// HEX-Codes die die Farben der Charts bestimmen:
 // 1. Code -> 1. Spalte
 // 2. Code -> 2. Spalte usw.
+//
+// chart.x.winkel = 45;
+// Der Winkel der X-Achsenbeschriftung
 EOT;
 
 		return array(
@@ -489,7 +491,10 @@ EOT;
 									div_id: "' . $chart_div_id . '",
 									raw: {},
 									categories: {},
-									series: {}
+									series: {},
+									x: {rotation: 0},
+									y: {rotation: 0},
+									colors: []
 								};
 							'.$this->preferences.';
 

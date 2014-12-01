@@ -144,7 +144,10 @@ function hcdrillCreate(chart) {
 			text: chart.title
 		},
 		xAxis: {
-			type: 'category'
+			type: 'category',
+			labels: {
+				rotation: chart.x.rotation
+			}
 		},
 		yAxis: {
 			title: {
@@ -209,7 +212,10 @@ function hcCreate(chart, hctype) {
 		},
 		xAxis: {
 			categories: chart.categories.data,
-			title: ''
+			title: '',
+			labels: {
+				rotation: chart.x.winkel
+			}
 		},
 		yAxis: {
 			title: {
@@ -219,8 +225,8 @@ function hcCreate(chart, hctype) {
 		series: chart.series.data
 	};
 
-	if(typeof highchart_colors !== 'undefined' && $.isArray(highchart_colors)) {
-		options.colors = highchart_colors;
+	if(chart.colors.length) {
+		options.colors = chart.colors;
 	}
 
 	if(chart.highchart) {
