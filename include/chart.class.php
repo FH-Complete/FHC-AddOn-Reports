@@ -246,6 +246,7 @@ class chart extends basis_db
 			'spider' => 'Spider',
 			'hcline' => 'Highcharts Line',
 			'hccolumn' => 'Highcharts Column',
+			'hcpie' => 'Highcharts Pie',
 			'hcdrill' => 'Highcharts Drilldown',
 		);
 
@@ -293,6 +294,7 @@ EOT;
 			'spider' => "",
 			'hcline' => $hc_default,
 			'hccolumn' => $hc_default,
+			'hcpie' => $hc_default,
 			'hcdrill' => $hc_drill,
 		);
 
@@ -414,6 +416,7 @@ EOT;
 				break;
 			case 'hcline':
 			case 'hccolumn':
+			case 'hcpie':
 				$html.="\n\t\t".'<script src="../include/js/highcharts/highcharts.js" type="application/javascript"></script>';
 				$html.="\n\t\t".'<script src="../include/js/highcharts/main.js" type="application/javascript"></script>';
 				$html.="\n\t\t".'<script src="../include/js/highcharts/exporting.js" type="application/javascript"></script>';
@@ -488,6 +491,7 @@ EOT;
 			case 'hcdrill':
 			case 'hcline':
 			case 'hccolumn':
+			case 'hcpie':
 				$chart_div_id = 'hcChart' . $this->chart_id;
 				$html .= "\n\t\t".'<div id="' . $chart_div_id . '"></div>';
 				$html .= '<script type="application/javascript">

@@ -186,20 +186,6 @@ function hcdrillCreate(chart) {
 	});
 }
 
-function hclineCreate(chart) {
-
-	convertQueryResult(chart);
-
-	hcCreate(chart, 'line');
-}
-
-function hccolumnCreate(chart) {
-
-	convertQueryResult(chart);
-
-	hcCreate(chart, 'column');
-}
-
 function hcCreate(chart, hctype) {
 	
 	var options = {
@@ -250,11 +236,18 @@ function loadHcChart(url, chart) {
 			}
 			else if(chart.type === 'hcline')
 			{
-				hclineCreate(chart);
+				convertQueryResult(chart);
+				hcCreate(chart, 'line');
 			}
 			else if(chart.type === 'hccolumn')
 			{
-				hccolumnCreate(chart);
+				convertQueryResult(chart);
+				hcCreate(chart, 'column');
+			}
+			else if(chart.type === 'hcpie')
+			{
+				convertQueryResult(chart);
+				hcCreate(chart, 'pie');
 			}
 		}
 	});
