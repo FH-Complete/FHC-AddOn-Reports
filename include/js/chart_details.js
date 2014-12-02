@@ -37,25 +37,17 @@ $(function() {
 		if(type === 'intern') {
 
 			$('#statistik_kurzbz').trigger('change');
-			$('#statistik_kurzbz').closest('tr').show();
-
-		} else {
-
-			$('#statistik_kurzbz').closest('tr').hide();
 		}
 	});
 
-	var type = $('#datasource_type').val();
-
-	if(type !== 'intern') {
-
-		$('#statistik_kurzbz').closest('tr').hide();
-	}
-
 	$('#statistik_kurzbz').on('change', function() {
 
-		var statistik_kurzbz = $(this).val();
+		var statistik_kurzbz = $(this).val(),
+			type = $('#datasource_type').val();
 
-		$('#datasource').val('../../../vilesci/statistik/statistik_sql.php?statistik_kurzbz=' + statistik_kurzbz + '&outputformat=json');
+		if(type === 'intern') {
+
+			$('#datasource').val('../../../vilesci/statistik/statistik_sql.php?statistik_kurzbz=' + statistik_kurzbz + '&outputformat=json');
+		}
 	});
 });
