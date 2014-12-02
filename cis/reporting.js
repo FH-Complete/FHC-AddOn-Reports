@@ -42,10 +42,17 @@ $(function() {
 		var statistik_kurzbz = $(this).attr('data-statistik-kurzbez'),
 			chart_id = $(this).attr('data-chart-id');
 
-		$('#welcome').hide();
-
+		$('#welcome,#content').hide();
 		$('#filter').show();
-		$('#filter-input').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz);
+
+		$('#filter-input').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz, function() {
+
+			if(!$.trim($('#filter-input').html())) {
+
+				$('#run-filter').trigger('click');
+			}
+		});
+
 		$('#filter-input').attr({
 			'data-chart-id': chart_id,
 			'data-statistik-kurzbz': statistik_kurzbz

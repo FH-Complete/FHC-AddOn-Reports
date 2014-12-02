@@ -66,9 +66,7 @@ while(isset($_GET['varname' . $i]))
 	$i++;
 }
 
-$statistik->loadData();
-
-ob_start(); ?>
+$statistik->loadData(); ?>
 
 <?php if($htmlbody): ?>
 <html>
@@ -84,37 +82,12 @@ ob_start(); ?>
 		<div id="pivot">
 		</div>
 		<script type="text/javascript">
-			var options = {
-//				rows: chart.rows,
-//				cols: chart.cols,
-//				aggregatorName: 'Integer Sum'
-			};
+			var options = <?php echo $statistik->preferences ? : '{}' ?>;
 
 			$('#pivot').pivotUI(<?php echo $statistik->db_getResultJSON($statistik->data) ?>, options);
-
 		</script>
 
 <?php if($htmlbody): ?>
 	</body>
 </html>
 <?php endif;
-
-$html = ob_get_clean();
-
-/* if ($htmlbody)
-  $html.=$statistik->get_htmlhead();
-  if ($htmlbody)
-  $html.="\n\t\t<title>".$statistik->title."</title>\n\t</head>\n\t<body style='height:100%'>";
-  $html.=$statistik->get_htmlform();
-  $html.=$statistik->get_htmldiv();
-  if ($htmlbody)
-  $html.="\n\t</body>\n</html>";
- */
-if($html == '')
-{
-	$statistik->printPng();
-}
-else
-{
-	echo $html;
-}
