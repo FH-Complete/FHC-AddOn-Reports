@@ -28,7 +28,6 @@ $(function() {
 		{
 			$('#preferences').val(pref);
 		}
-
 	});
 
 	$('#datasource_type').on('change', function() {
@@ -37,15 +36,26 @@ $(function() {
 
 		if(type === 'intern') {
 
-			$('table td.datasource').hide();
-			$('table td.statistik_kurzbz').show();
+			$('#statistik_kurzbz').trigger('change');
+			$('#statistik_kurzbz').closest('tr').show();
 
 		} else {
 
-			$('table td.datasource').show();
-			$('table td.statistik_kurzbz').hide();
+			$('#statistik_kurzbz').closest('tr').hide();
 		}
-
 	});
 
+	var type = $('#datasource_type').val();
+
+	if(type !== 'intern') {
+
+		$('#statistik_kurzbz').closest('tr').hide();
+	}
+
+	$('#statistik_kurzbz').on('change', function() {
+
+		var statistik_kurzbz = $(this).val();
+
+		$('#datasource').val('../../../vilesci/statistik/statistik_sql.php?statistik_kurzbz=' + statistik_kurzbz + '&outputformat=json');
+	});
 });
