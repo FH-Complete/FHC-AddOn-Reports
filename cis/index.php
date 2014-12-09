@@ -18,20 +18,23 @@
  * Authors: Christian Paminger 	< christian.paminger@technikum-wien.at >
  *			Robert Hofer <robert.hofer@technikum-wien.at>
  */
-	require_once('../../../config/vilesci.config.inc.php');
-	require_once('../../../include/globals.inc.php');
-	require_once('../../../include/functions.inc.php');
-	require_once('../../../include/benutzerberechtigung.class.php');
-	require_once('../../../include/statistik.class.php');
-	require_once('../include/chart.class.php');
-	$statistik=new statistik();
-	if (!$statistik->getAnzahlGruppe(true))
-		die();
-	$chart=new chart();
-	if (!$chart->getAnzahlGruppe(true))
-		die();
-	//var_dump($statistik);
-					
+require_once('../../../config/vilesci.config.inc.php');
+require_once('../../../include/globals.inc.php');
+require_once('../../../include/functions.inc.php');
+require_once('../../../include/benutzerberechtigung.class.php');
+require_once('../../../include/statistik.class.php');
+require_once('../include/chart.class.php');
+
+$statistik=new statistik();
+
+if (!$statistik->getAnzahlGruppe(true))
+	die();
+
+$chart = new chart();
+
+if(!$chart->getAnzahlGruppe(true))
+	die();
+//var_dump($statistik);
 ?>
 
 <!DOCTYPE html>

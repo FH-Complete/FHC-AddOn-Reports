@@ -61,7 +61,7 @@ echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 </head>
 <body>
 <div style="text-align:right">
-	<a href="statistik_details.php?action=new" target="detail_statistik">Neu</a>
+	<a href="../../../vilesci/stammdaten/statistik_details.php?action=new" target="detail_statistik">Neu</a>
 </div>';
 if(isset($_GET['action']) && $_GET['action']=='delete')
 {

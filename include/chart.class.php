@@ -428,19 +428,27 @@ EOT;
 
 	public static function getAllHtmlHead()
 	{
-		$html = '';
-		$html .= '<script src="../include/js/jquery.min.js" type="application/javascript"></script>';
-		$html .= '<script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>';
-		$html .= '<link rel="stylesheet" href="../include/css/spider.css" type="text/css">';
-		$html .= '<link rel="stylesheet" href="../include/css/xchart.css" type="text/css" />';
-		$html .= '<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ng-grid.css" />';
-		$html .= '<script src="../include/js/ngGrid/angular.min.js" type="application/javascript"></script>';
-		$html .= '<script src="../include/js/ngGrid/ng-grid.debug.js" type="application/javascript"></script>';
-		$html .= '<script src="../include/js/ngGrid/main.js" type="application/javascript"></script>';
-		$html .= '<script src="../include/js/highcharts/highcharts.js" type="application/javascript"></script>';
-		$html .= '<script src="../include/js/highcharts/drilldown.js" type="application/javascript"></script>';
-		$html .= '<script src="../include/js/highcharts/main.js" type="application/javascript"></script>';
-		$html .= '<script src="../include/js/highcharts/exporting.js" type="application/javascript"></script>';
+		ob_start(); ?>
+			<script src="../include/js/jquery.min.js" type="application/javascript"></script>
+			<script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>
+			<link rel="stylesheet" href="../include/css/spider.css" type="text/css">
+			<link rel="stylesheet" href="../include/css/xchart.css" type="text/css" />
+			<link rel="stylesheet" href="../include/css/jquery-ui.min.css" type="text/css" />
+			<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ng-grid.css" />
+			<script src="../include/js/ngGrid/angular.min.js" type="application/javascript"></script>
+			<script src="../include/js/ngGrid/ng-grid.debug.js" type="application/javascript"></script>
+			<script src="../include/js/ngGrid/main.js" type="application/javascript"></script>
+			<script src="../include/js/highcharts/highcharts.js" type="application/javascript"></script>
+			<script src="../include/js/highcharts/drilldown.js" type="application/javascript"></script>
+			<script src="../include/js/highcharts/main.js" type="application/javascript"></script>
+			<script src="../include/js/highcharts/exporting.js" type="application/javascript"></script>
+			<script>
+				$(function() {
+					$.datepicker.setDefaults({dateFormat: "yy-mm-dd"});
+				});
+			</script>
+		<?php
+		$html = ob_get_clean();
 
 		return $html;
 	}

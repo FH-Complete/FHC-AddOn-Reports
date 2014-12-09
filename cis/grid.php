@@ -81,11 +81,13 @@ $statistik->loadData(); ?>
 
 		<div id="pivot">
 		</div>
+		<?php if($statistik->data): ?>
 		<script type="text/javascript">
 			var options = <?php echo $statistik->preferences ? : '{}' ?>;
 
 			$('#pivot').pivotUI(<?php echo $statistik->db_getResultJSON($statistik->data) ?>, options);
 		</script>
+		<?php endif; ?>
 
 <?php if($htmlbody): ?>
 	</body>
