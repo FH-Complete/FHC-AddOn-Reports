@@ -37,7 +37,7 @@ $(function() {
 		$('#' + menu + 'group_' + gruppe).show();
 	});
 
-	$('#sidebar a').on('click', function() {
+	$('#nav ul a').on('click', function() {
 
 		var statistik_kurzbz = $(this).attr('data-statistik-kurzbez'),
 			chart_id = $(this).attr('data-chart-id');

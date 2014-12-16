@@ -26,17 +26,13 @@ require_once('../../../include/statistik.class.php');
 require_once('../include/chart.class.php');
 
 $statistik=new statistik();
-
-if (!$statistik->getAnzahlGruppe(true))
-	die();
-
 $chart = new chart();
 
-if(!$chart->getAnzahlGruppe(true))
+if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
+{
 	die();
-//var_dump($statistik);
+}
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -83,17 +79,23 @@ if(!$chart->getAnzahlGruppe(true))
           <a class="navbar-brand" href="#"><img src="../data/fhtw_logo_white.png" height="25" />&nbsp;&nbsp;&nbsp;Reporting </a>
         </div>
         <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
+          <ul class="nav navbar-nav" id="nav">
             <li class="dropdown">
 			  <a href="#data" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">Data <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu" data-name="data">
                 <?php foreach ($statistik->result AS $gruppen): ?>
-					<li><a href="#" data-gruppe="<?php echo str_replace(' ','',$gruppen->gruppe) ?>">
+					<li class="divider"></li>
+					<li class="dropdown-header">
 						<?php echo $gruppen->gruppe ?>
-						<span class="badge">
-							<?php echo $gruppen->anzahl ?>
-						</span>
-					</a></li>
+					</li>
+						<?php
+						$data=new statistik();
+						$data->getGruppe($gruppen->gruppe, true);
+						foreach ($data->result AS $dat): ?>
+							<li><a href="#" data-statistik-kurzbez="<?php echo urlencode($dat->statistik_kurzbz) ?>">
+								<?php echo $dat->bezeichnung ?>
+							</a></li>
+						<?php endforeach; ?>
 				<?php endforeach; ?>
               </ul>
             </li>
@@ -101,16 +103,22 @@ if(!$chart->getAnzahlGruppe(true))
 				<a href="#charts" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">Charts <span class="caret"></span></a>
 				<ul class="dropdown-menu" role="menu" data-name="charts">
                 <?php foreach ($chart->result AS $gruppen): ?>
-					<li><a href="#" data-gruppe="<?php echo str_replace(' ','',$gruppen->gruppe) ?>">
+					<li class="divider"></li>
+					<li class="dropdown-header">
 						<?php echo $gruppen->gruppe?>
-						<span class="badge">
-							<?php echo $gruppen->anzahl ?>
-						</span>
-					</a></li>
+					</li>
+						<?php
+						$data=new chart();
+						$data->getGruppe($gruppen->gruppe, true);
+						foreach ($data->result AS $dat): ?>
+							<li><a href="#" data-statistik-kurzbez="<?php echo urlencode($dat->statistik_kurzbz) ?>" data-chart-id="<?php echo $dat->chart_id ?>">
+								<?php echo $dat->title ?>
+							</a></li>
+						<?php endforeach; ?>
 				<?php endforeach; ?>
               </ul>
 			</li>
-            <li class="dropdown">
+            <li class="dropdown" style="display: none">
 			  <a href="#reports" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">Reports <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
                 <li><a href="#" onclick='$("#test").show();'>Studierende <span class="badge">3</span></a></li>
@@ -168,40 +176,6 @@ if(!$chart->getAnzahlGruppe(true))
 		  </div>
 
         </div>
-
-        <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
-			<?php foreach ($statistik->result AS $gruppen): ?>
-				<div style="display: none;" id="datagroup_<?php echo str_replace(' ','',$gruppen->gruppe) ?>" class="list-group">
-					<ul class="nav">
-						<?php
-						$data=new statistik();
-						$data->getGruppe($gruppen->gruppe, true);
-						foreach ($data->result AS $dat): ?>
-							<li><a href="#" data-statistik-kurzbez="<?php echo urlencode($dat->statistik_kurzbz) ?>" class="list-group-item">
-								<?php echo $dat->bezeichnung ?>
-							</a></li>
-						<?php endforeach; ?>
-					</ul>
-				</div>
-			<?php endforeach; ?>
-			<?php foreach ($chart->result AS $gruppen): ?>
-				<div style="display: none;" id="chartsgroup_<?php echo str_replace(' ','',$gruppen->gruppe) ?>" class="list-group">
-					<ul class="nav">
-						<?php
-						$data=new chart();
-						$data->getGruppe($gruppen->gruppe, true);
-						foreach ($data->result AS $dat): ?>
-							<li><a href="#" data-statistik-kurzbez="<?php echo urlencode($dat->statistik_kurzbz) ?>" class="list-group-item" data-chart-id="<?php echo $dat->chart_id ?>">
-								<?php echo $dat->title ?>
-							</a></li>
-						<?php endforeach; ?>
-					</ul>
-				</div>
-			<?php endforeach; ?>
-        </div>
-      </div>
-      
-      
       <hr>
 
       <footer>
