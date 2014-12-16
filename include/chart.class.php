@@ -429,11 +429,11 @@ EOT;
 	public static function getAllHtmlHead()
 	{
 		ob_start(); ?>
-			<script src="../include/js/jquery.min.js" type="application/javascript"></script>
+			<script src="../include/js/jquery.min.1.11.1.js" type="application/javascript"></script>
 			<script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>
 			<link rel="stylesheet" href="../include/css/spider.css" type="text/css">
 			<link rel="stylesheet" href="../include/css/xchart.css" type="text/css" />
-			<link rel="stylesheet" href="../include/css/jquery-ui.min.css" type="text/css" />
+			<link rel="stylesheet" href="../include/css/jquery-ui.1.11.2.min.css" type="text/css" />
 			<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ng-grid.css" />
 			<script src="../include/js/ngGrid/angular.min.js" type="application/javascript"></script>
 			<script src="../include/js/ngGrid/ng-grid.debug.js" type="application/javascript"></script>

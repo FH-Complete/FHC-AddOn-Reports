@@ -63,9 +63,9 @@ if(!$chart->getAnzahlGruppe(true))
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <!-- ngGrid -->
-    <link rel="stylesheet" href="reporting.css" type="text/css">
 	<?php echo chart::getAllHtmlHead() ?>
-	<script type="text/javascript" src="../include/js/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="reporting.css" type="text/css">
+	<script type="text/javascript" src="../include/js/jquery-ui.1.11.2.min.js"></script>
 	<script type="text/javascript" src="../include/js/pivottable/pivot.js"></script>
   </head>
 
