@@ -42,6 +42,12 @@ $(function() {
 		var statistik_kurzbz = $(this).attr('data-statistik-kurzbez'),
 			chart_id = $(this).attr('data-chart-id');
 
+		if($(this).closest('li').hasClass('hide-button')) {
+
+			$(this).closest('div').slideUp('fast');
+			return;
+		}
+
 		$('#welcome,#content').hide();
 		$('#filter').show();
 

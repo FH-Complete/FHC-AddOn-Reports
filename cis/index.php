@@ -181,6 +181,11 @@ if(!$chart->getAnzahlGruppe(true))
 								<?php echo $dat->bezeichnung ?>
 							</a></li>
 						<?php endforeach; ?>
+							<li class="hide-button">
+								<a href="#">
+									<span class="glyphicon glyphicon-chevron-up"></span>
+								</a>
+							</li>
 					</ul>
 				</div>
 			<?php endforeach; ?>
@@ -195,6 +200,11 @@ if(!$chart->getAnzahlGruppe(true))
 								<?php echo $dat->title ?>
 							</a></li>
 						<?php endforeach; ?>
+							<li class="hide-button">
+								<a href="#">
+									<span class="glyphicon glyphicon-chevron-up"></span>
+								</a>
+							</li>
 					</ul>
 				</div>
 			<?php endforeach; ?>

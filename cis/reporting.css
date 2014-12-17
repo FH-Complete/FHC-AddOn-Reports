@@ -29,3 +29,7 @@ Authors: Robert Hofer <robert.hofer@technikum-wien.at>
 html, body {
 	overflow-x: visible;
 }
+
+li.hide-button {
+	text-align: center;
+}
