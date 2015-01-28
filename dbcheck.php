@@ -93,7 +93,9 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_chart"))
 			);
 			ALTER TABLE addon.tbl_rp_chart ADD CONSTRAINT "fk_rp_chart_statistik" FOREIGN KEY (statistik_kurzbz) 
 			REFERENCES public.tbl_statistik(statistik_kurzbz) ON UPDATE CASCADE ON DELETE RESTRICT;
-			GRANT SELECT, UPDATE, INSERT, DELETE ON addon.tbl_rp_chart TO vilesci;';
+			GRANT SELECT, UPDATE, INSERT, DELETE ON addon.tbl_rp_chart TO vilesci;
+			GRANT SELECT, UPDATE ON addon.tbl_rp_chart_chart_id_seq TO vilesci;
+			';
 
 	if(!$db->db_query($qry))
 		echo '<strong>addon.tbl_rp_chart: '.$db->db_last_error().'</strong><br>';
@@ -118,7 +120,9 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_report"))
 				updatevon varchar(32),
 				CONSTRAINT pk_rp_report PRIMARY KEY (report_id)
 			);
-			GRANT SELECT, UPDATE, INSERT, DELETE ON addon.tbl_rp_report TO vilesci;';
+			GRANT SELECT, UPDATE, INSERT, DELETE ON addon.tbl_rp_report TO vilesci;
+			GRANT SELECT, UPDATE TO addon.tbl_rp_report_report_id_seq TO vilesci;
+			';
 
 	if(!$db->db_query($qry))
 		echo '<strong>addon.tbl_rp_report: '.$db->db_last_error().'</strong><br>';
@@ -141,6 +145,7 @@ if(!$result = @$db->db_query("SELECT statistik_kurzbz FROM addon.tbl_rp_chart"))
 		echo ' addon.tbl_rp_chart: Spalte statistik_kurzbz hinzugefuegt!<br>';
 
 }
+
 echo '<br>Aktualisierung abgeschlossen<br><br>';
 echo '<h2>Gegenprüfung</h2>';
 
