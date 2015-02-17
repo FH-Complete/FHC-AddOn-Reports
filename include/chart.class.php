@@ -391,7 +391,9 @@ EOT;
 	public function getHtmlHead()
 	{
 		$html='';
-		$html.='<script src="../include/js/jquery.min.js" type="application/javascript"></script>';
+		$html.='<script src="../include/js/jquery.min.1.11.1.js" type="application/javascript"></script>';
+		$html.='<link rel="stylesheet" href="../include/css/charts.css" type="text/css">';
+
 		switch ($this->type)
 		{
 			case 'spider':
@@ -409,17 +411,14 @@ EOT;
 				$html.="\n\t\t".'<script src="../include/js/ngGrid/main.js" type="application/javascript"></script>';
 				break;
 			case 'hcdrill':
-				$html.="\n\t\t".'<script src="../include/js/highcharts/highcharts.js" type="application/javascript"></script>';
-				$html.="\n\t\t".'<script src="../include/js/highcharts/drilldown.js" type="application/javascript"></script>';
+				$html.="\n\t\t".'<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>';
 				$html.="\n\t\t".'<script src="../include/js/highcharts/main.js" type="application/javascript"></script>';
-				$html.="\n\t\t".'<script src="../include/js/highcharts/exporting.js" type="application/javascript"></script>';
 				break;
 			case 'hcline':
 			case 'hccolumn':
 			case 'hcpie':
-				$html.="\n\t\t".'<script src="../include/js/highcharts/highcharts.js" type="application/javascript"></script>';
+				$html.="\n\t\t".'<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>';
 				$html.="\n\t\t".'<script src="../include/js/highcharts/main.js" type="application/javascript"></script>';
-				$html.="\n\t\t".'<script src="../include/js/highcharts/exporting.js" type="application/javascript"></script>';
 				break;
 		}
 
@@ -431,6 +430,7 @@ EOT;
 		ob_start(); ?>
 			<script src="../include/js/jquery.min.1.11.1.js" type="application/javascript"></script>
 			<script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>
+			<link rel="stylesheet" href="../include/css/charts.css" type="text/css">
 			<link rel="stylesheet" href="../include/css/spider.css" type="text/css">
 			<link rel="stylesheet" href="../include/css/xchart.css" type="text/css" />
 			<link rel="stylesheet" href="../include/css/jquery-ui.1.11.2.min.css" type="text/css" />
@@ -438,13 +438,15 @@ EOT;
 			<script src="../include/js/ngGrid/angular.min.js" type="application/javascript"></script>
 			<script src="../include/js/ngGrid/ng-grid.debug.js" type="application/javascript"></script>
 			<script src="../include/js/ngGrid/main.js" type="application/javascript"></script>
-			<script src="../include/js/highcharts/highcharts.js" type="application/javascript"></script>
-			<script src="../include/js/highcharts/drilldown.js" type="application/javascript"></script>
+			<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>
 			<script src="../include/js/highcharts/main.js" type="application/javascript"></script>
-			<script src="../include/js/highcharts/exporting.js" type="application/javascript"></script>
 			<script>
 				$(function() {
-					$.datepicker.setDefaults({dateFormat: "yy-mm-dd"});
+
+					if(typeof $.datepicker !== 'undefined') {
+
+						$.datepicker.setDefaults({dateFormat: "yy-mm-dd"});
+					}
 				});
 			</script>
 		<?php
@@ -465,13 +467,13 @@ EOT;
 		return $html."\n\t\t</form>";
 	}
 	
-	public function getHtmlDiv()
+	public function getHtmlDiv($class = null)
 	{
 		$html='';
 		switch ($this->type)
 		{
 			case 'spider':
-				$html.= '<div id="spidergraphcontainer"></div>';
+				$html.= '<div id="spidergraphcontainer" class="' . $class . '"></div>';
 				$html.= '<script type="application/javascript">
 						var source="'.$this->datasource.$this->vars.'";
 						'.$this->preferences.'
@@ -501,7 +503,7 @@ EOT;
 			case 'hccolumn':
 			case 'hcpie':
 				$chart_div_id = 'hcChart' . $this->chart_id;
-				$html .= "\n\t\t".'<div id="' . $chart_div_id . '"></div>';
+				$html .= "\n\t\t".'<div id="' . $chart_div_id . '" class="' . $class . '"></div>';
 				$html .= '<script type="application/javascript">
 							var source="'.$this->datasource.$this->vars.'",
 								chart = {
