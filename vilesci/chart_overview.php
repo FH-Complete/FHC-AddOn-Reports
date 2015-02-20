@@ -22,8 +22,6 @@ require_once('../../../include/functions.inc.php');
 require_once('../include/chart.class.php');
 require_once('../../../include/benutzerberechtigung.class.php');
 
-$nl="\n";
-
 if (!$db = new basis_db())
 	die('Es konnte keine Verbindung zum Server aufgebaut werden.');
 
@@ -141,124 +139,151 @@ if (isset($_GET["toggle"]))
 $chart = new chart();
 if (!$chart->loadAll())
     die($chart->errormsg);
-
-//$htmlstr = "<table class='liste sortable'>\n";
-$htmlstr = "<form name='formular'><input type='hidden' name='check' value=''></form><table class='tablesorter' id='t1'>\n";
-$htmlstr .= "   <thead><tr>\n";
-$htmlstr .= '    <th onmouseup="document.formular.check.value=0">ID</th>
-		<th title="Titel des Charts">Titel</th>
-		<th>Type</th>
-		<th>SourceType</th>
-		<th>DataSource</th>
-		<th>DataSourceType</th>
-		<th>Preferences</th>
-		<th>Description</th>';
-$htmlstr .= "   </tr></thead><tbody>\n";
-$i = 0;
-foreach ($chart->result as $chart)
-{
-    //$htmlstr .= "   <tr class='liste". ($i%2) ."'>\n";
-	$htmlstr .= "   <tr>\n";
-	$htmlstr .= "       <td align='right'><a href='chart_details.php?chart_id=".$chart->chart_id."' target='frame_chart_details'>".$chart->chart_id." </a>
-							<a href='chart.php?chart_id=".$chart->chart_id."&htmlbody=true' target='_blank'>
-								<img title='".$chart->title." anzeigen' src='Bar_Chart_Statistics_clip_art.svg' height='15' />
-							</a>
-						</td>\n";
-	$htmlstr .= "       <td><a href='chart_details.php?chart_id=".$chart->chart_id."' target='frame_chart_details'>".$chart->title."</a></td>\n";
-	$chart_obj = new chart();
-	$plugins=$chart_obj->getPlugins();
-	
-	$htmlstr .= "       <td>".$plugins[$chart->type]."</td>\n";
-	$htmlstr .= "       <td>".$chart->sourcetype."</td>\n";
-	$htmlstr .= "       <td>".$chart->datasource."</td>\n";
-	$htmlstr .= "       <td>".$chart->datasource_type."</td>\n";
-	$htmlstr .= '       <td title="'.$chart->preferences.'">'.substr($chart->preferences,0,16)."...</td>\n";
-	$htmlstr .= '       <td title="'.$chart->description.'">'.substr($chart->description,0,16)."...</td>\n";
-	$htmlstr .= "   </tr>\n";
-	$i++;
-}
-$htmlstr .= "</tbody></table>\n";
-
-
 ?>
-<html>
-<head>
-<title>R&auml;ume &Uuml;bersicht</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">
-<!--<link rel="stylesheet" href="../../../include/js/tablesort/table.css" type="text/css">
-<script src="../../../include/js/tablesort/table.js" type="text/javascript"></script>-->
-<script type="text/javascript" src="../../../include/js/jquery.js"></script>
-<link rel="stylesheet" href="../../../skin/tablesort.css" type="text/css"/>
-<style>
-table.tablesorter tbody td
-{
-	margin: 0;
-	padding: 0;
-	vertical-align: middle;
-}
-</style>
-<script language="JavaScript" type="text/javascript">
-$(document).ready(function() 
-		{ 
-			$("#t1").tablesorter(
+<!DOCTYPE html>
+<html class="chart-overview">
+	<head>
+		<title>Räume Übersicht</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">
+		<link rel="stylesheet" href="../../../skin/tablesort.css" type="text/css"/>
+		<script type="text/javascript" src="../../../include/js/jquery.min.1.11.1.js"></script>
+		<script type="text/javascript" src="../../../submodules/tablesorter/jquery.tablesorter.min.js"></script>
+		<style>
+			table.tablesorter tbody td
 			{
-				sortList: [[0,0]],
-				widgets: ["zebra"]
-			}); 
-		});
-		
-function confdel()
-{
-	if(confirm("Diesen Datensatz wirklick loeschen?"))
-	  return true;
-	return false;
-}
-
-function changeboolean(ort_kurzbz, name)
-{
-	value=document.getElementById(name+ort_kurzbz).value;
-	
-	var dataObj = {};
-	dataObj["ort_kurzbz"]=ort_kurzbz;
-	dataObj[name]=value;
-
-	$.ajax({
-		type:"POST",
-		url:"raum_uebersicht.php", 
-		data:dataObj,
-		success: function(data) 
-		{
-			if(data=="true")
-			{
-				//Image und Value aendern
-				if(value=="true")
-					value="false";
-				else
-					value="true";
-				document.getElementById(name+ort_kurzbz).value=value;
-				document.getElementById(name+"img"+ort_kurzbz).src="../../skin/images/"+value+".png";
+				margin: 0;
+				padding: 0;
+				vertical-align: middle;
 			}
-			else 
-				alert("ERROR:"+data)
-		},
-		error: function() { alert("error"); }
-	});
-}
+		</style>
+		<script language="JavaScript" type="text/javascript">
+			$(function() {
+				$("#t1").tablesorter(
+				{
+					sortList: [[0,0]],
+					widgets: ["zebra"]
+				});
+			});
 
-</script>
+			function confdel()
+			{
+				if(confirm("Diesen Datensatz wirklick loeschen?"))
+				  return true;
+				return false;
+			}
 
-</head>
+			function changeboolean(ort_kurzbz, name)
+			{
+				value=document.getElementById(name+ort_kurzbz).value;
 
-<body class="background_main">
-<a href="chart_details.php" target="frame_chart_details">Neuer Chart</a>
+				var dataObj = {};
+				dataObj["ort_kurzbz"]=ort_kurzbz;
+				dataObj[name]=value;
 
+				$.ajax({
+					type:"POST",
+					url:"raum_uebersicht.php",
+					data:dataObj,
+					success: function(data)
+					{
+						if(data=="true")
+						{
+							//Image und Value aendern
+							if(value=="true")
+								value="false";
+							else
+								value="true";
+							document.getElementById(name+ort_kurzbz).value=value;
+							document.getElementById(name+"img"+ort_kurzbz).src="../../skin/images/"+value+".png";
+						}
+						else
+							alert("ERROR:"+data)
+					},
+					error: function() { alert("error"); }
+				});
+			}
+		</script>
+	</head>
 
-<?php 
-    echo $htmlstr;
-?>
+	<body class="background_main">
+		<a href="chart_details.php" target="frame_chart_details">Neuer Chart</a>
 
+		<form name="formular">
+			<input type="hidden" name="check" value="">
+		</form>
 
+		<table class="tablesorter" id="t1">
+			<thead>
+				<tr>
+					<th onmouseup="document.formular.check.value=0">
+						ID
+					</th>
+					<th title="Titel des Charts">
+						Titel
+					</th>
+					<th>
+						Type
+					</th>
+					<th>
+						SourceType
+					</th>
+					<th>
+						DataSource
+					</th>
+					<th>
+						DataSourceType
+					</th>
+					<th>
+						Preferences
+					</th>
+					<th>
+						Description
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				$chart_obj = new chart();
+				$plugins = $chart_obj->getPlugins();
 
-</body>
+				foreach ($chart->result as $chart): ?>
+					<tr>
+						<td class="overview-id">
+							<a href="chart_details.php?chart_id=<?php echo $chart->chart_id ?>" target="frame_chart_details">
+								<?php echo $chart->chart_id ?>
+							</a>
+							<a href="chart.php?chart_id=<?php echo $chart->chart_id ?>&htmlbody=true" target="_blank">
+								<img title="<?php echo $chart->title ?> anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" />
+							</a>
+						</td>
+						<td>
+							<a href="chart_details.php?chart_id=<?php echo $chart->chart_id ?>" target="frame_chart_details">
+								<?php echo $chart->title ?>
+							</a>
+						</td>
+
+						<td>
+							<?php echo $chart->type ? $plugins[$chart->type] : '' ?>
+						</td>
+						<td>
+							<?php echo $chart->sourcetype ?>
+						</td>
+						<td>
+							<?php echo $chart->datasource ?>
+						</td>
+						<td>
+							<?php echo $chart->datasource_type ?>
+						</td>
+						<td title="<?php echo $chart->preferences ?>">
+							<?php echo substr($chart->preferences, 0, 16) ?>...
+						</td>
+						<td title="<?php echo $chart->description ?>">
+							<?php echo substr($chart->description, 0, 16) ?>...
+						</td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+	</body>
 </html>

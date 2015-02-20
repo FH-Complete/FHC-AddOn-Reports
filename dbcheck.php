@@ -85,6 +85,9 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_chart"))
 				datasource_type varchar(32),
 				statistik_kurzbz varchar(64),
 				publish boolean,
+				dashboard boolean,
+				dashboard_layout varchar(32),
+				dashboard_pos smallint,
 				insertamum timestamp,
 				insertvon varchar(32),
 				updateamum timestamp,
@@ -143,6 +146,21 @@ if(!$result = @$db->db_query("SELECT statistik_kurzbz FROM addon.tbl_rp_chart"))
 		echo '<strong>addon.tbl_rp_chart: '.$db->db_last_error().'</strong><br>';
 	else 
 		echo ' addon.tbl_rp_chart: Spalte statistik_kurzbz hinzugefuegt!<br>';
+
+}
+
+// Reports (rp) Report
+if(!$result = @$db->db_query("SELECT dashboard FROM addon.tbl_rp_chart"))
+{
+
+	$qry = 'ALTER TABLE addon.tbl_rp_chart ADD COLUMN dashboard boolean NOT NULL DEFAULT FALSE;
+			ALTER TABLE addon.tbl_rp_chart ADD COLUMN dashboard_layout varchar(32);
+			ALTER TABLE addon.tbl_rp_chart ADD COLUMN dashboard_pos smallint;';
+
+	if(!$db->db_query($qry))
+		echo '<strong>addon.tbl_rp_chart: '.$db->db_last_error().'</strong><br>';
+	else
+		echo ' addon.tbl_rp_chart: Spalte dashboard, dashboard_layout, dashboard_pos hinzugefuegt!<br>';
 
 }
 

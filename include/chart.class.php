@@ -41,6 +41,9 @@ class chart extends basis_db
 	public $updatevon;
 	public $publish;
 	public $statistik_kurzbz;
+	public $dashboard;
+	public $dashboard_layout;
+	public $dashboard_pos;
 	
 	/**
 	 * Konstruktor
@@ -87,8 +90,11 @@ class chart extends basis_db
 			$this->updatevon		= $row->updatevon;
 			$this->insertamum		= $row->insertamum;
 			$this->insertvon		= $row->insertvon;
-			$this->publish			= $row->publish;
+			$this->publish			= $this->db_parse_bool($row->publish);
 			$this->statistik_kurzbz	= $row->statistik_kurzbz;
+			$this->dashboard		= $this->db_parse_bool($row->dashboard);
+			$this->dashboard_layout	= $row->dashboard_layout;
+			$this->dashboard_pos	= $row->dashboard_pos;
 		}
 		/*switch ($chart_id)
 		{
@@ -139,8 +145,11 @@ class chart extends basis_db
 			$obj->updatevon			= $row->updatevon;
 			$obj->insertamum		= $row->insertamum;
 			$obj->insertvon		    = $row->insertvon;
-			$obj->publish			= $row->publish;
+			$obj->publish			= $this->db_parse_bool($row->publish);
 			$obj->statistik_kurzbz	= $row->statistik_kurzbz;
+			$obj->dashboard			= $this->db_parse_bool($row->dashboard);
+			$obj->dashboard_layout	= $row->dashboard_layout;
+			$obj->dashboard_pos		= $row->dashboard_pos;
 			//$obj->chart_num_rows= $this->getNumRows('sync.'.$row->chart_tablename);
 			$obj->new       = false;
 
@@ -179,8 +188,11 @@ class chart extends basis_db
 				$obj->updatevon			= $row->updatevon;
 				$obj->insertamum		= $row->insertamum;
 				$obj->insertvon			= $row->insertvon;
-				$obj->publish			= $row->publish;
+				$obj->publish			= $this->db_parse_bool($row->publish);
 				$obj->statistik_kurzbz	= $row->statistik_kurzbz;
+				$obj->dashboard			= $this->db_parse_bool($row->dashboard);
+				$obj->dashboard_layout	= $row->dashboard_layout;
+				$obj->dashboard_pos		= $row->dashboard_pos;
 				//$obj->chart_num_rows= $this->getNumRows('sync.'.$row->chart_tablename);
 				$obj->new       = false;
 
@@ -194,6 +206,48 @@ class chart extends basis_db
 			$this->errormsg = 'Fehler beim Laden der Daten';
 			return false;
 		}			
+	}
+	/**
+	 * Laedt alle Charts die im Dashboard angezeigt werden sollen.
+	 */
+	public function getDashboard()
+	{
+		$qry = 'SELECT * '
+				. 'FROM addon.tbl_rp_chart '
+				. 'WHERE dashboard '
+				. 'ORDER BY dashboard_pos';
+
+		if(!$this->db_query($qry))
+		{
+			$this->errormsg = 'Fehler bei einer Datenbankabfrage';
+			return false;
+		}
+
+		while($row = $this->db_fetch_object())
+		{
+			$obj = new chart();
+
+			$obj->chart_id			= $row->chart_id;
+			$obj->title				= $row->title;
+			$obj->description		= $row->description;
+			$obj->type				= $row->type;
+			$obj->sourcetype		= $row->sourcetype;
+			$obj->preferences		= $row->preferences;
+			$obj->datasource		= $row->datasource;
+			$obj->datasource_type	= $row->datasource_type;
+			$obj->updateamum		= $row->updateamum;
+			$obj->updatevon			= $row->updatevon;
+			$obj->insertamum		= $row->insertamum;
+			$obj->insertvon		    = $row->insertvon;
+			$obj->publish			= $this->db_parse_bool($row->publish);
+			$obj->statistik_kurzbz	= $row->statistik_kurzbz;
+			$obj->dashboard			= $this->db_parse_bool($row->dashboard);
+			$obj->dashboard_layout	= $row->dashboard_layout;
+			$obj->dashboard_pos		= $row->dashboard_pos;
+			$obj->new				= false;
+
+			$this->result[] = $obj;
+		}
 	}
 	/**
 	 * Laedt alle Statistik Gruppen, Parameter publish zum Filtern.
@@ -240,7 +294,6 @@ class chart extends basis_db
 	 */
 	public static function getPlugins()
 	{
-
 		return array(
 			'xchart' => 'XChart',
 			'spider' => 'Spider',
@@ -248,8 +301,20 @@ class chart extends basis_db
 			'hccolumn' => 'Highcharts Column',
 			'hcpie' => 'Highcharts Pie',
 			'hcdrill' => 'Highcharts Drilldown',
+			'hctimezoom' => 'Highcharts Timezoom',
 		);
-
+	}
+	/**
+	 * Liefert die möglichen Layoutvarianten fürs Dashboard (FAS)
+	 * @return array
+	 */
+	public static function getDashboardLayouts()
+	{
+		return array(
+			'full' => '100%',
+			'half' => '50%',
+			'third' => '33%',
+		);
 	}
 	/**
 	 * Liefert die unterstützten Datenformate
@@ -289,6 +354,17 @@ EOT;
 // Der Winkel der X-Achsenbeschriftung
 EOT;
 
+		$hc_timezoom = <<<EOT
+// chart.raw.x = {
+//		spalte: 'datum',
+//		label: 'Datum'
+// };
+// chart.raw.y = [{
+//		spalte: 'anzahl',
+//		label: 'Anzahl'
+// }];
+EOT;
+
 		return array(
 			'xchart' => "",
 			'spider' => "",
@@ -296,6 +372,7 @@ EOT;
 			'hccolumn' => $hc_default,
 			'hcpie' => $hc_default,
 			'hcdrill' => $hc_drill,
+			'hctimezoom' => $hc_timezoom,
 		);
 
 	}
@@ -315,11 +392,14 @@ EOT;
 		if($this->new)
 		{
 			//Neuen Datensatz einfuegen
-			$qry='BEGIN;INSERT INTO addon.tbl_rp_chart (title, description, publish, statistik_kurzbz, type,sourcetype,preferences,datasource,datasource_type,
+			$qry='BEGIN;INSERT INTO addon.tbl_rp_chart (title, description, publish, dashboard, dashboard_layout, dashboard_pos, statistik_kurzbz, type,sourcetype,preferences,datasource,datasource_type,
 			      insertamum, insertvon) VALUES('.
 			      $this->db_add_param($this->title).', '.
 			      $this->db_add_param($this->description).', '.
-			      $this->db_add_param($this->publish).', '.
+			      $this->db_add_param($this->publish, FHC_BOOLEAN).', '.
+			      $this->db_add_param($this->dashboard, FHC_BOOLEAN).', '.
+			      $this->db_add_param($this->dashboard_layout).', '.
+			      $this->db_add_param($this->dashboard_pos, FHC_INTEGER).', '.
 			      $this->db_add_param($this->statistik_kurzbz).', '.
 			      $this->db_add_param($this->type).', '.
 			      $this->db_add_param($this->sourcetype).', '.
@@ -339,7 +419,10 @@ EOT;
 			$qry='UPDATE addon.tbl_rp_chart SET'.
 				' title='.$this->db_add_param($this->title).', '.
 				' description='.$this->db_add_param($this->description).', '.
-				' publish='.$this->db_add_param($this->publish).', '.
+				' publish='.$this->db_add_param($this->publish, FHC_BOOLEAN).', '.
+				' dashboard='.$this->db_add_param($this->dashboard, FHC_BOOLEAN).', '.
+				' dashboard_layout='.$this->db_add_param($this->dashboard_layout).', '.
+				' dashboard_pos='.$this->db_add_param($this->dashboard_pos, FHC_INTEGER).', '.
 				' statistik_kurzbz='.$this->db_add_param($this->statistik_kurzbz).', '.
 				' type='.$this->db_add_param($this->type).', '.
 				' sourcetype='.$this->db_add_param($this->sourcetype).', '.
@@ -390,45 +473,44 @@ EOT;
 	
 	public function getHtmlHead()
 	{
-		$html='';
-		$html.='<script src="../include/js/jquery.min.1.11.1.js" type="application/javascript"></script>';
-		$html.='<link rel="stylesheet" href="../include/css/charts.css" type="text/css">';
+		ob_start(); ?>
+		<script src="../include/js/jquery.min.1.11.1.js" type="application/javascript"></script>
+		<link rel="stylesheet" href="../include/css/charts.css" type="text/css">
 
-		switch ($this->type)
+		<?php switch ($this->type)
 		{
-			case 'spider':
-				$html.='<script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>';
-				$html.='<link rel="stylesheet" href="../include/css/spider.css" type="text/css">';
-				break;
-			case 'xchart':
-				$html.="\n\t\t".'<link rel="stylesheet" href="../include/css/xchart.css" type="text/css" />';
-				break;
-			case 'ngGrid':
-				$html.="\n\t\t".'<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ng-grid.css" />';
-				//$html.="\n\t\t".'<script src="../include/js/ngGrid/jquery.min.js" type="application/javascript"></script>';
-				$html.="\n\t\t".'<script src="../include/js/ngGrid/angular.min.js" type="application/javascript"></script>';
-				$html.="\n\t\t".'<script src="../include/js/ngGrid/ng-grid.debug.js" type="application/javascript"></script>';
-				$html.="\n\t\t".'<script src="../include/js/ngGrid/main.js" type="application/javascript"></script>';
-				break;
-			case 'hcdrill':
-				$html.="\n\t\t".'<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>';
-				$html.="\n\t\t".'<script src="../include/js/highcharts/main.js" type="application/javascript"></script>';
-				break;
+			case 'spider': ?>
+				<script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>
+				<link rel="stylesheet" href="../include/css/spider.css" type="text/css">
+				<?php break;
+			case 'xchart': ?>
+				<link rel="stylesheet" href="../include/css/xchart.css" type="text/css" />
+				<?php break;
+			case 'ngGrid': ?>
+				<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ng-grid.css" />
+				<script src="../include/js/ngGrid/angular.min.js" type="application/javascript"></script>
+				<script src="../include/js/ngGrid/ng-grid.debug.js" type="application/javascript"></script>
+				<script src="../include/js/ngGrid/main.js" type="application/javascript"></script>
+				<?php break;
+			case 'hcdrill': ?>
+				<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>
+				<script src="../include/js/highcharts/main.js" type="application/javascript"></script>
+				<?php break;
 			case 'hcline':
 			case 'hccolumn':
-			case 'hcpie':
-				$html.="\n\t\t".'<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>';
-				$html.="\n\t\t".'<script src="../include/js/highcharts/main.js" type="application/javascript"></script>';
-				break;
+			case 'hcpie': ?>
+				<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>
+				<script src="../include/js/highcharts/main.js" type="application/javascript"></script>
+				<?php break;
 		}
 
-		return $html;
+		return ob_get_clean();
 	}
 
 	public static function getAllHtmlHead()
 	{
 		ob_start(); ?>
-			<script src="../include/js/jquery.min.1.11.1.js" type="application/javascript"></script>
+			<script src="../../../include/js/jquery.min.1.11.1.js" type="application/javascript"></script>
 			<script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>
 			<link rel="stylesheet" href="../include/css/charts.css" type="text/css">
 			<link rel="stylesheet" href="../include/css/spider.css" type="text/css">
@@ -450,9 +532,8 @@ EOT;
 				});
 			</script>
 		<?php
-		$html = ob_get_clean();
 
-		return $html;
+		return ob_get_clean();
 	}
 
 	public function getHtmlForm()
@@ -469,71 +550,81 @@ EOT;
 	
 	public function getHtmlDiv($class = null)
 	{
-		$html='';
+		ob_start();
+
+		$source = $this->datasource.$this->vars;
+
 		switch ($this->type)
 		{
-			case 'spider':
-				$html.= '<div id="spidergraphcontainer" class="' . $class . '"></div>';
-				$html.= '<script type="application/javascript">
-						var source="'.$this->datasource.$this->vars.'";
-						'.$this->preferences.'
-						</script>
-						';
-				$html.= '<script src="../include/js/spidergraph.js" type="application/javascript"></script>';
-				break;
-			case 'xchart':
-				$html.="\n\t\t".'<figure id="xChart"></figure>';
-				$html.="\n\t\t".'<script src="../include/js/d3.min.js" type="application/javascript"></script>';
-				$html.="\n\t\t".'<script src="../include/js/xcharts/xcharts.min.js" type="application/javascript"></script>';
-				$html.="\n\t\t".'<script src="../include/js/xcharts/main.js" type="application/javascript"></script>';
-				$html.= '<script type="application/javascript">
-						var source="'.$this->datasource.$this->vars.'";
-						'.$this->preferences.'
-						</script>';
-				break;
-			case 'ngGrid':
-				$html.="\n\t\t".'<div class="gridStyle" ng-app="myApp">
-							<div class="gridStyle" ng-controller="MyCtrl">
-								<div class="gridStyle" ng-grid="gridOptions"></div>
-							</div>
-						</div>';
-				break;
+			case 'spider': ?>
+				<div id="spidergraphcontainer" class="<?php echo $class ?>"></div>
+				<script type="application/javascript">
+					var source = <?php echo json_encode($source) ?>;
+					<?php echo $this->preferences ?>;
+				</script>
+				<script src="../include/js/spidergraph.js" type="application/javascript"></script>
+				<?php break;
+			case 'xchart': ?>
+				<figure id="xChart"></figure>
+				<script src="../include/js/d3.min.js" type="application/javascript"></script>
+				<script src="../include/js/xcharts/xcharts.min.js" type="application/javascript"></script>
+				<script src="../include/js/xcharts/main.js" type="application/javascript"></script>
+				<script type="application/javascript">
+						var source = <?php echo json_encode($this->datasource.$this->vars) ?>;
+						<?php echo $this->preferences ?>;
+				</script>
+				<?php break;
+			case 'ngGrid': ?>
+				<div class="gridStyle" ng-app="myApp">
+					<div class="gridStyle" ng-controller="MyCtrl">
+						<div class="gridStyle" ng-grid="gridOptions"></div>
+					</div>
+				</div>
+				<?php break;
+			case 'hctimezoom':
 			case 'hcdrill':
 			case 'hcline':
 			case 'hccolumn':
 			case 'hcpie':
-				$chart_div_id = 'hcChart' . $this->chart_id;
-				$html .= "\n\t\t".'<div id="' . $chart_div_id . '" class="' . $class . '"></div>';
-				$html .= '<script type="application/javascript">
-							var source="'.$this->datasource.$this->vars.'",
-								chart = {
-									title: "' . $this->title . '",
-									type: "' . $this->type . '",
-									div_id: "' . $chart_div_id . '",
-									raw: {},
-									categories: {},
-									series: {},
-									x: {rotation: 0},
-									y: {rotation: 0},
-									colors: []
-								};
-							'.$this->preferences.';
 
-						</script>';
-				$html .= '<script src="../include/js/highcharts/init.js" type="application/javascript"></script>';
-				break;
+				$chart = array(
+					'title' => $this->title,
+					'type' => $this->type,
+					'div_id' => 'hcChart' . $this->chart_id,
+					'raw' => new stdClass,
+					'categories' => new stdClass,
+					'series' => array(),
+					'x' => array(
+						'rotation' => 0,
+					),
+					'y' => array(
+						'rotation' => 0,
+					),
+					'colors' => array(),
+				);
+				?>
+				<div id="hcChart<?php echo $this->chart_id ?>" class="<?php echo $class ?>"></div>
+				<script type="application/javascript">
+					var source = <?php echo json_encode($this->datasource.$this->vars) ?>,
+						chart = <?php echo json_encode($chart) ?>;
+					<?php echo $this->preferences ?>;
+				</script>
+				<script src="../include/js/highcharts/init.js" type="application/javascript"></script>
+				<?php break;
 		}
-		return $html;
+
+		return ob_get_clean();
 	}
 
 	public function getFooter() {
 
-		$html = '<script type="application/javascript">
-					initCharts();
-				</script>';
+		ob_start(); ?>
 
+		<script type="application/javascript">
+			initCharts();
+		</script>
 
-		return $html;
+		<?php return ob_get_clean();
 	}
 
 	public function printPng()

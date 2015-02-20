@@ -186,6 +186,86 @@ function hcdrillCreate(chart) {
 	});
 }
 
+function hcTimezoomCreate(chart) {
+
+	var x, y = [],
+		keys = Object.keys(chart.raw.data[0]);
+
+	x = keys[0];
+	y = keys.slice(1);
+
+	for(var i = 0; i < y.length; i++)
+	{
+
+		chart.series.push({
+			type: 'area',
+			name: y[i],
+			pointInterval: 1000 * 60 * 60 * 24,
+			pointStart: Date.parse(chart.raw.data[0][x]),
+			data: []
+		});
+	}
+
+	for(var i = 0; i < chart.raw.data.length; i++)
+	{
+
+		var row = chart.raw.data[i];
+
+		for(var j = 0; j < chart.series.length; j++)
+		{
+			chart.series[j].data.push(parseInt(row[y[j]], 10));
+		}
+	}
+
+	if (chart.highchart) {
+		chart.highchart.destroy();
+	}
+
+	chart.highchart = new Highcharts.Chart({
+        chart: {
+			zoomType: 'x',
+			renderTo: chart.div_id
+		},
+		title: {
+			text: chart.title
+		},
+		xAxis: {
+			type: 'datetime',
+			minRange: 1000 * 60 * 60 * 24
+		},
+		yAxis: {
+			title: {
+				text: '',
+				min: 0
+			}
+		},
+		legend: {
+			enabled: false
+		},
+		plotOptions: {
+			area: {
+				fillColor: {
+					linearGradient: {x1: 0, y1: 0, x2: 0, y2: 1},
+					stops: [
+						[0, Highcharts.getOptions().colors[0]],
+						[1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+					]
+				},
+				marker: {
+					radius: 2
+				},
+				lineWidth: 1,
+				states: {
+					hover: {
+						lineWidth: 1
+					}
+				}
+			}
+		},
+		series: chart.series
+	});
+}
+
 function hcCreate(chart, hctype) {
 	
 	var options = {
@@ -228,6 +308,9 @@ function loadHcChart(url, chart) {
 		url: url,
 		success: function(data) {
 
+			if(data.length === 0)
+				return;
+
 			chart.raw.data = data;
 
 			if(chart.type === 'hcdrill')
@@ -248,6 +331,10 @@ function loadHcChart(url, chart) {
 			{
 				convertQueryResult(chart);
 				hcCreate(chart, 'pie');
+			}
+			else if(chart.type == 'hctimezoom')
+			{
+				hcTimezoomCreate(chart);
 			}
 		}
 	});

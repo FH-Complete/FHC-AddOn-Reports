@@ -17,6 +17,18 @@
  * Authors: Robert Hofer <robert.hofer@technikum-wien.at>
  */
 
+function checkDashboard() {
+
+	if($('#dashboard').prop('checked'))
+	{
+		$('tr.dashboard-details input, tr.dashboard-details select').prop('disabled', false);
+	}
+	else
+	{
+		$('tr.dashboard-details input, tr.dashboard-details select').prop('disabled', true);
+	}
+}
+
 $(function() {
 
 	$('#chart_type').on('change', function() {
@@ -50,4 +62,48 @@ $(function() {
 			$('#datasource').val('../../../vilesci/statistik/statistik_sql.php?statistik_kurzbz=' + statistik_kurzbz + '&outputformat=json');
 		}
 	});
+
+	$('#dashboard').on('click', function() {
+		checkDashboard();
+	});
+
+	checkDashboard();
 });
+
+function unchanged()
+{
+		document.chartform.reset();
+		document.chartform.schick.disabled = true;
+		document.getElementById("submsg").style.visibility="hidden";
+		checkrequired(document.chartform.chart_id);
+}
+
+function checkrequired(feld)
+{
+	if(feld.value == '')
+	{
+		feld.className = "input_error";
+		return false;
+	}
+	else
+	{
+		feld.className = "input_ok";
+		return true;
+	}
+}
+
+function submitable()
+{
+	required1 = checkrequired(document.chartform.chart_id);
+
+	if(!required1)
+	{
+		document.chartform.schick.disabled = true;
+		document.getElementById("submsg").style.visibility="hidden";
+	}
+	else
+	{
+		document.chartform.schick.disabled = false;
+		document.getElementById("submsg").style.visibility="visible";
+	}
+}

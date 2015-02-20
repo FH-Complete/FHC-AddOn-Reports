@@ -61,7 +61,7 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 		<!-- ngGrid -->
 		<?php echo chart::getAllHtmlHead() ?>
 		<link rel="stylesheet" href="reporting.css" type="text/css">
-		<script type="text/javascript" src="../include/js/jquery-ui.1.11.2.min.js"></script>
+		<script type="text/javascript" src="../../../include/js/jquery-ui.1.11.2.min.js"></script>
 		<script type="text/javascript" src="../include/js/pivottable/pivot.min.js"></script>
 	</head>
 
@@ -223,10 +223,25 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 				</footer>
 
 			</div>
-
 			<script src="../include/js/bootstrap.min.js"></script>
 			<script src="../include/js/offcanvas.js"></script>
 			<script type="text/javascript" src="reporting.js"></script>
+			<?php if(preg_match(',/var/www/hofer/,', __FILE__)): ?>
+			<script type="text/javascript">
+				$(function() {
+					setTimeout(function() {
+						$('ul[data-name="charts"] a[data-gruppe="Studierende"]').trigger('click');
+						$('#chartsgroup_Studierende *[data-statistik-kurzbez="InteressentenZeitverlauf"]').trigger('click');
+						setTimeout(function() {
+							$('#Studiensemester').val('WS2014');
+						}, 50);
+						setTimeout(function() {
+							$('#run-filter').trigger('click');
+						}, 100);
+					}, 100);
+				});
+			</script>
+			<?php endif; ?>
 		</div>
 	</body>
 </html>

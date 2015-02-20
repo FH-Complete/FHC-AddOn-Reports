@@ -29,86 +29,104 @@ $rechte = new benutzerberechtigung();
 $rechte->getBerechtigungen($user);
 	
 if(!$rechte->isBerechtigt('basis/statistik'))
+{
 	die('Sie haben keine Berechtigung fuer diese Seite');
-	
-echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+}
+?>
+<!DOCTYPE html>
 <html>
-<head>
-	<title>Statistik</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	
-	<link rel="stylesheet" href="../../../skin/tablesort.css" type="text/css"/>
-	<link rel="stylesheet" href="../../../skin/fhcomplete.css" type="text/css">
-	<link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">
-	<script type="text/javascript" src="../../../include/js/jquery.js"></script> 
-	<script type="text/javascript">
-	
-		$(document).ready(function() 
-			{ 
-			    $("#myTable").tablesorter(
+	<head>
+		<title>Statistik</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="../../../skin/tablesort.css" type="text/css"/>
+		<link rel="stylesheet" href="../../../skin/fhcomplete.css" type="text/css">
+		<link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">
+		<script type="text/javascript" src="../../../include/js/jquery.min.1.11.1.js"></script>
+		<script type="text/javascript" src="../../../submodules/tablesorter/jquery.tablesorter.min.js"></script>
+		<script type="text/javascript">
+
+			$(function() {
+				$("#myTable").tablesorter(
 				{
 					sortList: [[1,0]],
-					widgets: [\'zebra\']
-				}); 
-			} 
-		);
-		
-		function confdel()
-		{
-			return confirm("Wollen Sie diesen Eintrag wirklich löschen?");
-		}
+					widgets: ['zebra']
+				});
+			});
+
+			function confdel()
+			{
+				return confirm('Wollen Sie diesen Eintrag wirklich löschen?');
+			}
 		</script>
-</head>
-<body>
-<div style="text-align:right">
-	<a href="../../../vilesci/stammdaten/statistik_details.php?action=new" target="detail_statistik">Neu</a>
-</div>';
-if(isset($_GET['action']) && $_GET['action']=='delete')
-{
-	if(!$rechte->isBerechtigt('basis/statistik', null, 'suid'))
-		die('Sie haben keine Berechtigung fuer diese Seite');
-	
-	if(!isset($_GET['statistik_kurzbz']))
-		die('Fehlender Parameter Statistik');
-	
-	$statistik = new statistik();
-	if($statistik->delete($_GET['statistik_kurzbz']))
-		echo '<span class="ok">Eintrag wurde erfolgreich gelöscht</span>';
-	else
-		echo '<span class="error">'.$statistik->errormsg.'</span>';
-}
+	</head>
+	<body>
+		<div style="text-align:right">
+			<a href="../../../vilesci/stammdaten/statistik_details.php?action=new" target="detail_statistik">Neu</a>
+		</div>
 
-$statistik = new statistik();
+		<?php
+		if(isset($_GET['action']) && $_GET['action']=='delete')
+		{
+			if(!$rechte->isBerechtigt('basis/statistik', null, 'suid'))
+				die('Sie haben keine Berechtigung fuer diese Seite');
 
-if(!$statistik->getAll())
-	die($statistik->errormsg);
+			if(!isset($_GET['statistik_kurzbz']))
+				die('Fehlender Parameter Statistik');
 
-echo '<table class="tablesorter" id="myTable">
-	<thead>
-		<tr>
-			<th>Gruppe</th>
-			<th>Kurzbz</th>
-			<th>Bezeichnung</th>
-			<th>Beschr.</th>
-			<th colspan="2">Aktion</th>
-		</tr>
-	</thead>
-	<tbody>';
+			$statistik = new statistik();
+			if($statistik->delete($_GET['statistik_kurzbz']))
+				echo '<span class="ok">Eintrag wurde erfolgreich gelöscht</span>';
+			else
+				echo '<span class="error">'.$statistik->errormsg.'</span>';
+		}
 
-foreach($statistik->result as $row)
-{
-	echo '<tr>';
-	echo '<td>',$row->gruppe,'</td>';
-	echo '<td><a href="../../../vilesci/statistik/statistik_frameset.php?statistik_kurzbz=',$row->statistik_kurzbz,' " target="detail_statistik">',$row->statistik_kurzbz,'</a></td>';
-	echo '<td>',$row->bezeichnung,'</td>';
-	echo '<td><a href="#" onclick="window.open(\'../../cms/content.php?content_id=',$row->content_id,'\', \'Beschreibung\', \'width=600,height=600, scrollbars=yes\');">',$row->content_id,'</a></td>';
-	echo '<td><a href="../../../vilesci/stammdaten/statistik_details.php?action=update&statistik_kurzbz=',$row->statistik_kurzbz,' " target="detail_statistik">bearbeiten</a></td>';
-	echo '<td><a href="../../../vilesci/stammdaten/statistik_uebersicht.php?action=delete&statistik_kurzbz=',$row->statistik_kurzbz,' " onclick="return confdel()">entfernen</a></td>';
-	echo '</tr>';
-}
-echo '</tbody>
-</table>
-</body>
-</html>';
+		$statistik = new statistik();
 
-?>
+		if(!$statistik->getAll())
+			die($statistik->errormsg);
+		?>
+		<table class="tablesorter" id="myTable">
+			<thead>
+				<tr>
+					<th>Gruppe</th>
+					<th>Kurzbz</th>
+					<th>Bezeichnung</th>
+					<th>Beschr.</th>
+					<th colspan="2">Aktion</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach($statistik->result as $row): ?>
+					<tr>
+						<td>
+							<?php echo $row->gruppe ?>
+						</td>
+						<td>
+							<a href="../../../vilesci/statistik/statistik_frameset.php?statistik_kurzbz=<?php echo $row->statistik_kurzbz ?>" target="detail_statistik">
+								<?php echo $row->statistik_kurzbz ?>
+							</a>
+						</td>
+						<td>
+							<?php echo $row->bezeichnung ?>
+						</td>
+						<td>
+							<a href="#" onclick="window.open('../../cms/content.php?content_id=<?php echo $row->content_id ?>', 'Beschreibung', 'width=600,height=600, scrollbars=yes');">
+								<?php echo $row->content_id ?>
+							</a>
+						</td>
+						<td>
+							<a href="../../../vilesci/stammdaten/statistik_details.php?action=update&statistik_kurzbz=<?php echo $row->statistik_kurzbz ?>" target="detail_statistik">
+								bearbeiten
+							</a>
+						</td>
+						<td>
+							<a href="../../../vilesci/stammdaten/statistik_uebersicht.php?action=delete&statistik_kurzbz=<?php echo $row->statistik_kurzbz ?>" onclick="return confdel()">
+								entfernen
+							</a>
+						</td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+	</body>
+</html>
