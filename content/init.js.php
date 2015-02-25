@@ -19,6 +19,7 @@
  */
 
 if(false): ?><script><?php endif; ?>
+
 addon.push(
 {
 	init: function()

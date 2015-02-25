@@ -8,3 +8,9 @@ div.third {
 	width: 33%;
 	display: inline-block;
 }
+
+td.pvtRendererArea {
+	overflow: auto;
+	width: 800px;
+	display: inline-block;
+}
