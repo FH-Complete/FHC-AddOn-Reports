@@ -45,8 +45,7 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 
 		<title>Reports - FH Technikum Wien</title>
 
-		<!-- Bootstrap core CSS -->
-		<link href="../include/css/bootstrap.min.css" rel="stylesheet">
+		<link href="../../../submodules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 		<link href="../include/css/offcanvas.css" rel="stylesheet">
 		<link href="../include/js/pivottable/pivot.min.css" rel="stylesheet">
 
@@ -223,7 +222,7 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 				</footer>
 
 			</div>
-			<script src="../include/js/bootstrap.min.js"></script>
+			<script src="../../../submodules/bootstrap/dist/js/bootstrap.min.js"></script>
 			<script src="../include/js/offcanvas.js"></script>
 			<script type="text/javascript" src="reporting.js"></script>
 			<?php if(preg_match(',/var/www/hofer/,', __FILE__)): ?>
