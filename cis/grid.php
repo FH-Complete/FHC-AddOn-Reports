@@ -71,10 +71,10 @@ $statistik->loadData(); ?>
 <?php if($htmlbody): ?>
 <html>
 	<head>
-		<link rel="stylesheet" href="../include/js/pivottable/pivot.css" />
+		<link rel="stylesheet" href="../../../submodules/pivottable/dist/pivot.min.css" />
 		<script type="text/javascript" src="../include/js/jquery.min.js"></script>
 		<script type="text/javascript" src="../include/js/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="../include/js/pivottable/pivot.js"></script>
+		<script type="text/javascript" src="../../../submodules/pivottable/dist/pivot.min.js"></script>
 	</head>
 	<body>
 <?php endif; ?>

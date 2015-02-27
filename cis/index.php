@@ -47,7 +47,7 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 
 		<link href="../../../submodules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 		<link href="../include/css/offcanvas.css" rel="stylesheet">
-		<link href="../include/js/pivottable/pivot.min.css" rel="stylesheet">
+		<link href="../../../submodules/pivottable/dist/pivot.min.css" rel="stylesheet">
 
 		<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 		<!--<script src="../include/js/ie10-viewport-bug-workaround.js"></script>-->
@@ -61,7 +61,7 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 		<?php echo chart::getAllHtmlHead() ?>
 		<link rel="stylesheet" href="reporting.css" type="text/css">
 		<script type="text/javascript" src="../../../include/js/jquery-ui.1.11.2.min.js"></script>
-		<script type="text/javascript" src="../include/js/pivottable/pivot.min.js"></script>
+		<script type="text/javascript" src="../../../submodules/pivottable/dist/pivot.min.js"></script>
 	</head>
 
 	<body>
