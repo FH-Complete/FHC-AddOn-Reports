@@ -124,7 +124,7 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_report"))
 				CONSTRAINT pk_rp_report PRIMARY KEY (report_id)
 			);
 			GRANT SELECT, UPDATE, INSERT, DELETE ON addon.tbl_rp_report TO vilesci;
-			GRANT SELECT, UPDATE TO addon.tbl_rp_report_report_id_seq TO vilesci;
+			GRANT SELECT, UPDATE ON addon.tbl_rp_report_report_id_seq TO vilesci;
 			';
 
 	if(!$db->db_query($qry))
