@@ -32,15 +32,12 @@ addon.push(
 		main_tabs.appendChild(tabitem);
 		$(tabitem).trigger('click');
 
-		var tabpanelitem = document.createElement("vbox");
-		tabpanelitem.setAttribute("id","addon-reports-tabpannel-vbox");
 		var iframe = document.createElement("iframe");
+		iframe.setAttribute("id","addon-reports-tabpannel-iframe");
 		iframe.setAttribute('src', '../addons/reports/vilesci/dashboard.php');
-		iframe.setAttribute('style', 'height: 1000px; width: 100%; overflow: hidden; background-color: #FFF;');
-		tabpanelitem.appendChild(iframe);
-
+		
 		var maintabpanels=document.getElementById("tabpanels-main");
-		maintabpanels.appendChild(tabpanelitem);
+		maintabpanels.appendChild(iframe);
 	},
 	selectMitarbeiter: function(person_id, mitarbeiter_uid)
 	{

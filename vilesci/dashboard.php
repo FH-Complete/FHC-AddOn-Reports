@@ -31,18 +31,22 @@ $rechte->getBerechtigungen($uid);
 $chart=new chart();
 $chart->getDashboard();
 
-echo $chart->getAllHtmlHead();
-
-$params = array(
-	'Studiensemester' => 'WS2014',
-);
-
-$get_string = '&' . http_build_query($params);
-
-foreach($chart->result as $onechart)
+if(count($chart->result)>0)
 {
-	$onechart->vars = $get_string;
-	echo $onechart->getHtmlDiv($onechart->dashboard_layout);
-}
+	echo $chart->getAllHtmlHead();
 
-echo $chart->getFooter();
+	$params = array(
+		'Studiensemester' => 'WS2014',
+	);
+
+	$get_string = '&' . http_build_query($params);
+
+
+	foreach($chart->result as $onechart)
+	{
+		$onechart->vars = $get_string;
+		echo $onechart->getHtmlDiv($onechart->dashboard_layout);
+	}
+
+	echo $chart->getFooter();
+}
