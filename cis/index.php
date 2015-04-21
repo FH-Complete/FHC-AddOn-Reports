@@ -77,7 +77,10 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-						<a class="navbar-brand" href="#"><img src="../data/fhtw_logo_white.png" height="25" />&nbsp;&nbsp;&nbsp;Reporting </a>
+						<a class="navbar-brand" href="#">
+                            <img src="../data/fhtw_logo_white.png" height="25" />
+                            <span>Reporting</span>
+                        </a>
 					</div>
 					<div class="collapse navbar-collapse">
 						<ul class="nav navbar-nav">
@@ -234,20 +237,25 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 						<?php endforeach; ?>-->
 						<!-- static for testing -->
 						<div style="display: none;" id="reportsgroup_Studierende" class="list-group">
-								<ul class="nav">
-									<li>
-										<a href="#" data-statistik-kurzbez="InteressentZGV" class="list-group-item" data-report-id="2">
-												Interessent ZGV <span><img onclick="loadPDF();" src="pdfIcon.png" width="20" alt="pdf"></img></span>
-										</a><a href="../data/Report2.pdf"><img src="pdfIcon.png" width="20" alt="pdf"></img></a>
-										
-									</li>
-									<li class="hide-button">
-										<a href="#">
-											<span class="glyphicon glyphicon-chevron-up"></span>
-										</a>
-									</li>
-								</ul>
-							</div>
+                            <ul class="nav">
+                                <li>
+                                        <span class="list-group-item">
+                                            <a href="#" data-statistik-kurzbez="InteressentZGV"
+                                               data-static-report="../data/Report2.html">
+                                                Interessent ZGV
+                                            </a>
+                                            <a href="../data/Report2.pdf" class="pull-right">
+                                                <img src="pdfIcon.png" width="20" alt="pdf"/>
+                                            </a>
+                                        </span>
+                                </li>
+                                <li class="hide-button">
+                                    <a href="#">
+                                        <span class="glyphicon glyphicon-chevron-up"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
 					</div>
 				</div>
 

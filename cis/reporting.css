@@ -33,3 +33,15 @@ html, body {
 li.hide-button {
 	text-align: center;
 }
+
+.navbar-brand {
+    width: 200px;
+}
+
+.navbar-brand img {
+    float: left;
+}
+
+.navbar-brand span {
+    float: right;
+}

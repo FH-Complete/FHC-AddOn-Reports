@@ -40,7 +40,25 @@ $(function() {
 	$('#sidebar a').on('click', function() {
 
 		var statistik_kurzbz = $(this).attr('data-statistik-kurzbez'),
-			chart_id = $(this).attr('data-chart-id');
+			chart_id = $(this).attr('data-chart-id'),
+            report_id = $(this).attr('data-report-id'),
+            report_static = $(this).attr('data-static-report');
+
+        console.log(report_static);
+
+        if(report_static) {
+            var iframe = $(document.createElement('iframe'));
+            iframe.attr({
+                src: report_static
+            });
+            iframe.css({
+                border: '0',
+                width: '100%',
+                height: '800px'
+            });
+            $('#content').html(iframe);
+            return;
+        }
 
 		if($(this).closest('li').hasClass('hide-button')) {
 
