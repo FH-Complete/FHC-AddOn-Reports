@@ -1,0 +1,36 @@
+Report Interessent ZGV
+======================
+:Author:    FH Technikum Wien
+:Email:     <office@technikum-wien.at>
+:Date:      21.04.2015
+:Revision:  1.0
+:toc: right
+:icons: font
+
+== Studierende: Interessent mit/ohne ZGV-Ausstellungsstaat In-/Ausland
+=== Beschreibung
+Dieser Report liefert Kennzahlen zu Interessenten mit Zugangsvorraussetzungen welche im Ausland erworben wurden.
+[horizontal]
+*Attribute und Spalten*::
+- *Studienjahr*
+- *Gesamt*: Gesamtzahl der Interessenten welche sich f&uuml;r das entsprechende Studienjahr interessieren. Interessenten, welche sich f&uuml;r mehrere Studieng&auml;nge interessieren werden nur einmal gez&auml;hlt.
+- *Inland*: Ausstellungsstaat der ZGV ist &Ouml;sterreich.
+- *Ausland*: Ausstellungsstaat der ZGV ist ungleich &Ouml;sterreich
+- *KeineZGV*: Ausstellungsstaat der ZGV ist nicht erfasst.
+- *xStg Ausland*: Anzahl der Interessenten mit ausl&auml;ndischer ZGV welche sich f&uuml;r x Studieng&auml;nge interessieren.
+- *xStg Inland*: Anzahl der Interessenten mit &ouml;sterr. ZGV welche sich f&uuml;r x Studieng&auml;nge interessieren.
+
+== Inhalt
+=== Chart
+image:images/chart6.png[]
+
+=== Daten
+[format="csv",cols="^h,10*>",options="header"]
+|===================================================
+include::dataInteressentZGV.csv[]
+|===================================================
+
+[horizontal]
+*M&ouml;gliche Fehlerquellen*::
+- ZGV: Der Ausstellungsstaat der ZGV ist nicht gut gepflegt. Es kann daher vorkommen, dass zwar die Zugangsvoraussetzung gegeben ist, aber der Ausstellungsstaat fehlt und deshalb die Zahlen in dieser Auswertung etwas verschoben sind.
+- Ausstellungsstaat: Dieses Attribut wurde im WS2011 im Zuge einer neuen BIS-Verordnung eingef&uuml;hrt. Die Zahlen vor dem WS2011 sind demnach mit gro&szlig;er Wahrscheinlichkeit schlecht gepflegt.

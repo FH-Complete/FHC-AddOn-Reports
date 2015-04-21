@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<?asciidoc-toc?>
+<?asciidoc-numbered?>
+
+<article lang="en">
+<articleinfo>
+    <title>Report Interessent ZGV</title>
+    <date>21.04.2015</date>
+    <author>
+        <firstname>FH</firstname>
+        <othername>Technikum</othername>
+        <surname>Wien</surname>
+        <email>&lt;office@technikum-wien.at&gt;</email>
+    </author>
+    <authorinitials>FTW</authorinitials>
+<revhistory><revision><revnumber>1.0</revnumber><date>21.04.2015</date><authorinitials>FTW</authorinitials></revision></revhistory>
+</articleinfo>
+<section id="_studierende_interessent_mit_ohne_zgv_ausstellungsstaat_in_ausland">
+<title>Studierende: Interessent mit/ohne ZGV-Ausstellungsstaat In-/Ausland</title>
+<section id="_beschreibung">
+<title>Beschreibung</title>
+<simpara>Dieser Report liefert Kennzahlen zu Interessenten mit Zugangsvorraussetzungen welche im Ausland erworben wurden.</simpara>
+<informaltable tabstyle="horizontal" frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colwidth="15*"/><colspec colwidth="85*"/><tbody valign="top">
+<row>
+<entry>
+<simpara>
+<emphasis role="strong">Attribute und Spalten</emphasis>
+</simpara>
+</entry>
+<entry>
+<itemizedlist>
+<listitem>
+<simpara>
+<emphasis role="strong">Studienjahr</emphasis>
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<emphasis role="strong">Gesamt</emphasis>: Gesamtzahl der Interessenten welche sich f&uuml;r das entsprechende Studienjahr interessieren. Interessenten, welche sich f&uuml;r mehrere Studieng&auml;nge interessieren werden nur einmal gez&auml;hlt.
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<emphasis role="strong">Inland</emphasis>: Ausstellungsstaat der ZGV ist &Ouml;sterreich.
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<emphasis role="strong">Ausland</emphasis>: Ausstellungsstaat der ZGV ist ungleich &Ouml;sterreich
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<emphasis role="strong">KeineZGV</emphasis>: Ausstellungsstaat der ZGV ist nicht erfasst.
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<emphasis role="strong">xStg Ausland</emphasis>: Anzahl der Interessenten mit ausl&auml;ndischer ZGV welche sich f&uuml;r x Studieng&auml;nge interessieren.
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<emphasis role="strong">xStg Inland</emphasis>: Anzahl der Interessenten mit &ouml;sterr. ZGV welche sich f&uuml;r x Studieng&auml;nge interessieren.
+</simpara>
+</listitem>
+</itemizedlist>
+</entry>
+</row>
+</tbody></tgroup></informaltable>
+</section>
+</section>
+<section id="_inhalt">
+<title>Inhalt</title>
+<section id="_chart">
+<title>Chart</title>
+<simpara><inlinemediaobject>
+  <imageobject>
+  <imagedata fileref="images/chart6.png"/>
+  </imageobject>
+  <textobject><phrase>images/chart6.png</phrase></textobject>
+</inlinemediaobject></simpara>
+</section>
+<section id="_daten">
+<title>Daten</title>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="11">
+<colspec colname="col_1" colwidth="9*"/>
+<colspec colname="col_2" colwidth="9*"/>
+<colspec colname="col_3" colwidth="9*"/>
+<colspec colname="col_4" colwidth="9*"/>
+<colspec colname="col_5" colwidth="9*"/>
+<colspec colname="col_6" colwidth="9*"/>
+<colspec colname="col_7" colwidth="9*"/>
+<colspec colname="col_8" colwidth="9*"/>
+<colspec colname="col_9" colwidth="9*"/>
+<colspec colname="col_10" colwidth="9*"/>
+<colspec colname="col_11" colwidth="9*"/>
+<thead>
+<row>
+<entry align="center" valign="top"></entry>
+<entry align="right" valign="top">Gesamt</entry>
+<entry align="right" valign="top">Inland</entry>
+<entry align="right" valign="top">Ausland</entry>
+<entry align="right" valign="top">Keine ZGV</entry>
+<entry align="right" valign="top">Inland 2Stg</entry>
+<entry align="right" valign="top">Ausland 2Stg</entry>
+<entry align="right" valign="top">Inland 3Stg</entry>
+<entry align="right" valign="top">Ausland 3Stg</entry>
+<entry align="right" valign="top">Inland &gt;3Stg</entry>
+<entry align="right" valign="top">Ausland &gt;3Stg</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center" valign="top"><simpara><emphasis role="strong">2001/02</emphasis></simpara></entry>
+<entry align="right" valign="top"><simpara>9</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>9</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+</row>
+<row>
+<entry align="center" valign="top"><simpara><emphasis role="strong">2003/04</emphasis></simpara></entry>
+<entry align="right" valign="top"><simpara>93</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>93</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+</row>
+<row>
+<entry align="center" valign="top"><simpara><emphasis role="strong">2004/05</emphasis></simpara></entry>
+<entry align="right" valign="top"><simpara>944</simpara></entry>
+<entry align="right" valign="top"><simpara>2</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>942</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+</row>
+<row>
+<entry align="center" valign="top"><simpara><emphasis role="strong">2005/06</emphasis></simpara></entry>
+<entry align="right" valign="top"><simpara>1985</simpara></entry>
+<entry align="right" valign="top"><simpara>3</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>1982</simpara></entry>
+<entry align="right" valign="top"><simpara>1</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+</row>
+<row>
+<entry align="center" valign="top"><simpara><emphasis role="strong">2006/07</emphasis></simpara></entry>
+<entry align="right" valign="top"><simpara>3075</simpara></entry>
+<entry align="right" valign="top"><simpara>7</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>3068</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+</row>
+<row>
+<entry align="center" valign="top"><simpara><emphasis role="strong">2007/08</emphasis></simpara></entry>
+<entry align="right" valign="top"><simpara>4003</simpara></entry>
+<entry align="right" valign="top"><simpara>23</simpara></entry>
+<entry align="right" valign="top"><simpara>1</simpara></entry>
+<entry align="right" valign="top"><simpara>3979</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+</row>
+<row>
+<entry align="center" valign="top"><simpara><emphasis role="strong">2008/09</emphasis></simpara></entry>
+<entry align="right" valign="top"><simpara>4212</simpara></entry>
+<entry align="right" valign="top"><simpara>25</simpara></entry>
+<entry align="right" valign="top"><simpara>2</simpara></entry>
+<entry align="right" valign="top"><simpara>4185</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+</row>
+<row>
+<entry align="center" valign="top"><simpara><emphasis role="strong">2009/10</emphasis></simpara></entry>
+<entry align="right" valign="top"><simpara>4371</simpara></entry>
+<entry align="right" valign="top"><simpara>90</simpara></entry>
+<entry align="right" valign="top"><simpara>4</simpara></entry>
+<entry align="right" valign="top"><simpara>4277</simpara></entry>
+<entry align="right" valign="top"><simpara>2</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+</row>
+<row>
+<entry align="center" valign="top"><simpara><emphasis role="strong">2010/11</emphasis></simpara></entry>
+<entry align="right" valign="top"><simpara>4338</simpara></entry>
+<entry align="right" valign="top"><simpara>164</simpara></entry>
+<entry align="right" valign="top"><simpara>44</simpara></entry>
+<entry align="right" valign="top"><simpara>4130</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+</row>
+<row>
+<entry align="center" valign="top"><simpara><emphasis role="strong">2011/12</emphasis></simpara></entry>
+<entry align="right" valign="top"><simpara>5107</simpara></entry>
+<entry align="right" valign="top"><simpara>1403</simpara></entry>
+<entry align="right" valign="top"><simpara>244</simpara></entry>
+<entry align="right" valign="top"><simpara>3460</simpara></entry>
+<entry align="right" valign="top"><simpara>19</simpara></entry>
+<entry align="right" valign="top"><simpara>5</simpara></entry>
+<entry align="right" valign="top"><simpara>1</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+</row>
+<row>
+<entry align="center" valign="top"><simpara><emphasis role="strong">2012/13</emphasis></simpara></entry>
+<entry align="right" valign="top"><simpara>5402</simpara></entry>
+<entry align="right" valign="top"><simpara>1854</simpara></entry>
+<entry align="right" valign="top"><simpara>433</simpara></entry>
+<entry align="right" valign="top"><simpara>3115</simpara></entry>
+<entry align="right" valign="top"><simpara>124</simpara></entry>
+<entry align="right" valign="top"><simpara>17</simpara></entry>
+<entry align="right" valign="top"><simpara>7</simpara></entry>
+<entry align="right" valign="top"><simpara>1</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+</row>
+<row>
+<entry align="center" valign="top"><simpara><emphasis role="strong">2013/14</emphasis></simpara></entry>
+<entry align="right" valign="top"><simpara>6907</simpara></entry>
+<entry align="right" valign="top"><simpara>2197</simpara></entry>
+<entry align="right" valign="top"><simpara>668</simpara></entry>
+<entry align="right" valign="top"><simpara>4042</simpara></entry>
+<entry align="right" valign="top"><simpara>157</simpara></entry>
+<entry align="right" valign="top"><simpara>22</simpara></entry>
+<entry align="right" valign="top"><simpara>11</simpara></entry>
+<entry align="right" valign="top"><simpara>1</simpara></entry>
+<entry align="right" valign="top"><simpara>1</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+</row>
+<row>
+<entry align="center" valign="top"><simpara><emphasis role="strong">2014/15</emphasis></simpara></entry>
+<entry align="right" valign="top"><simpara>7351</simpara></entry>
+<entry align="right" valign="top"><simpara>2123</simpara></entry>
+<entry align="right" valign="top"><simpara>694</simpara></entry>
+<entry align="right" valign="top"><simpara>4534</simpara></entry>
+<entry align="right" valign="top"><simpara>177</simpara></entry>
+<entry align="right" valign="top"><simpara>24</simpara></entry>
+<entry align="right" valign="top"><simpara>16</simpara></entry>
+<entry align="right" valign="top"><simpara>2</simpara></entry>
+<entry align="right" valign="top"><simpara>2</simpara></entry>
+<entry align="right" valign="top"><simpara>1</simpara></entry>
+</row>
+<row>
+<entry align="center" valign="top"><simpara><emphasis role="strong">2015/16</emphasis></simpara></entry>
+<entry align="right" valign="top"><simpara>4756</simpara></entry>
+<entry align="right" valign="top"><simpara>1003</simpara></entry>
+<entry align="right" valign="top"><simpara>272</simpara></entry>
+<entry align="right" valign="top"><simpara>3481</simpara></entry>
+<entry align="right" valign="top"><simpara>86</simpara></entry>
+<entry align="right" valign="top"><simpara>13</simpara></entry>
+<entry align="right" valign="top"><simpara>15</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>2</simpara></entry>
+<entry align="right" valign="top"><simpara>1</simpara></entry>
+</row>
+<row>
+<entry align="center" valign="top"><simpara><emphasis role="strong">2016/17</emphasis></simpara></entry>
+<entry align="right" valign="top"><simpara>249</simpara></entry>
+<entry align="right" valign="top"><simpara>17</simpara></entry>
+<entry align="right" valign="top"><simpara>1</simpara></entry>
+<entry align="right" valign="top"><simpara>231</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<informaltable tabstyle="horizontal" frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colwidth="15*"/><colspec colwidth="85*"/><tbody valign="top">
+<row>
+<entry>
+<simpara>
+<emphasis role="strong">M&ouml;gliche Fehlerquellen</emphasis>
+</simpara>
+</entry>
+<entry>
+<itemizedlist>
+<listitem>
+<simpara>
+ZGV: Der Ausstellungsstaat der ZGV ist nicht gut gepflegt. Es kann daher vorkommen, dass zwar die Zugangsvoraussetzung gegeben ist, aber der Ausstellungsstaat fehlt und deshalb die Zahlen in dieser Auswertung etwas verschoben sind.
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+Ausstellungsstaat: Dieses Attribut wurde im WS2011 im Zuge einer neuen BIS-Verordnung eingef&uuml;hrt. Die Zahlen vor dem WS2011 sind demnach mit gro&szlig;er Wahrscheinlichkeit schlecht gepflegt.
+</simpara>
+</listitem>
+</itemizedlist>
+</entry>
+</row>
+</tbody></tgroup></informaltable>
+</section>
+</section>
+</article>
