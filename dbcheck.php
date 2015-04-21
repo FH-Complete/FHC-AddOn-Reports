@@ -163,6 +163,19 @@ if(!$result = @$db->db_query("SELECT dashboard FROM addon.tbl_rp_chart"))
 		echo ' addon.tbl_rp_chart: Spalte dashboard, dashboard_layout, dashboard_pos hinzugefuegt!<br>';
 
 }
+// Reports (rp) Publish
+if(!$result = @$db->db_query("SELECT gruppe,publish FROM addon.tbl_rp_report"))
+{
+
+	$qry = 'ALTER TABLE addon.tbl_rp_report ADD COLUMN publish boolean NOT NULL DEFAULT FALSE;
+			ALTER TABLE addon.tbl_rp_report ADD COLUMN gruppe varchar(256);';
+
+	if(!$db->db_query($qry))
+		echo '<strong>addon.tbl_rp_chart: '.$db->db_last_error().'</strong><br>';
+	else
+		echo ' addon.tbl_rp_report: Spalte gruppe und publish hinzugefuegt!<br>';
+
+}
 
 echo '<br>Aktualisierung abgeschlossen<br><br>';
 echo '<h2>Gegenprüfung</h2>';
@@ -170,7 +183,7 @@ echo '<h2>Gegenprüfung</h2>';
 // Liste der verwendeten Tabellen / Spalten des Addons
 $tabellen=array(
 	"addon.tbl_rp_chart"  => array("chart_id", "title", "description", "type", "preferences", "datasource", "datasource_type","insertamum","insertvon","updateamum","updatevon","statistik_kurzbz")
-	,"addon.tbl_rp_report" => array("report_id","title","format","description","body","insertamum","insertvon","updateamum","updatevon")
+	,"addon.tbl_rp_report" => array("report_id","title","format","description","body","gruppe","publish","insertamum","insertvon","updateamum","updatevon")
 );
 
 

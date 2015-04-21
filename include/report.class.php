@@ -31,6 +31,8 @@ class report extends basis_db
 	public $format;
 	public $description;
 	public $body;
+	public $gruppe;
+	public $publish=false;
 	public $insertamum;
 	public $insertvon;
 	public $updateamum;
@@ -74,25 +76,13 @@ class report extends basis_db
 			$this->description	= $row->description;
 			$this->format		= $row->format;
 			$this->body			= $row->body;
+			$this->gruppe		= $row->gruppe;
+			$this->publish		= $row->publish;
 			$this->updateamum    = $row->updateamum;
 			$this->updatevon     = $row->updatevon;
 			$this->insertamum    = $row->insertamum;
 			$this->insertvon     = $row->insertvon;
 		}
-		/*switch ($report_id)
-		{
-			case 1:
-				$this->title='DropOut - Spidergraph';
-				$this->type='spider';
-				$this->datasource_type='json';
-				$this->datasource='../../../content/statistik/dropout.php?outputformat=json';
-				break;
-			case 2:
-				$this->title='DropOut - xChart';
-				$this->type='xchart';
-				$this->sourcetype='json';
-				$this->datasource='../../../content/statistik/dropout.php?outputformat=json';
-		}*/
 		$this->new=false;
 		return true;
 	}
@@ -121,6 +111,8 @@ class report extends basis_db
 			$obj->description	= $row->description;
 			$obj->format		= $row->format;
 			$obj->body			= $row->body;
+			$this->gruppe		= $row->gruppe;
+			$this->publish		= $row->publish;
 			$obj->updateamum    = $row->updateamum;
 			$obj->updatevon     = $row->updatevon;
 			$obj->insertamum    = $row->insertamum;
@@ -134,6 +126,91 @@ class report extends basis_db
 	}
 	
 	/**
+	 * Laedt alle Reports einer Gruppe, Parameter publish zum Filtern.
+	 * @return true wenn ok, sonst false
+	 */
+	public function getGruppe($gruppe,$publish=null)
+	{
+		$qry = "SELECT tbl_rp_report.* FROM addon.tbl_rp_report WHERE gruppe='$gruppe'";
+		if ($publish==true)
+			$qry.=' AND tbl_rp_report.publish ';
+		elseif ($publish==false)
+			$qry.=' AND NOT tbl_rp_report.publish ';
+		$qry.=' ORDER BY title;';
+		
+		if($result = $this->db_query($qry))
+		{
+			while($row = $this->db_fetch_object($result))
+			{
+				$obj = new report();
+
+			$obj->report_id		= $row->report_id; 
+			$obj->title 		= $row->title;
+			$obj->description	= $row->description;
+			$obj->format		= $row->format;
+			$obj->body			= $row->body;
+			$this->gruppe		= $row->gruppe;
+			$this->publish		= $row->publish;
+			$obj->updateamum    = $row->updateamum;
+			$obj->updatevon     = $row->updatevon;
+			$obj->insertamum    = $row->insertamum;
+			$obj->insertvon     = $row->insertvon;
+			//$obj->report_num_rows= $this->getNumRows('sync.'.$row->report_tablename);
+			$obj->new       = false;
+
+			$this->result[] = $obj;
+			}
+			
+			return true;
+		}
+		else
+		{
+			$this->errormsg = 'Fehler beim Laden der Daten';
+			return false;
+		}			
+	}
+	
+	/**
+	 * Laedt alle Statistik Gruppen, Parameter publish zum Filtern.
+	 * @return true wenn ok, sonst false
+	 */
+	public function getAnzahlGruppe($publish = null)
+	{
+		$qry = 'SELECT gruppe, count(*) AS anzahl FROM addon.tbl_rp_report ';
+
+		if($publish === true)
+		{
+			$qry .= 'WHERE tbl_rp_report.publish ';
+		}
+		elseif($publish === false)
+		{
+			$qry .= 'WHERE NOT tbl_rp_report.publish ';
+		}
+
+		$qry .= ' GROUP BY gruppe ORDER BY gruppe;';
+
+		if($result = $this->db_query($qry))
+		{
+			while($row = $this->db_fetch_object($result))
+			{
+				$obj = new statistik();
+				
+				$obj->gruppe = $row->gruppe;
+				$obj->anzahl = $row->anzahl;
+				
+				$this->result[] = $obj;
+			}
+
+			return true;
+		}
+		else
+		{
+			$this->errormsg = 'Fehler beim Laden der Daten';
+			return false;
+		}			
+	}
+	
+	/**
 	 * Speichert den aktuellen Datensatz in die Datenbank
 	 * Wenn $new auf true gesetzt ist wird ein neuer Datensatz angelegt
 	 * andernfalls wird der Datensatz mit der ID in $report_id aktualisiert
@@ -144,12 +221,14 @@ class report extends basis_db
 		if($this->new)
 		{
 			//Neuen Datensatz einfuegen
-			$qry='BEGIN;INSERT INTO addon.tbl_rp_report (title, description, format, body,
+			$qry='BEGIN;INSERT INTO addon.tbl_rp_report (title, description, format, body, gruppe, publish, 
 			      insertamum, insertvon) VALUES('.
 			      $this->db_add_param($this->title).', '.
 			      $this->db_add_param($this->description).', '.
 			      $this->db_add_param($this->format).', '.
-			      $this->db_add_param($this->body).', now(), '.
+			      $this->db_add_param($this->body).', '.
+			      $this->db_add_param($this->gruppe).', '.
+			      $this->db_add_param($this->publish,FHC_BOOLEAN).', now(), '.
 			      $this->db_add_param($this->insertvon).');';
 		}
 		else
@@ -165,6 +244,8 @@ class report extends basis_db
 				' description='.$this->db_add_param($this->description).', '.
 				' format='.$this->db_add_param($this->format).', '.
 				' body='.$this->db_add_param($this->body).', '.
+				' gruppe='.$this->db_add_param($this->gruppe).', '.
+				' publish='.$this->db_add_param($this->publish).', '.
 				' updateamum= now(), '.
 		      	' updatevon='.$this->db_add_param($this->updatevon).
 		      	' WHERE report_id='.$this->db_add_param($this->report_id, FHC_INTEGER, false).';';
