@@ -92,16 +92,20 @@ $(function() {
 			get_params[input.attr('id')] = input.val();
 		}
 
-		if($('#sidebar').attr('data-menu') === 'charts') {
-
+		if($('#sidebar').attr('data-menu') === 'charts') 
+		{
 			url = 'chart.php';
 			get_params.chart_id = chart_id;
 
-		} else {
-
+		}
+		else
+		if($('#sidebar').attr('data-menu') === 'data') 
+		{
 			url = 'grid.php';
 			get_params.statistik_kurzbz = data_statistik_kurzbz;
 		}
+		else
+			url = 'Report2.html'; // static for testing, later for reports
 
 		$.ajax({
 			url: url,

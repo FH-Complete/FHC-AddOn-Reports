@@ -24,9 +24,11 @@ require_once('../../../include/functions.inc.php');
 require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../../../include/statistik.class.php');
 require_once('../include/chart.class.php');
+require_once('../include/report.class.php');
 
 $statistik = new statistik();
 $chart = new chart();
+$report = new report();
 
 if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 {
@@ -111,14 +113,12 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 							</li>
 							<li class="dropdown">
 								<a href="#reports" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">Reports <span class="caret"></span></a>
-								<ul class="dropdown-menu" role="menu">
-									<li><a href="#" onclick='$("#test").show();'>Studierende <span class="badge">3</span></a></li>
-									<li><a href="#" onclick='$("#test2").hide();'>Mitarbeiter <span class="badge">5</span></a></li>
-									<li><a href="#" onclick='$("#test2").show();'>Lehre <span class="badge">15</span></a></li>
+								<ul class="dropdown-menu" role="menu" data-name="reports">
+									<li><a href="#" data-gruppe="Studierende">Studierende <span class="badge">1</span></a></li>
 									<li class="divider"></li>
 									<li class="dropdown-header">Extra</li>
-									<li><a href="#">Wissensbilanz <span class="badge">3</span></a></li>
-									<li><a href="#">Sonstiges <span class="badge">7</span></a></li>
+									<li><a href="#">Wissensbilanz <span class="badge">0</span></a></li>
+									<li><a href="#">Sonstiges <span class="badge">0</span></a></li>
 								</ul>
 							</li>
 						</ul>
@@ -211,6 +211,43 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 								</ul>
 							</div>
 						<?php endforeach; ?>
+						<!--<?php foreach($report->result AS $gruppen): ?>
+							<div style="display: none;" id="reportsgroup_<?php echo str_replace(' ', '', $gruppen->gruppe) ?>" class="list-group">
+								<ul class="nav">
+									<?php
+									$data = new report();
+									$data->getGruppe($gruppen->gruppe, true);
+									foreach($data->result AS $dat): ?>
+										<li>
+											<a href="#" data-statistik-kurzbez="<?php echo urlencode($dat->statistik_kurzbz) ?>" class="list-group-item" data-chart-id="<?php echo $dat->report_id ?>">
+												<?php echo $dat->title ?>
+											</a>
+										</li>
+									<?php endforeach; ?>
+									<li class="hide-button">
+										<a href="#">
+											<span class="glyphicon glyphicon-chevron-up"></span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						<?php endforeach; ?>-->
+						<!-- static for testing -->
+						<div style="display: none;" id="reportsgroup_Studierende" class="list-group">
+								<ul class="nav">
+									<li>
+										<a href="#" data-statistik-kurzbez="InteressentZGV" class="list-group-item" data-report-id="2">
+												Interessent ZGV <span><img onclick="loadPDF();" src="pdfIcon.png" width="20" alt="pdf"></img></span>
+										</a><a href="../data/Report2.pdf"><img src="pdfIcon.png" width="20" alt="pdf"></img></a>
+										
+									</li>
+									<li class="hide-button">
+										<a href="#">
+											<span class="glyphicon glyphicon-chevron-up"></span>
+										</a>
+									</li>
+								</ul>
+							</div>
 					</div>
 				</div>
 
@@ -239,6 +276,10 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 						}, 100);
 					}, 100);
 				});
+				function loadPDF()
+				{
+					alert('test');
+				}
 			</script>
 			<?php endif; ?>
 		</div>

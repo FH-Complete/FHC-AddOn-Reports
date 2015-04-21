@@ -24,7 +24,8 @@ class chart extends basis_db
 {
 	public $new;
 	public $result = array();
-	public $vars='';
+	public $vars = '';
+	public $addon_root;
 	
 	//Tabellenspalten
 	public $chart_id;
@@ -52,7 +53,7 @@ class chart extends basis_db
 	public function __construct($chart_id=null)
 	{
 		parent::__construct();
-
+		$this->addon_root=dirname(__FILE__).'/../';
 		if(!is_null($chart_id))
 			$this->load($chart_id);
 		else
@@ -294,6 +295,7 @@ class chart extends basis_db
 	 */
 	public static function getPlugins()
 	{
+		// Convention: Highcharts must start with "hc" followed by the real charttype
 		return array(
 			'xchart' => 'XChart',
 			'spider' => 'Spider',
@@ -627,7 +629,7 @@ EOT;
 		<?php return ob_get_clean();
 	}
 
-	public function printPng()
+	public function writePNG()
 	{
 		switch ($this->type)
 		{
@@ -667,8 +669,54 @@ EOT;
 				$myPicture->drawLegend(580,12,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
 
 				/* Render the picture (choose the best way) */
-				$myPicture->autoOutput("pictures/example.drawBarChart.floating.png"); 
+				$myPicture->autoOutput("data/images/example.drawBarChart.floating.png"); 
 				break;
+		
+			case 'hcline':
+			case 'hccolumn':
+			case 'hcpie':
+			case 'hcdrill':
+			case 'hctimezoom':
+				$hctype=substr($this->type,2);
+				$bin_files='';
+				$options_filename='options.js';
+				$job_filename='highcharts-convert.js';
+				$output_filename=$this->addon_root.'data/images/chart'.$this->chart_id.date('Y-m-d_H:i:s').'.png';
+				$output=array();
+				$exit=0;
+				$scale='2.5';
+				$width='500';
+
+				$data='"Studienjahr","Gesamt","Inland","Ausland","KeineZGV","Inland 2Stg","Ausland 2Stg","Inland 3Stg","Ausland 3Stg","Inland >3Stg","Ausland >3Stg"\n"2001/02","9","0","0","9","0","0","0","0","0","0"\n"2003/04","93","0","0","93","0","0","0","0","0","0"\n"2004/05","944","2","0","942","0","0","0","0","0","0"\n"2005/06","1985","3","0","1982","1","0","0","0","0","0"\n"2006/07","3075","7","0","3068","0","0","0","0","0","0"\n"2007/08","4003","23","1","3979","0","0","0","0","0","0"\n"2008/09","4212","25","2","4185","0","0","0","0","0","0"\n"2009/10","4371","90","4","4277","2","0","0","0","0","0"\n"2010/11","4338","164","44","4130","0","0","0","0","0","0"\n"2011/12","5107","1403","244","3460","19","5","1","0","0","0"\n"2012/13","5402","1854","433","3115","124","17","7","1","0","0"\n"2013/14","6907","2197","668","4042","157","22","11","1","1","0"\n"2014/15","7351","2123","694","4534","177","24","16","2","2","1"\n"2015/16","4756","1003","272","3481","86","13","15","0","2","1"\n"2016/17","249","17","1","231","0","0","0","0","0","0"';
+				$options="{
+				title:'InteressentZGV',
+				chart: {renderTo: 'container',
+						type:'$hctype'},
+				categories:{},
+				yAxis: {title: {text: 'Personen'}},
+				x:{'rotation':0},
+				y:{'rotation':0},
+				data: {
+					itemDelimiter: ',',
+					csv: '".$data."'
+					}
+				}";
+
+				$rsc=fopen($options_filename,'w');
+				$c=fwrite($rsc,$options);
+				echo $c,' Bytes written<br/>';
+				$exec = $bin_files. 'phantomjs '.$job_filename.' -infile '.$options_filename.' -outfile '.$output_filename.' -scale '.$scale.' -width '.$width;
+				//echo $exec;
+				$escaped_command = escapeshellcmd($exec);
+				$lastout=exec($escaped_command, $output, $exit);
+				if($lastout!==$output_filename)
+				{
+					echo '<br/>ExitCode: '.$exit.'<br/>';
+					var_dump($output);
+				}
+				if (!is_file($output_filename)) 
+					die ('<br/>Error in PhantomJS execution!');
+				return $lastout;
 		}
 	}
 }
