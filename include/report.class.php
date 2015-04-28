@@ -29,8 +29,13 @@ class report extends basis_db
 	public $report_id;
 	public $title;
 	public $format;
+	
 	public $description;
+	public $header;
 	public $body;
+	public $footer;
+	public $docinfo; //xml
+	
 	public $gruppe;
 	public $publish=false;
 	public $insertamum;
@@ -73,9 +78,12 @@ class report extends basis_db
 		{
 			$this->report_id	= $row->report_id; 
 			$this->title 		= $row->title;
-			$this->description	= $row->description;
 			$this->format		= $row->format;
+			$this->description	= $row->description;
+			$this->header		= $row->header;
 			$this->body			= $row->body;
+			$this->footer		= $row->footer;
+			$this->docinfo		= $row->docinfo;
 			$this->gruppe		= $row->gruppe;
 			$this->publish		= $row->publish;
 			$this->updateamum    = $row->updateamum;
@@ -101,9 +109,9 @@ class report extends basis_db
 			$this->errormsg = 'Fehler bei einer Datenbankabfrage';
 			return false;
 		}
-
 		while($row = $this->db_fetch_object())
 		{
+			//var_dump($row);
 			$obj = new report();
 
 			$obj->report_id		= $row->report_id; 
@@ -111,8 +119,8 @@ class report extends basis_db
 			$obj->description	= $row->description;
 			$obj->format		= $row->format;
 			$obj->body			= $row->body;
-			$this->gruppe		= $row->gruppe;
-			$this->publish		= $row->publish;
+			$obj->gruppe		= $row->gruppe;
+			$obj->publish		= ($row->publish=='t' ? true : false);
 			$obj->updateamum    = $row->updateamum;
 			$obj->updatevon     = $row->updatevon;
 			$obj->insertamum    = $row->insertamum;
@@ -221,12 +229,15 @@ class report extends basis_db
 		if($this->new)
 		{
 			//Neuen Datensatz einfuegen
-			$qry='BEGIN;INSERT INTO addon.tbl_rp_report (title, description, format, body, gruppe, publish, 
+			$qry='BEGIN;INSERT INTO addon.tbl_rp_report (title, description, format, header, body, footer, docinfo, gruppe, publish, 
 			      insertamum, insertvon) VALUES('.
 			      $this->db_add_param($this->title).', '.
 			      $this->db_add_param($this->description).', '.
 			      $this->db_add_param($this->format).', '.
+			      $this->db_add_param($this->header).', '.
 			      $this->db_add_param($this->body).', '.
+			      $this->db_add_param($this->footer).', '.
+			      $this->db_add_param($this->docinfo).', '.
 			      $this->db_add_param($this->gruppe).', '.
 			      $this->db_add_param($this->publish,FHC_BOOLEAN).', now(), '.
 			      $this->db_add_param($this->insertvon).');';
@@ -243,7 +254,10 @@ class report extends basis_db
 				' title='.$this->db_add_param($this->title).', '.
 				' description='.$this->db_add_param($this->description).', '.
 				' format='.$this->db_add_param($this->format).', '.
+				' header='.$this->db_add_param($this->header).', '.
 				' body='.$this->db_add_param($this->body).', '.
+				' footer='.$this->db_add_param($this->footer).', '.
+				' docinfo='.$this->db_add_param($this->docinfo).', '.
 				' gruppe='.$this->db_add_param($this->gruppe).', '.
 				' publish='.$this->db_add_param($this->publish).', '.
 				' updateamum= now(), '.
@@ -303,6 +317,7 @@ class report extends basis_db
 				echo '<link rel="stylesheet" href="../include/css/xchart.css" type="text/css">';
 		}
 	}
+	
 	public function print_htmldiv()
 	{
 		switch ($this->type)
@@ -326,6 +341,19 @@ class report extends basis_db
 					echo '<script src="../include/js/xchart2.js" type="application/javascript"></script>';
 				else
 					echo '<script src="../include/js/xchart.js" type="application/javascript"></script>';
+		}
+	}
+	
+	public function printParam($crlf)
+	{
+		$return='';
+		switch ($this->format)
+		{
+			case 'asciidoc':
+				foreach ($_REQUEST AS $key=>$val)
+					$return.='- *'.$key.'* := '.$val.$crlf;
+				return $return;
+			
 		}
 	}
 }

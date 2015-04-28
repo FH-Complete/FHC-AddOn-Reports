@@ -289,6 +289,7 @@ function hcCreate(chart, hctype) {
 			}
 		},
 		series: chart.series.data
+		
 	};
 
 	if(chart.colors.length) {

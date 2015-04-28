@@ -164,16 +164,75 @@ if(!$result = @$db->db_query("SELECT dashboard FROM addon.tbl_rp_chart"))
 
 }
 // Reports (rp) Publish
-if(!$result = @$db->db_query("SELECT gruppe,publish FROM addon.tbl_rp_report"))
+if(!$result = @$db->db_query("SELECT gruppe, publish, header, footer, docinfo FROM addon.tbl_rp_report"))
 {
 
 	$qry = 'ALTER TABLE addon.tbl_rp_report ADD COLUMN publish boolean NOT NULL DEFAULT FALSE;
-			ALTER TABLE addon.tbl_rp_report ADD COLUMN gruppe varchar(256);';
+			ALTER TABLE addon.tbl_rp_report ADD COLUMN gruppe varchar(256);
+			ALTER TABLE addon.tbl_rp_report ADD COLUMN header text;
+			ALTER TABLE addon.tbl_rp_report ADD COLUMN footer text;
+			ALTER TABLE addon.tbl_rp_report ADD COLUMN docinfo xml;';
 
 	if(!$db->db_query($qry))
 		echo '<strong>addon.tbl_rp_chart: '.$db->db_last_error().'</strong><br>';
 	else
-		echo ' addon.tbl_rp_report: Spalte gruppe und publish hinzugefuegt!<br>';
+		echo ' addon.tbl_rp_report: Spalte gruppe, header, footer, docinfo und publish hinzugefuegt!<br>';
+
+}
+
+// Reports (rp) to Charts
+// Reports (rp) Chart
+if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_report_chart"))
+{
+
+	$qry = 'CREATE TABLE addon.tbl_rp_report_chart
+			(
+				reportchart_id serial,
+				report_id bigint,
+				chart_id bigint,
+				insertamum timestamp,
+				insertvon varchar(32),
+				updateamum timestamp,
+				updatevon varchar(32),
+				CONSTRAINT pk_rp_report_chart PRIMARY KEY (reportchart_id)
+			);
+			ALTER TABLE addon.tbl_rp_report_chart ADD CONSTRAINT "fk_rp_report_chart_chart" FOREIGN KEY (chart_id) 
+			REFERENCES addon.tbl_rp_chart(chart_id) ON UPDATE CASCADE ON DELETE RESTRICT;
+			GRANT SELECT, UPDATE, INSERT, DELETE ON addon.tbl_rp_report_chart TO vilesci;
+			GRANT SELECT, UPDATE ON addon.tbl_rp_report_chart_reportchart_id_seq TO vilesci;
+			';
+
+	if(!$db->db_query($qry))
+		echo '<strong>addon.tbl_rp_report_chart: '.$db->db_last_error().'</strong><br>';
+	else 
+		echo ' addon.tbl_rp_report_chart: Tabelle addon.tbl_rp_report_chart hinzugefuegt!<br>';
+
+}
+// Reports (rp) to Statistik
+if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_report_statistik"))
+{
+
+	$qry = 'CREATE TABLE addon.tbl_rp_report_statistik
+			(
+				reportstatistik_id serial,
+				report_id bigint,
+				statistik_kurzbz varchar(64),
+				insertamum timestamp,
+				insertvon varchar(32),
+				updateamum timestamp,
+				updatevon varchar(32),
+				CONSTRAINT pk_rp_report_statistik PRIMARY KEY (reportstatistik_id)
+			);
+			ALTER TABLE addon.tbl_rp_report_statistik ADD CONSTRAINT "fk_rp_report_statistik_statistik" FOREIGN KEY (statistik_kurzbz) 
+			REFERENCES public.tbl_statistik(statistik_kurzbz) ON UPDATE CASCADE ON DELETE RESTRICT;
+			GRANT SELECT, UPDATE, INSERT, DELETE ON addon.tbl_rp_report_statistik TO vilesci;
+			GRANT SELECT, UPDATE ON addon.tbl_rp_report_statistik_reportstatistik_id_seq TO vilesci;
+			';
+
+	if(!$db->db_query($qry))
+		echo '<strong>addon.tbl_rp_report_statistik: '.$db->db_last_error().'</strong><br>';
+	else 
+		echo ' addon.tbl_rp_report_statistik: Tabelle addon.tbl_rp_report_statistik hinzugefuegt!<br>';
 
 }
 
@@ -183,7 +242,9 @@ echo '<h2>Gegenprüfung</h2>';
 // Liste der verwendeten Tabellen / Spalten des Addons
 $tabellen=array(
 	"addon.tbl_rp_chart"  => array("chart_id", "title", "description", "type", "preferences", "datasource", "datasource_type","insertamum","insertvon","updateamum","updatevon","statistik_kurzbz")
-	,"addon.tbl_rp_report" => array("report_id","title","format","description","body","gruppe","publish","insertamum","insertvon","updateamum","updatevon")
+	,"addon.tbl_rp_report" => array("report_id","title","format","description", "header", "footer", "body","docinfo", "gruppe","publish","insertamum","insertvon","updateamum","updatevon")
+	,"addon.tbl_rp_report_chart" => array("reportchart_id","report_id","chart_id","insertamum","insertvon","updateamum","updatevon")
+	,"addon.tbl_rp_report_statistik" => array("reportstatistik_id","report_id","statistik_kurzbz","insertamum","insertvon","updateamum","updatevon")
 );
 
 

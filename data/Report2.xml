@@ -5,19 +5,66 @@
 
 <article lang="en">
 <articleinfo>
-    <title>Report Interessent ZGV</title>
-    <date>21.04.2015</date>
-    <author>
-        <firstname>FH</firstname>
-        <othername>Technikum</othername>
-        <surname>Wien</surname>
-        <email>&lt;office@technikum-wien.at&gt;</email>
-    </author>
-    <authorinitials>FTW</authorinitials>
-<revhistory><revision><revnumber>1.0</revnumber><date>21.04.2015</date><authorinitials>FTW</authorinitials></revision></revhistory>
+    <title>Report - Interessent ZGV</title>
+<authorgroup>
+  <author>
+    <honorific>Mag</honorific>
+    <firstname>Herwig</firstname>
+    <surname>Patscheider</surname>
+    <affiliation>
+      <shortaffil>Magister</shortaffil>
+      <jobtitle>stv. Leiter QSE</jobtitle>
+      <orgname>FH Technikum Wien</orgname>
+    </affiliation>
+  </author>
+
+
+  <editor>
+    <firstname>Christian</firstname>
+    <surname>Paminger</surname>
+    <lineage>Ing. Dipl.Ing.(FH)</lineage>
+    <othername>Franz</othername>
+    <authorblurb>
+      <para>
+      Franz's a super hero in his spare time.
+      </para>
+    </authorblurb>
+  </editor>
+</authorgroup>
+
+<copyright>
+  <year>2015</year>
+  <holder>FH Technikum Wien</holder>
+</copyright>
+
+<legalnotice>
+  <simpara>
+    This report belongs to FH Technikum Wien and contribution employers legal benefits fund.
+  </simpara>
+  <simpara>
+    Dieser Bericht ist Eigentum der FH Technikum Wien und .....
+  </simpara>
+</legalnotice>
+
+<revhistory>
+  <revision>
+    <revnumber>0.2</revnumber>
+    <date>Februar 2015</date>
+    <authorinitials>CP</authorinitials>
+    <revremark>
+      Prototyp.
+    </revremark>
+  </revision>
+  <revision>
+    <revnumber>0.1</revnumber>
+    <date>October 2014</date>
+    <authorinitials>CP</authorinitials>
+    <revremark>
+      Prototyp.
+    </revremark>
+  </revision>
+</revhistory>
 </articleinfo>
-<section id="_studierende_interessent_mit_ohne_zgv_ausstellungsstaat_in_ausland">
-<title>Studierende: Interessent mit/ohne ZGV-Ausstellungsstaat In-/Ausland</title>
 <section id="_beschreibung">
 <title>Beschreibung</title>
 <simpara>Dieser Report liefert Kennzahlen zu Interessenten mit Zugangsvorraussetzungen welche im Ausland erworben wurden.</simpara>
@@ -42,7 +89,7 @@
 </listitem>
 <listitem>
 <simpara>
-<emphasis role="strong">Inland</emphasis>: Ausstellungsstaat der ZGV ist &Ouml;sterreich.
+<emphasis role="strong">Inland</emphasis>: Ausstellungsstaat der ZGV ist Österreich.
 </simpara>
 </listitem>
 <listitem>
@@ -68,18 +115,43 @@
 </itemizedlist>
 </entry>
 </row>
+<row>
+<entry>
+<simpara>
+<emphasis role="strong">Parameter</emphasis>
+</simpara>
+</entry>
+<entry>
+<itemizedlist>
+<listitem>
+<simpara>
+<emphasis role="strong">Erstellung</emphasis>: Tue, 28 Apr 2015
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<emphasis role="strong">Datenstand</emphasis>: Tue, 28 Apr 2015 09:04:52 +0200
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<emphasis role="strong">report_id</emphasis> := 2
+</simpara>
+</listitem>
+</itemizedlist>
+</entry>
+</row>
 </tbody></tgroup></informaltable>
 </section>
-</section>
-<section id="_inhalt">
-<title>Inhalt</title>
+<section id="_report">
+<title>Report</title>
 <section id="_chart">
 <title>Chart</title>
 <simpara><inlinemediaobject>
   <imageobject>
-  <imagedata fileref="images/chart6.png"/>
+  <imagedata fileref="images/chart8.png"/>
   </imageobject>
-  <textobject><phrase>images/chart6.png</phrase></textobject>
+  <textobject><phrase>images/chart8.png</phrase></textobject>
 </inlinemediaobject></simpara>
 </section>
 <section id="_daten">
@@ -102,7 +174,7 @@ rowsep="1" colsep="1"
 <colspec colname="col_11" colwidth="9*"/>
 <thead>
 <row>
-<entry align="center" valign="top"></entry>
+<entry align="center" valign="top">Stdnjahr</entry>
 <entry align="right" valign="top">Gesamt</entry>
 <entry align="right" valign="top">Inland</entry>
 <entry align="right" valign="top">Ausland</entry>
@@ -222,10 +294,10 @@ rowsep="1" colsep="1"
 </row>
 <row>
 <entry align="center" valign="top"><simpara><emphasis role="strong">2010/11</emphasis></simpara></entry>
-<entry align="right" valign="top"><simpara>4338</simpara></entry>
+<entry align="right" valign="top"><simpara>4339</simpara></entry>
 <entry align="right" valign="top"><simpara>164</simpara></entry>
 <entry align="right" valign="top"><simpara>44</simpara></entry>
-<entry align="right" valign="top"><simpara>4130</simpara></entry>
+<entry align="right" valign="top"><simpara>4131</simpara></entry>
 <entry align="right" valign="top"><simpara>0</simpara></entry>
 <entry align="right" valign="top"><simpara>0</simpara></entry>
 <entry align="right" valign="top"><simpara>0</simpara></entry>
@@ -248,9 +320,9 @@ rowsep="1" colsep="1"
 </row>
 <row>
 <entry align="center" valign="top"><simpara><emphasis role="strong">2012/13</emphasis></simpara></entry>
-<entry align="right" valign="top"><simpara>5402</simpara></entry>
+<entry align="right" valign="top"><simpara>5403</simpara></entry>
 <entry align="right" valign="top"><simpara>1854</simpara></entry>
-<entry align="right" valign="top"><simpara>433</simpara></entry>
+<entry align="right" valign="top"><simpara>434</simpara></entry>
 <entry align="right" valign="top"><simpara>3115</simpara></entry>
 <entry align="right" valign="top"><simpara>124</simpara></entry>
 <entry align="right" valign="top"><simpara>17</simpara></entry>
@@ -261,9 +333,9 @@ rowsep="1" colsep="1"
 </row>
 <row>
 <entry align="center" valign="top"><simpara><emphasis role="strong">2013/14</emphasis></simpara></entry>
-<entry align="right" valign="top"><simpara>6907</simpara></entry>
+<entry align="right" valign="top"><simpara>6906</simpara></entry>
 <entry align="right" valign="top"><simpara>2197</simpara></entry>
-<entry align="right" valign="top"><simpara>668</simpara></entry>
+<entry align="right" valign="top"><simpara>667</simpara></entry>
 <entry align="right" valign="top"><simpara>4042</simpara></entry>
 <entry align="right" valign="top"><simpara>157</simpara></entry>
 <entry align="right" valign="top"><simpara>22</simpara></entry>
@@ -274,36 +346,49 @@ rowsep="1" colsep="1"
 </row>
 <row>
 <entry align="center" valign="top"><simpara><emphasis role="strong">2014/15</emphasis></simpara></entry>
-<entry align="right" valign="top"><simpara>7351</simpara></entry>
-<entry align="right" valign="top"><simpara>2123</simpara></entry>
-<entry align="right" valign="top"><simpara>694</simpara></entry>
-<entry align="right" valign="top"><simpara>4534</simpara></entry>
-<entry align="right" valign="top"><simpara>177</simpara></entry>
-<entry align="right" valign="top"><simpara>24</simpara></entry>
-<entry align="right" valign="top"><simpara>16</simpara></entry>
+<entry align="right" valign="top"><simpara>7368</simpara></entry>
+<entry align="right" valign="top"><simpara>2139</simpara></entry>
+<entry align="right" valign="top"><simpara>700</simpara></entry>
+<entry align="right" valign="top"><simpara>4529</simpara></entry>
+<entry align="right" valign="top"><simpara>187</simpara></entry>
+<entry align="right" valign="top"><simpara>27</simpara></entry>
+<entry align="right" valign="top"><simpara>17</simpara></entry>
 <entry align="right" valign="top"><simpara>2</simpara></entry>
 <entry align="right" valign="top"><simpara>2</simpara></entry>
 <entry align="right" valign="top"><simpara>1</simpara></entry>
 </row>
 <row>
 <entry align="center" valign="top"><simpara><emphasis role="strong">2015/16</emphasis></simpara></entry>
-<entry align="right" valign="top"><simpara>4756</simpara></entry>
-<entry align="right" valign="top"><simpara>1003</simpara></entry>
-<entry align="right" valign="top"><simpara>272</simpara></entry>
-<entry align="right" valign="top"><simpara>3481</simpara></entry>
-<entry align="right" valign="top"><simpara>86</simpara></entry>
-<entry align="right" valign="top"><simpara>13</simpara></entry>
-<entry align="right" valign="top"><simpara>15</simpara></entry>
+<entry align="right" valign="top"><simpara>4902</simpara></entry>
+<entry align="right" valign="top"><simpara>1063</simpara></entry>
+<entry align="right" valign="top"><simpara>284</simpara></entry>
+<entry align="right" valign="top"><simpara>3555</simpara></entry>
+<entry align="right" valign="top"><simpara>87</simpara></entry>
+<entry align="right" valign="top"><simpara>20</simpara></entry>
+<entry align="right" valign="top"><simpara>16</simpara></entry>
 <entry align="right" valign="top"><simpara>0</simpara></entry>
-<entry align="right" valign="top"><simpara>2</simpara></entry>
+<entry align="right" valign="top"><simpara>4</simpara></entry>
 <entry align="right" valign="top"><simpara>1</simpara></entry>
 </row>
 <row>
 <entry align="center" valign="top"><simpara><emphasis role="strong">2016/17</emphasis></simpara></entry>
-<entry align="right" valign="top"><simpara>249</simpara></entry>
-<entry align="right" valign="top"><simpara>17</simpara></entry>
+<entry align="right" valign="top"><simpara>263</simpara></entry>
+<entry align="right" valign="top"><simpara>16</simpara></entry>
 <entry align="right" valign="top"><simpara>1</simpara></entry>
-<entry align="right" valign="top"><simpara>231</simpara></entry>
+<entry align="right" valign="top"><simpara>246</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+</row>
+<row>
+<entry align="center" valign="top"><simpara><emphasis role="strong">2017/18</emphasis></simpara></entry>
+<entry align="right" valign="top"><simpara>1</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>0</simpara></entry>
+<entry align="right" valign="top"><simpara>1</simpara></entry>
 <entry align="right" valign="top"><simpara>0</simpara></entry>
 <entry align="right" valign="top"><simpara>0</simpara></entry>
 <entry align="right" valign="top"><simpara>0</simpara></entry>
@@ -314,6 +399,10 @@ rowsep="1" colsep="1"
 </tbody>
 </tgroup>
 </informaltable>
+</section>
+</section>
+<section id="_hinweise">
+<title>Hinweise</title>
 <informaltable tabstyle="horizontal" frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colwidth="15*"/><colspec colwidth="85*"/><tbody valign="top">
 <row>
 <entry>
@@ -325,18 +414,17 @@ rowsep="1" colsep="1"
 <itemizedlist>
 <listitem>
 <simpara>
-ZGV: Der Ausstellungsstaat der ZGV ist nicht gut gepflegt. Es kann daher vorkommen, dass zwar die Zugangsvoraussetzung gegeben ist, aber der Ausstellungsstaat fehlt und deshalb die Zahlen in dieser Auswertung etwas verschoben sind.
+<emphasis role="strong">ZGV</emphasis>: Der Ausstellungsstaat der ZGV ist nicht gut gepflegt. Es kann daher vorkommen, dass zwar die Zugangsvoraussetzung gegeben ist, aber der Ausstellungsstaat fehlt und deshalb die Zahlen in dieser Auswertung etwas verschoben sind.
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-Ausstellungsstaat: Dieses Attribut wurde im WS2011 im Zuge einer neuen BIS-Verordnung eingef&uuml;hrt. Die Zahlen vor dem WS2011 sind demnach mit gro&szlig;er Wahrscheinlichkeit schlecht gepflegt.
+<emphasis role="strong">Ausstellungsstaat</emphasis>: Dieses Attribut wurde im WS2011 im Zuge einer neuen BIS-Verordnung eingef&uuml;hrt. Die Zahlen vor dem WS2011 sind demnach mit gro&szlig;er Wahrscheinlichkeit schlecht gepflegt.
 </simpara>
 </listitem>
 </itemizedlist>
 </entry>
 </row>
 </tbody></tgroup></informaltable>
-</section>
 </section>
 </article>

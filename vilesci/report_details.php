@@ -43,9 +43,12 @@
 	$report = new report();
 	$report->report_id		= 0;
 	$report->title 			= 'NewReport';
-	$report->description		= '';
+	$report->description		= '=== Beschreibung';
 	$report->format			= 'asciidoc';
-	$report->body		= '';
+	$report->header		= "";
+	$report->body		= "=== Chart\n=== Data";
+	$report->footer		= "=== Hinweise\n[horizontal]\n==== Mögliche Fehlerquellen:\n- ";
+	$report->docinfo	= file_get_contents('../data/template-docinfo.xml');
 	$report->insertvon		= $user;
 	$report->updatevon		= $user;
 	
@@ -63,7 +66,12 @@
 			$report->title = $_POST["title"];
 			$report->description = $_POST["description"];
 			$report->format = $_POST["format"];
+			$report->header = $_POST["header"];
 			$report->body = $_POST["body"];
+			$report->footer = $_POST["footer"];
+			$report->docinfo = $_POST["docinfo"];
+			//$report->publish = $_POST["publish"];
+			$report->gruppe = $_POST["gruppe"];
 			
 			if(!$report->save())
 			{
@@ -92,15 +100,27 @@
 	$htmlstr .= "	<table class='detail'>\n";
 	$htmlstr .= "			<tr>\n";
 	$htmlstr .= "				<td>Title</td>\n";
-	$htmlstr .= "				<td><input class='detail' type='text' name='title' size='22' maxlength='32' value='".$db->convert_html_chars($report->title)."' onchange='submitable()'></td>\n";
-	$htmlstr .= "				<td>Format</td>\n";
-	$htmlstr .= "				<td><input class='detail' type='text' name='format' size='8' maxlength='512' value='".$db->convert_html_chars($report->format)."' onchange='submitable()'></td>\n";
+	$htmlstr .= "				<td><input class='detail' type='text' name='title' size='22' maxlength='32' value='".$db->convert_html_chars($report->title)."' onchange='submitable()'>\n";
+	$htmlstr .= "				Format: <input class='detail' type='text' name='format' size='8' maxlength='512' value='".$db->convert_html_chars($report->format)."' onchange='submitable()'></td>\n";
+	$htmlstr .= "				<td>Gruppe</td>\n";
+	$htmlstr .= "				<td><input class='detail' type='text' name='gruppe' size='22' maxlength='32' value='".$db->convert_html_chars($report->gruppe)."' onchange='submitable()'>\n";
+	$htmlstr .= "				Publish: <input class='detail' type='checkbox' name='publish' value='".$db->convert_html_chars($report->publish)."' onchange='submitable()'></td>\n";
 	$htmlstr .= "			</tr>\n";
 	$htmlstr .= "			<tr>\n";
 	$htmlstr .= "				<td valign='top'>Description</td>\n";
 	$htmlstr .= " 				<td ><textarea name='description' cols='70' rows='6' onchange='submitable()'>".$db->convert_html_chars($report->description)."</textarea></td>\n";
-	$htmlstr .= "				<td valign='top'>Body</td>\n";
-	$htmlstr .= " 				<td colspan='2'><textarea name='body' cols='70' rows='6' onchange='submitable()'>".$db->convert_html_chars($report->body)."</textarea></td>\n";
+	$htmlstr .= "				<td valign='top'>Header</td>\n";
+	$htmlstr .= " 				<td colspan='2'><textarea name='header' cols='70' rows='6' onchange='submitable()'>".$db->convert_html_chars($report->header)."</textarea></td>\n";
+	$htmlstr .= "			</tr>\n";
+	$htmlstr .= "			<tr>\n";
+	$htmlstr .= "				<td rowspan='2' valign='top'>Body</td>\n";
+	$htmlstr .= " 				<td rowspan='2'><textarea name='body' cols='70' rows='14' onchange='submitable()'>".$db->convert_html_chars($report->body)."</textarea></td>\n";
+	$htmlstr .= "				<td valign='top'>Footer</td>\n";
+	$htmlstr .= " 				<td colspan='2'><textarea name='footer' cols='70' rows='6' onchange='submitable()'>".$db->convert_html_chars($report->footer)."</textarea></td>\n";
+	$htmlstr .= "			</tr>\n";
+	$htmlstr .= "			<tr>\n";
+	$htmlstr .= "				<td valign='top'>DocInfo</td>\n";
+	$htmlstr .= " 				<td ><textarea name='docinfo' cols='70' rows='6' onchange='submitable()'>".$db->convert_html_chars($report->docinfo)."</textarea></td>\n";
 	$htmlstr .= "			</tr>\n";
 	$htmlstr .= "	</table>\n";
 	$htmlstr .= "<br>\n";

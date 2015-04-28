@@ -47,10 +47,10 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 
 		<title>Reports - FH Technikum Wien</title>
 
-		<link href="../../../submodules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-		<link href="../include/css/offcanvas.css" rel="stylesheet">
-		<link href="../../../submodules/pivottable/dist/pivot.min.css" rel="stylesheet">
-
+		<link rel="stylesheet" type="text/css" href="../../../submodules/bootstrap/dist/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="../include/css/offcanvas.css">
+		<link rel="stylesheet" type="text/css" href="reporting.css">
+		<link rel="stylesheet" type="text/css" href="../../../submodules/pivottable/dist/pivot.css">
 		<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 		<!--<script src="../include/js/ie10-viewport-bug-workaround.js"></script>-->
 
@@ -59,11 +59,19 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 		  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
-		<!-- ngGrid -->
+		<script type="text/javascript" src="../../../submodules/pivottable/examples/ext/d3.v3.min.js"></script>
+        <!-- <script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
+        <script type="text/javascript" src="../../../include/js/jquery-1.11.2.min.js"></script>
+        <!-- <script type="text/javascript" src="../../../include/js/jquery-ui-1.11.4.custom.min.js"></script>-->
+        <!-- <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/jquery-1.8.3.min.js"></script>-->
+        <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/jquery-ui-1.9.2.custom.min.js"></script>
+		<script type="text/javascript" src="../../../submodules/pivottable/dist/pivot.js"></script>
+        <script type="text/javascript" src="../../../submodules/pivottable/dist/gchart_renderers.js"></script>
+        <script type="text/javascript" src="../../../submodules/pivottable/dist/d3_renderers.js"></script>
+        <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/jquery.ui.touch-punch.min.js"></script>
+        <!-- ngGrid -->
 		<?php echo chart::getAllHtmlHead() ?>
-		<link rel="stylesheet" href="reporting.css" type="text/css">
-		<script type="text/javascript" src="../../../include/js/jquery-ui.1.11.2.min.js"></script>
-		<script type="text/javascript" src="../../../submodules/pivottable/dist/pivot.min.js"></script>
+		
 	</head>
 
 	<body>
@@ -244,7 +252,7 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
                                                data-static-report="../data/Report2.html">
                                                 Interessent ZGV
                                             </a>
-                                            <a href="../data/Report2.pdf" class="pull-right">
+                                            <a href="../data/Report2.pdf" target="_blank" class="pull-right">
                                                 <img src="pdfIcon.png" width="20" alt="pdf"/>
                                             </a>
                                         </span>
@@ -263,7 +271,7 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 				<hr>
 
 				<footer>
-					<p>&copy; FH Technikum Wien 2014</p>
+					<p>&copy; FH Technikum Wien 2015</p>
 				</footer>
 
 			</div>
@@ -284,10 +292,6 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 						}, 100);
 					}, 100);
 				});
-				function loadPDF()
-				{
-					alert('test');
-				}
 			</script>
 			<?php endif; ?>
 		</div>

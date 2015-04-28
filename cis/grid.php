@@ -84,7 +84,9 @@ $statistik->loadData(); ?>
 		<?php if($statistik->data): ?>
 		<script type="text/javascript">
 			var options = <?php echo $statistik->preferences ? : '{}' ?>;
-
+			var dateFormat =       $.pivotUtilities.derivers.dateFormat;
+            var sortAs =           $.pivotUtilities.sortAs;
+            var tpl =              $.pivotUtilities.aggregatorTemplates;
 			$('#pivot').pivotUI(<?php echo $statistik->db_getResultJSON($statistik->data) ?>, options);
 		</script>
 		<?php endif; ?>

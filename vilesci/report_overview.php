@@ -167,7 +167,7 @@ if (!$report->loadAll())
 			$(function() {
 				$("#t1").tablesorter(
 				{
-					sortList: [[2,0]],
+					sortList: [[3,1]],
 					widgets: ["zebra"]
 				});
 			});
@@ -223,14 +223,23 @@ if (!$report->loadAll())
 		<table class="tablesorter" id="t1">
 			<thead>
 				<tr>
-					<th onmouseup="document.formular.check.value=0">
+					<th align="center" onmouseup="document.formular.check.value=0">
 						ID
 					</th>
 					<th title="Titel des Reports">
 						Titel
 					</th>
 					<th>
+						Gruppe
+					</th>
+					<th align="center">
+						Pub
+					</th>
+					<th>
 						Format
+					</th>
+					<th title="Ergebnisse in diversen Formaten">
+						Results
 					</th>
 					<th>
 						Body
@@ -247,9 +256,6 @@ if (!$report->loadAll())
 							<a href="report_details.php?report_id=<?php echo $report->report_id ?>" target="frame_report_details">
 								<?php echo $report->report_id ?>
 							</a>
-							<a href="../data/<?php echo $report->report_id ?>.html" target="_blank">
-								<img title="<?php echo $report->title ?> anzeigen" src="../include/images/x-office-presentation.svg" class="mini-icon" />
-							</a>
 						</td>
 						<td>
 							<a href="report_details.php?report_id=<?php echo $report->report_id ?>" target="frame_report_details">
@@ -257,9 +263,22 @@ if (!$report->loadAll())
 							</a>
 						</td>
 						<td>
+							<?php echo $report->gruppe ?>
+						</td>
+						<td align="center">
+							<?php if ($report->publish) echo '✓' ?>
+						</td>
+						<td>
 							<?php echo $report->format ?>
 							<a href="report_generate.php?report_id=<?php echo $report->report_id ?>" target="frame_report_details">
 								<img title="<?php echo $report->title ?> generieren" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" />
+							</a>
+						</td>
+						<td align="center">
+							<a href="../data/Report<?php echo $report->report_id ?>.html" target="_blank">
+								<img title="<?php echo $report->title ?> anzeigen" src="../include/images/x-office-presentation.svg" class="mini-icon" />
+							</a><a href="../data/Report<?php echo $report->report_id ?>.pdf" target="_blank">
+								<img title="<?php echo $report->title ?> anzeigen" src="../include/images/pdfIcon.svg" class="mini-icon" />
 							</a>
 						</td>
 						<td>

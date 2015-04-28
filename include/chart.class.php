@@ -24,7 +24,9 @@ class chart extends basis_db
 {
 	public $new;
 	public $result = array();
+	public $chart = array();  // for DB-Results
 	public $vars = '';
+	public $statistik;
 	public $addon_root;
 	
 	//Tabellenspalten
@@ -158,6 +160,55 @@ class chart extends basis_db
 		}
 		return true;
 	}
+	
+	/**
+	 * Laedt alle Charts aus DB zu einem Report
+	 * @return true wenn ok, false im Fehlerfall
+	 */
+	public function loadCharts($report_id)
+	{
+
+		//Lesen der Daten aus der Datenbank
+		$qry = 'SELECT tbl_rp_chart.* 
+				FROM addon.tbl_rp_chart
+					JOIN addon.tbl_rp_report_chart USING (chart_id) 
+				WHERE report_id='.$report_id.' ORDER BY title;';
+
+		if(!$this->db_query($qry))
+		{
+			$this->errormsg = 'Fehler bei einer Datenbankabfrage';
+			return false;
+		}
+
+		while($row = $this->db_fetch_object())
+		{
+			$obj = new chart();
+
+			$obj->chart_id			= $row->chart_id;
+			$obj->title				= $row->title;
+			$obj->description		= $row->description;
+			$obj->type				= $row->type;
+			$obj->sourcetype		= $row->sourcetype;
+			$obj->preferences		= $row->preferences;
+			$obj->datasource		= $row->datasource;
+			$obj->datasource_type	= $row->datasource_type;
+			$obj->updateamum		= $row->updateamum;
+			$obj->updatevon			= $row->updatevon;
+			$obj->insertamum		= $row->insertamum;
+			$obj->insertvon		    = $row->insertvon;
+			$obj->publish			= $this->db_parse_bool($row->publish);
+			$obj->statistik_kurzbz	= $row->statistik_kurzbz;
+			$obj->dashboard			= $this->db_parse_bool($row->dashboard);
+			$obj->dashboard_layout	= $row->dashboard_layout;
+			$obj->dashboard_pos		= $row->dashboard_pos;
+			//$obj->chart_num_rows= $this->getNumRows('sync.'.$row->chart_tablename);
+			$obj->new       = false;
+
+			$this->chart[] = $obj;
+		}
+		return true;
+	}
+	
 	/**
 	 * Laedt alle Statistiken einer Gruppe, Parameter publish zum Filtern.
 	 * @return true wenn ok, sonst false
@@ -476,7 +527,6 @@ EOT;
 	public function getHtmlHead()
 	{
 		ob_start(); ?>
-		<script src="../include/js/jquery.min.1.11.1.js" type="application/javascript"></script>
 		<link rel="stylesheet" href="../include/css/charts.css" type="text/css">
 
 		<?php switch ($this->type)
@@ -512,12 +562,10 @@ EOT;
 	public static function getAllHtmlHead()
 	{
 		ob_start(); ?>
-			<script src="../../../include/js/jquery.min.1.11.1.js" type="application/javascript"></script>
 			<script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>
 			<link rel="stylesheet" href="../include/css/charts.css" type="text/css">
 			<link rel="stylesheet" href="../include/css/spider.css" type="text/css">
 			<link rel="stylesheet" href="../include/css/xchart.css" type="text/css" />
-			<link rel="stylesheet" href="../include/css/jquery-ui.1.11.2.min.css" type="text/css" />
 			<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ng-grid.css" />
 			<script src="../include/js/ngGrid/angular.min.js" type="application/javascript"></script>
 			<script src="../include/js/ngGrid/ng-grid.debug.js" type="application/javascript"></script>
@@ -629,7 +677,7 @@ EOT;
 		<?php return ob_get_clean();
 	}
 
-	public function writePNG()
+	public function writePNG($dataFileNameCSV)
 	{
 		switch ($this->type)
 		{
@@ -640,7 +688,7 @@ EOT;
 				$MyData->addPoints(array(150,220,300,250,420,200,300,200,100),"Server A");
 				$MyData->addPoints(array(140,0,340,300,320,300,200,100,50),"Server B");
 				$MyData->setAxisName(0,"Hits");
-				$MyData->addPoints(array("January","February","March","April","May","Juin","July","August","September"),"Months");
+				$MyData->addPoints(array("January","February","March","April","May","June","July","August","September"),"Months");
 				$MyData->setSerieDescription("Months","Month");
 				$MyData->setAbscissa("Months");
 
@@ -679,17 +727,22 @@ EOT;
 			case 'hctimezoom':
 				$hctype=substr($this->type,2);
 				$bin_files='';
-				$options_filename='options.js';
-				$job_filename='highcharts-convert.js';
-				$output_filename=$this->addon_root.'data/images/chart'.$this->chart_id.date('Y-m-d_H:i:s').'.png';
+				$options_filename=$this->addon_root.'data/options.js';
+				$job_filename=$this->addon_root.'include/js/highcharts/highcharts-convert.js';
+				$tmp_filename=$this->addon_root.'data/images/chart'.$this->chart_id.date('Y-m-d_H:i:s').'.png';
+				$output_filename=$this->addon_root.'data/images/chart'.$this->chart_id.'.png';
 				$output=array();
 				$exit=0;
 				$scale='2.5';
-				$width='500';
+				$width='1000';
 
-				$data='"Studienjahr","Gesamt","Inland","Ausland","KeineZGV","Inland 2Stg","Ausland 2Stg","Inland 3Stg","Ausland 3Stg","Inland >3Stg","Ausland >3Stg"\n"2001/02","9","0","0","9","0","0","0","0","0","0"\n"2003/04","93","0","0","93","0","0","0","0","0","0"\n"2004/05","944","2","0","942","0","0","0","0","0","0"\n"2005/06","1985","3","0","1982","1","0","0","0","0","0"\n"2006/07","3075","7","0","3068","0","0","0","0","0","0"\n"2007/08","4003","23","1","3979","0","0","0","0","0","0"\n"2008/09","4212","25","2","4185","0","0","0","0","0","0"\n"2009/10","4371","90","4","4277","2","0","0","0","0","0"\n"2010/11","4338","164","44","4130","0","0","0","0","0","0"\n"2011/12","5107","1403","244","3460","19","5","1","0","0","0"\n"2012/13","5402","1854","433","3115","124","17","7","1","0","0"\n"2013/14","6907","2197","668","4042","157","22","11","1","1","0"\n"2014/15","7351","2123","694","4534","177","24","16","2","2","1"\n"2015/16","4756","1003","272","3481","86","13","15","0","2","1"\n"2016/17","249","17","1","231","0","0","0","0","0","0"';
+				//$data='"Studienjahr","Gesamt","Inland","Ausland","KeineZGV","Inland 2Stg","Ausland 2Stg","Inland 3Stg","Ausland 3Stg","Inland >3Stg","Ausland >3Stg"\n"2001/02","9","0","0","9","0","0","0","0","0","0"\n"2003/04","93","0","0","93","0","0","0","0","0","0"\n"2004/05","944","2","0","942","0","0","0","0","0","0"\n"2005/06","1985","3","0","1982","1","0","0","0","0","0"\n"2006/07","3075","7","0","3068","0","0","0","0","0","0"\n"2007/08","4003","23","1","3979","0","0","0","0","0","0"\n"2008/09","4212","25","2","4185","0","0","0","0","0","0"\n"2009/10","4371","90","4","4277","2","0","0","0","0","0"\n"2010/11","4338","164","44","4130","0","0","0","0","0","0"\n"2011/12","5107","1403","244","3460","19","5","1","0","0","0"\n"2012/13","5402","1854","433","3115","124","17","7","1","0","0"\n"2013/14","6907","2197","668","4042","157","22","11","1","1","0"\n"2014/15","7351","2123","694","4534","177","24","16","2","2","1"\n"2015/16","4756","1003","272","3481","86","13","15","0","2","1"\n"2016/17","249","17","1","231","0","0","0","0","0","0"';
+				$data = file_get_contents($dataFileNameCSV);
+				//$data=str_replace('"',' ',$data);
+				$data=str_replace(chr(10),'\n',$data);
+				//echo $data;
 				$options="{
-				title:'InteressentZGV',
+				title:'$this->title',
 				chart: {renderTo: 'container',
 						type:'$hctype'},
 				categories:{},
@@ -705,18 +758,39 @@ EOT;
 				$rsc=fopen($options_filename,'w');
 				$c=fwrite($rsc,$options);
 				echo $c,' Bytes written<br/>';
-				$exec = $bin_files. 'phantomjs '.$job_filename.' -infile '.$options_filename.' -outfile '.$output_filename.' -scale '.$scale.' -width '.$width;
-				//echo $exec;
+				$exec = $bin_files. 'phantomjs '.$job_filename.' -infile '.$options_filename.' -outfile '.$tmp_filename.' -scale '.$scale.' -width '.$width;
+				//echo $exec;ob_flush();flush();
 				$escaped_command = escapeshellcmd($exec);
-				$lastout=exec($escaped_command, $output, $exit);
-				if($lastout!==$output_filename)
+				$process = new process($escaped_command);
+				//$lastout=exec($escaped_command, $output, $exit);
+				/*if($lastout!==$output_filename)
 				{
 					echo '<br/>ExitCode: '.$exit.'<br/>';
 					var_dump($output);
+				}*/
+				for ($i=0;$process->status() && $i<10;$i++)
+				{
+					echo "<br/>The process is currently running";ob_flush();flush();
+					usleep(200000); // wait for 0.2 Seconds
 				}
-				if (!is_file($output_filename)) 
-					die ('<br/>Error in PhantomJS execution!');
-				return $lastout;
+				if ($process->status())
+				{
+					$this->errormsg='<br/>Timeout in PhantomJS execution!<br/>'.$escaped_command.'<br/>';
+					$process->stop();
+					return false;
+				}
+				elseif (@fopen($tmp_filename,'r'))
+				{
+					// move file
+					if (rename($tmp_filename,$output_filename))
+						return $output_filename;
+					else
+						$this->errormsg='<br/>Cannot remove File from '.$tmp_filename.' to '.$output_filename.'<br/>';
+					return false;
+				}
+				else
+					$this->errormsg='<br/>Cannot read File: '.$tmp_filename.'<br/>Maybe Phantomjs failed!<br/>'.$escaped_command;
+				return false;
 		}
 	}
 }
