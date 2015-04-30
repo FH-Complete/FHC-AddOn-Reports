@@ -51,6 +51,10 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 		<link rel="stylesheet" type="text/css" href="../include/css/offcanvas.css">
 		<link rel="stylesheet" type="text/css" href="reporting.css">
 		<link rel="stylesheet" type="text/css" href="../../../submodules/pivottable/dist/pivot.css">
+		<link rel="stylesheet" href="../include/css/charts.css" type="text/css">
+		<!-- <link rel="stylesheet" href="../include/css/spider.css" type="text/css">
+		<link rel="stylesheet" href="../include/css/xchart.css" type="text/css" /> -->
+		
 		<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 		<!--<script src="../include/js/ie10-viewport-bug-workaround.js"></script>-->
 
@@ -59,18 +63,25 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 		  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
-		<script type="text/javascript" src="../../../submodules/pivottable/examples/ext/d3.v3.min.js"></script>
-        <!-- <script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
-        <script type="text/javascript" src="../../../include/js/jquery-1.11.2.min.js"></script>
-        <!-- <script type="text/javascript" src="../../../include/js/jquery-ui-1.11.4.custom.min.js"></script>-->
-        <!-- <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/jquery-1.8.3.min.js"></script>-->
-        <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/jquery-ui-1.9.2.custom.min.js"></script>
+		<script type="text/javascript" src="../../../include/js/jquery.min.1.11.1.js"></script>
+        <!-- <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/jquery-1.8.3.min.js"></script> -->
+        <script type="text/javascript" src="../../../include/js/jquery-ui-1.11.4.custom.min.js"></script>
+        
+        <!-- <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/jquery-ui-1.9.2.custom.min.js"></script> -->
 		<script type="text/javascript" src="../../../submodules/pivottable/dist/pivot.js"></script>
+        <!-- <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/d3.v3.min.js"></script>-->
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../../../submodules/pivottable/dist/gchart_renderers.js"></script>
-        <script type="text/javascript" src="../../../submodules/pivottable/dist/d3_renderers.js"></script>
+        <!--<script type="text/javascript" src="../../../submodules/pivottable/dist/d3_renderers.js"></script>-->
+        
+        <!-- <script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script> -->
+		
+		<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>
+		<script src="../include/js/highcharts/main.js" type="application/javascript"></script>
         <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/jquery.ui.touch-punch.min.js"></script>
+        
         <!-- ngGrid -->
-		<?php echo chart::getAllHtmlHead() ?>
+		<?php //echo chart::getAllHtmlHead() ?>
 		
 	</head>
 
