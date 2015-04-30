@@ -328,6 +328,11 @@ function loadHcChart(url, chart) {
 				convertQueryResult(chart);
 				hcCreate(chart, 'column');
 			}
+			else if(chart.type === 'hcbar')
+			{
+				convertQueryResult(chart);
+				hcCreate(chart, 'bar');
+			}
 			else if(chart.type === 'hcpie')
 			{
 				convertQueryResult(chart);

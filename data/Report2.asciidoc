@@ -1,6 +1,8 @@
 = Report - Interessent ZGV
 :icons: font
 :toc: right
+:report_id: 2
+
 
 == Beschreibung
 Dieser Report liefert Kennzahlen zu Interessenten mit Zugangsvorraussetzungen welche im Ausland erworben wurden.
@@ -16,28 +18,30 @@ Dieser Report liefert Kennzahlen zu Interessenten mit Zugangsvorraussetzungen we
 
 [horizontal]
 *Parameter*::
-- *Erstellung*: Tue, 28 Apr 2015
-- *Datenstand*: Tue, 28 Apr 2015 09:04:52 +0200
+- *Erstellung*: Thu, 30 Apr 2015
+- *Datenstand*: Thu, 30 Apr 2015 15:20:03 +0200
 - *report_id* := 2
 
 
 == Report
 === Chart
 ifdef::backend-docbook[]
-image:images/chart8.png[]
+image:images/chart6.png[scaledwidth="85%"]
 endif::backend-docbook[]
 
 ifdef::backend-html5[]
 ++++
-<iframe id="iframe2_chart_spider" src="../vilesci/chart.php?chart_id=8" frameborder="0" seamless="true" width="90%" align="middle" style="height: 500px"></iframe>
+<iframe id="iframe2_chart_spider" src="../vilesci/chart.php?chart_id=6&htmlbody=true" frameborder="0" seamless="true" width="90%" align="middle" style="height: 500px"></iframe>
 ++++
 endif::backend-html5[]
 
+ifdef::backend-docbook[]
 === Daten
 [format="csv",cols="^h,10*>",options="header"]
 |===================================================
 include::dataInteressentZGV.csv[]
 |===================================================
+endif::backend-docbook[]
 
 == Hinweise
 [horizontal]

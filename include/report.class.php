@@ -344,14 +344,23 @@ class report extends basis_db
 		}
 	}
 	
-	public function printParam($crlf)
+	public function printParam($type,$crlf)
 	{
 		$return='';
 		switch ($this->format)
 		{
 			case 'asciidoc':
 				foreach ($_REQUEST AS $key=>$val)
-					$return.='- *'.$key.'* := '.$val.$crlf;
+				{
+					switch($type)
+					{
+						case 'param':
+							$return.='- *'.$key.'* := '.$val.$crlf;
+							break;
+						case 'attr':
+							$return.=':'.$key.': '.$val.$crlf;
+					}
+				}
 				return $return;
 			
 		}

@@ -352,6 +352,7 @@ class chart extends basis_db
 			'spider' => 'Spider',
 			'hcline' => 'Highcharts Line',
 			'hccolumn' => 'Highcharts Column',
+			'hcbar' => 'Highcharts Bar',
 			'hcpie' => 'Highcharts Pie',
 			'hcdrill' => 'Highcharts Drilldown',
 			'hctimezoom' => 'Highcharts Timezoom',
@@ -423,6 +424,7 @@ EOT;
 			'spider' => "",
 			'hcline' => $hc_default,
 			'hccolumn' => $hc_default,
+			'hcbar' => $hc_default,
 			'hcpie' => $hc_default,
 			'hcdrill' => $hc_drill,
 			'hctimezoom' => $hc_timezoom,
@@ -550,6 +552,7 @@ EOT;
 				<?php break;
 			case 'hcline':
 			case 'hccolumn':
+			case 'hcbar':
 			case 'hcpie': ?>
 				<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>
 				<script src="../include/js/highcharts/main.js" type="application/javascript"></script>
@@ -562,6 +565,7 @@ EOT;
 	public static function getAllHtmlHead()
 	{
 		ob_start(); ?>
+			<script src="../include/js/jquery-1.11.2.min.js" type="application/javascript"></script>
 			<script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>
 			<link rel="stylesheet" href="../include/css/charts.css" type="text/css">
 			<link rel="stylesheet" href="../include/css/spider.css" type="text/css">
@@ -635,6 +639,7 @@ EOT;
 			case 'hcdrill':
 			case 'hcline':
 			case 'hccolumn':
+			case 'hcbar':
 			case 'hcpie':
 
 				$chart = array(
@@ -655,7 +660,7 @@ EOT;
 				?>
 				<div id="hcChart<?php echo $this->chart_id ?>" class="<?php echo $class ?>"></div>
 				<script type="application/javascript">
-					var source = <?php echo json_encode($this->datasource.$this->vars) ?>,
+				var source = <?php echo json_encode($this->datasource.$this->vars) ?>,
 						chart = <?php echo json_encode($chart) ?>;
 					<?php echo $this->preferences ?>;
 				</script>
@@ -722,9 +727,10 @@ EOT;
 		
 			case 'hcline':
 			case 'hccolumn':
+			case 'hcbar':
 			case 'hcpie':
-			case 'hcdrill':
 			case 'hctimezoom':
+			case 'hcdrill':
 				$hctype=substr($this->type,2);
 				$bin_files='';
 				$options_filename=$this->addon_root.'data/options.js';
@@ -735,28 +741,62 @@ EOT;
 				$exit=0;
 				$scale='2.5';
 				$width='1000';
+				if ($hctype=='drill')
+				{
+					$hctype='column';
+					$data = json_decode($this->statistik->getJSON());
+					$series_data = array();
 
-				//$data='"Studienjahr","Gesamt","Inland","Ausland","KeineZGV","Inland 2Stg","Ausland 2Stg","Inland 3Stg","Ausland 3Stg","Inland >3Stg","Ausland >3Stg"\n"2001/02","9","0","0","9","0","0","0","0","0","0"\n"2003/04","93","0","0","93","0","0","0","0","0","0"\n"2004/05","944","2","0","942","0","0","0","0","0","0"\n"2005/06","1985","3","0","1982","1","0","0","0","0","0"\n"2006/07","3075","7","0","3068","0","0","0","0","0","0"\n"2007/08","4003","23","1","3979","0","0","0","0","0","0"\n"2008/09","4212","25","2","4185","0","0","0","0","0","0"\n"2009/10","4371","90","4","4277","2","0","0","0","0","0"\n"2010/11","4338","164","44","4130","0","0","0","0","0","0"\n"2011/12","5107","1403","244","3460","19","5","1","0","0","0"\n"2012/13","5402","1854","433","3115","124","17","7","1","0","0"\n"2013/14","6907","2197","668","4042","157","22","11","1","1","0"\n"2014/15","7351","2123","694","4534","177","24","16","2","2","1"\n"2015/16","4756","1003","272","3481","86","13","15","0","2","1"\n"2016/17","249","17","1","231","0","0","0","0","0","0"';
-				$data = file_get_contents($dataFileNameCSV);
-				//$data=str_replace('"',' ',$data);
-				$data=str_replace(chr(10),'\n',$data);
-				//echo $data;
-				$options="{
-				title:'$this->title',
-				chart: {renderTo: 'container',
-						type:'$hctype'},
-				categories:{},
-				yAxis: {title: {text: 'Personen'}},
-				x:{'rotation':0},
-				y:{'rotation':0},
-				data: {
-					itemDelimiter: ',',
-					csv: '".$data."'
+					foreach($data as $zeile) {
+
+						$l1_bezeichnung = current($zeile);
+
+						if(!isset($series_data[$l1_bezeichnung])) {
+							$series_data[$l1_bezeichnung] = end($zeile);
+						} else {
+							$series_data[$l1_bezeichnung] += end($zeile);
+						}
 					}
-				}";
 
-				$rsc=fopen($options_filename,'w');
-				$c=fwrite($rsc,$options);
+					$options = array('title' => $this->title,
+						'chart' => array(
+							'type' => 'column',
+						),
+						'xAxis' => array(
+							'categories' => array_keys($series_data),
+						),
+						'series' => array(
+							array(
+								'data' => array_values($series_data),
+							)
+						),
+					);
+					$rsc=fopen($options_filename,'w');
+					$c=fwrite($rsc,json_encode($options)); 
+				}
+				else
+				{
+					$data = file_get_contents($dataFileNameCSV);
+					//$data=str_replace('"',' ',$data);
+					$data=str_replace(chr(10),'\n',$data);
+					//echo $data;
+					$options="{
+					title:'$this->title',
+					chart: {renderTo: 'container',
+							type:'$hctype'},
+					categories:{},
+					yAxis: {title: {text: 'Personen'}},
+					x:{'rotation':0},
+					y:{'rotation':0},
+					data: {
+						itemDelimiter: ',',
+						csv: '".$data."'
+						}
+					}";
+					$rsc=fopen($options_filename,'w');
+					$c=fwrite($rsc,$options); 
+				}
+
 				echo $c,' Bytes written<br/>';
 				$exec = $bin_files. 'phantomjs '.$job_filename.' -infile '.$options_filename.' -outfile '.$tmp_filename.' -scale '.$scale.' -width '.$width;
 				//echo $exec;ob_flush();flush();
