@@ -23,6 +23,7 @@ require_once('../../../include/functions.inc.php');
 require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../../../include/statistik.class.php');
 require_once('../../../include/filter.class.php');
+require_once('../include/report.class.php');
 
 $db = new basis_db();
 
@@ -43,17 +44,23 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 $filter = new filter();
 $filter->loadAll();
 $statistik = new statistik();
+$report = new report();
 
 $statistik_kurzbz = filter_input(INPUT_GET, 'statistik_kurzbz');
+$report_id = filter_input(INPUT_GET, 'report_id', FILTER_SANITIZE_NUMBER_INT);
 $htmlbody = filter_input(INPUT_GET, 'htmlbody', FILTER_VALIDATE_BOOLEAN);
 
-if(!isset($statistik_kurzbz))
-{
-	die('"statistik_kurzbz" is not set!');
+if($report_id) {
+    return;
 }
-elseif(!$statistik->load($statistik_kurzbz))
+
+if(!isset($statistik_kurzbz) && !isset($report_id))
 {
-	die('Statistik not found in DB!');
+	die('"statistik_kurzbz"/"report_id" is not set!');
+}
+elseif(!$statistik->load($statistik_kurzbz) && !$report->load($report_id))
+{
+	die('Statistik/Report not found in DB!');
 }
 
 $vars = $statistik->parseVars($statistik->sql);

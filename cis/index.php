@@ -30,7 +30,9 @@ $statistik = new statistik();
 $chart = new chart();
 $report = new report();
 
-if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
+if(!$statistik->getAnzahlGruppe(true)
+    || !$chart->getAnzahlGruppe(true)
+    || !$report->getAnzahlGruppe(true))
 {
 	die();
 }
@@ -136,12 +138,17 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 							<li class="dropdown">
 								<a href="#reports" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">Reports <span class="caret"></span></a>
 								<ul class="dropdown-menu" role="menu" data-name="reports">
-									<li><a href="#" data-gruppe="Studierende">Studierende <span class="badge">1</span></a></li>
-									<li class="divider"></li>
-									<li class="dropdown-header">Extra</li>
-									<li><a href="#">Wissensbilanz <span class="badge">0</span></a></li>
-									<li><a href="#">Sonstiges <span class="badge">0</span></a></li>
-								</ul>
+                                    <?php foreach($report->result as $gruppen): ?>
+                                        <li>
+                                            <a href="#" data-gruppe="<?php echo str_replace(' ', '', $gruppen->gruppe) ?>">
+                                                <?php echo $gruppen->gruppe ?>
+                                                <span class="badge">
+                                                    <?php echo $gruppen->anzahl ?>
+                                                </span>
+                                            </a>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
 							</li>
 						</ul>
 					</div>
@@ -233,7 +240,7 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 								</ul>
 							</div>
 						<?php endforeach; ?>
-						<!--<?php foreach($report->result AS $gruppen): ?>
+						<?php foreach($report->result AS $gruppen): ?>
 							<div style="display: none;" id="reportsgroup_<?php echo str_replace(' ', '', $gruppen->gruppe) ?>" class="list-group">
 								<ul class="nav">
 									<?php
@@ -241,9 +248,14 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 									$data->getGruppe($gruppen->gruppe, true);
 									foreach($data->result AS $dat): ?>
 										<li>
-											<a href="#" data-statistik-kurzbez="<?php echo urlencode($dat->statistik_kurzbz) ?>" class="list-group-item" data-chart-id="<?php echo $dat->report_id ?>">
-												<?php echo $dat->title ?>
-											</a>
+                                            <span class="list-group-item">
+                                                <a href="#" data-report-id="<?php echo $dat->report_id ?>">
+                                                    <?php echo $dat->title ?>
+                                                </a>
+                                                <a href="../data/Report<?php echo $dat->report_id ?>.pdf" class="pull-right">
+                                                    <img src="pdfIcon.png" width="20" alt="pdf"/>
+                                                </a>
+                                            </span>
 										</li>
 									<?php endforeach; ?>
 									<li class="hide-button">
@@ -253,28 +265,7 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 									</li>
 								</ul>
 							</div>
-						<?php endforeach; ?>-->
-						<!-- static for testing -->
-						<div style="display: none;" id="reportsgroup_Studierende" class="list-group">
-                            <ul class="nav">
-                                <li>
-                                        <span class="list-group-item">
-                                            <a href="#" data-statistik-kurzbez="InteressentZGV"
-                                               data-static-report="../data/Report2.html">
-                                                Interessent ZGV
-                                            </a>
-                                            <a href="../data/Report2.pdf" target="_blank" class="pull-right">
-                                                <img src="pdfIcon.png" width="20" alt="pdf"/>
-                                            </a>
-                                        </span>
-                                </li>
-                                <li class="hide-button">
-                                    <a href="#">
-                                        <span class="glyphicon glyphicon-chevron-up"></span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+						<?php endforeach; ?>
 					</div>
 				</div>
 
@@ -293,14 +284,14 @@ if(!$statistik->getAnzahlGruppe(true) || !$chart->getAnzahlGruppe(true))
 			<script type="text/javascript">
 				$(function() {
 					setTimeout(function() {
-						$('ul[data-name="charts"] a[data-gruppe="Studierende"]').trigger('click');
-						$('#chartsgroup_Studierende *[data-statistik-kurzbez="InteressentenZeitverlauf"]').trigger('click');
-						setTimeout(function() {
-							$('#Studiensemester').val('WS2014');
-						}, 50);
-						setTimeout(function() {
-							$('#run-filter').trigger('click');
-						}, 100);
+						$('ul[data-name="reports"] a[data-gruppe="Obst"]').trigger('click');
+						$('#reportsgroup_Obst *[data-report-id="2"]').trigger('click');
+//						setTimeout(function() {
+//							$('#Studiensemester').val('WS2014');
+//						}, 50);
+//						setTimeout(function() {
+//							$('#run-filter').trigger('click');
+//						}, 100);
 					}, 100);
 				});
 			</script>

@@ -35,51 +35,40 @@ $(function() {
 		$('#sidebar div').hide();
 		$('#sidebar').attr('data-menu', menu);
 		$('#' + menu + 'group_' + gruppe).show();
+        $('#content').parent().removeClass('col-sm-12').addClass('col-sm-9');
+        $(window).trigger('resize');
 	});
 
 	$('#sidebar a').on('click', function() {
 
 		var statistik_kurzbz = $(this).attr('data-statistik-kurzbez'),
 			chart_id = $(this).attr('data-chart-id'),
-            report_id = $(this).attr('data-report-id'),
-            report_static = $(this).attr('data-static-report');
-
-        console.log(report_static);
-
-        if(report_static) {
-            var iframe = $(document.createElement('iframe'));
-            iframe.attr({
-                src: report_static
-            });
-            iframe.css({
-                border: '0',
-                width: '100%',
-                height: '800px'
-            });
-            $('#content').html(iframe);
-            return;
-        }
+            report_id = $(this).attr('data-report-id');
 
 		if($(this).closest('li').hasClass('hide-button')) {
 
 			$(this).closest('div').slideUp('fast');
+            $('#content').parent().removeClass('col-sm-9').addClass('col-sm-12');
+            $(window).trigger('resize');
 			return;
 		}
 
 		$('#welcome,#content').hide();
 		$('#filter').show();
 
-		$('#filter-input').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz, function() {
+		$('#filter-input').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz + '&report_id=' + report_id, function() {
 
 			if(!$.trim($('#filter-input').html())) {
 
 				$('#run-filter').trigger('click');
+                $('#filter').hide();
 			}
 		});
 
 		$('#filter-input').attr({
 			'data-chart-id': chart_id,
-			'data-statistik-kurzbz': statistik_kurzbz
+			'data-statistik-kurzbz': statistik_kurzbz,
+            'data-report-id': report_id
 		});
 	});
 
@@ -95,11 +84,10 @@ $(function() {
 
 	$('#run-filter').on('click', function() {
 
-		$('#filter').hide();
-
 		var inputs = $('#filter-input > *'),
 			chart_id = $('#filter-input').attr('data-chart-id'),
 			data_statistik_kurzbz = $('#filter-input').attr('data-statistik-kurzbz'),
+            report_id = $('#filter-input').attr('data-report-id'),
 			get_params = {},
 			url;
 
@@ -125,14 +113,34 @@ $(function() {
 		else
 			url = 'Report2.html'; // static for testing, later for reports
 
-		$.ajax({
-			url: url,
-			data: get_params,
-			success: function(data) {
-				charts = [];
-				$('#content').html(data).show();
-				initCharts();
-			}
-		});
+        if($('#sidebar').attr('data-menu') === 'reports') {
+
+            var iframe = $(document.createElement('iframe'));
+
+            iframe.attr({
+                src: '../data/Report' + report_id + '.html'
+            });
+
+            iframe.css({
+                border: '0',
+                width: '100%',
+                height: '800px'
+            });
+
+            $('#content').html(iframe).show();
+
+        } else {
+
+            $.ajax({
+                url: url,
+                data: get_params,
+                success: function(data) {
+                    charts = [];
+                    $('#content').html(data).show();
+                    initCharts();
+                }
+            });
+        }
+
 	});
 });
