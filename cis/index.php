@@ -47,16 +47,27 @@ if(!$statistik->getAnzahlGruppe(true)
 		<meta name="author" content="">
 		<link rel="icon" href="../../../favicon.ico">
 
-		<title>Reports - FH Technikum Wien</title>
+		<title>Reports</title>
 
 		<link rel="stylesheet" type="text/css" href="../../../submodules/bootstrap/dist/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="../include/css/offcanvas.css">
 		<link rel="stylesheet" type="text/css" href="reporting.css">
 		<link rel="stylesheet" type="text/css" href="../../../submodules/pivottable/dist/pivot.css">
 		<link rel="stylesheet" href="../include/css/charts.css" type="text/css">
-		<!-- <link rel="stylesheet" href="../include/css/spider.css" type="text/css">
-		<link rel="stylesheet" href="../include/css/xchart.css" type="text/css" /> -->
+		<link rel="stylesheet" href="../include/css/jquery-ui.1.11.2.min.css" type="text/css">
+
+		<script type="text/javascript" src="../include/js/jquery-1.11.2.min.js"></script>
+        <script type="text/javascript" src="../include/js/jquery-ui.1.11.2.min.js"></script>
+        
+		<script type="text/javascript" src="../../../submodules/pivottable/dist/pivot.js"></script>
+        <script type="text/javascript" src="../../../submodules/pivottable/dist/gchart_renderers.js"></script>
 		
+		<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>
+		<script src="../include/js/highcharts/main.js" type="application/javascript"></script>
+        <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/jquery.ui.touch-punch.min.js"></script>
+
+        <!-- <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/jquery-1.8.3.min.js"></script> -->
+        <!--<script type="text/javascript" src="../../../include/js/jquery-ui-1.11.4.custom.min.js"></script>-->
 		<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 		<!--<script src="../include/js/ie10-viewport-bug-workaround.js"></script>-->
 
@@ -65,22 +76,15 @@ if(!$statistik->getAnzahlGruppe(true)
 		  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
-		<script type="text/javascript" src="../../../include/js/jquery.min.1.11.1.js"></script>
-        <!-- <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/jquery-1.8.3.min.js"></script> -->
-        <script type="text/javascript" src="../../../include/js/jquery-ui-1.11.4.custom.min.js"></script>
-        
         <!-- <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/jquery-ui-1.9.2.custom.min.js"></script> -->
-		<script type="text/javascript" src="../../../submodules/pivottable/dist/pivot.js"></script>
         <!-- <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/d3.v3.min.js"></script>-->
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../../../submodules/pivottable/dist/gchart_renderers.js"></script>
+        <!--<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
         <!--<script type="text/javascript" src="../../../submodules/pivottable/dist/d3_renderers.js"></script>-->
         
         <!-- <script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script> -->
+		<!-- <link rel="stylesheet" href="../include/css/spider.css" type="text/css">
+		<link rel="stylesheet" href="../include/css/xchart.css" type="text/css" /> -->
 		
-		<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>
-		<script src="../include/js/highcharts/main.js" type="application/javascript"></script>
-        <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/jquery.ui.touch-punch.min.js"></script>
         
         <!-- ngGrid -->
 		<?php //echo chart::getAllHtmlHead() ?>
@@ -154,6 +158,13 @@ if(!$statistik->getAnzahlGruppe(true)
 					</div>
 				</div>
 			</div>
+			<div id="spinner" style="display:none; width:100%; top:50px; position:absolute; z-index:10;">
+				<div class="progress">
+	  				<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+						Loading Data
+	  				</div>
+				</div>
+			</div>
 
 			<div class="container-fluid">
 
@@ -188,8 +199,10 @@ if(!$statistik->getAnzahlGruppe(true)
 						</div>
 
 						<div style="display: none;" id="filter" class="col-xs-12 col-sm-9">
-							<div id="filter-input"></div>
+							<form class="form-inline" onsubmit="return false">
+							<div id="filter-input" style="float: left"></div>
 							<button id="run-filter" class="btn btn-default" type="submit">Run</button>
+							</form>
 						</div>
 
 						<div style="display: none;" id="content">

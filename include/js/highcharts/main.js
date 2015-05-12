@@ -304,13 +304,20 @@ function hcCreate(chart, hctype) {
 }
 
 function loadHcChart(url, chart) {
-
+	$('#spinner').show();
 	$.ajax({
 		url: url,
+		error: function(xhr, ajaxOptions, thrownError){
+			$('#spinner').hide();
+			alert('error'+thrownError);
+		},
 		success: function(data) {
-
+			$('#spinner').hide();
 			if(data.length === 0)
+			{
+				alert('Keine Daten vorhanden');
 				return;
+			}
 
 			chart.raw.data = data;
 

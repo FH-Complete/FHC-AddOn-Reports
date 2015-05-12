@@ -45,10 +45,17 @@ $(function() {
 			chart_id = $(this).attr('data-chart-id'),
             report_id = $(this).attr('data-report-id');
 
-		if($(this).closest('li').hasClass('hide-button')) {
-
+		if($(this).closest('li').hasClass('hide-button')) 
+		{
+			// Wegklappen des Menues
 			$(this).closest('div').slideUp('fast');
+			
+			// Charts auf volle groesse aendern
             $('#content').parent().removeClass('col-sm-9').addClass('col-sm-12');
+		
+			// Pivot auf volle groesse aendern
+			$('.pvtRendererArea').css('width','100%');
+
             $(window).trigger('resize');
 			return;
 		}
@@ -70,6 +77,7 @@ $(function() {
 			'data-statistik-kurzbz': statistik_kurzbz,
             'data-report-id': report_id
 		});
+
 	});
 
 	$('#welcome button').on('click', function() {
@@ -126,18 +134,22 @@ $(function() {
                 width: '100%',
                 height: '800px'
             });
-
+			
             $('#content').html(iframe).show();
 
         } else {
+
+			$('#spinner').show();
 
             $.ajax({
                 url: url,
                 data: get_params,
                 success: function(data) {
+					$('#spinner').hide();
                     charts = [];
                     $('#content').html(data).show();
                     initCharts();
+
                 }
             });
         }

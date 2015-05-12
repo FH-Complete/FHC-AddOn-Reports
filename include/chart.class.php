@@ -658,7 +658,7 @@ EOT;
 					'colors' => array(),
 				);
 				?>
-				<div id="hcChart<?php echo $this->chart_id ?>" class="<?php echo $class ?>"></div>
+				<div id="hcChart<?php echo $this->chart_id ?>" class="<?php echo $class ?>" style="border: 1px solid transparent;"></div>
 				<script type="application/javascript">
 				var source = <?php echo json_encode($this->datasource.$this->vars) ?>,
 						chart = <?php echo json_encode($chart) ?>;

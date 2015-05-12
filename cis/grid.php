@@ -72,8 +72,8 @@ $statistik->loadData(); ?>
 <html>
 	<head>
 		<link rel="stylesheet" href="../../../submodules/pivottable/dist/pivot.min.css" />
-		<script type="text/javascript" src="../include/js/jquery.min.js"></script>
-		<script type="text/javascript" src="../include/js/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="../include/js/jquery-1.11.2.min.js"></script>
+		<script type="text/javascript" src="../include/js/jquery-ui.1.11.2.min.js"></script>
 		<script type="text/javascript" src="../../../submodules/pivottable/dist/pivot.min.js"></script>
 	</head>
 	<body>

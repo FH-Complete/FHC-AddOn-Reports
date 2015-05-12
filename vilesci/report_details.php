@@ -70,7 +70,7 @@
 			$report->body = $_POST["body"];
 			$report->footer = $_POST["footer"];
 			$report->docinfo = $_POST["docinfo"];
-			//$report->publish = $_POST["publish"];
+			$report->publish = isset($_POST["publish"]);
 			$report->gruppe = $_POST["gruppe"];
 			
 			if(!$report->save())
@@ -104,7 +104,7 @@
 	$htmlstr .= "				Format: <input class='detail' type='text' name='format' size='8' maxlength='512' value='".$db->convert_html_chars($report->format)."' onchange='submitable()'></td>\n";
 	$htmlstr .= "				<td>Gruppe</td>\n";
 	$htmlstr .= "				<td><input class='detail' type='text' name='gruppe' size='22' maxlength='32' value='".$db->convert_html_chars($report->gruppe)."' onchange='submitable()'>\n";
-	$htmlstr .= "				Publish: <input class='detail' type='checkbox' name='publish' value='".$db->convert_html_chars($report->publish)."' onchange='submitable()'></td>\n";
+	$htmlstr .= "				Publish: <input class='detail' type='checkbox' name='publish' ".($report->publish?'checked="checked"':'')." onchange='submitable()'></td>\n";
 	$htmlstr .= "			</tr>\n";
 	$htmlstr .= "			<tr>\n";
 	$htmlstr .= "				<td valign='top'>Description</td>\n";

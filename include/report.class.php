@@ -66,7 +66,7 @@ class report extends basis_db
 			return false;
 		}
 		//Lesen der Daten aus der Datenbank
-		$qry = 'SELECT * FROM addon.tbl_rp_report WHERE report_id='.$report_id.';';
+		$qry = 'SELECT * FROM addon.tbl_rp_report WHERE report_id='.$this->db_add_param($report_id, FHC_INTEGER).';';
 
 		if(!$this->db_query($qry))
 		{
@@ -85,7 +85,7 @@ class report extends basis_db
 			$this->footer		= $row->footer;
 			$this->docinfo		= $row->docinfo;
 			$this->gruppe		= $row->gruppe;
-			$this->publish		= $row->publish;
+			$this->publish		= $this->db_parse_bool($row->publish);
 			$this->updateamum    = $row->updateamum;
 			$this->updatevon     = $row->updatevon;
 			$this->insertamum    = $row->insertamum;
@@ -139,7 +139,7 @@ class report extends basis_db
 	 */
 	public function getGruppe($gruppe,$publish=null)
 	{
-		$qry = "SELECT tbl_rp_report.* FROM addon.tbl_rp_report WHERE gruppe='$gruppe'";
+		$qry = "SELECT tbl_rp_report.* FROM addon.tbl_rp_report WHERE gruppe=".$this->db_add_param($gruppe);
 		if ($publish==true)
 			$qry.=' AND tbl_rp_report.publish ';
 		elseif ($publish==false)
@@ -158,7 +158,7 @@ class report extends basis_db
 			$obj->format		= $row->format;
 			$obj->body			= $row->body;
 			$this->gruppe		= $row->gruppe;
-			$this->publish		= $row->publish;
+			$this->publish		= $this->db_parse_bool($row->publish);
 			$obj->updateamum    = $row->updateamum;
 			$obj->updatevon     = $row->updatevon;
 			$obj->insertamum    = $row->insertamum;
@@ -259,7 +259,7 @@ class report extends basis_db
 				' footer='.$this->db_add_param($this->footer).', '.
 				' docinfo='.$this->db_add_param($this->docinfo).', '.
 				' gruppe='.$this->db_add_param($this->gruppe).', '.
-				' publish='.$this->db_add_param($this->publish).', '.
+				' publish='.$this->db_add_param($this->publish, FHC_BOOLEAN).', '.
 				' updateamum= now(), '.
 		      	' updatevon='.$this->db_add_param($this->updatevon).
 		      	' WHERE report_id='.$this->db_add_param($this->report_id, FHC_INTEGER, false).';';

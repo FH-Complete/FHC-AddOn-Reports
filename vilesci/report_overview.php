@@ -32,112 +32,9 @@ $user = get_uid();
 $rechte = new benutzerberechtigung();
 $rechte->getBerechtigungen($user);
 
-//if(!$rechte->isBerechtigt('addon/datenimport'))
-//	die('Sie haben keine Rechte fuer dieses AddOn! Schleich Dich!');
-
 if($rechte->isBerechtigt('addon/reports', 'suid'))
 {
 	$write_admin=true;
-}
-
-// Speichern der Daten
-if(isset($_POST['report_id']))
-{
-	// Die Aenderungen werden per Ajax Request durchgefuehrt,
-	// daher wird nach dem Speichern mittels exit beendet
-	if($write_admin)
-	{
-		//Lehre Feld setzen
-		if(isset($_POST['lehre']))
-		{
-			$lv_obj = new ort();
-			if($lv_obj->load($_POST['ort_kurzbz']))
-			{
-				$lv_obj->lehre=($_POST['lehre']=='true'?false:true);
-				$lv_obj->updateamum = date('Y-m-d H:i:s');
-				$lv_obj->updatevon = $user;
-				if($lv_obj->save(false))
-					exit('true');
-				else 
-					exit('Fehler beim Speichern:'.$lv_obj->errormsg);
-			}
-			else 
-				exit('Fehler beim Laden der LV:'.$lv_obj->errormsg);
-		}
-		
-		//Reservieren Feld setzen
-		if(isset($_POST['reservieren']))
-		{
-			$lv_obj = new ort();
-			if($lv_obj->load($_POST['ort_kurzbz']))
-			{
-				$lv_obj->reservieren=($_POST['reservieren']=='true'?false:true);
-				$lv_obj->updateamum = date('Y-m-d H:i:s');
-				$lv_obj->updatevon = $user;
-				if($lv_obj->save(false))
-					exit('true');
-				else 
-					exit('Fehler beim Speichern:'.$lv_obj->errormsg);
-			}
-			else 
-				exit('Fehler beim Laden der LV:'.$lv_obj->errormsg);
-		}
-		
-		//Aktiv Feld setzen
-		if(isset($_POST['aktiv']))
-		{
-			$lv_obj = new ort();
-			if($lv_obj->load($_POST['ort_kurzbz']))
-			{
-				$lv_obj->aktiv=($_POST['aktiv']=='true'?false:true);
-				$lv_obj->updateamum = date('Y-m-d H:i:s');
-				$lv_obj->updatevon = $user;
-				if($lv_obj->save(false))
-					exit('true');
-				else 
-					exit('Fehler beim Speichern:'.$lv_obj->errormsg);
-			}
-			else 
-				exit('Fehler beim Laden der LV:'.$lv_obj->errormsg);
-		}
-	}
-}
-
-if (isset($_GET["toggle"]))
-{
-	if(!$rechte->isBerechtigt('basis/ort', null, 'suid'))
-		die('Sie haben keine Berechtigung fuer diese Aktion');
-
-	if ($_GET["rlehre"] != "" && $_GET["rlehre"] != NULL)
-	{
-		$rlehre = $_GET["rlehre"];
-		$sg_update = new ort();
-		$qry = "UPDATE public.tbl_ort SET lehre = NOT lehre WHERE ort_kurzbz='".$rlehre."';";
-		if(!$db->db_query($qry))
-		{
-			die('Fehler beim Speichern des Datensatzes');
-		}	
-	}
-	if ($_GET["rres"] != "" && $_GET["rres"] != NULL)
-	{
-		$rres = $_GET["rres"];
-		$sg_update = new ort();
-		$qry = "UPDATE public.tbl_ort SET reservieren = NOT reservieren WHERE ort_kurzbz='".$rres."';";
-		if(!$db->db_query($qry))
-		{
-			die('Fehler beim Speichern des Datensatzes');
-		}	
-	}
-	if ($_GET["raktiv"] != "" && $_GET["raktiv"] != NULL)
-	{
-		$raktiv = $_GET["raktiv"];
-		$sg_update = new ort();
-		$qry = "UPDATE public.tbl_ort SET aktiv = NOT aktiv WHERE ort_kurzbz='".$raktiv."';";
-		if(!$db->db_query($qry))
-		{
-			die('Fehler beim Speichern des Datensatzes');
-		}	
-	}
 }
 
 $report = new report();
@@ -172,44 +69,6 @@ if (!$report->loadAll())
 				});
 			});
 
-			function confdel()
-			{
-				if(confirm("Diesen Datensatz wirklick loeschen?"))
-					return true;
-
-				return false;
-			}
-
-			function changeboolean(ort_kurzbz, name)
-			{
-				value=document.getElementById(name+ort_kurzbz).value;
-
-				var dataObj = {};
-				dataObj["ort_kurzbz"]=ort_kurzbz;
-				dataObj[name]=value;
-
-				$.ajax({
-					type:"POST",
-					url:"raum_uebersicht.php",
-					data:dataObj,
-					success: function(data)
-					{
-						if(data=="true")
-						{
-							//Image und Value aendern
-							if(value=="true")
-								value="false";
-							else
-								value="true";
-							document.getElementById(name+ort_kurzbz).value=value;
-							document.getElementById(name+"img"+ort_kurzbz).src="../../skin/images/"+value+".png";
-						}
-						else
-							alert("ERROR:"+data)
-					},
-					error: function() { alert("error"); }
-				});
-			}
 		</script>
 	</head>
 
