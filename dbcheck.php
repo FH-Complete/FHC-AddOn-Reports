@@ -69,6 +69,14 @@ if($result = $db->db_query("SELECT * FROM system.tbl_berechtigung WHERE berechti
 	}
 }
 
+// Check new Schema reports
+$result = $db->db_query("SELECT 1 FROM pg_namespace WHERE nspname = 'reports';");
+if ($db->db_num_rows()!=1)
+	if(!$db->db_query("CREATE SCHEMA reports; GRANT USAGE ON SCHEMA reports TO vilesci; GRANT USAGE ON SCHEMA reports TO web;"))
+		echo '<strong>Reports: '.$db->db_last_error().'</strong><br>';
+	else 
+		echo ' Reports: Schema reports wurde angelegt!<br>';
+
 // Reports (rp) Chart
 if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_chart"))
 {

@@ -90,6 +90,7 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 				<tr>
 					<th>Gruppe</th>
 					<th>Kurzbz</th>
+					<th>Pub</th>
 					<th>Bezeichnung</th>
 					<th>Beschr.</th>
 					<th colspan="2">Aktion</th>
@@ -103,11 +104,14 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 						</td>
 						<td>
 							<a href="../../../vilesci/statistik/statistik_frameset.php?statistik_kurzbz=<?php echo $row->statistik_kurzbz ?>" target="detail_statistik">
-								<?php echo $row->statistik_kurzbz ?>
+								<?php echo $row->statistik_kurzbz; ?>
 							</a>
 						</td>
+						<td align="center">
+							<?php echo $row->publish; ?>
+						</td>
 						<td>
-							<?php echo $row->bezeichnung ?>
+							<?php echo $row->bezeichnung; ?>
 						</td>
 						<td>
 							<a href="#" onclick="window.open('../../cms/content.php?content_id=<?php echo $row->content_id ?>', 'Beschreibung', 'width=600,height=600, scrollbars=yes');">
