@@ -49,22 +49,22 @@ if(!$statistik->getAnzahlGruppe(true)
 
 		<title>Reports</title>
 
-		<link rel="stylesheet" type="text/css" href="../../../submodules/bootstrap/dist/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="../include/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="../include/css/offcanvas.css">
 		<link rel="stylesheet" type="text/css" href="reporting.css">
-		<link rel="stylesheet" type="text/css" href="../../../submodules/pivottable/dist/pivot.css">
+		<link rel="stylesheet" type="text/css" href="../include/js/pivottable/pivot.css">
 		<link rel="stylesheet" href="../include/css/charts.css" type="text/css">
 		<link rel="stylesheet" href="../include/css/jquery-ui.1.11.2.min.css" type="text/css">
 
 		<script type="text/javascript" src="../include/js/jquery-1.11.2.min.js"></script>
         <script type="text/javascript" src="../include/js/jquery-ui.1.11.2.min.js"></script>
         
-		<script type="text/javascript" src="../../../submodules/pivottable/dist/pivot.js"></script>
-        <script type="text/javascript" src="../../../submodules/pivottable/dist/gchart_renderers.js"></script>
+		<script type="text/javascript" src="../include/js/pivottable/pivot.js"></script>
+        <script type="text/javascript" src="../include/js/pivottable/gchart_renderers.js"></script>
 		
 		<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>
 		<script src="../include/js/highcharts/main.js" type="application/javascript"></script>
-        <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/jquery.ui.touch-punch.min.js"></script>
+        <script type="text/javascript" src="../include/js/pivottable/jquery.ui.touch-punch.min.js"></script>
 
         <!-- <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/jquery-1.8.3.min.js"></script> -->
         <!--<script type="text/javascript" src="../../../include/js/jquery-ui-1.11.4.custom.min.js"></script>-->
@@ -290,7 +290,7 @@ if(!$statistik->getAnzahlGruppe(true)
 				</footer>
 
 			</div>
-			<script src="../../../submodules/bootstrap/dist/js/bootstrap.min.js"></script>
+			<script src="../include/js/bootstrap.min.js"></script>
 			<script src="../include/js/offcanvas.js"></script>
 			<script type="text/javascript" src="reporting.js"></script>
 			<?php if(preg_match(',/var/www/hofer/,', __FILE__)): ?>
