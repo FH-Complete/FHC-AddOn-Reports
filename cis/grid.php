@@ -86,7 +86,10 @@ $statistik->loadData(); ?>
 			var options = <?php echo $statistik->preferences ? : '{}' ?>;
 			var dateFormat =       $.pivotUtilities.derivers.dateFormat;
             var sortAs =           $.pivotUtilities.sortAs;
+            var derivers = 			$.pivotUtilities.derivers;
             var tpl =              $.pivotUtilities.aggregatorTemplates;
+            var numberFormat = 		$.pivotUtilities.numberFormat;
+			var deFormat = 			numberFormat({thousandsSep:".", decimalSep:","});
 			$('#pivot').pivotUI(<?php echo $statistik->db_getResultJSON($statistik->data) ?>, options);
 		</script>
 		<?php endif; ?>
