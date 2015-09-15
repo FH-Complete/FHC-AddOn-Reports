@@ -152,21 +152,21 @@ class report extends basis_db
 			{
 				$obj = new report();
 
-			$obj->report_id		= $row->report_id; 
-			$obj->title 		= $row->title;
-			$obj->description	= $row->description;
-			$obj->format		= $row->format;
-			$obj->body			= $row->body;
-			$this->gruppe		= $row->gruppe;
-			$this->publish		= $this->db_parse_bool($row->publish);
-			$obj->updateamum    = $row->updateamum;
-			$obj->updatevon     = $row->updatevon;
-			$obj->insertamum    = $row->insertamum;
-			$obj->insertvon     = $row->insertvon;
-			//$obj->report_num_rows= $this->getNumRows('sync.'.$row->report_tablename);
-			$obj->new       = false;
+				$obj->report_id		= $row->report_id; 
+				$obj->title 		= $row->title;
+				$obj->description	= $row->description;
+				$obj->format		= $row->format;
+				$obj->body			= $row->body;
+				$obj->gruppe		= $row->gruppe;
+				$obj->publish		= $this->db_parse_bool($row->publish);
+				$obj->updateamum    = $row->updateamum;
+				$obj->updatevon     = $row->updatevon;
+				$obj->insertamum    = $row->insertamum;
+				$obj->insertvon     = $row->insertvon;
+				//$obj->report_num_rows= $this->getNumRows('sync.'.$row->report_tablename);
+				$obj->new       = false;
 
-			$this->result[] = $obj;
+				$this->result[] = $obj;
 			}
 			
 			return true;
