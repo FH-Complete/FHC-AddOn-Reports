@@ -94,7 +94,7 @@
 					get_params.statistik_kurzbz = data_statistik_kurzbz;
 
 					$('#spinner').show();
-			
+
 					$.ajax(
 					{
 						url: url,
@@ -104,7 +104,6 @@
 							$('#spinner').hide();
 							charts = [];
 							$('#content').html(data).show();
-							initCharts();
 						}
 					});
 				});
