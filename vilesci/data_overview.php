@@ -104,7 +104,7 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 							<a href="data_vorschau.html?statistik_kurzbz=<?php echo $row->statistik_kurzbz ?>" target="_blank"><img style="float:right;" title="<?php echo $row->gruppe ?> anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>
 						</td>
 						<td>
-							<a href="../../../vilesci/statistik/statistik_frameset.php?statistik_kurzbz=<?php echo $row->statistik_kurzbz ?>" target="detail_statistik">
+							<a href="../../../vilesci/stammdaten/statistik_details.php?action=update&statistik_kurzbz=<?php echo $row->statistik_kurzbz ?>" target="detail_statistik">
 								<?php echo $row->statistik_kurzbz; ?>
 							</a>
 						</td>
