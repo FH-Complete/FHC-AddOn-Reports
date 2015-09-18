@@ -28,7 +28,8 @@ require_once('../../../include/functions.inc.php');
 require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../../../include/filter.class.php');
 require_once('../../../include/statistik.class.php');
-
+ 
+ini_set('memory_limit', '1024M');
 $uid = get_uid();
 $rechte = new benutzerberechtigung();
 $rechte->getBerechtigungen($uid);
@@ -50,7 +51,6 @@ else
 {
 	die('"statistik_kurzbz" is not set!');
 }
-
 $i = 0;
 while(isset($_GET['varname' . $i]))
 {
@@ -78,19 +78,27 @@ $statistik->loadData(); ?>
 	</head>
 	<body>
 <?php endif; ?>
-
 		<div id="pivot">
 		</div>
 		<?php if($statistik->data): ?>
+		
+		<!-- pivot sprachen -->
+		<script type="text/javascript" src="../include/js/pivot.de.js"></script>
+		
+    
 		<script type="text/javascript">
-			var options = <?php echo $statistik->preferences ? : '{}' ?>;
-			var dateFormat =       $.pivotUtilities.derivers.dateFormat;
-            var sortAs =           $.pivotUtilities.sortAs;
-            var derivers = 			$.pivotUtilities.derivers;
-            var tpl =              $.pivotUtilities.aggregatorTemplates;
-            var numberFormat = 		$.pivotUtilities.numberFormat;
-			var deFormat = 			numberFormat({thousandsSep:".", decimalSep:","});
-			$('#pivot').pivotUI(<?php echo $statistik->db_getResultJSON($statistik->data) ?>, options);
+
+			var derivers =       $.pivotUtilities.derivers;
+			var options =        <?php echo $statistik->preferences ? : '{}' ?>;
+			var dateFormat =     $.pivotUtilities.derivers.dateFormat;
+			var sortAs =         $.pivotUtilities.sortAs;
+			var tpl =            $.pivotUtilities.aggregatorTemplates;
+			var numberFormat =   $.pivotUtilities.numberFormat;
+			var deFormat =       numberFormat({thousandsSep:".", decimalSep:","});
+			
+			$('#pivot').pivotUI(<?php echo $statistik->db_getResultJSON($statistik->data) ?>, options, false, "de");
+      		
+
 		</script>
 		<?php endif; ?>
 
