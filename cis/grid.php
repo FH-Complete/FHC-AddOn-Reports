@@ -81,23 +81,42 @@ $statistik->loadData(); ?>
 		<div id="pivot">
 		</div>
 		<?php if($statistik->data): ?>
-		
-		<!-- pivot sprachen -->
-		<script type="text/javascript" src="../include/js/pivot.de.js"></script>
-		
-    
-		<script type="text/javascript">
 
-			var derivers =       $.pivotUtilities.derivers;
-			var options =        <?php echo $statistik->preferences ? : '{}' ?>;
-			var dateFormat =     $.pivotUtilities.derivers.dateFormat;
-			var sortAs =         $.pivotUtilities.sortAs;
-			var tpl =            $.pivotUtilities.aggregatorTemplates;
-			var numberFormat =   $.pivotUtilities.numberFormat;
-			var deFormat =       numberFormat({thousandsSep:".", decimalSep:","});
-			
-			$('#pivot').pivotUI(<?php echo $statistik->db_getResultJSON($statistik->data) ?>, options, false, "de");
-      		
+		<!-- Pivot Renderers -->
+    <script type="text/javascript" src="../include/js/pivot_renderers/c3_renderers.js.map"></script>
+    
+    <script type="text/javascript" src="../include/js/pivot_renderers/c3_renderers.js"></script>
+		<link rel="stylesheet" type="text/css" href="../include/js/pivot_renderers/c3_renderers.css">
+		
+    <script type="text/javascript" src="../include/js/pivot_renderers/d3.js"></script>
+    
+		
+		<!-- Pivot Sprachen -->
+		<script type="text/javascript" src="../include/js/pivot.de.js"></script>
+    <script type="text/javascript" src="../include/js/pivot_renderers/de/c3.de.js"></script>
+		
+		<script type="text/javascript">
+			$(function()
+			{
+				var lang = "de";
+				var derivers = $.pivotUtilities.derivers;
+				var renderers =
+				$.extend
+				(
+					$.pivotUtilities.locales[lang].renderers,
+					$.pivotUtilities.locales[lang].c3_renderers
+				);
+				
+				var options =        <?php echo $statistik->preferences ? : '{}' ?>;
+				options.renderers = renderers;
+				var dateFormat =     $.pivotUtilities.derivers.dateFormat;
+				var sortAs =         $.pivotUtilities.sortAs;
+				var tpl =            $.pivotUtilities.aggregatorTemplates;
+				var numberFormat =   $.pivotUtilities.numberFormat;
+				var deFormat =       numberFormat({thousandsSep:".", decimalSep:","});
+
+				$("#pivot").pivotUI(<?php echo $statistik->db_getResultJSON($statistik->data) ?>,options,false,lang);
+			});
 
 		</script>
 		<?php endif; ?>
