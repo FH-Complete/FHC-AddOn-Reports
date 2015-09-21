@@ -82,13 +82,17 @@ $statistik->loadData(); ?>
 		</div>
 		<?php if($statistik->data): ?>
 
+        
 		<!-- Pivot Renderers -->
     <script type="text/javascript" src="../include/js/pivot_renderers/c3_renderers.js.map"></script>
+    <script type="text/javascript" src="../include/js/pivot_renderers/d3.js"></script>
     
     <script type="text/javascript" src="../include/js/pivot_renderers/c3_renderers.js"></script>
 		<link rel="stylesheet" type="text/css" href="../include/js/pivot_renderers/c3_renderers.css">
-		
-    <script type="text/javascript" src="../include/js/pivot_renderers/d3.js"></script>
+
+    
+    <script type="text/javascript" src="../include/js/pivot_renderers/csv_renderer.js"></script>
+    
     
 		
 		<!-- Pivot Sprachen -->
@@ -98,13 +102,15 @@ $statistik->loadData(); ?>
 		<script type="text/javascript">
 			$(function()
 			{
+			
 				var lang = "de";
 				var derivers = $.pivotUtilities.derivers;
 				var renderers =
 				$.extend
 				(
 					$.pivotUtilities.locales[lang].renderers,
-					$.pivotUtilities.locales[lang].c3_renderers
+					$.pivotUtilities.locales[lang].c3_renderers,
+					$.pivotUtilities.export_renderers
 				);
 				
 				var options =        <?php echo $statistik->preferences ? : '{}' ?>;
