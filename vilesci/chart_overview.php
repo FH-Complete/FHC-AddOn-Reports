@@ -36,6 +36,17 @@ $rechte->getBerechtigungen($user);
 if($rechte->isBerechtigt('addon/reports', 'suid'))
 	$write_admin=true;
 
+$chart = new chart();
+
+if(isset($_GET['action']))
+{
+	if($_GET['action']=='delete')
+	{
+		if(!$chart->delete($_GET['chart_id']))
+			echo '<script>alert("Der Eintrag konnte nicht gelöscht werden!"</script>';
+	}
+}
+
 // Speichern der Daten
 if(isset($_POST['chart_id']))
 {
@@ -43,6 +54,7 @@ if(isset($_POST['chart_id']))
 	// daher wird nach dem Speichern mittels exit beendet
 	if($write_admin)
 	{
+		
 		//Lehre Feld setzen
 		if(isset($_POST['lehre']))
 		{
@@ -136,7 +148,6 @@ if (isset($_GET["toggle"]))
 	}
 }
 
-$chart = new chart();
 if (!$chart->loadAll())
     die($chart->errormsg);
 ?>
@@ -203,6 +214,11 @@ if (!$chart->loadAll())
 					error: function() { alert("error"); }
 				});
 			}
+			
+		function confdel()
+		{
+			return confirm("Wollen Sie diesen Eintrag wirklich löschen?");
+		}
 		</script>
 	</head>
 
@@ -239,6 +255,9 @@ if (!$chart->loadAll())
 					</th>
 					<th>
 						Description
+					</th>
+					<th>
+						<!-- Entfernen -->
 					</th>
 				</tr>
 			</thead>
@@ -280,6 +299,9 @@ if (!$chart->loadAll())
 						</td>
 						<td title="<?php echo $chart->description ?>">
 							<?php echo substr($chart->description, 0, 16) ?>...
+						</td>
+						<td>
+							<a href="chart_overview.php?action=delete&chart_id=<?php echo $chart->chart_id ?>" onclick="return confdel()">entfernen</a>
 						</td>
 					</tr>
 				<?php endforeach; ?>

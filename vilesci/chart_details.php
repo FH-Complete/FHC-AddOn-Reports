@@ -82,7 +82,7 @@ if(isset($_REQUEST["action"]) && isset($_REQUEST["chart_id"]))
 			$chart->dashboard_layout = $_POST["dashboard_layout"];
 			$chart->dashboard_pos = (int) $_POST["dashboard_pos"];
 		}
-
+		
 		if(!$chart->save())
 		{
 			$errorstr .= $chart->errormsg;
@@ -105,6 +105,7 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 	<head>
 		<title>DI-Quelle - Details</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<script type="text/javascript" src="../include/js/jquery-1.11.2.min.js"></script>
 		<link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">
 		<script src="../../../include/js/mailcheck.js"></script>
 		<script src="../../../include/js/datecheck.js"></script>
@@ -168,6 +169,7 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 							<?php $statistik = new statistik; ?>
 							<?php $statistik->getAll('bezeichnung'); ?>
 							<select name="statistik_kurzbz" id="statistik_kurzbz">
+								<option>Keine Auswahl</option>
 								<?php foreach($statistik->result as $stat): ?>
 									<option value="<?php echo $stat->statistik_kurzbz ?>"<?php echo ($chart->statistik_kurzbz === $stat->statistik_kurzbz ? ' selected' : '') ?>><?php echo $stat->bezeichnung ?></option>
 								<?php endforeach; ?>
@@ -177,7 +179,7 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 					<tr>
 						<td valign="top" class="datasource">DataSource</td>
 						<td valign="top" class="datasource" colspan="5">
-							<input id="datasource" class="detail" style="width: 100%;" type="text" name="datasource" size="55" maxlength="256" value="<?php echo $chart->datasource ?>" onchange="submitable()">
+						<input id="datasource" class="detail" style="width: 100%;" type="text" name="datasource" size="55" maxlength="256" value="<?php echo $chart->datasource ?>" onchange="submitable()">
 						</td>
 					</tr>
 					<tr>

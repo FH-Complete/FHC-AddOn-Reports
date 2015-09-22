@@ -22,6 +22,10 @@
 	require_once('../../../include/functions.inc.php');
 	require_once('../../../include/benutzerberechtigung.class.php');
 	require_once('../include/report.class.php');
+	require_once('../include/chart.class.php');
+	require_once('../../../include/statistik.class.php');
+	require_once('../include/rp_report_chart.class.php');
+	require_once('../include/rp_report_statistik.class.php');
 	
 	if (!$db = new basis_db())
 		die('Es konnte keine Verbindung zum Server aufgebaut werden.');
@@ -33,13 +37,18 @@
 	if(!$rechte->isBerechtigt('addon/reports'))
 		die('Sie haben keine Berechtigung fuer dieses AddOn!');
 	
-	
 	$reloadstr = '';  // neuladen der liste im oberen frame
 	$htmlstr = '';
 	$errorstr = ''; //fehler beim insert
 	$sel = '';
 	$chk = '';
 
+	$rp_report_chart = new rp_report_chart();
+	$charts = array();
+	
+	$rp_report_statistik = new rp_report_statistik();
+	$statistiken = array();
+	
 	$report = new report();
 	$report->report_id		= 0;
 	$report->title 			= 'NewReport';
@@ -60,7 +69,10 @@
 		// echo 'DI_ID: '.var_dump((int)$_POST["report_id"]);
 		// Wenn id > 0 ist -> Neuer Datensatz; ansonsten load und update
 		if ( ((int)$_REQUEST["report_id"]) > 0)
+		{
 			$report->load((int)$_REQUEST["report_id"]);
+		}
+		
 		if ($_REQUEST["action"]=='save')
 		{
 			$report->title = $_POST["title"];
@@ -82,12 +94,63 @@
 			$reloadstr .= "	parent.frame_report_overview.location.href='report_overview.php';";
 			$reloadstr .= "</script>\n";
 		}
+		
+		if ($_REQUEST["action"]=='saveReportStatistik')
+		{
+			$rp_report_statistik->report_id = $_POST["report_id"];
+			$rp_report_statistik->statistik_kurzbz = $_POST["statistik_kurzbz"];
+			
+			if(!$rp_report_statistik->save())
+			{
+				$errorstr .= $rp_report_statistik->errormsg;
+			}
+		}
+		
+		if ($_REQUEST["action"]=='saveReportChart')
+		{
+			$rp_report_chart->report_id = $_REQUEST["report_id"];
+			$rp_report_chart->chart_id = $_REQUEST["chart_id"];
+			
+			if(!$rp_report_chart->save())
+			{
+				$errorstr .= $rp_report_chart->errormsg;
+			}
+		}
+		
+		
+		if($_REQUEST['action']=='deleteReportStatistik')
+		{
+			if(!$rp_report_statistik->delete($_REQUEST['reportstatistik_id']))
+				$errorstr .= $rp_report_statistik->errormsg;
+		}
+		
+		if($_REQUEST['action']=='deleteReportChart')
+		{
+			if(!$rp_report_chart->delete($_REQUEST['reportchart_id']))
+				$errorstr .= $rp_report_chart->errormsg;
+		}
 	}
 
 	if ((isset($_REQUEST['report_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST['neu']!= "true")))
 	{
-		//echo 'loadChart';
 		$report->load($_REQUEST["report_id"]);
+		$rp_report_chart->getReportCharts((int)$_REQUEST["report_id"]);
+		$rp_report_statistik->getReportStatistiken((int)$_REQUEST["report_id"]);
+		
+		foreach($rp_report_chart->result as $c)
+		{
+			$nc = new chart((int)$c->chart_id);
+			$nc->reportchart_id = $c->reportchart_id;
+			$charts[] = $nc;
+		}
+		
+		foreach($rp_report_statistik->result as $s)
+		{
+			$ns = new statistik($s->statistik_kurzbz);
+			$ns->reportstatistik_id = $s->reportstatistik_id;
+			$statistiken[] = $ns;
+		}
+		
 		if ($report->errormsg!='')
 			die($report->errormsg);
 	}
@@ -123,6 +186,100 @@
 	$htmlstr .= " 				<td ><textarea name='docinfo' cols='70' rows='6' onchange='submitable()'>".$db->convert_html_chars($report->docinfo)."</textarea></td>\n";
 	$htmlstr .= "			</tr>\n";
 	$htmlstr .= "	</table>\n";
+	
+  if($report->report_id > 0)
+  {
+  	//charts
+		$htmlstr .= "	<table  class='tablesorter' id='t1' style='margin: 20px;'>";
+		$htmlstr .= "	<thead>\n";
+		$htmlstr .= "	<tr>\n";
+		$htmlstr .= "	<th style='width:100px;'>Chart</th>\n";
+		$htmlstr .= "	<th>Name</th>\n";
+		$htmlstr .= "	<th style='width:70px;'></th>\n";
+		$htmlstr .= "	</tr>\n";
+		$htmlstr .= "	</thead>\n";
+		$htmlstr .= "	<tbody>\n";
+
+
+		foreach($charts as $ch)
+		{
+			$htmlstr .= "	<tr>\n";
+			$htmlstr .= "	<td>".$ch->chart_id."</td>\n";
+			$htmlstr .= "	<td>".$ch->title."</td>\n";
+			$htmlstr .= "	<td><a href='report_details.php?action=deleteReportChart&reportchart_id=".$ch->reportchart_id."&report_id=".$report->report_id."' onclick='return confdel()'>entfernen</a>";
+			$htmlstr .= "	</tr>\n";
+		}
+		$htmlstr .= "	</tbody>\n";
+		$htmlstr .= "	<tr>\n";
+		
+		
+		
+		$htmlstr .= "<form action='report_details.php' method='POST' name='report_chartform'>\n";
+		$htmlstr .= "	<input type='hidden' name='report_id' value='".$report->report_id."'>";
+		$htmlstr .= "	<td></td>\n";
+		$htmlstr .= "	<td>\n";
+		$htmlstr .= "	<select name='chart_id' style='width:100%;'>\n";
+		
+		$allCharts = new chart();
+		$allCharts->getAll();
+		
+		foreach($allCharts->result as $ch)
+		{
+			$htmlstr .= "	<option value=".$ch->chart_id.">".$ch->title."</option>\n";
+		}
+		$htmlstr .= "	</select>\n";
+		$htmlstr .= "	</td>\n";
+		$htmlstr .= "	<input type='hidden' name='action' value='saveReportChart'>";
+		$htmlstr .= "	<td><input type='submit' value='Hinzuf&uuml;gen'></td>\n";
+		$htmlstr .= "</form>\n";
+		$htmlstr .= "	</tr>\n";
+		$htmlstr .= "	</table>\n";
+		
+		//statistiken
+		$htmlstr .= "	<table  class='tablesorter' id='t2' style='margin: 20px;'>";
+		$htmlstr .= "	<thead>\n";
+		$htmlstr .= "	<tr>\n";
+		$htmlstr .= "	<th style='width:100px;'>Statistik</th>\n";
+		$htmlstr .= "	<th>Name</th>\n";
+		$htmlstr .= "	<th style='width:70px;'></th>\n";
+		$htmlstr .= "	</tr>\n";
+		$htmlstr .= "	</thead>\n";
+		$htmlstr .= "	<tbody>\n";
+
+
+		foreach($statistiken as $st)
+		{
+			$htmlstr .= "	<tr>\n";
+			$htmlstr .= "	<td>".$st->statistik_kurzbz."</td>\n";
+			$htmlstr .= "	<td>".$st->bezeichnung."</td>\n";
+			$htmlstr .= "	<td><a href='report_details.php?action=deleteReportStatistik&reportstatistik_id=".$st->reportstatistik_id."&report_id=".$report->report_id."' onclick='return confdel()'>entfernen</a>";
+			$htmlstr .= "	</tr>\n";
+		}
+		$htmlstr .= "	</tbody>\n";
+		$htmlstr .= "	<tr>\n";
+		$htmlstr .= "<form action='report_details.php' method='POST' name='report_statistikform'>\n";
+		$htmlstr .= "	<input type='hidden' name='report_id' value='".$report->report_id."'>";
+		$htmlstr .= "	<td></td>\n";
+		$htmlstr .= "	<td>\n";
+		$htmlstr .= "	<select name='statistik_kurzbz' style='width:100%;'>\n";
+		
+		$allStat = new Statistik();
+		$allStat->getAll();
+		
+		foreach($allStat->result as $st)
+		{
+			$htmlstr .= "	<option value=".$st->statistik_kurzbz.">".$st->bezeichnung."</option>\n";
+		}
+		$htmlstr .= "	</select>\n";
+		$htmlstr .= "	</td>\n";
+		$htmlstr .= "	<input type='hidden' name='action' value='saveReportStatistik'>";
+		$htmlstr .= "	<td><input type='submit' value='Hinzuf&uuml;gen'></td>\n";
+		$htmlstr .= "</form>\n";
+		$htmlstr .= "	</tr>\n";
+		$htmlstr .= "	</table>\n";
+	}
+	
+	
 	$htmlstr .= "<br>\n";
 	$htmlstr .= "<div align='right' id='sub'>\n";
 	$htmlstr .= "	<span id='submsg' style='color:red; visibility:hidden;'>Datensatz ge&auml;ndert!&nbsp;&nbsp;</span>\n";
@@ -142,7 +299,39 @@
 <link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">
 <script src="../../../include/js/mailcheck.js"></script>
 <script src="../../../include/js/datecheck.js"></script>
+		<script type="text/javascript" src="../../../include/js/jquery.min.1.11.1.js"></script>
+<script type="text/javascript" src="../../../submodules/tablesorter/jquery.tablesorter.min.js"></script>
+<link rel="stylesheet" href="../../../skin/tablesort.css" type="text/css"/>
+<style>
+	table.tablesorter tbody td
+	{
+		margin: 0;
+		padding: 0;
+		vertical-align: middle;
+	}
+</style>
 <script type="text/javascript">
+
+	
+function confdel()
+{
+	return confirm("Wollen Sie diesen Eintrag wirklich löschen?");
+}
+
+$(function() {
+	$("#t1").tablesorter(
+	{
+		sortList: [[1,0]],
+		widgets: ["zebra"]
+	});
+	
+	$("#t2").tablesorter(
+	{
+		sortList: [[1,0]],
+		widgets: ["zebra"]
+	});
+});
+	
 function unchanged()
 {
 		document.reportform.reset();

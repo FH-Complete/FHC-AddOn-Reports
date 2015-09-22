@@ -365,4 +365,25 @@ class report extends basis_db
 			
 		}
 	}
+	
+	/**
+	 * Loescht einen Eintrag
+	 *
+	 * @param $report_id
+	 * @return true wenn ok, sonst false
+	 */
+	public function delete($report_id)
+	{
+		$qry = "DELETE FROM addon.tbl_rp_report WHERE report_id=".$this->db_add_param($report_id).";";
+		
+		if($this->db_query($qry))
+		{
+			return true;
+		}
+		else
+		{
+			$this->errormsg='Fehler beim Löschen des Eintrages';
+			return false;
+		}
+	}
 }

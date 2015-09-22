@@ -439,13 +439,10 @@ EOT;
 	 */
 	public function save()
 	{
-		if($this->datasource_type === 'intern') {
-
-			$this->datasource = '../../../vilesci/statistik/statistik_sql.php?statistik_kurzbz=' . $this->statistik_kurzbz . '&outputformat=json';
-		}
 
 		if($this->new)
 		{
+		
 			//Neuen Datensatz einfuegen
 			$qry='BEGIN;INSERT INTO addon.tbl_rp_chart (title, description, publish, dashboard, dashboard_layout, dashboard_pos, statistik_kurzbz, type,sourcetype,preferences,datasource,datasource_type,
 			      insertamum, insertvon) VALUES('.
@@ -832,5 +829,63 @@ EOT;
 					$this->errormsg='<br/>Cannot read File: '.$tmp_filename.'<br/>Maybe Phantomjs failed!<br/>'.$escaped_command;
 				return false;
 		}
+	}
+	
+	/**
+	 * Loescht einen Eintrag
+	 *
+	 * @param $chart_id
+	 * @return true wenn ok, sonst false
+	 */
+	public function delete($chart_id)
+	{
+		$qry = "DELETE FROM addon.tbl_rp_chart WHERE chart_id=".$this->db_add_param($chart_id).";";
+		
+		if($this->db_query($qry))
+		{
+			return true;
+		}
+		else
+		{
+			$this->errormsg='Fehler beim Löschen des Eintrages';
+			return false;
+		}
+	}
+	
+	/**
+	 * Laedt alle Charts
+	 * @return true wenn ok, sonst false
+	 */
+	public function getAll($order = FALSE)
+	{
+		$qry = 'SELECT * FROM addon.tbl_rp_chart';
+
+		if($order) 
+			$qry .= ' ORDER BY ' . $order;
+		
+		if($result = $this->db_query($qry))
+		{
+			while($row = $this->db_fetch_object($result))
+			{
+				$obj = new chart();
+				
+				$obj->chart_id = $row->chart_id;
+				$obj->title = $row->title;
+				$obj->description = $row->description;
+				$obj->type = $row->type;
+				$obj->preferences = $row->preferences;
+				$obj->datasource = $row->datasource;
+				$obj->datasource_type = $row->datasource_type;
+				
+				$this->result[] = $obj;
+			}
+			
+			return true;
+		}
+		else
+		{
+			$this->errormsg = 'Fehler beim Laden der Daten';
+			return false;
+		}			
 	}
 }

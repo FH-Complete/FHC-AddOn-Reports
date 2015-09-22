@@ -38,6 +38,16 @@ if($rechte->isBerechtigt('addon/reports', 'suid'))
 }
 
 $report = new report();
+
+if(isset($_GET['action']))
+{
+	if($_GET['action']=='delete')
+	{
+		if(!$report->delete($_GET['report_id']))
+			echo '<script>alert("Der Eintrag konnte nicht gelöscht werden!");</script>';
+	}
+}
+
 if (!$report->loadAll())
 {
     die($report->errormsg);
@@ -68,6 +78,11 @@ if (!$report->loadAll())
 					widgets: ["zebra"]
 				});
 			});
+			
+		function confdel()
+		{
+			return confirm("Wollen Sie diesen Eintrag wirklich löschen?");
+		}
 
 		</script>
 	</head>
@@ -105,6 +120,9 @@ if (!$report->loadAll())
 					</th>
 					<th>
 						Description
+					</th>
+					<th>
+						<!-- Entfernen -->
 					</th>
 				</tr>
 			</thead>
@@ -145,6 +163,9 @@ if (!$report->loadAll())
 						</td>
 						<td>
 							<?php echo $db->convert_html_chars(substr($report->description,0,16)) ?>...
+						</td>
+						<td>
+							<a href="report_overview.php?action=delete&report_id=<?php echo $report->report_id ?>" onclick="return confdel()">entfernen</a>
 						</td>
 					</tr>
 				<?php endforeach; ?>
