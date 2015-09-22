@@ -99,6 +99,8 @@
 		{
 			$rp_report_statistik->report_id = $_POST["report_id"];
 			$rp_report_statistik->statistik_kurzbz = $_POST["statistik_kurzbz"];
+			$rp_report_statistik->insertvon = $user;
+			$rp_report_statistik->updatevon = $user;
 			
 			if(!$rp_report_statistik->save())
 			{
@@ -110,6 +112,8 @@
 		{
 			$rp_report_chart->report_id = $_REQUEST["report_id"];
 			$rp_report_chart->chart_id = $_REQUEST["chart_id"];
+			$rp_report_chart->insertvon = $user;
+			$rp_report_chart->updatevon = $user;
 			
 			if(!$rp_report_chart->save())
 			{
@@ -187,15 +191,25 @@
 	$htmlstr .= "			</tr>\n";
 	$htmlstr .= "	</table>\n";
 	
+	
+	$htmlstr .= "<br>\n";
+	$htmlstr .= "<div align='right' id='sub'>\n";
+	$htmlstr .= "	<span id='submsg' style='color:red; visibility:hidden;'>Datensatz ge&auml;ndert!&nbsp;&nbsp;</span>\n";
+	$htmlstr .= "	<input type='hidden' name='report_id' value='".$report->report_id."'>";
+	$htmlstr .= "	<input type='submit' value='save' name='action'>\n";
+	$htmlstr .= "	<input type='button' value='Reset' onclick='unchanged()'>\n";
+	$htmlstr .= "</div>";
+	$htmlstr .= "</form>";
+	
   if($report->report_id > 0)
   {
   	//charts
-		$htmlstr .= "	<table  class='tablesorter' id='t1' style='margin: 20px;'>";
+		$htmlstr .= "	<table  class='tablesorter' id='t1' style='margin: 20px; float:left;width:45%'>";
 		$htmlstr .= "	<thead>\n";
 		$htmlstr .= "	<tr>\n";
-		$htmlstr .= "	<th style='width:100px;'>Chart</th>\n";
+		$htmlstr .= "	<th>Chart</th>\n";
 		$htmlstr .= "	<th>Name</th>\n";
-		$htmlstr .= "	<th style='width:70px;'></th>\n";
+		$htmlstr .= "	<th></th>\n";
 		$htmlstr .= "	</tr>\n";
 		$htmlstr .= "	</thead>\n";
 		$htmlstr .= "	<tbody>\n";
@@ -218,7 +232,7 @@
 		$htmlstr .= "	<input type='hidden' name='report_id' value='".$report->report_id."'>";
 		$htmlstr .= "	<td></td>\n";
 		$htmlstr .= "	<td>\n";
-		$htmlstr .= "	<select name='chart_id' style='width:100%;'>\n";
+		$htmlstr .= "	<select name='chart_id' style='max-width:150px;'>\n";
 		
 		$allCharts = new chart();
 		$allCharts->getAll();
@@ -236,12 +250,12 @@
 		$htmlstr .= "	</table>\n";
 		
 		//statistiken
-		$htmlstr .= "	<table  class='tablesorter' id='t2' style='margin: 20px;'>";
+		$htmlstr .= "	<table  class='tablesorter' id='t2' style='margin: 20px; float:left;width:45%'>";
 		$htmlstr .= "	<thead>\n";
 		$htmlstr .= "	<tr>\n";
-		$htmlstr .= "	<th style='width:100px;'>Statistik</th>\n";
+		$htmlstr .= "	<th>Statistik</th>\n";
 		$htmlstr .= "	<th>Name</th>\n";
-		$htmlstr .= "	<th style='width:70px;'></th>\n";
+		$htmlstr .= "	<th></th>\n";
 		$htmlstr .= "	</tr>\n";
 		$htmlstr .= "	</thead>\n";
 		$htmlstr .= "	<tbody>\n";
@@ -261,14 +275,14 @@
 		$htmlstr .= "	<input type='hidden' name='report_id' value='".$report->report_id."'>";
 		$htmlstr .= "	<td></td>\n";
 		$htmlstr .= "	<td>\n";
-		$htmlstr .= "	<select name='statistik_kurzbz' style='width:100%;'>\n";
+		$htmlstr .= "	<select name='statistik_kurzbz' style='max-width:150px;'>\n";
 		
 		$allStat = new Statistik();
 		$allStat->getAll();
 		
 		foreach($allStat->result as $st)
 		{
-			$htmlstr .= "	<option value=".$st->statistik_kurzbz.">".$st->bezeichnung."</option>\n";
+			$htmlstr .= "	<option  style='max-width:30%;' value=".$st->statistik_kurzbz.">".$st->bezeichnung."</option>\n";
 		}
 		$htmlstr .= "	</select>\n";
 		$htmlstr .= "	</td>\n";
@@ -277,17 +291,8 @@
 		$htmlstr .= "</form>\n";
 		$htmlstr .= "	</tr>\n";
 		$htmlstr .= "	</table>\n";
+		$htmlstr .= "<div style='clear:both;'></div>\n";
 	}
-	
-	
-	$htmlstr .= "<br>\n";
-	$htmlstr .= "<div align='right' id='sub'>\n";
-	$htmlstr .= "	<span id='submsg' style='color:red; visibility:hidden;'>Datensatz ge&auml;ndert!&nbsp;&nbsp;</span>\n";
-	$htmlstr .= "	<input type='hidden' name='report_id' value='".$report->report_id."'>";
-	$htmlstr .= "	<input type='submit' value='save' name='action'>\n";
-	$htmlstr .= "	<input type='button' value='Reset' onclick='unchanged()'>\n";
-	$htmlstr .= "</div>";
-	$htmlstr .= "</form>";
 	$htmlstr .= "<div class='inserterror'>".$errorstr."</div>"
 ?>
 
