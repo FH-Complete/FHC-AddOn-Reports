@@ -59,12 +59,12 @@ if($result = $db->db_query("SELECT * FROM system.tbl_berechtigung WHERE berechti
 {
 	if($db->db_num_rows($result)==0)
 	{
-		$qry = "INSERT INTO system.tbl_berechtigung(berechtigung_kurzbz, beschreibung) 
+		$qry = "INSERT INTO system.tbl_berechtigung(berechtigung_kurzbz, beschreibung)
 				VALUES('addon/reports','AddOn Reports');";
 
 		if(!$db->db_query($qry))
 			echo '<strong>Berechtigung: '.$db->db_last_error().'</strong><br>';
-		else 
+		else
 			echo 'Neue Berechtigung addon/reports hinzugefuegt!<br>';
 	}
 }
@@ -74,7 +74,7 @@ $result = $db->db_query("SELECT 1 FROM pg_namespace WHERE nspname = 'reports';")
 if ($db->db_num_rows()!=1)
 	if(!$db->db_query("CREATE SCHEMA reports; GRANT USAGE ON SCHEMA reports TO vilesci; GRANT USAGE ON SCHEMA reports TO web;"))
 		echo '<strong>Reports: '.$db->db_last_error().'</strong><br>';
-	else 
+	else
 		echo ' Reports: Schema reports wurde angelegt!<br>';
 
 // Reports (rp) Chart
@@ -102,7 +102,7 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_chart"))
 				updatevon varchar(32),
 				CONSTRAINT pk_rp_chart PRIMARY KEY (chart_id)
 			);
-			ALTER TABLE addon.tbl_rp_chart ADD CONSTRAINT "fk_rp_chart_statistik" FOREIGN KEY (statistik_kurzbz) 
+			ALTER TABLE addon.tbl_rp_chart ADD CONSTRAINT "fk_rp_chart_statistik" FOREIGN KEY (statistik_kurzbz)
 			REFERENCES public.tbl_statistik(statistik_kurzbz) ON UPDATE CASCADE ON DELETE RESTRICT;
 			GRANT SELECT, UPDATE, INSERT, DELETE ON addon.tbl_rp_chart TO vilesci;
 			GRANT SELECT, UPDATE ON addon.tbl_rp_chart_chart_id_seq TO vilesci;
@@ -110,7 +110,7 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_chart"))
 
 	if(!$db->db_query($qry))
 		echo '<strong>addon.tbl_rp_chart: '.$db->db_last_error().'</strong><br>';
-	else 
+	else
 		echo ' addon.tbl_rp_chart: Tabelle addon.tbl_rp_chart hinzugefuegt!<br>';
 
 }
@@ -137,7 +137,7 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_report"))
 
 	if(!$db->db_query($qry))
 		echo '<strong>addon.tbl_rp_report: '.$db->db_last_error().'</strong><br>';
-	else 
+	else
 		echo ' addon.tbl_rp_report: Tabelle addon.tbl_rp_report hinzugefuegt!<br>';
 
 }
@@ -152,7 +152,7 @@ if(!$result = @$db->db_query("SELECT statistik_kurzbz FROM addon.tbl_rp_chart"))
 
 	if(!$db->db_query($qry))
 		echo '<strong>addon.tbl_rp_chart: '.$db->db_last_error().'</strong><br>';
-	else 
+	else
 		echo ' addon.tbl_rp_chart: Spalte statistik_kurzbz hinzugefuegt!<br>';
 
 }
@@ -204,7 +204,7 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_report_chart"))
 				updatevon varchar(32),
 				CONSTRAINT pk_rp_report_chart PRIMARY KEY (reportchart_id)
 			);
-			ALTER TABLE addon.tbl_rp_report_chart ADD CONSTRAINT "fk_rp_report_chart_chart" FOREIGN KEY (chart_id) 
+			ALTER TABLE addon.tbl_rp_report_chart ADD CONSTRAINT "fk_rp_report_chart_chart" FOREIGN KEY (chart_id)
 			REFERENCES addon.tbl_rp_chart(chart_id) ON UPDATE CASCADE ON DELETE RESTRICT;
 			GRANT SELECT, UPDATE, INSERT, DELETE ON addon.tbl_rp_report_chart TO vilesci;
 			GRANT SELECT, UPDATE ON addon.tbl_rp_report_chart_reportchart_id_seq TO vilesci;
@@ -212,7 +212,7 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_report_chart"))
 
 	if(!$db->db_query($qry))
 		echo '<strong>addon.tbl_rp_report_chart: '.$db->db_last_error().'</strong><br>';
-	else 
+	else
 		echo ' addon.tbl_rp_report_chart: Tabelle addon.tbl_rp_report_chart hinzugefuegt!<br>';
 
 }
@@ -231,7 +231,7 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_report_statistik"))
 				updatevon varchar(32),
 				CONSTRAINT pk_rp_report_statistik PRIMARY KEY (reportstatistik_id)
 			);
-			ALTER TABLE addon.tbl_rp_report_statistik ADD CONSTRAINT "fk_rp_report_statistik_statistik" FOREIGN KEY (statistik_kurzbz) 
+			ALTER TABLE addon.tbl_rp_report_statistik ADD CONSTRAINT "fk_rp_report_statistik_statistik" FOREIGN KEY (statistik_kurzbz)
 			REFERENCES public.tbl_statistik(statistik_kurzbz) ON UPDATE CASCADE ON DELETE RESTRICT;
 			GRANT SELECT, UPDATE, INSERT, DELETE ON addon.tbl_rp_report_statistik TO vilesci;
 			GRANT SELECT, UPDATE ON addon.tbl_rp_report_statistik_reportstatistik_id_seq TO vilesci;
@@ -239,11 +239,67 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_report_statistik"))
 
 	if(!$db->db_query($qry))
 		echo '<strong>addon.tbl_rp_report_statistik: '.$db->db_last_error().'</strong><br>';
-	else 
+	else
 		echo ' addon.tbl_rp_report_statistik: Tabelle addon.tbl_rp_report_statistik hinzugefuegt!<br>';
 
 }
 
+// Reports (rp) Report
+if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_gruppe"))
+{
+
+	$qry = 'CREATE TABLE addon.tbl_rp_gruppe
+			(
+				reportgruppe_id serial,
+				bezeichnung varchar(256),
+				reportgruppe_parent_id integer,
+				insertamum timestamp,
+				insertvon varchar(32),
+				updateamum timestamp,
+				updatevon varchar(32),
+				CONSTRAINT pk_rp_gruppe PRIMARY KEY (reportgruppe_id)
+			);
+			GRANT SELECT, UPDATE, INSERT, DELETE ON addon.tbl_rp_gruppe TO vilesci;
+			GRANT SELECT, UPDATE ON addon.tbl_rp_gruppe_reportgruppe_id_seq TO vilesci;
+
+			ALTER TABLE addon.tbl_rp_gruppe ADD CONSTRAINT "fk_rp_report_gruppe_parent" FOREIGN KEY (reportgruppe_parent_id) REFERENCES addon.tbl_rp_gruppe(reportgruppe_id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+			CREATE TABLE addon.tbl_rp_gruppenzuordnung
+			(
+				gruppenzuordnung_id integer,
+				reportgruppe_id integer,
+				chart_id integer,
+				report_id integer,
+				statistik_kurzbz varchar(64),
+				insertamum timestamp,
+				insertvon varchar(32),
+				updateamum timestamp,
+				updatevon varchar(32)
+			);
+
+			CREATE SEQUENCE addon.seq_rp_gruppenzuordnung_gruppenzuordnung_id
+		 INCREMENT BY 1
+		 NO MAXVALUE
+		 NO MINVALUE
+		 CACHE 1;
+
+		ALTER TABLE addon.tbl_rp_gruppenzuordnung ADD CONSTRAINT pk_rp_gruppenzuordnung PRIMARY KEY (gruppenzuordnung_id);
+		ALTER TABLE addon.tbl_rp_gruppenzuordnung ALTER COLUMN gruppenzuordnung_id SET DEFAULT nextval(\'addon.seq_rp_gruppenzuordnung_gruppenzuordnung_id\');
+			GRANT SELECT, UPDATE, INSERT, DELETE ON addon.tbl_rp_gruppenzuordnung TO vilesci;
+			GRANT SELECT, UPDATE ON addon.seq_rp_gruppenzuordnung_gruppenzuordnung_id TO vilesci;
+
+			ALTER TABLE addon.tbl_rp_gruppenzuordnung ADD CONSTRAINT "fk_rp_gruppenzuordnung_reportgruppe_id" FOREIGN KEY (reportgruppe_id) REFERENCES addon.tbl_rp_gruppe(reportgruppe_id) ON UPDATE CASCADE ON DELETE RESTRICT;
+			ALTER TABLE addon.tbl_rp_gruppenzuordnung ADD CONSTRAINT "fk_rp_gruppenzuordnung_chart_id" FOREIGN KEY (chart_id) REFERENCES addon.tbl_rp_chart(chart_id) ON UPDATE CASCADE ON DELETE RESTRICT;
+			ALTER TABLE addon.tbl_rp_gruppenzuordnung ADD CONSTRAINT "fk_rp_gruppenzuordnung_report_id" FOREIGN KEY (report_id) REFERENCES addon.tbl_rp_report(report_id) ON UPDATE CASCADE ON DELETE RESTRICT;
+			ALTER TABLE addon.tbl_rp_gruppenzuordnung ADD CONSTRAINT "fk_rp_gruppenzuordnung_statistik_kurzbz" FOREIGN KEY (statistik_kurzbz) REFERENCES public.tbl_statistik(statistik_kurzbz) ON UPDATE CASCADE ON DELETE RESTRICT;
+			';
+
+	if(!$db->db_query($qry))
+		echo '<strong>addon.tbl_rp_gruppe: '.$db->db_last_error().'</strong><br>';
+	else
+		echo ' addon.tbl_rp_gruppe: Tabelle addon.tbl_rp_gruppe hinzugefuegt!<br>';
+
+}
 echo '<br>Aktualisierung abgeschlossen<br><br>';
 echo '<h2>Gegenprüfung</h2>';
 
@@ -253,6 +309,8 @@ $tabellen=array(
 	,"addon.tbl_rp_report" => array("report_id","title","format","description", "header", "footer", "body","docinfo", "gruppe","publish","insertamum","insertvon","updateamum","updatevon")
 	,"addon.tbl_rp_report_chart" => array("reportchart_id","report_id","chart_id","insertamum","insertvon","updateamum","updatevon")
 	,"addon.tbl_rp_report_statistik" => array("reportstatistik_id","report_id","statistik_kurzbz","insertamum","insertvon","updateamum","updatevon")
+	,"addon.tbl_rp_gruppe" => array("reportgruppe_id","bezeichnung","reportgruppe_parent_id","insertamum","insertvon","updateamum","updatevon")
+	,"addon.tbl_rp_gruppenzuordnung" => array("gruppenzuordnung_id","reportgruppe_id","chart_id","report_id","statistik_kurzbz","insertamum","insertvon","updateamum","updatevon")
 );
 
 
