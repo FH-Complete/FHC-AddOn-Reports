@@ -803,7 +803,9 @@ EOT;
 							$categoriesHeader = $line[$i];
 						}
 						else
+						{
 							$series[] = array("name" => str_replace("'", "", str_replace('"', "", $line[$i])), "data" => array());
+						}
 					}
 					else if(!$first && $i == 0)
 					{
@@ -811,7 +813,7 @@ EOT;
 					}
 					else
 					{
-						$series[$i-1]["data"][] = floatval($line[$i]);
+						$series[$i-1]["data"][] = floatval(str_replace('"', "", $line[$i]));
 					}
 				}
 				$first = false;
@@ -886,7 +888,6 @@ EOT;
 
 		//series wieder in normale arrays zurückwandeln, da highcharts keine assoziativen entgegen nimmt!
 		$phantomData["series"] = array_values($phantomData["series"]);
-
 
 		return json_encode($phantomData);
 	}
