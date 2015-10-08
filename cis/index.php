@@ -116,14 +116,17 @@ function toArray($obj, $id, $pid)
 		<link rel="stylesheet" href="../include/css/jquery-ui.1.11.2.min.css" type="text/css">
 
 		<script type="text/javascript" src="../include/js/jquery-1.11.2.min.js"></script>
-        <script type="text/javascript" src="../include/js/jquery-ui.1.11.2.min.js"></script>
+		<script type="text/javascript" src="../include/js/jquery-ui.1.11.2.min.js"></script>
 
 		<script type="text/javascript" src="../include/js/pivottable/pivot.js"></script>
-        <script type="text/javascript" src="../include/js/pivottable/gchart_renderers.js"></script>
+		<script type="text/javascript" src="../include/js/pivottable/gchart_renderers.js"></script>
 
 		<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>
 		<script src="../include/js/highcharts/main.js" type="application/javascript"></script>
-        <script type="text/javascript" src="../include/js/pivottable/jquery.ui.touch-punch.min.js"></script>
+		<script type="text/javascript" src="../include/js/pivottable/jquery.ui.touch-punch.min.js"></script>
+		<script src="../include/js/bootstrap.min.js"></script>
+		<script src="../include/js/offcanvas.js"></script>
+		<script type="text/javascript" src="reporting.js"></script>
 
         <!-- <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/jquery-1.8.3.min.js"></script> -->
         <!--<script type="text/javascript" src="../../../include/js/jquery-ui-1.11.4.custom.min.js"></script>-->
@@ -219,7 +222,7 @@ function toArray($obj, $id, $pid)
 					</div>
 				</div>
 			</div>
-			<div id="spinner" style="display:none; width:100%; top:50px; position:absolute; z-index:10;">
+			<div id="spinner" style="display:none; width:80%; margin-left:10%; top:50px; position:absolute; z-index:10;">
 				<div class="progress">
 	  				<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
 						Loading Data
@@ -258,8 +261,8 @@ function toArray($obj, $id, $pid)
 							<div class="col-xs-12 col-sm-9">
 								<form class="form-inline" onsubmit="return false">
 								<div id="filter-input" style="float: left"></div>
-								<button id="run-filter" class="btn btn-default" type="submit">Run</button>
-								<a id="filter-input-PdfLink"><img src="pdfIcon.png" width="20" alt="pdf"/></a>
+								<button onclick="runFilter()" class="btn btn-default" type="submit">Run</button>
+								<a id="filter-PdfLink"><img src="pdfIcon.png" width="20" alt="pdf"/></a>
 								</form>
 							</div>
 						</div>
@@ -277,25 +280,25 @@ function toArray($obj, $id, $pid)
 											<?php if(isset($gp->chart_id)):?>
 												<?php $ch = new chart($gp->chart_id);?>
 												<div class="report_<?php echo $gp->reportgruppe_id ?>_charts reports_sidebar_entry" style="display: none;">
-													<li><a href="#" data-chart-id="<?php echo urlencode($ch->chart_id)?>" data-statistik-kurzbez="<?php echo urlencode($ch->statistik_kurzbz)?>" class="list-group-item"><?php echo $ch->title?></a></li>
+													<li><a href="#" onclick='loadChart(<?php echo urlencode($ch->chart_id)?>, "<?php echo urlencode($ch->statistik_kurzbz)?>")' class="list-group-item"><?php echo $ch->title?></a></li>
 												</div>
 
 											<?php elseif(isset($gp->report_id)): ?>
 												<?php $rp = new report($gp->report_id);?>
 												<div class="report_<?php echo $gp->reportgruppe_id ?>_reports reports_sidebar_entry" style="display: none;">
-													<li><a class="list-group-item" href="#" data-report-id="<?php echo $rp->report_id?>"><?php echo $rp->title?></a></li>
+													<li><a class="list-group-item" href="#" onclick='loadReport(<?php echo urlencode($rp->report_id)?>)'><?php echo $rp->title?></a></li>
 												</div>
 
 											<?php elseif(isset($gp->statistik_kurzbz)): ?>
 												<?php $st = new statistik($gp->statistik_kurzbz); ?>
 												<div class="report_<?php echo $gp->reportgruppe_id ?>_data reports_sidebar_entry" style="display: none;">
-													<li><a href="#" data-statistik-kurzbez="<?php echo urlencode($st->statistik_kurzbz)?>" class="list-group-item"><?php echo $st->bezeichnung?></a></li>
+													<li><a href="#" onclick='loadStatistik("<?php echo urlencode($st->statistik_kurzbz)?>")' class="list-group-item"><?php echo $st->bezeichnung?></a></li>
 												</div>
 
 											<?php endif; ?>
 									<?php endforeach; ?>
 								<?php endforeach; ?>
-								<li class="hide-button"><a href="#"><span class="glyphicon glyphicon-chevron-up"></span></a></li>
+								<li class="hide-button" onclick="hideSidebar()"><a href="#"><span class="glyphicon glyphicon-chevron-up"></span></a></li>
 							</ul>
 						</div>
 					</div>
@@ -303,25 +306,6 @@ function toArray($obj, $id, $pid)
 			<footer class="footer">
 				<p class="text-muted">&copy; FH Technikum Wien 2015</p>
 			</footer>
-			<script src="../include/js/bootstrap.min.js"></script>
-			<script src="../include/js/offcanvas.js"></script>
-			<script type="text/javascript" src="reporting.js"></script>
-			<?php if(preg_match(',/var/www/hofer/,', __FILE__)):?>
-			<script type="text/javascript">
-				$(function() {
-					setTimeout(function() {
-						$('ul[data-name="reports"] a[data-gruppe="Obst"]').trigger('click');
-						$('#reportsgroup_Obst *[data-report-id="2"]').trigger('click');
-//						setTimeout(function() {
-//							$('#Studiensemester').val('WS2014');
-//						}, 50);
-//						setTimeout(function() {
-//							$('#run-filter').trigger('click');
-//						}, 100);
-					}, 100);
-				});
-			</script>
-			<?php endif;?>
 		</div>
 	</body>
 </html>

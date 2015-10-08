@@ -78,7 +78,7 @@ if (!$report->loadAll())
 					widgets: ["zebra"]
 				});
 			});
-			
+
 		function confdel()
 		{
 			return confirm("Wollen Sie diesen Eintrag wirklich löschen?");
@@ -133,6 +133,7 @@ if (!$report->loadAll())
 							<a href="report_details.php?report_id=<?php echo $report->report_id ?>" target="frame_report_details">
 								<?php echo $report->report_id ?>
 							</a>
+							<a href="../cis/vorschau.php?report_id=<?php echo $report->report_id ?>" target="_blank"><img style="float:right;" title="<?php echo $report->title ?> anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>
 						</td>
 						<td>
 							<a href="report_details.php?report_id=<?php echo $report->report_id ?>" target="frame_report_details">

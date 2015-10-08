@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 fhcomplete.org
  *
  * This program is free software: you can redistribute it and/or modify
@@ -267,7 +267,7 @@ function hcTimezoomCreate(chart) {
 }
 
 function hcCreate(chart, hctype) {
-	
+
 	var options = {
 		chart: {
 			type: hctype,
@@ -289,7 +289,7 @@ function hcCreate(chart, hctype) {
 			}
 		},
 		series: chart.series.data
-		
+
 	};
 
 	if(chart.colors.length) {
@@ -303,7 +303,42 @@ function hcCreate(chart, hctype) {
 	chart.highchart = new Highcharts.Chart(options);
 }
 
-function loadHcChart(url, chart) {
+function loadHcChartFromJSON(json)
+{
+			chart.raw.data = json.parse(json);
+
+			if(chart.type === 'hcdrill')
+			{
+				hcdrillCreate(chart);
+			}
+			else if(chart.type === 'hcline')
+			{
+				convertQueryResult(chart);
+				hcCreate(chart, 'line');
+			}
+			else if(chart.type === 'hccolumn')
+			{
+				convertQueryResult(chart);
+				hcCreate(chart, 'column');
+			}
+			else if(chart.type === 'hcbar')
+			{
+				convertQueryResult(chart);
+				hcCreate(chart, 'bar');
+			}
+			else if(chart.type === 'hcpie')
+			{
+				convertQueryResult(chart);
+				hcCreate(chart, 'pie');
+			}
+			else if(chart.type == 'hctimezoom')
+			{
+				hcTimezoomCreate(chart);
+			}
+}
+
+function loadHcChart(url, chart)
+{
 	$('#spinner').show();
 	$.ajax({
 		url: url,

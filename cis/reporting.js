@@ -15,7 +15,216 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Authors: Robert Hofer <robert.hofer@technikum-wien.at>
+ *					Andreas moik <moik@technikum-wien.at>
  */
+//TODO entfernen
+var
+statistik_kurzbz = undefined,
+chart_id = undefined,
+report_id = undefined;
+
+
+
+function loadChart(chart_id, statistik_kurzbz)
+{
+	showFilter(statistik_kurzbz, undefined, chart_id);
+}
+
+function loadReport(report_id)
+{
+	showFilter(undefined, report_id, undefined);
+}
+
+function loadStatistik(statistik_kurzbz)
+{
+	showFilter(statistik_kurzbz, undefined, undefined);
+}
+
+function loadAJAX(url, get_params)
+{
+	$('#spinner').show();
+	$('#welcome').hide();
+
+	$.ajax(
+	{
+		url: url,
+		data: get_params,
+		timeout:40000,
+    error:function()
+    {
+			$('#spinner').hide();
+    	alert("Es ist ein Fehler aufgetreten!")
+    },
+		success: function(data)
+		{
+			$('#spinner').hide();
+			$('#filter').hide();
+			$('#content').show();
+			$('#content').html(data).show();
+			initCharts();//TODO weg?
+			$('#welcome').hide();
+			$(window).trigger('resize');
+
+			// Pivot auf volle groesse aendern
+			$('.pvtRendererArea').css('width','100%');
+		}
+	});
+}
+
+function loadData(statistik_kurzbz, report_id, chart_id, get_params)
+{
+	// generisch
+	$('#filter').hide();
+
+
+	var url = undefined;
+
+	//charts
+	if(statistik_kurzbz != undefined && report_id == undefined && chart_id != undefined)
+	{
+		get_params.chart_id = chart_id;
+		url = 'chart.php';
+	}
+	//pivots
+	else if(statistik_kurzbz != undefined && report_id == undefined && chart_id == undefined)
+	{
+		get_params.statistik_kurzbz = statistik_kurzbz;
+		url = 'grid.php';
+	}
+	//reports
+	else if(statistik_kurzbz == undefined && report_id != undefined && chart_id == undefined)
+	{
+		hideSidebar();
+		$('#welcome').hide();
+		var iframe = $(document.createElement('iframe'));
+
+		iframe.attr
+		({
+			src: '../data/Report' + report_id + '.html'
+		});
+
+		iframe.css(
+		{
+			border: '0',
+			width: '100%',
+			height: '800px'
+		});
+
+		$('#content').html(iframe).show();
+		return;
+	}
+
+
+	if(url != undefined)
+	{
+		$('#spinner').show();
+		$('#welcome').hide();
+
+		$.ajax(
+		{
+			url: url,
+			data: get_params,
+			timeout:40000,
+		  error:function()
+		  {
+				$('#spinner').hide();
+		  	alert("Es ist ein Fehler aufgetreten!")
+		  },
+			success: function(data)
+			{
+				$('#spinner').hide();
+				$('#filter').hide();
+				$('#content').show();
+				$('#content').html(data).show();
+				initCharts();//TODO weg?
+				$('#welcome').hide();
+				$(window).trigger('resize');
+
+				// Pivot auf volle groesse aendern
+				$('.pvtRendererArea').css('width','100%');
+			}
+		});
+	}
+	else
+		alert("Es wurden keine korrekten Daten angegeben!")
+}
+
+function showFilter(statistik_kurzbz, report_id, chart_id)
+{
+	$('#content').hide();
+	$('#filter').show();
+	$("#filter-PdfLink").hide();
+
+	$('#filter-input').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz + '&report_id=' + report_id, function()
+	{
+		//pdf links gibt es nur bei reports
+		if(typeof report_id !== 'undefined')
+		{
+			$('#welcome').hide();
+			hideSidebar();
+			$("#filter-PdfLink").attr("href", "../data/Report"+report_id+".pdf");
+			$("#filter-PdfLink").show();
+		}
+		//wenn keine filter existieren
+		else if(!$.trim($('#filter-input').html()) && typeof report_id === 'undefined')
+		{
+			$('#filter').hide();
+			//laden wir direkt die daten
+			loadData(statistik_kurzbz, report_id, chart_id,{});
+		}
+	});
+
+	$('#filter-input').attr(
+	{
+		'data-chart-id': chart_id,
+		'data-statistik-kurzbz': statistik_kurzbz,
+		'data-report-id': report_id
+	});
+}
+
+
+function loadFilter(statistik_kurzbz, report_id)
+{
+	if($(this).closest('li').hasClass('hide-button'))
+	{
+		// Sidebar ausblenden
+		$('#sidebar').hide();
+
+		// Charts auf volle groesse aendern
+		$('#content').parent().removeClass('col-sm-9').addClass('col-sm-12');
+
+		// Pivot auf volle groesse aendern
+		$('.pvtRendererArea').css('width','100%');
+
+		$(window).trigger('resize');
+		return;
+	}
+
+
+	$('#welcome,#content').hide();
+	$('#filter').show();
+	$("#filter-PdfLink").hide();
+
+	$('#filter-input').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz + '&report_id=' + report_id, function()
+	{
+		if(typeof report_id !== "null")
+		{
+			$("#filter-PdfLink").attr("href", "../data/Report"+report_id+".pdf");
+			$("#filter-PdfLink").show();
+		}
+		else if(!$.trim($('#filter-input').html()) && typeof report_id === "null")
+		{
+			$('#filter').hide();
+		}
+	});
+
+	$('#filter-input').attr(
+	{
+		'data-chart-id': chart_id,
+		'data-statistik-kurzbz': statistik_kurzbz,
+		'data-report-id': report_id
+	});
+}
 
 
 function showSidebar(num, type)
@@ -53,54 +262,6 @@ $(function()
 
 
 
-	$('#sidebar a').on('click', function()
-	{
-		var statistik_kurzbz = $(this).attr('data-statistik-kurzbez'),
-		chart_id = $(this).attr('data-chart-id'),
-		report_id = $(this).attr('data-report-id');
-
-		if($(this).closest('li').hasClass('hide-button'))
-		{
-			// Sidebar ausblenden
-			$('#sidebar').hide();
-
-			// Charts auf volle groesse aendern
-			$('#content').parent().removeClass('col-sm-9').addClass('col-sm-12');
-
-			// Pivot auf volle groesse aendern
-			$('.pvtRendererArea').css('width','100%');
-
-			$(window).trigger('resize');
-			return;
-		}
-
-		$('#welcome,#content').hide();
-		$('#filter').show();
-		$("#filter-input-PdfLink").hide();
-		
-		$('#filter-input').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz + '&report_id=' + report_id, function()
-		{
-			if(typeof report_id !== 'undefined')
-			{
-				$("#filter-input-PdfLink").attr("href", "../data/Report"+report_id+".pdf");
-				$("#filter-input-PdfLink").show();
-			}
-			else if(!$.trim($('#filter-input').html()) && typeof report_id === 'undefined')
-			{
-				$('#run-filter').trigger('click');
-				$('#filter').hide();
-			}
-		});
-
-		$('#filter-input').attr(
-		{
-			'data-chart-id': chart_id,
-			'data-statistik-kurzbz': statistik_kurzbz,
-			'data-report-id': report_id
-		});
-
-	});
-
 	$('#welcome button').on('click', function()
 	{
 
@@ -112,75 +273,40 @@ $(function()
 		return false;
 	});
 
-	$('#run-filter').on('click', function()
-	{
-		$('#filter').hide();
-
-		var inputs = $('#filter-input > *'),
-			chart_id = $('#filter-input').attr('data-chart-id'),
-			data_statistik_kurzbz = $('#filter-input').attr('data-statistik-kurzbz'),
-            report_id = $('#filter-input').attr('data-report-id'),
-			get_params = {},
-			url;
-
-		for(var i = 0; i < inputs.length; i++)
-		{
-
-			var input = $(inputs[i]);
-
-			get_params[input.attr('id')] = input.val();
-		}
-
-		if($('#sidebar').attr('data-menu') === 'charts')
-		{
-			url = 'chart.php';
-			get_params.chart_id = chart_id;
-
-		}
-		else
-		if($('#sidebar').attr('data-menu') === 'data')
-		{
-			url = 'grid.php';
-			get_params.statistik_kurzbz = data_statistik_kurzbz;
-		}
-
-		if($('#sidebar').attr('data-menu') === 'reports')
-		{
-
-			var iframe = $(document.createElement('iframe'));
-
-			iframe.attr
-			({
-				src: '../data/Report' + report_id + '.html'
-			});
-
-			iframe.css(
-			{
-				border: '0',
-				width: '100%',
-				height: '800px'
-			});
-
-			$('#content').html(iframe).show();
-
-		}
-		else
-		{
-			$('#spinner').show();
-
-			$.ajax(
-			{
-				url: url,
-				data: get_params,
-				success: function(data)
-				{
-					$('#spinner').hide();
-					charts = [];
-					$('#content').html(data).show();
-					initCharts();
-				}
-			});
-		}
-
-	});
 });
+
+
+
+function hideSidebar()
+{
+	// Sidebar ausblenden
+	$('#sidebar').hide();
+
+	// Charts auf volle groesse aendern
+	$('#content').parent().removeClass('col-sm-9').addClass('col-sm-12');
+
+	// Pivot auf volle groesse aendern
+	$('.pvtRendererArea').css('width','100%');
+
+	$(window).trigger('resize');
+}
+
+function runFilter()
+{
+	$('#filter').hide();
+
+	var inputs = $('#filter-input > *'),
+		chart_id = $('#filter-input').attr('data-chart-id'),
+		statistik_kurzbz = $('#filter-input').attr('data-statistik-kurzbz'),
+		      report_id = $('#filter-input').attr('data-report-id'),
+		get_params = {},
+		url;
+
+	for(var i = 0; i < inputs.length; i++)
+	{
+		var input = $(inputs[i]);
+		get_params[input.attr('id')] = input.val();
+	}
+
+	loadData(statistik_kurzbz, report_id, chart_id,get_params);
+}

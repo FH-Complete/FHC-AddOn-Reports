@@ -15,10 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  *
- * Authors: Christian Paminger, 
+ * Authors: Christian Paminger,
  */
 
-// pChart library inclusions 
+// pChart library inclusions
 require_once("../include/pChart/class/pData.class.php");
 require_once("../include/pChart/class/pDraw.class.php");
 require_once("../include/pChart/class/pImage.class.php");
@@ -28,7 +28,7 @@ require_once('../../../include/functions.inc.php');
 require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../../../include/filter.class.php');
 require_once('../../../include/statistik.class.php');
- 
+
 ini_set('memory_limit', '1024M');
 $uid = get_uid();
 $rechte = new benutzerberechtigung();
@@ -82,27 +82,27 @@ $statistik->loadData(); ?>
 		</div>
 		<?php if($statistik->data): ?>
 
-        
+
 		<!-- Pivot Renderers -->
     <script type="text/javascript" src="../include/js/pivot_renderers/c3_renderers.js.map"></script>
-    <script type="text/javascript" src="../include/js/pivot_renderers/d3.js"></script>
-    
+    <script type="text/javascript" src="../include/js/d3.min.js"></script>
+
     <script type="text/javascript" src="../include/js/pivot_renderers/c3_renderers.js"></script>
 		<link rel="stylesheet" type="text/css" href="../include/js/pivot_renderers/c3_renderers.css">
 
-    
+
     <script type="text/javascript" src="../include/js/pivot_renderers/csv_renderer.js"></script>
-    
-    
-		
+
+
+
 		<!-- Pivot Sprachen -->
 		<script type="text/javascript" src="../include/js/pivot.de.js"></script>
     <script type="text/javascript" src="../include/js/pivot_renderers/de/c3.de.js"></script>
-		
+
 		<script type="text/javascript">
 			$(function()
 			{
-			
+
 				var lang = "de";
 				var derivers = $.pivotUtilities.derivers;
 				var renderers =
@@ -112,7 +112,7 @@ $statistik->loadData(); ?>
 					$.pivotUtilities.locales[lang].c3_renderers,
 					$.pivotUtilities.export_renderers
 				);
-				
+
 				var options =        <?php echo $statistik->preferences ? : '{}' ?>;
 				options.renderers = renderers;
 				var dateFormat =     $.pivotUtilities.derivers.dateFormat;
@@ -122,6 +122,7 @@ $statistik->loadData(); ?>
 				var deFormat =       numberFormat({thousandsSep:".", decimalSep:","});
 
 				$("#pivot").pivotUI(<?php echo $statistik->db_getResultJSON($statistik->data) ?>,options,false,lang);
+
 			});
 
 		</script>

@@ -15,14 +15,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  *
- * Authors: Andreas Moik <moik@technikum-wien.at> 
+ * Authors: Andreas Moik <moik@technikum-wien.at>
  */
 require_once(dirname(__FILE__).'/../../../include/basis_db.class.php');
 
 class rp_report_chart extends basis_db
 {
 	public $result = array();
-	
+
 	//Tabellenspalten
 	public $reportchart_id;
 	public $report_id;
@@ -31,7 +31,7 @@ class rp_report_chart extends basis_db
 	public $insertvon;
 	public $updateamum;
 	public $updatevon;
-	
+
 	/**
 	 * Konstruktor
 	 * @param $reportchart_id ID des Reports, welcher geladen werden soll (Default=null)
@@ -45,8 +45,8 @@ class rp_report_chart extends basis_db
 		else
 			$this->new=true;
 	}
-	
-	
+
+
 	public function load($reportchart_id)
 	{
 		$this->errormsg = '';
@@ -61,8 +61,8 @@ class rp_report_chart extends basis_db
 			SELECT *
 			FROM addon.tbl_rp_report_chart
 			WHERE reportchart_id=".$this->db_add_param($reportchart_id, FHC_INTEGER);
-		
-		
+
+
 		if(!$this->db_query($qry))
 		{
 			$this->errormsg = 'Fehler beim Laden der Daten';
@@ -79,12 +79,12 @@ class rp_report_chart extends basis_db
 			$this->insertamum		      = $row->insertamum;
 			$this->insertvon		      = $row->insertvon;
 		}
-		
+
 		$this->new=false;
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * Speichert den aktuellen Datensatz in die Datenbank
 	 * Wenn $new auf true gesetzt ist wird ein neuer Datensatz angelegt
@@ -96,7 +96,7 @@ class rp_report_chart extends basis_db
 
 		if($this->new)
 		{
-		
+
 			//Neuen Datensatz einfuegen
 			$qry='BEGIN;INSERT INTO addon.tbl_rp_report_chart (report_id, chart_id,
 			      insertamum, insertvon) VALUES('.
@@ -120,7 +120,7 @@ class rp_report_chart extends basis_db
 		      	' updatevon='.$this->db_add_param($this->updatevon).
 		      	' WHERE reportchart_id='.$this->db_add_param($this->reportchart_id, FHC_INTEGER, false).';';
 		}
-		
+
 		if($this->db_query($qry))
 		{
 			if($this->new)
@@ -157,12 +157,12 @@ class rp_report_chart extends basis_db
 		}
 		return $this->reportchart_id;
 	}
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	public function getReportCharts($report_id)
 	{
 		$this->errormsg = '';
@@ -177,8 +177,8 @@ class rp_report_chart extends basis_db
 			SELECT *
 			FROM addon.tbl_rp_report_chart
 			WHERE report_id=".$this->db_add_param($report_id, FHC_INTEGER);
-		
-		
+
+
 		if(!$this->db_query($qry))
 		{
 			$this->errormsg = 'Fehler beim Laden der Daten';
@@ -193,9 +193,9 @@ class rp_report_chart extends basis_db
 		}
 		return true;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Loescht einen Eintrag
 	 *
@@ -205,7 +205,7 @@ class rp_report_chart extends basis_db
 	public function delete($reportchart_id)
 	{
 		$qry = "DELETE FROM addon.tbl_rp_report_chart WHERE reportchart_id=".$this->db_add_param($reportchart_id).";";
-		
+
 		if($this->db_query($qry))
 		{
 			return true;

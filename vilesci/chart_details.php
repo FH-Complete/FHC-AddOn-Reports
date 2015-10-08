@@ -54,7 +54,7 @@ $chart->datasource_type	= '';
 $chart->insertvon		= $user;
 $chart->updatevon		= $user;
 $chart->publish			= false;
-	
+
 if(isset($_REQUEST["action"]) && isset($_REQUEST["chart_id"]))
 {
 	if(!$rechte->isBerechtigt('addon/reports', null, 'suid'))
@@ -82,7 +82,7 @@ if(isset($_REQUEST["action"]) && isset($_REQUEST["chart_id"]))
 			$chart->dashboard_layout = $_POST["dashboard_layout"];
 			$chart->dashboard_pos = (int) $_POST["dashboard_pos"];
 		}
-		
+
 		if(!$chart->save())
 		{
 			$errorstr .= $chart->errormsg;
