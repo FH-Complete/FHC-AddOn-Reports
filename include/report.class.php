@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  *
- * Authors: Christian Paminger, 
+ * Authors: Christian Paminger,
  */
 require_once(dirname(__FILE__).'/../../../include/basis_db.class.php');
 
@@ -24,25 +24,25 @@ class report extends basis_db
 	public $new;
 	public $result = array();
 	public $vars='';
-	
+
 	//Tabellenspalten
 	public $report_id;
 	public $title;
 	public $format;
-	
+
 	public $description;
 	public $header;
 	public $body;
 	public $footer;
 	public $docinfo; //xml
-	
+
 	public $gruppe;
 	public $publish=false;
 	public $insertamum;
 	public $insertvon;
 	public $updateamum;
 	public $updatevon;
-	
+
 	/**
 	 * Konstruktor
 	 * @param akadgrad_id ID des zu ladenden Datensatzes
@@ -56,7 +56,7 @@ class report extends basis_db
 		else
 			$this->new=true;
 	}
-	
+
 	public function load($report_id)
 	{
 		//report_id auf gueltigkeit pruefen
@@ -76,7 +76,7 @@ class report extends basis_db
 
 		if($row = $this->db_fetch_object())
 		{
-			$this->report_id	= $row->report_id; 
+			$this->report_id	= $row->report_id;
 			$this->title 		= $row->title;
 			$this->format		= $row->format;
 			$this->description	= $row->description;
@@ -114,7 +114,7 @@ class report extends basis_db
 			//var_dump($row);
 			$obj = new report();
 
-			$obj->report_id		= $row->report_id; 
+			$obj->report_id		= $row->report_id;
 			$obj->title 		= $row->title;
 			$obj->description	= $row->description;
 			$obj->format		= $row->format;
@@ -132,7 +132,7 @@ class report extends basis_db
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Laedt alle Reports einer Gruppe, Parameter publish zum Filtern.
 	 * @return true wenn ok, sonst false
@@ -145,39 +145,39 @@ class report extends basis_db
 		elseif ($publish==false)
 			$qry.=' AND NOT tbl_rp_report.publish ';
 		$qry.=' ORDER BY title;';
-		
+
 		if($result = $this->db_query($qry))
 		{
 			while($row = $this->db_fetch_object($result))
 			{
 				$obj = new report();
 
-			$obj->report_id		= $row->report_id; 
-			$obj->title 		= $row->title;
-			$obj->description	= $row->description;
-			$obj->format		= $row->format;
-			$obj->body			= $row->body;
-			$this->gruppe		= $row->gruppe;
-			$this->publish		= $this->db_parse_bool($row->publish);
-			$obj->updateamum    = $row->updateamum;
-			$obj->updatevon     = $row->updatevon;
-			$obj->insertamum    = $row->insertamum;
-			$obj->insertvon     = $row->insertvon;
-			//$obj->report_num_rows= $this->getNumRows('sync.'.$row->report_tablename);
-			$obj->new       = false;
+				$obj->report_id		= $row->report_id;
+				$obj->title 		= $row->title;
+				$obj->description	= $row->description;
+				$obj->format		= $row->format;
+				$obj->body			= $row->body;
+				$obj->gruppe		= $row->gruppe;
+				$obj->publish		= $this->db_parse_bool($row->publish);
+				$obj->updateamum    = $row->updateamum;
+				$obj->updatevon     = $row->updatevon;
+				$obj->insertamum    = $row->insertamum;
+				$obj->insertvon     = $row->insertvon;
+				//$obj->report_num_rows= $this->getNumRows('sync.'.$row->report_tablename);
+				$obj->new       = false;
 
-			$this->result[] = $obj;
+				$this->result[] = $obj;
 			}
-			
+
 			return true;
 		}
 		else
 		{
 			$this->errormsg = 'Fehler beim Laden der Daten';
 			return false;
-		}			
+		}
 	}
-	
+
 	/**
 	 * Laedt alle Statistik Gruppen, Parameter publish zum Filtern.
 	 * @return true wenn ok, sonst false
@@ -202,10 +202,10 @@ class report extends basis_db
 			while($row = $this->db_fetch_object($result))
 			{
 				$obj = new statistik();
-				
+
 				$obj->gruppe = $row->gruppe;
 				$obj->anzahl = $row->anzahl;
-				
+
 				$this->result[] = $obj;
 			}
 
@@ -215,9 +215,9 @@ class report extends basis_db
 		{
 			$this->errormsg = 'Fehler beim Laden der Daten';
 			return false;
-		}			
+		}
 	}
-	
+
 	/**
 	 * Speichert den aktuellen Datensatz in die Datenbank
 	 * Wenn $new auf true gesetzt ist wird ein neuer Datensatz angelegt
@@ -229,7 +229,7 @@ class report extends basis_db
 		if($this->new)
 		{
 			//Neuen Datensatz einfuegen
-			$qry='BEGIN;INSERT INTO addon.tbl_rp_report (title, description, format, header, body, footer, docinfo, gruppe, publish, 
+			$qry='BEGIN;INSERT INTO addon.tbl_rp_report (title, description, format, header, body, footer, docinfo, gruppe, publish,
 			      insertamum, insertvon) VALUES('.
 			      $this->db_add_param($this->title).', '.
 			      $this->db_add_param($this->description).', '.
@@ -301,7 +301,7 @@ class report extends basis_db
 		}
 		return $this->report_id;
 	}
-	
+
 	public function print_htmlhead()
 	{
 		echo '<script src="../include/js/jquery1.7.1.min.js" type="application/javascript"></script>';
@@ -317,7 +317,7 @@ class report extends basis_db
 				echo '<link rel="stylesheet" href="../include/css/xchart.css" type="text/css">';
 		}
 	}
-	
+
 	public function print_htmldiv()
 	{
 		switch ($this->type)
@@ -343,7 +343,7 @@ class report extends basis_db
 					echo '<script src="../include/js/xchart.js" type="application/javascript"></script>';
 		}
 	}
-	
+
 	public function printParam($type,$crlf)
 	{
 		$return='';
@@ -362,7 +362,28 @@ class report extends basis_db
 					}
 				}
 				return $return;
-			
+
+		}
+	}
+
+	/**
+	 * Loescht einen Eintrag
+	 *
+	 * @param $report_id
+	 * @return true wenn ok, sonst false
+	 */
+	public function delete($report_id)
+	{
+		$qry = "DELETE FROM addon.tbl_rp_report WHERE report_id=".$this->db_add_param($report_id).";";
+
+		if($this->db_query($qry))
+		{
+			return true;
+		}
+		else
+		{
+			$this->errormsg='Fehler beim Löschen des Eintrages';
+			return false;
 		}
 	}
 }

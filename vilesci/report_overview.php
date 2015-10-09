@@ -38,6 +38,16 @@ if($rechte->isBerechtigt('addon/reports', 'suid'))
 }
 
 $report = new report();
+
+if(isset($_GET['action']))
+{
+	if($_GET['action']=='delete')
+	{
+		if(!$report->delete($_GET['report_id']))
+			echo '<script>alert("Der Eintrag konnte nicht gelöscht werden!");</script>';
+	}
+}
+
 if (!$report->loadAll())
 {
     die($report->errormsg);
@@ -68,6 +78,11 @@ if (!$report->loadAll())
 					widgets: ["zebra"]
 				});
 			});
+
+		function confdel()
+		{
+			return confirm("Wollen Sie diesen Eintrag wirklich löschen?");
+		}
 
 		</script>
 	</head>
@@ -106,6 +121,9 @@ if (!$report->loadAll())
 					<th>
 						Description
 					</th>
+					<th>
+						<!-- Entfernen -->
+					</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -134,17 +152,16 @@ if (!$report->loadAll())
 							</a>
 						</td>
 						<td align="center">
-							<a href="../data/Report<?php echo $report->report_id ?>.html" target="_blank">
-								<img title="<?php echo $report->title ?> anzeigen" src="../include/images/x-office-presentation.svg" class="mini-icon" />
-							</a><a href="../data/Report<?php echo $report->report_id ?>.pdf" target="_blank">
-								<img title="<?php echo $report->title ?> anzeigen" src="../include/images/pdfIcon.svg" class="mini-icon" />
-							</a>
+							<a href="../cis/vorschau.php?report_id=<?php echo $report->report_id ?>" target="_blank"><img title="<?php echo $report->title ?> anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>
 						</td>
 						<td>
 							<?php echo $db->convert_html_chars(substr($report->body,0,32)) ?>...
 						</td>
 						<td>
 							<?php echo $db->convert_html_chars(substr($report->description,0,16)) ?>...
+						</td>
+						<td>
+							<a href="report_overview.php?action=delete&report_id=<?php echo $report->report_id ?>" onclick="return confdel()">entfernen</a>
 						</td>
 					</tr>
 				<?php endforeach; ?>

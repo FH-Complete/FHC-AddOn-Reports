@@ -15,13 +15,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  *
- * Authors: Christian Paminger, 
+ * Authors: Christian Paminger,
  */
- 
-// pChart library inclusions 
+
+// pChart library inclusions
 require_once("../include/pChart/class/pData.class.php");
 require_once("../include/pChart/class/pDraw.class.php");
-require_once("../include/pChart/class/pImage.class.php"); 
+require_once("../include/pChart/class/pImage.class.php");
 
 require_once('../../../config/vilesci.config.inc.php');
 require_once('../../../include/functions.inc.php');
@@ -75,7 +75,6 @@ if ($htmlbody): ?>
 			}
 
 			echo $chart->getHtmlDiv($class);
-
 		endforeach;
 
 		echo $chart->getFooter();

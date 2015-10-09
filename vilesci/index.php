@@ -15,9 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  *
- * Authors: Christian Paminger, 
+ * Authors: Christian Paminger,
  */
- 
+
 //require_once('../reports.config.inc.php');
 require_once('../../../config/vilesci.config.inc.php');
 require_once('../../../include/functions.inc.php');
@@ -48,6 +48,10 @@ if(!$rechte->isBerechtigt('addon/reports'))
 			<a href="../../../vilesci/statistik/filter_frameset.html" target="rp_main">
 				<img src="../include/images/preferences-desktop.svg" alt="" />
 			</a>
+			<!--
+			<a href="report_filter_frameset.html" target="rp_main">
+				<img src="../include/images/preferences-system.svg" alt="" />
+			</a>-->
 			<a href="data_frameset.html" target="rp_main">
 				<img src="../include/images/x-office-spreadsheet.svg" alt="" />
 			</a>

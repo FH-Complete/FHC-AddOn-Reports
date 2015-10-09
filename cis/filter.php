@@ -50,7 +50,8 @@ $statistik_kurzbz = filter_input(INPUT_GET, 'statistik_kurzbz');
 $report_id = filter_input(INPUT_GET, 'report_id', FILTER_SANITIZE_NUMBER_INT);
 $htmlbody = filter_input(INPUT_GET, 'htmlbody', FILTER_VALIDATE_BOOLEAN);
 
-if($report_id) {
+if($report_id)
+{
     return;
 }
 

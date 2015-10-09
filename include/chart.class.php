@@ -17,8 +17,11 @@
  *
  * Authors: Christian Paminger,
  *			Robert Hofer <robert.hofer@technikum-wien.at>
+ *			Andreas Moik <moik@technikum-wien.at>
  */
 require_once(dirname(__FILE__).'/../../../include/basis_db.class.php');
+require_once('../include/phantom.class.php');
+require_once('../../../include/statistik.class.php');
 
 class chart extends basis_db
 {
@@ -28,7 +31,7 @@ class chart extends basis_db
 	public $vars = '';
 	public $statistik;
 	public $addon_root;
-	
+
 	//Tabellenspalten
 	public $chart_id;
 	public $title;
@@ -47,7 +50,7 @@ class chart extends basis_db
 	public $dashboard;
 	public $dashboard_layout;
 	public $dashboard_pos;
-	
+
 	/**
 	 * Konstruktor
 	 * @param akadgrad_id ID des zu ladenden Datensatzes
@@ -61,7 +64,7 @@ class chart extends basis_db
 		else
 			$this->new=true;
 	}
-	
+
 	public function load($chart_id)
 	{
 		//chart_id auf gueltigkeit pruefen
@@ -160,7 +163,7 @@ class chart extends basis_db
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Laedt alle Charts aus DB zu einem Report
 	 * @return true wenn ok, false im Fehlerfall
@@ -169,9 +172,9 @@ class chart extends basis_db
 	{
 
 		//Lesen der Daten aus der Datenbank
-		$qry = 'SELECT tbl_rp_chart.* 
+		$qry = 'SELECT tbl_rp_chart.*
 				FROM addon.tbl_rp_chart
-					JOIN addon.tbl_rp_report_chart USING (chart_id) 
+					JOIN addon.tbl_rp_report_chart USING (chart_id)
 				WHERE report_id='.$report_id.' ORDER BY title;';
 
 		if(!$this->db_query($qry))
@@ -208,7 +211,7 @@ class chart extends basis_db
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Laedt alle Statistiken einer Gruppe, Parameter publish zum Filtern.
 	 * @return true wenn ok, sonst false
@@ -221,7 +224,7 @@ class chart extends basis_db
 		elseif ($publish==false)
 			$qry.=' AND NOT tbl_rp_chart.publish ';
 		$qry.=' ORDER BY bezeichnung;';
-		
+
 		if($result = $this->db_query($qry))
 		{
 			while($row = $this->db_fetch_object($result))
@@ -250,14 +253,14 @@ class chart extends basis_db
 
 				$this->result[] = $obj;
 			}
-			
+
 			return true;
 		}
 		else
 		{
 			$this->errormsg = 'Fehler beim Laden der Daten';
 			return false;
-		}			
+		}
 	}
 	/**
 	 * Laedt alle Charts die im Dashboard angezeigt werden sollen.
@@ -325,10 +328,10 @@ class chart extends basis_db
 			while($row = $this->db_fetch_object($result))
 			{
 				$obj = new statistik();
-				
+
 				$obj->gruppe = $row->gruppe;
 				$obj->anzahl = $row->anzahl;
-				
+
 				$this->result[] = $obj;
 			}
 
@@ -338,7 +341,7 @@ class chart extends basis_db
 		{
 			$this->errormsg = 'Fehler beim Laden der Daten';
 			return false;
-		}			
+		}
 	}
 	/**
 	 * Liefert die möglichen Plugins/Chart-Varianten zurück
@@ -439,13 +442,10 @@ EOT;
 	 */
 	public function save()
 	{
-		if($this->datasource_type === 'intern') {
-
-			$this->datasource = '../../../vilesci/statistik/statistik_sql.php?statistik_kurzbz=' . $this->statistik_kurzbz . '&outputformat=json';
-		}
 
 		if($this->new)
 		{
+
 			//Neuen Datensatz einfuegen
 			$qry='BEGIN;INSERT INTO addon.tbl_rp_chart (title, description, publish, dashboard, dashboard_layout, dashboard_pos, statistik_kurzbz, type,sourcetype,preferences,datasource,datasource_type,
 			      insertamum, insertvon) VALUES('.
@@ -525,7 +525,7 @@ EOT;
 		}
 		return $this->chart_id;
 	}
-	
+
 	public function getHtmlHead()
 	{
 		ob_start(); ?>
@@ -556,6 +556,7 @@ EOT;
 			case 'hcpie': ?>
 				<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>
 				<script src="../include/js/highcharts/main.js" type="application/javascript"></script>
+				<script src="../include/js/highcharts/exporting.js" type="application/javascript"></script>
 				<?php break;
 		}
 
@@ -565,6 +566,7 @@ EOT;
 	public static function getAllHtmlHead()
 	{
 		ob_start(); ?>
+			<script type="text/javascript" src="../../../content/phantom.js.php"></script>
 			<script src="../include/js/jquery-1.11.2.min.js" type="application/javascript"></script>
 			<script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>
 			<link rel="stylesheet" href="../include/css/charts.css" type="text/css">
@@ -601,13 +603,12 @@ EOT;
 		$html.="\n\t\t\t<input type='hidden' name='htmlbody' value='true' />";
 		return $html."\n\t\t</form>";
 	}
-	
+
 	public function getHtmlDiv($class = null)
 	{
 		ob_start();
 
 		$source = $this->datasource.$this->vars;
-
 		switch ($this->type)
 		{
 			case 'spider': ?>
@@ -617,23 +618,16 @@ EOT;
 					<?php echo $this->preferences ?>;
 				</script>
 				<script src="../include/js/spidergraph.js" type="application/javascript"></script>
+				<script src="../include/js/highcharts/init.js" type="application/javascript"></script>
 				<?php break;
 			case 'xchart': ?>
 				<figure id="xChart"></figure>
-				<script src="../include/js/d3.min.js" type="application/javascript"></script>
+				<script src="../include/js/d3.js" type="application/javascript"></script>
 				<script src="../include/js/xcharts/xcharts.min.js" type="application/javascript"></script>
-				<script src="../include/js/xcharts/main.js" type="application/javascript"></script>
 				<script type="application/javascript">
 						var source = <?php echo json_encode($this->datasource.$this->vars) ?>;
 						<?php echo $this->preferences ?>;
 				</script>
-				<?php break;
-			case 'ngGrid': ?>
-				<div class="gridStyle" ng-app="myApp">
-					<div class="gridStyle" ng-controller="MyCtrl">
-						<div class="gridStyle" ng-grid="gridOptions"></div>
-					</div>
-				</div>
 				<?php break;
 			case 'hctimezoom':
 			case 'hcdrill':
@@ -641,31 +635,12 @@ EOT;
 			case 'hccolumn':
 			case 'hcbar':
 			case 'hcpie':
-
-				$chart = array(
-					'title' => $this->title,
-					'type' => $this->type,
-					'div_id' => 'hcChart' . $this->chart_id,
-					'raw' => new stdClass,
-					'categories' => new stdClass,
-					'series' => array(),
-					'x' => array(
-						'rotation' => 0,
-					),
-					'y' => array(
-						'rotation' => 0,
-					),
-					'colors' => array(),
-				);
 				?>
 				<div id="hcChart<?php echo $this->chart_id ?>" class="<?php echo $class ?>" style="border: 1px solid transparent;"></div>
-				<script type="application/javascript">
-				var source = <?php echo json_encode($this->datasource.$this->vars) ?>,
-						chart = <?php echo json_encode($chart) ?>;
-					<?php echo $this->preferences ?>;
-				</script>
-				<script src="../include/js/highcharts/init.js" type="application/javascript"></script>
-				<?php break;
+				<?php $json = $this->getHighChartJSON();?>
+				<?php if(!$json)die($this->errormsg);?>
+				<script>$("#hcChart"+<?php echo $this->chart_id ?>).highcharts(<?php echo $json; ?>);</script>
+			<?php break;
 		}
 
 		return ob_get_clean();
@@ -682,13 +657,13 @@ EOT;
 		<?php return ob_get_clean();
 	}
 
-	public function writePNG($dataFileNameCSV)
+	public function writePNG()
 	{
 		switch ($this->type)
 		{
 			case 'pChartBar':
 				/* Create and populate the pData object */
-				$MyData = new pData();  
+				$MyData = new pData();
 				$MyData->loadPalette("../palettes/blind.color",TRUE);
 				$MyData->addPoints(array(150,220,300,250,420,200,300,200,100),"Server A");
 				$MyData->addPoints(array(140,0,340,300,320,300,200,100,50),"Server B");
@@ -711,7 +686,7 @@ EOT;
 				$myPicture->setGraphArea(50,30,680,200);
 				$myPicture->drawScale(array("CycleBackground"=>TRUE,"DrawSubTicks"=>TRUE,"GridR"=>0,"GridG"=>0,"GridB"=>0,"GridAlpha"=>10));
 
-				/* Turn on shadow computing */ 
+				/* Turn on shadow computing */
 				$myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>10));
 
 				/* Draw the chart */
@@ -722,115 +697,256 @@ EOT;
 				$myPicture->drawLegend(580,12,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
 
 				/* Render the picture (choose the best way) */
-				$myPicture->autoOutput("data/images/example.drawBarChart.floating.png"); 
+				$myPicture->autoOutput("data/images/example.drawBarChart.floating.png");
 				break;
-		
+
 			case 'hcline':
 			case 'hccolumn':
 			case 'hcbar':
 			case 'hcpie':
 			case 'hctimezoom':
 			case 'hcdrill':
-				$hctype=substr($this->type,2);
-				$bin_files='';
-				$options_filename=$this->addon_root.'data/options.js';
-				$job_filename=$this->addon_root.'include/js/highcharts/highcharts-convert.js';
 				$tmp_filename=$this->addon_root.'data/images/chart'.$this->chart_id.date('Y-m-d_H:i:s').'.png';
 				$output_filename=$this->addon_root.'data/images/chart'.$this->chart_id.'.png';
 				$output=array();
-				$exit=0;
 				$scale='2.5';
-				$width='1000';
-				if ($hctype=='drill')
+				$width='1920';
+
+				$phantomData = $this->getHighChartJSON();
+				$ph = new phantom();
+				$p = $ph->render(array("infile" => $phantomData, "scale" => $scale, "width" => $width));
+
+				if(!$p)
+					die("Der PhantomJS Server ist nicht erreichbar");
+
+				$rsc=fopen($tmp_filename,'w');
+				$c=fwrite($rsc,base64_decode($p));
+
+				if(!$rsc)
+					echo "konnte das Bild nicht öffnen<br>";
+				if(!$c)
+					echo "konnte das Bild $tmp_filename nicht schreiben<br>";
+
+				fclose($rsc);
+				//echo '<img src="data:image/png;base64,'.$p.'" />';
+
+
+				// move file
+				if (rename($tmp_filename,$output_filename))
 				{
-					$hctype='column';
-					$data = json_decode($this->statistik->getJSON());
-					$series_data = array();
+					echo 'chart'.$this->chart_id.'.png: ' . $c . ' Bytes written<br/>';
+					return $output_filename;
+				}
+				else
+					$this->errormsg='<br/>Cannot remove File from '.$tmp_filename.' to '.$output_filename.'<br/>';
 
-					foreach($data as $zeile) {
+				return false;
+		}
+	}
 
-						$l1_bezeichnung = current($zeile);
+	/**
+	* Liefert den Highchart als JSON zurück
+	* @return JSON wenn ok, sonst false
+	*/
+	private function getHighChartJSON()
+	{
+		$this->statistik = new statistik($this->statistik_kurzbz);
+		if (!$this->statistik->loadData())
+			die ('Data not loaded!<br/>'.$this->statistik->errormsg);
 
-						if(!isset($series_data[$l1_bezeichnung])) {
-							$series_data[$l1_bezeichnung] = end($zeile);
-						} else {
-							$series_data[$l1_bezeichnung] += end($zeile);
+		$series = array();
+		$series_data = array();
+		$categories = "";
+		$hctype=substr($this->type,2);
+
+		if ($hctype=='drill')
+		{
+			$hctype='column';
+			$data = json_decode($this->statistik->getJSON());
+
+			foreach($data as $zeile)
+			{
+				$l1_bezeichnung = current($zeile);
+
+				if(!isset($series_data[$l1_bezeichnung]))
+				{
+					$series_data[$l1_bezeichnung] = end($zeile);
+				}
+				else
+				{
+					$series_data[$l1_bezeichnung] += end($zeile);
+				}
+			}
+
+
+			$series[] = array(
+				'data' => array_values($series_data),
+				'name' => 'Series 1',
+			);
+			$categories = array_keys($series_data);
+		}
+		else
+		{
+			$data = $this->statistik->getCSV();
+			$data=explode("\n", $data);
+			$first = true;
+
+			foreach($data as $line)
+			{
+				$line = explode(",", $line);
+				for($i = 0; $i < count($line); $i++)
+				{
+					if($first)
+					{
+						if($i == 0)
+						{
+							$categoriesHeader = $line[$i];
+						}
+						else
+						{
+							$series[] = array("name" => str_replace("'", "", str_replace('"', "", $line[$i])), "data" => array());
 						}
 					}
-
-					$options = array('title' => $this->title,
-						'chart' => array(
-							'type' => 'column',
-						),
-						'xAxis' => array(
-							'categories' => array_keys($series_data),
-						),
-						'series' => array(
-							array(
-								'data' => array_values($series_data),
-							)
-						),
-					);
-					$rsc=fopen($options_filename,'w');
-					$c=fwrite($rsc,json_encode($options)); 
-				}
-				else
-				{
-					$data = file_get_contents($dataFileNameCSV);
-					//$data=str_replace('"',' ',$data);
-					$data=str_replace(chr(10),'\n',$data);
-					//echo $data;
-					$options="{
-					title:'$this->title',
-					chart: {renderTo: 'container',
-							type:'$hctype'},
-					categories:{},
-					yAxis: {title: {text: 'Personen'}},
-					x:{'rotation':0},
-					y:{'rotation':0},
-					data: {
-						itemDelimiter: ',',
-						csv: '".$data."'
-						}
-					}";
-					$rsc=fopen($options_filename,'w');
-					$c=fwrite($rsc,$options); 
-				}
-
-				echo $c,' Bytes written<br/>';
-				$exec = $bin_files. 'phantomjs '.$job_filename.' -infile '.$options_filename.' -outfile '.$tmp_filename.' -scale '.$scale.' -width '.$width;
-				//echo $exec;ob_flush();flush();
-				$escaped_command = escapeshellcmd($exec);
-				$process = new process($escaped_command);
-				//$lastout=exec($escaped_command, $output, $exit);
-				/*if($lastout!==$output_filename)
-				{
-					echo '<br/>ExitCode: '.$exit.'<br/>';
-					var_dump($output);
-				}*/
-				for ($i=0;$process->status() && $i<10;$i++)
-				{
-					echo "<br/>The process is currently running";ob_flush();flush();
-					usleep(200000); // wait for 0.2 Seconds
-				}
-				if ($process->status())
-				{
-					$this->errormsg='<br/>Timeout in PhantomJS execution!<br/>'.$escaped_command.'<br/>';
-					$process->stop();
-					return false;
-				}
-				elseif (@fopen($tmp_filename,'r'))
-				{
-					// move file
-					if (rename($tmp_filename,$output_filename))
-						return $output_filename;
+					else if(!$first && $i == 0)
+					{
+						$categories[] = str_replace('"', "", $line[$i]);
+					}
 					else
-						$this->errormsg='<br/>Cannot remove File from '.$tmp_filename.' to '.$output_filename.'<br/>';
-					return false;
+					{
+						$series[$i-1]["data"][] = floatval(str_replace('"', "", $line[$i]));
+					}
 				}
-				else
-					$this->errormsg='<br/>Cannot read File: '.$tmp_filename.'<br/>Maybe Phantomjs failed!<br/>'.$escaped_command;
+				$first = false;
+			}
+		}
+
+		// series array in assoziative umwandeln, damit sie von den
+		// preferences aus manipuliert werden können
+		foreach($series as $sk => $s)
+		{
+			$series[$s["name"]] = $series[$sk];
+			unset($series[$sk]);
+		}
+
+
+
+		$phantomData = array
+		(
+			'div_id' => 'hcChart' . $this->chart_id,
+			'title' => array
+			(
+				'text' => $this->title,
+			),
+			'chart' => array
+			(
+				'type' => $hctype,
+			),
+			'xAxis' => array
+			(
+				'categories' => $categories,
+				'title' => array('text' => '',),
+				'labels' => array('rotation' => 90),
+			),
+			'yAxis' => array
+			(
+				'title' => array('text' => ' ',),
+			),
+			'series' => $series
+		);
+
+
+		if(isset($this->preferences) && $this->preferences != "" && $this->preferences != null)
+		{
+			//einstellungen aufteilen
+			$prefs = explode("\n", $this->preferences);
+
+			//kommentarzeilen entfernen
+			foreach($prefs as $pk => $p)
+			{
+				if($p[0] == "/" && $p[1] == "/")
+					unset($prefs[$pk]);
+			}
+			//und wieder zusammenfügen
+			$json = join('', $prefs);
+
+
+			//in einen array umwandeln
+			$prefs = json_decode($json, true);
+
+			if(!$prefs)
+			{
+				die("Chart".$this->chart_id . ": Preferences sind keine wohlgeformten JSON-Daten:<br>". $json);
 				return false;
+			}
+
+			//und über die phantom daten mergen
+			$erg = array_replace_recursive($phantomData, $prefs);
+
+			$phantomData = $erg;
+		}
+
+
+		//series wieder in normale arrays zurückwandeln, da highcharts keine assoziativen entgegen nimmt!
+		$phantomData["series"] = array_values($phantomData["series"]);
+
+		return json_encode($phantomData);
+	}
+
+	/**
+	 * Loescht einen Eintrag
+	 *
+	 * @param $chart_id
+	 * @return true wenn ok, sonst false
+	 */
+	public function delete($chart_id)
+	{
+		$qry = "DELETE FROM addon.tbl_rp_chart WHERE chart_id=".$this->db_add_param($chart_id).";";
+
+		if($this->db_query($qry))
+		{
+			return true;
+		}
+		else
+		{
+			$this->errormsg='Fehler beim Löschen des Eintrages';
+			return false;
+		}
+	}
+
+	/**
+	 * Laedt alle Charts
+	 * @return true wenn ok, sonst false
+	 */
+	public function getAll($order = FALSE)
+	{
+		$qry = 'SELECT * FROM addon.tbl_rp_chart';
+
+		if($order)
+			$qry .= ' ORDER BY ' . $order;
+
+		if($result = $this->db_query($qry))
+		{
+			while($row = $this->db_fetch_object($result))
+			{
+				$obj = new chart();
+
+				$obj->chart_id = $row->chart_id;
+				$obj->title = $row->title;
+				$obj->description = $row->description;
+				$obj->type = $row->type;
+				$obj->preferences = $row->preferences;
+				$obj->datasource = $row->datasource;
+				$obj->datasource_type = $row->datasource_type;
+
+				$this->result[] = $obj;
+			}
+
+			return true;
+		}
+		else
+		{
+			$this->errormsg = 'Fehler beim Laden der Daten';
+			return false;
 		}
 	}
 }

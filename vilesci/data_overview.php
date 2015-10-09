@@ -27,7 +27,7 @@ $user = get_uid();
 
 $rechte = new benutzerberechtigung();
 $rechte->getBerechtigungen($user);
-	
+
 if(!$rechte->isBerechtigt('basis/statistik'))
 {
 	die('Sie haben keine Berechtigung fuer diese Seite');
@@ -100,10 +100,11 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 				<?php foreach($statistik->result as $row): ?>
 					<tr>
 						<td>
-							<?php echo $row->gruppe ?>
+							<?php echo $row->gruppe ;?>
+							<a href="../cis/vorschau.php?statistik_kurzbz=<?php echo $row->statistik_kurzbz ?>" target="_blank"><img style="float:right;" title="<?php echo $row->gruppe ?> anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>
 						</td>
 						<td>
-							<a href="../../../vilesci/statistik/statistik_frameset.php?statistik_kurzbz=<?php echo $row->statistik_kurzbz ?>" target="detail_statistik">
+							<a href="../../../vilesci/stammdaten/statistik_details.php?action=update&statistik_kurzbz=<?php echo $row->statistik_kurzbz ?>" target="detail_statistik">
 								<?php echo $row->statistik_kurzbz; ?>
 							</a>
 						</td>

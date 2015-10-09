@@ -36,6 +36,17 @@ $rechte->getBerechtigungen($user);
 if($rechte->isBerechtigt('addon/reports', 'suid'))
 	$write_admin=true;
 
+$chart = new chart();
+
+if(isset($_GET['action']))
+{
+	if($_GET['action']=='delete')
+	{
+		if(!$chart->delete($_GET['chart_id']))
+			echo '<script>alert("Der Eintrag konnte nicht gelöscht werden!"</script>';
+	}
+}
+
 // Speichern der Daten
 if(isset($_POST['chart_id']))
 {
@@ -43,6 +54,7 @@ if(isset($_POST['chart_id']))
 	// daher wird nach dem Speichern mittels exit beendet
 	if($write_admin)
 	{
+
 		//Lehre Feld setzen
 		if(isset($_POST['lehre']))
 		{
@@ -54,13 +66,13 @@ if(isset($_POST['chart_id']))
 				$lv_obj->updatevon = $user;
 				if($lv_obj->save(false))
 					exit('true');
-				else 
+				else
 					exit('Fehler beim Speichern:'.$lv_obj->errormsg);
 			}
-			else 
+			else
 				exit('Fehler beim Laden der LV:'.$lv_obj->errormsg);
 		}
-		
+
 		//Reservieren Feld setzen
 		if(isset($_POST['reservieren']))
 		{
@@ -72,13 +84,13 @@ if(isset($_POST['chart_id']))
 				$lv_obj->updatevon = $user;
 				if($lv_obj->save(false))
 					exit('true');
-				else 
+				else
 					exit('Fehler beim Speichern:'.$lv_obj->errormsg);
 			}
-			else 
+			else
 				exit('Fehler beim Laden der LV:'.$lv_obj->errormsg);
 		}
-		
+
 		//Aktiv Feld setzen
 		if(isset($_POST['aktiv']))
 		{
@@ -90,10 +102,10 @@ if(isset($_POST['chart_id']))
 				$lv_obj->updatevon = $user;
 				if($lv_obj->save(false))
 					exit('true');
-				else 
+				else
 					exit('Fehler beim Speichern:'.$lv_obj->errormsg);
 			}
-			else 
+			else
 				exit('Fehler beim Laden der LV:'.$lv_obj->errormsg);
 		}
 	}
@@ -112,7 +124,7 @@ if (isset($_GET["toggle"]))
 		if(!$db->db_query($qry))
 		{
 			die('Fehler beim Speichern des Datensatzes');
-		}	
+		}
 	}
 	if ($_GET["rres"] != "" && $_GET["rres"] != NULL)
 	{
@@ -122,7 +134,7 @@ if (isset($_GET["toggle"]))
 		if(!$db->db_query($qry))
 		{
 			die('Fehler beim Speichern des Datensatzes');
-		}	
+		}
 	}
 	if ($_GET["raktiv"] != "" && $_GET["raktiv"] != NULL)
 	{
@@ -132,11 +144,10 @@ if (isset($_GET["toggle"]))
 		if(!$db->db_query($qry))
 		{
 			die('Fehler beim Speichern des Datensatzes');
-		}	
+		}
 	}
 }
 
-$chart = new chart();
 if (!$chart->loadAll())
     die($chart->errormsg);
 ?>
@@ -203,6 +214,11 @@ if (!$chart->loadAll())
 					error: function() { alert("error"); }
 				});
 			}
+
+		function confdel()
+		{
+			return confirm("Wollen Sie diesen Eintrag wirklich löschen?");
+		}
 		</script>
 	</head>
 
@@ -240,6 +256,9 @@ if (!$chart->loadAll())
 					<th>
 						Description
 					</th>
+					<th>
+						<!-- Entfernen -->
+					</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -253,7 +272,7 @@ if (!$chart->loadAll())
 							<a href="chart_details.php?chart_id=<?php echo $chart->chart_id ?>" target="frame_chart_details">
 								<?php echo $chart->chart_id ?>
 							</a>
-							<a href="chart.php?chart_id=<?php echo $chart->chart_id ?>&htmlbody=true" target="_blank">
+							<a href="../cis/vorschau.php?chart_id=<?php echo $chart->chart_id ?>" target="_blank">
 								<img title="<?php echo $chart->title ?> anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" />
 							</a>
 						</td>
@@ -280,6 +299,9 @@ if (!$chart->loadAll())
 						</td>
 						<td title="<?php echo $chart->description ?>">
 							<?php echo substr($chart->description, 0, 16) ?>...
+						</td>
+						<td>
+							<a href="chart_overview.php?action=delete&chart_id=<?php echo $chart->chart_id ?>" onclick="return confdel()">entfernen</a>
 						</td>
 					</tr>
 				<?php endforeach; ?>
