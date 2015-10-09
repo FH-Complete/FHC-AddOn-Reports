@@ -17,12 +17,6 @@
  * Authors: Robert Hofer <robert.hofer@technikum-wien.at>
  *					Andreas moik <moik@technikum-wien.at>
  */
-//TODO entfernen
-var
-statistik_kurzbz = undefined,
-chart_id = undefined,
-report_id = undefined;
-
 
 
 function loadChart(chart_id, statistik_kurzbz)
@@ -40,36 +34,6 @@ function loadStatistik(statistik_kurzbz)
 	showFilter(statistik_kurzbz, undefined, undefined);
 }
 
-function loadAJAX(url, get_params)
-{
-	$('#spinner').show();
-	$('#welcome').hide();
-
-	$.ajax(
-	{
-		url: url,
-		data: get_params,
-		timeout:40000,
-    error:function()
-    {
-			$('#spinner').hide();
-    	alert("Es ist ein Fehler aufgetreten!")
-    },
-		success: function(data)
-		{
-			$('#spinner').hide();
-			$('#filter').hide();
-			$('#content').show();
-			$('#content').html(data).show();
-			initCharts();//TODO weg?
-			$('#welcome').hide();
-			$(window).trigger('resize');
-
-			// Pivot auf volle groesse aendern
-			$('.pvtRendererArea').css('width','100%');
-		}
-	});
-}
 
 function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 {
@@ -136,7 +100,6 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 				$('#filter').hide();
 				$('#content').show();
 				$('#content').html(data).show();
-				initCharts();//TODO weg?
 				$('#welcome').hide();
 				$(window).trigger('resize');
 
@@ -151,6 +114,7 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 
 function showFilter(statistik_kurzbz, report_id, chart_id)
 {
+	$('#welcome').hide();
 	$('#content').hide();
 	$('#filter').show();
 	$("#filter-PdfLink").hide();
@@ -171,50 +135,6 @@ function showFilter(statistik_kurzbz, report_id, chart_id)
 			$('#filter').hide();
 			//laden wir direkt die daten
 			loadData(statistik_kurzbz, report_id, chart_id,{});
-		}
-	});
-
-	$('#filter-input').attr(
-	{
-		'data-chart-id': chart_id,
-		'data-statistik-kurzbz': statistik_kurzbz,
-		'data-report-id': report_id
-	});
-}
-
-
-function loadFilter(statistik_kurzbz, report_id)
-{
-	if($(this).closest('li').hasClass('hide-button'))
-	{
-		// Sidebar ausblenden
-		$('#sidebar').hide();
-
-		// Charts auf volle groesse aendern
-		$('#content').parent().removeClass('col-sm-9').addClass('col-sm-12');
-
-		// Pivot auf volle groesse aendern
-		$('.pvtRendererArea').css('width','100%');
-
-		$(window).trigger('resize');
-		return;
-	}
-
-
-	$('#welcome,#content').hide();
-	$('#filter').show();
-	$("#filter-PdfLink").hide();
-
-	$('#filter-input').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz + '&report_id=' + report_id, function()
-	{
-		if(typeof report_id !== "null")
-		{
-			$("#filter-PdfLink").attr("href", "../data/Report"+report_id+".pdf");
-			$("#filter-PdfLink").show();
-		}
-		else if(!$.trim($('#filter-input').html()) && typeof report_id === "null")
-		{
-			$('#filter').hide();
 		}
 	});
 
@@ -248,31 +168,7 @@ $(function()
 
 	// Pivot auf volle groesse aendern
 	$('.pvtRendererArea').css('width','100%');
-
 	$('.hide-button').hide();
-
-	$('.navbar-brand').on('click', function()
-	{
-		$('#sidebar div').hide();
-		$('#content').hide();
-		$('#iframe_content').hide();
-		$('#filter').hide();
-		$("#welcome").show();
-	});
-
-
-
-	$('#welcome button').on('click', function()
-	{
-
-		var link = $('ul.nav li.dropdown [href="#' + $(this).attr('data-dropdown') + '"]');
-
-		$('.navbar-collapse').collapse('show');
-
-		link.dropdown('toggle');
-		return false;
-	});
-
 });
 
 

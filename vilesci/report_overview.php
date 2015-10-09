@@ -133,7 +133,6 @@ if (!$report->loadAll())
 							<a href="report_details.php?report_id=<?php echo $report->report_id ?>" target="frame_report_details">
 								<?php echo $report->report_id ?>
 							</a>
-							<a href="../cis/vorschau.php?report_id=<?php echo $report->report_id ?>" target="_blank"><img style="float:right;" title="<?php echo $report->title ?> anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>
 						</td>
 						<td>
 							<a href="report_details.php?report_id=<?php echo $report->report_id ?>" target="frame_report_details">
@@ -153,11 +152,7 @@ if (!$report->loadAll())
 							</a>
 						</td>
 						<td align="center">
-							<a href="../data/Report<?php echo $report->report_id ?>.html" target="_blank">
-								<img title="<?php echo $report->title ?> anzeigen" src="../include/images/x-office-presentation.svg" class="mini-icon" />
-							</a><a href="../data/Report<?php echo $report->report_id ?>.pdf" target="_blank">
-								<img title="<?php echo $report->title ?> anzeigen" src="../include/images/pdfIcon.svg" class="mini-icon" />
-							</a>
+							<a href="../cis/vorschau.php?report_id=<?php echo $report->report_id ?>" target="_blank"><img title="<?php echo $report->title ?> anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>
 						</td>
 						<td>
 							<?php echo $db->convert_html_chars(substr($report->body,0,32)) ?>...
