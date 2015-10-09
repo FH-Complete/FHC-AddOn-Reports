@@ -577,5 +577,5 @@
 			phantom.exit();
 		});
 	}
-	phantom.exit();
+//	phantom.exit();
 }());
