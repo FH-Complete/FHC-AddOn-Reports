@@ -76,8 +76,8 @@
 			$content.='= Report - '.$report->title.$crlf;
 			$content.=$report->header.$crlf.$report->printParam('attr',$crlf).$crlf;
 			$content.=$crlf.'== Beschreibung'.$crlf.$report->description.$crlf;
-			$content.=$crlf.'[horizontal]'.$crlf.'*Parameter*::'.$crlf.'- *Erstellung*: '.date("D, j M Y").$crlf.'- *Datenstand*: '.date(DATE_RFC2822).$crlf.$report->printParam('param',$crlf).$crlf;
-			$content.=$crlf.'== Report'.$crlf.$report->body.$crlf;
+			$content.=$crlf.'=== Parameter'.$crlf.'- Erstellung: *'.date("D, j M Y").'*'.$crlf.'- Datenstand: *'.date(DATE_RFC2822).'*'.$crlf.$report->printParam('param',$crlf).$crlf;
+			$content.=$crlf.'<<<'.$crlf.$crlf.'== Report'.$crlf.$report->body.$crlf;
 			$content.=$crlf.'== Hinweise'.$crlf.$report->footer.$crlf;
 			break;
 	}
