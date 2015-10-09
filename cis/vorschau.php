@@ -1,4 +1,4 @@
-<!--
+<?php
 /* Copyright (C) 2015 FH Technikum-Wien
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,7 +17,9 @@
  *
  * Authors: Andreas Moik <moik@technikum-wien.at>
  */
- -->
+	require_once('../../../config/vilesci.config.inc.php');
+	require_once('../include/chart.class.php');
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -73,42 +75,26 @@
 		<script src="../include/js/bootstrap.min.js"></script>
 		<script src="../include/js/offcanvas.js"></script>
 		<script type="text/javascript" src="../cis/reporting.js"></script>
-		<?php
-			//TODO aufräumen
-			require_once('../../../config/vilesci.config.inc.php');
-			require_once('../../../include/globals.inc.php');
-			require_once('../../../include/functions.inc.php');
-			require_once('../../../include/benutzerberechtigung.class.php');
-			require_once('../../../include/statistik.class.php');
-			require_once('../include/chart.class.php');
-			require_once('../include/report.class.php');
-			require_once('../include/rp_gruppe.class.php');
-  		//$st = new statistik($_GET["statistik_kurzbz"]);
-  		//var_dump($st);
-  		//die("aha");
-		  		//$c = new chart($_GET["chart_id"]);
-		  	///	 var_dump($c);
-		?>
 	  <script>
-		  	<?php
-		  	if(isset($_GET["statistik_kurzbz"]))
-		  	{
-		  		echo "loadStatistik('".$_GET['statistik_kurzbz']."');";
-		  	}
+			<?php
+			if(isset($_GET["statistik_kurzbz"]))
+			{
+				echo "loadStatistik('".$_GET['statistik_kurzbz']."');";
+			}
 
-		  	else if(isset($_GET["report_id"]))
-		  	{
-		  		echo "loadReport('".$_GET['report_id']."');";
-		  	}
+			else if(isset($_GET["report_id"]))
+			{
+				echo "loadReport('".$_GET['report_id']."');";
+			}
 
-		  	else if(isset($_GET["chart_id"]))
-		  	{
-		  		$cid = $_GET["chart_id"];
-		  		$c = new chart($_GET["chart_id"]);
-		  		echo "loadChart('$cid','$c->statistik_kurzbz');";
-		  	}
+			else if(isset($_GET["chart_id"]))
+			{
+				$cid = $_GET["chart_id"];
+				$c = new chart($_GET["chart_id"]);
+				echo "loadChart('".$cid."','".$c->statistik_kurzbz."');";
+			}
 
-		  	?>
+			?>
 	  </script>
 	</body>
 </html>
