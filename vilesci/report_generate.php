@@ -56,8 +56,18 @@
 	$charts = new chart();
 	if (!$charts->loadCharts($report->report_id))
 		die($charts->errormsg);
+
 	foreach($charts->chart as $chart)
 	{
+		$chart->statistik = new statistik($chart->statistik_kurzbz);
+		if (!$chart->statistik->loadData())
+			die ('Data not loaded!<br/>'.$chart->statistik->errormsg);
+		$datafile='../data/data'.$chart->statistik->statistik_kurzbz.'.csv';
+		if (!$chart->statistik->writeCSV($datafile,',','"'))
+			die('File ../data/data'.$chart->statistik->statistik_kurzbz.'not written!<br/>'.$chart->statistik->errormsg);
+		else
+			echo 'File ../data/data'.$chart->statistik->statistik_kurzbz.' written!<br/>';
+
 		if (!$outputfilename=$chart->writePNG())
 			die ($chart->errormsg);
 

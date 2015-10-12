@@ -854,7 +854,6 @@ EOT;
 			'series' => $series
 		);
 
-
 		if(isset($this->preferences) && $this->preferences != "" && $this->preferences != null)
 		{
 			//einstellungen aufteilen
@@ -869,20 +868,22 @@ EOT;
 			//und wieder zusammenfügen
 			$json = join('', $prefs);
 
-
-			//in einen array umwandeln
-			$prefs = json_decode($json, true);
-
-			if(!$prefs)
+			if(!$json == "")		//nur, wenn nicht nur kommentare in den preferences standen
 			{
-				die("Chart".$this->chart_id . ": Preferences sind keine wohlgeformten JSON-Daten:<br>". $json);
-				return false;
+				//in einen array umwandeln
+				$prefs = json_decode($json, true);
+
+				if(!$prefs)
+				{
+					die("Chart".$this->chart_id . ": Preferences sind keine wohlgeformten JSON-Daten:<br>". $json);
+					return false;
+				}
+
+				//und über die phantom daten mergen
+				$erg = array_replace_recursive($phantomData, $prefs);
+
+				$phantomData = $erg;
 			}
-
-			//und über die phantom daten mergen
-			$erg = array_replace_recursive($phantomData, $prefs);
-
-			$phantomData = $erg;
 		}
 
 
