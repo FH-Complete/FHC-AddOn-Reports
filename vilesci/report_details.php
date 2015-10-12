@@ -235,11 +235,11 @@
 		$htmlstr .= "	<select name='chart_id' style='max-width:150px;'>\n";
 
 		$allCharts = new chart();
-		$allCharts->getAll();
+		$allCharts->getAll("title");
 
 		foreach($allCharts->result as $ch)
 		{
-			$htmlstr .= "	<option value=".$ch->chart_id.">".$ch->title."</option>\n";
+			$htmlstr .= "	<option value=".$ch->chart_id.">".$ch->title." (".$ch->chart_id.")"."</option>\n";
 		}
 		$htmlstr .= "	</select>\n";
 		$htmlstr .= "	</td>\n";
@@ -278,7 +278,7 @@
 		$htmlstr .= "	<select name='statistik_kurzbz' style='max-width:150px;'>\n";
 
 		$allStat = new Statistik();
-		$allStat->getAll();
+		$allStat->getAll("bezeichnung");
 
 		foreach($allStat->result as $st)
 		{
