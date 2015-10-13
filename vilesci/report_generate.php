@@ -42,15 +42,15 @@
 	// *************** Pruefen ob die benoetigten Programme vorhanden sind *******************
 
 	if(!`which asciidoc`)
-		die("asciidoc ist auf diesem System nicht installiert");
+		die('asciidoc ist auf diesem System nicht installiert');
 
 	if(!`which dblatex`)
-		die("dbLatex ist auf diesem System nicht installiert");
+		die('dbLatex ist auf diesem System nicht installiert');
 
 	// *************** Parameter pruefen und Daten laden *******************
 	$report = new report();
-	if(isset($_REQUEST["report_id"]))
-		$report->load((int)$_REQUEST["report_id"]);
+	if(isset($_REQUEST['report_id']))
+		$report->load((int)$_REQUEST['report_id']);
 	else
 		die('report_id is not set');
 	$charts = new chart();
@@ -87,7 +87,7 @@
 			$content.='= Report - '.$report->title.$crlf;
 			$content.=$report->header.$crlf.$report->printParam('attr',$crlf).$crlf;
 			$content.=$crlf.'== Beschreibung'.$crlf.$report->description.$crlf;
-			$content.=$crlf.'[horizontal]'.$crlf.'*Parameter*::'.$crlf.'- *Erstellung*: '.date("D, j M Y").$crlf.'- *Datenstand*: '.date(DATE_RFC2822).$crlf.$report->printParam('param',$crlf).$crlf;
+			$content.=$crlf.'[horizontal]'.$crlf.'*Parameter*::'.$crlf.'- *Erstellung*: '.date('D, j M Y').$crlf.'- *Datenstand*: '.date(DATE_RFC2822).$crlf.$report->printParam('param',$crlf).$crlf;
 			$content.=$crlf.'== Report'.$crlf.$report->body.$crlf;
 			$content.=$crlf.'== Hinweise'.$crlf.$report->footer.$crlf;
 			break;
@@ -105,36 +105,70 @@
 	$fh=fopen($docinfoFilename,'w');
 	fwrite($fh,$report->docinfo);
 	fclose($fh);
-	$htmlstr.=$docinfoFilename.' is written!<br/>';
+	echo $docinfoFilename.' is written!<br/>';
 
 	// ***** Write ContentFile
 	$fh=fopen($filename,'w');
 	fwrite($fh,$content);
 	fclose($fh);
 	$htmlstr.=$filename.' is written!<br/>';
+	echo '<br><br>';
 
 	// ****** Create Destination Files
 
-	$htmlstr.=exec('asciidoc -o '.$htmlFilename.' '.$filename);
+
+	$cmd = 'asciidoc -o '.$htmlFilename.' '.$filename;
+	$htmlstr.=exec($cmd.' 2>&1', $out, $ret);
+	echo $cmd . '<br>';
+	if($ret != 0)
+	{
+		echo 'Asciidoc fehlgeschlagen:<br>';
+		var_dump($out);
+		die('');
+	}
+	if(count($out) > 0)
+	{
+		echo 'Asciidoc Warnungen:<br>';
+		var_dump($out);
+	}
 	$htmlstr.=$htmlFilename.' is written!<br/>';
-	$command='asciidoc -a docinfo -b docbook -o '.$xmlFilename.' '.$filename;
-	$htmlstr.=exec($command);
-	echo $command.'<br/>';
+	echo '<br><br>';
+
+
+
+	$cmd = 'asciidoc -a docinfo -b docbook -o '.$xmlFilename.' '.$filename;
+	$htmlstr.=exec($cmd.' 2>&1', $out, $ret);
+	echo $cmd . '<br>';
+	if($ret != 0)
+	{
+		echo 'Asciidoc fehlgeschlagen:<br>';
+		var_dump($out);
+		die('');
+	}
+	if(count($out) > 0)
+	{
+		echo 'Asciidoc Warnungen:<br>';
+		var_dump($out);
+	}
 	$htmlstr.=$xmlFilename.' is written!<br/>';
+	echo '<br><br>';
+
 
 	// DB Latex is tricky so i used a new process
 	$command='dblatex -f docbook -t pdf -P latex.encoding=utf8 -P latex.unicode.use=1 -o '.$tmpFilename.' '.$xmlFilename;
 	echo $command.'<br/>';
-	$lastout=exec($command, $output, $exit); //exec($command ,$op);
-	/*
-  var_dump($lastout); echo '<br/';
-	var_dump($output);   echo '<br/';
-	var_dump($exit);   echo '<br/';
-	*/
+	$lastout=exec($command.' 2>&1', $out, $ret);
+	if($ret)
+	{
+		echo 'dblatex fehlgeschlagen:<br>';
+		var_dump($out);
+		die('');
+	}
+
 	$process = new process(escapeshellcmd($command));
 	for ($i=0;$process->status() && $i<10;$i++)
 	{
-		echo "<br/>The process is currently running";ob_flush();flush();
+		echo '<br/>The process is currently running';ob_flush();flush();
 		usleep(200000); // wait for 0.2 Seconds
 	}
 	if ($process->status())
