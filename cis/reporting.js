@@ -18,7 +18,6 @@
  *					Andreas moik <moik@technikum-wien.at>
  */
 
-
 function loadChart(chart_id, statistik_kurzbz)
 {
 	showFilter(statistik_kurzbz, undefined, chart_id);
@@ -58,24 +57,8 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 	//reports
 	else if(statistik_kurzbz == undefined && report_id != undefined && chart_id == undefined)
 	{
-		hideSidebar();
-		$('#welcome').hide();
-		var iframe = $(document.createElement('iframe'));
-
-		iframe.attr
-		({
-			src: '../data/Report' + report_id + '.html'
-		});
-
-		iframe.css(
-		{
-			border: '0',
-			width: '100%',
-			height: '800px'
-		});
-
-		$('#content').html(iframe).show();
-		return;
+		get_params.report_id = report_id;
+		url = '../vilesci/report_generate.php';
 	}
 
 
@@ -118,21 +101,22 @@ function showFilter(statistik_kurzbz, report_id, chart_id)
 	$('#content').hide();
 	$('#filter').show();
 	$("#filter-PdfLink").hide();
+	$("#filter-debugLink").hide();
 
 	$('#filter-input').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz + '&report_id=' + report_id, function()
 	{
+		if(typeof debug !== "undefined")
+			$("#filter-debugLink").show();
+
 		//pdf links gibt es nur bei reports
 		if(typeof report_id !== 'undefined')
 		{
-			$('#welcome').hide();
-			hideSidebar();
 			$("#filter-PdfLink").attr("href", "../data/Report"+report_id+".pdf");
 			$("#filter-PdfLink").show();
 		}
 		//wenn keine filter existieren
-		else if(!$.trim($('#filter-input').html()) && typeof report_id === 'undefined')
+		if(!$.trim($('#filter-input').html()) && report_id === undefined)
 		{
-			$('#filter').hide();
 			//laden wir direkt die daten
 			loadData(statistik_kurzbz, report_id, chart_id,{});
 		}
@@ -187,7 +171,7 @@ function hideSidebar()
 	$(window).trigger('resize');
 }
 
-function runFilter()
+function runFilter(type)
 {
 	$('#filter').hide();
 
@@ -198,11 +182,13 @@ function runFilter()
 		get_params = {},
 		url;
 
+	get_params.type = type;
+
 	for(var i = 0; i < inputs.length; i++)
 	{
 		var input = $(inputs[i]);
 		get_params[input.attr('id')] = input.val();
 	}
 
-	loadData(statistik_kurzbz, report_id, chart_id,get_params);
+	loadData(statistik_kurzbz, report_id, chart_id, get_params);
 }

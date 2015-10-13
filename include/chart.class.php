@@ -734,7 +734,7 @@ EOT;
 				// move file
 				if (rename($tmp_filename,$output_filename))
 				{
-					echo 'chart'.$this->chart_id.'.png: ' . $c . ' Bytes written<br/>';
+					//echo 'chart'.$this->chart_id.'.png: ' . $c . ' Bytes written<br/>';
 					return $output_filename;
 				}
 				else
@@ -839,13 +839,14 @@ EOT;
 			),
 			'chart' => array
 			(
+				'zoomType' => "xy",
 				'type' => $hctype,
 			),
 			'xAxis' => array
 			(
 				'categories' => $categories,
 				'title' => array('text' => '',),
-				'labels' => array('rotation' => 90),
+				'labels' => array('rotation' => -45),
 			),
 			'yAxis' => array
 			(

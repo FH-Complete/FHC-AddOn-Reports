@@ -261,8 +261,8 @@ function toArray($obj, $id, $pid)
 							<div class="col-xs-12 col-sm-9">
 								<form class="form-inline" onsubmit="return false">
 								<div id="filter-input" style="float: left"></div>
-								<button onclick="runFilter()" class="btn btn-default" type="submit">Run</button>
-								<a id="filter-PdfLink"><img src="pdfIcon.png" width="20" alt="pdf"/></a>
+								<button onclick="runFilter('html')" class="btn btn-default" type="submit">Run</button>
+								<a id="filter-PdfLink" onclick="runFilter('pdf')"><img src="pdfIcon.png" width="20" alt="pdf"/></a>
 								</form>
 							</div>
 						</div>
