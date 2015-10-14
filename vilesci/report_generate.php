@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2006 Technikum-Wien
+/* Copyright (C) 2014 fhcomplete.org
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -26,6 +26,8 @@
 	require_once('../include/chart.class.php');
 	require_once('../../../include/process.class.php');
 	require_once('../../../include/filter.class.php');
+
+	$iconsdir='/etc/asciidoc/images/icons';
 
 
 	if (!$db = new basis_db())
@@ -70,8 +72,10 @@
 	if (!$charts->loadCharts($report->report_id))
 		die($charts->errormsg);
 
+	// echo count($charts->chart);
 	foreach($charts->chart as $chart)
 	{
+		// echo $chart->chart_id;
 		if(isset($chart->statistik_kurzbz))
 		{
 			$chart->statistik = new statistik($chart->statistik_kurzbz);
@@ -145,8 +149,7 @@
 
 	// ****** Create Destination Files
 
-
-	$cmd = 'asciidoc -o '.$htmlFilename.' '.$filename;
+	$cmd = 'asciidoc -o '.$htmlFilename.' -b html5 -a theme=flask -a data-uri -a toc2 -a pygments -a icons -a iconsdir='.$iconsdir.' -a asciimath '.$filename;
 	$htmlstr.=exec($cmd.' 2>&1', $out, $ret);
 	$htmlstr.= $cmd . '<br>';
 	if($ret != 0)
