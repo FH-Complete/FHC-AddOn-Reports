@@ -80,8 +80,6 @@
 		<script type="text/javascript" src="../cis/reporting.js"></script>
 	  <script>
 			<?php
-			if(isset($_GET["debug"]))
-				echo "var debug = true;";
 
 			if(isset($_GET["statistik_kurzbz"]))
 			{
@@ -90,6 +88,8 @@
 
 			else if(isset($_GET["report_id"]))
 			{
+				if(isset($_GET["debug"]))
+					echo "var debug = true;";
 				echo "loadReport('".$_GET['report_id']."');";
 			}
 

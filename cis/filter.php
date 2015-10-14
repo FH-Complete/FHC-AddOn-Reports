@@ -52,7 +52,7 @@ $report = new report();
 $statistik_kurzbz = filter_input(INPUT_GET, 'statistik_kurzbz');
 $report_id = filter_input(INPUT_GET, 'report_id', FILTER_SANITIZE_NUMBER_INT);
 $htmlbody = filter_input(INPUT_GET, 'htmlbody', FILTER_VALIDATE_BOOLEAN);
-
+$html = '';
 
 if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
 {
@@ -63,7 +63,6 @@ if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
 
 	$vars = $statistik->parseVars($statistik->sql);
 
-	$html = '';
 
 	if($htmlbody)
 	{
@@ -96,13 +95,25 @@ if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
 		$html .= '</body></html>';
 	}
 
-	echo $html;
 }
 else if(isset($report_id) && $report_id != 'undefined')
 {
 	if(!$report->load($report_id))
 	{
 		die('Report not found in DB!');
+	}
+
+	if($htmlbody)
+	{
+		$html = '
+			<!DOCTYPE HTML>
+			<html>
+				<head>
+				<title>Filter</title>
+				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+				<link rel="stylesheet" href="../../skin/vilesci.css" type="text/css">
+			</head>
+			<body>';
 	}
 
 	$rp_report_chart = new rp_report_chart();
@@ -142,15 +153,22 @@ else if(isset($report_id) && $report_id != 'undefined')
 	{
 		if($filter->isFilter($var))
 		{
-			echo $var . ': ' . $filter->getHtmlWidget($var)."<br>";
+			$html .= $var . ': ' . $filter->getHtmlWidget($var)."<br>";
 		}
 		else
 		{
-			echo $var . ': <input type="text" id="' . $var . '" name="' . $var . '" value=""><br>';
+			$html .= $var . ': <input type="text" id="' . $var . '" name="' . $var . '" value=""><br>';
 		}
+	}
+
+	if($htmlbody)
+	{
+		$html .= '</body></html>';
 	}
 }
 else
 {
 	die('"statistik_kurzbz"/"report_id" is not set!');
 }
+
+echo $html;
