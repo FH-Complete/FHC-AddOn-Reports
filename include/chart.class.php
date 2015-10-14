@@ -812,7 +812,7 @@ EOT;
 					}
 					else
 					{
-						$series[$i-1]["data"][] = floatval(str_replace('"', "", $line[$i]));
+						$series[$i-1]["data"][] = array(str_replace('"', "", $line[0]),floatval(str_replace('"', "", $line[$i])));
 					}
 				}
 				$first = false;
@@ -827,8 +827,6 @@ EOT;
 			unset($series[$sk]);
 		}
 
-
-
 		$phantomData = array
 		(
 			'div_id' => 'hcChart' . $this->chart_id,
@@ -840,6 +838,13 @@ EOT;
 			(
 				'zoomType' => "xy",
 				'type' => $hctype,
+				/*
+				'options3d' => array
+				(
+					"enabled" => true,
+					"alpha" => 45,
+					"beta" => 0,
+				)*/
 			),
 			'xAxis' => array
 			(
