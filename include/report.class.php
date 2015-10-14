@@ -355,7 +355,7 @@ class report extends basis_db
 					switch($type)
 					{
 						case 'param':
-							$return.='- *'.$key.'* := '.$val.$crlf;
+							$return.='- '.$key.' = *'.$val.'*'.$crlf;
 							break;
 						case 'attr':
 							$return.=':'.$key.': '.$val.$crlf;
