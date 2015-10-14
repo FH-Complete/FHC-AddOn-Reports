@@ -94,7 +94,6 @@ $statistik->loadData(); ?>
     <script type="text/javascript" src="../include/js/pivot_renderers/csv_renderer.js"></script>
 
 
-
 		<!-- Pivot Sprachen -->
 		<script type="text/javascript" src="../include/js/pivot.de.js"></script>
     <script type="text/javascript" src="../include/js/pivot_renderers/de/c3.de.js"></script>
@@ -119,7 +118,9 @@ $statistik->loadData(); ?>
 				var sortAs =         $.pivotUtilities.sortAs;
 				var tpl =            $.pivotUtilities.aggregatorTemplates;
 				var numberFormat =   $.pivotUtilities.numberFormat;
+
 				var deFormat =       numberFormat({thousandsSep:".", decimalSep:","});
+				var deFormatInt =       numberFormat({digitsAfterDecimal: 0,thousandsSep:".", decimalSep:","});
 
 				$("#pivot").pivotUI(<?php echo $statistik->db_getResultJSON($statistik->data) ?>,options,false,lang);
 

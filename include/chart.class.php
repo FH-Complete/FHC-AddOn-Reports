@@ -734,7 +734,7 @@ EOT;
 				// move file
 				if (rename($tmp_filename,$output_filename))
 				{
-					echo 'chart'.$this->chart_id.'.png: ' . $c . ' Bytes written<br/>';
+					//echo 'chart'.$this->chart_id.'.png: ' . $c . ' Bytes written<br/>';
 					return $output_filename;
 				}
 				else
@@ -839,13 +839,14 @@ EOT;
 			),
 			'chart' => array
 			(
+				'zoomType' => "xy",
 				'type' => $hctype,
 			),
 			'xAxis' => array
 			(
 				'categories' => $categories,
 				'title' => array('text' => '',),
-				'labels' => array('rotation' => 90),
+				'labels' => array('rotation' => -45),
 			),
 			'yAxis' => array
 			(
@@ -853,7 +854,6 @@ EOT;
 			),
 			'series' => $series
 		);
-
 
 		if(isset($this->preferences) && $this->preferences != "" && $this->preferences != null)
 		{
@@ -869,20 +869,22 @@ EOT;
 			//und wieder zusammenfügen
 			$json = join('', $prefs);
 
-
-			//in einen array umwandeln
-			$prefs = json_decode($json, true);
-
-			if(!$prefs)
+			if(!$json == "")		//nur, wenn nicht nur kommentare in den preferences standen
 			{
-				die("Chart".$this->chart_id . ": Preferences sind keine wohlgeformten JSON-Daten:<br>". $json);
-				return false;
+				//in einen array umwandeln
+				$prefs = json_decode($json, true);
+
+				if(!$prefs)
+				{
+					die("Chart".$this->chart_id . ": Preferences sind keine wohlgeformten JSON-Daten:<br>". $json);
+					return false;
+				}
+
+				//und über die phantom daten mergen
+				$erg = array_replace_recursive($phantomData, $prefs);
+
+				$phantomData = $erg;
 			}
-
-			//und über die phantom daten mergen
-			$erg = array_replace_recursive($phantomData, $prefs);
-
-			$phantomData = $erg;
 		}
 
 

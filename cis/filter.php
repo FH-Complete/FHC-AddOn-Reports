@@ -24,6 +24,9 @@ require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../../../include/statistik.class.php');
 require_once('../../../include/filter.class.php');
 require_once('../include/report.class.php');
+require_once('../include/chart.class.php');
+require_once('../include/rp_report_chart.class.php');
+require_once('../include/rp_report_statistik.class.php');
 
 $db = new basis_db();
 
@@ -50,53 +53,104 @@ $statistik_kurzbz = filter_input(INPUT_GET, 'statistik_kurzbz');
 $report_id = filter_input(INPUT_GET, 'report_id', FILTER_SANITIZE_NUMBER_INT);
 $htmlbody = filter_input(INPUT_GET, 'htmlbody', FILTER_VALIDATE_BOOLEAN);
 
-if($report_id)
-{
-    return;
-}
 
-if(!isset($statistik_kurzbz) && !isset($report_id))
+if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
+{
+	if(!$statistik->load($statistik_kurzbz))
+	{
+		die('Statistik not found in DB!');
+	}
+
+	$vars = $statistik->parseVars($statistik->sql);
+
+	$html = '';
+
+	if($htmlbody)
+	{
+		$html = '
+			<!DOCTYPE HTML>
+			<html>
+				<head>
+				<title>Filter</title>
+				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+				<link rel="stylesheet" href="../../skin/vilesci.css" type="text/css">
+			</head>
+			<body>';
+	}
+
+	// Filter parsen
+	foreach($vars as $var)
+	{
+		if($filter->isFilter($var))
+		{
+			$html .= $var . ': ' . $filter->getHtmlWidget($var);
+		}
+		else
+		{
+			$html .= $var . ': <input type="text" id="' . $var . '" name="' . $var . '" value="">';
+		}
+	}
+
+	if($htmlbody)
+	{
+		$html .= '</body></html>';
+	}
+
+	echo $html;
+}
+else if(isset($report_id) && $report_id != 'undefined')
+{
+	if(!$report->load($report_id))
+	{
+		die('Report not found in DB!');
+	}
+
+	$rp_report_chart = new rp_report_chart();
+
+	$rp_report_statistik = new rp_report_statistik();
+	$statistiken = array();
+
+	//alle statistiken zu einem report laden
+	$rp_report_chart->getReportCharts($report_id);
+	$rp_report_statistik->getReportStatistiken($report_id);
+
+	foreach($rp_report_chart->result as $c)
+	{
+		$nc = new chart($c->chart_id);
+		if(isset($nc->statistik_kurzbz))
+		{
+			$ns = new statistik($nc->statistik_kurzbz);
+			$statistiken[] = $ns;
+		}
+	}
+
+	foreach($rp_report_statistik->result as $s)
+	{
+		$ns = new statistik($s->statistik_kurzbz);
+		$ns->reportstatistik_id = $s->reportstatistik_id;
+		$statistiken[] = $ns;
+	}
+
+	$vars = array();
+	foreach($statistiken as $s)
+	{
+		$vars= array_merge_recursive($vars, $s->parseVars($s->sql));
+	}
+	$vars = array_unique($vars, SORT_REGULAR);
+
+	foreach($vars as $var)
+	{
+		if($filter->isFilter($var))
+		{
+			echo $var . ': ' . $filter->getHtmlWidget($var)."<br>";
+		}
+		else
+		{
+			echo $var . ': <input type="text" id="' . $var . '" name="' . $var . '" value=""><br>';
+		}
+	}
+}
+else
 {
 	die('"statistik_kurzbz"/"report_id" is not set!');
 }
-elseif(!$statistik->load($statistik_kurzbz) && !$report->load($report_id))
-{
-	die('Statistik/Report not found in DB!');
-}
-
-$vars = $statistik->parseVars($statistik->sql);
-
-$html = '';
-
-if($htmlbody)
-{
-	$html = '
-		<!DOCTYPE HTML>
-		<html>
-			<head>
-			<title>Filter</title>
-			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-			<link rel="stylesheet" href="../../skin/vilesci.css" type="text/css">
-		</head>
-		<body>';
-}
-
-// Filter parsen
-foreach($vars as $var)
-{
-	if($filter->isFilter($var))
-	{
-		$html .= $var . ': ' . $filter->getHtmlWidget($var);
-	}
-	else
-	{
-		$html .= $var . ': <input type="text" id="' . $var . '" name="' . $var . '" value="">';
-	}
-}
-
-if($htmlbody)
-{
-	$html .= '</body></html>';
-}
-
-echo $html;

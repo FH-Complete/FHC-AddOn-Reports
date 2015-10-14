@@ -10,7 +10,6 @@
       return pivotModule(jQuery);
     }
   };
-
   callWithJQuery(function($) {
     var deFmt, deFmtInt, deFmtPct, nf, tpl;
     nf = $.pivotUtilities.numberFormat;
