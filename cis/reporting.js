@@ -39,7 +39,6 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 	// generisch
 	$('#filter').hide();
 
-
 	var url = undefined;
 
 	//charts

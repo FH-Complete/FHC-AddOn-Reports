@@ -84,18 +84,6 @@
 
 			$vars = $chart->statistik->parseVars($chart->statistik->sql);
 
-			// Filter parsen
-			foreach($vars as $var)
-			{
-				if($filter->isFilter($var))
-				{
-					$htmlstr.= $var . ': ' . $filter->getHtmlWidget($var);
-				}
-				else
-				{
-					$htmlstr.= $var . ': <input type="text" id="' . $var . '" name="' . $var . '" value="">';
-				}
-			}
 			$datafile='../data/data'.$chart->statistik->statistik_kurzbz.'.csv';
 			if (!$chart->statistik->writeCSV($datafile,',','"'))
 				die('File ../data/data'.$chart->statistik->statistik_kurzbz.'not written!<br/>'.$chart->statistik->errormsg);
@@ -157,7 +145,7 @@
 		$htmlstr.= 'Asciidoc fehlgeschlagen:<br>';
 		foreach($out as $o)
 			$htmlstr.= $o;
-		die('');
+		die($htmlstr);
 	}
 	if(count($out) > 0)
 	{
@@ -178,7 +166,7 @@
 		$htmlstr.= 'Asciidoc fehlgeschlagen:<br>';
 		foreach($out as $o)
 			$htmlstr.= $o;
-		die('');
+		die($htmlstr);
 	}
 	if(count($out) > 0)
 	{
@@ -189,7 +177,6 @@
 	$htmlstr.=$xmlFilename.' is written!<br/>';
 	$htmlstr.= '<br><br>';
 
-
 	// DB Latex is tricky so i used a new process
 	$command='dblatex -f docbook -t pdf -P latex.encoding=utf8 -P latex.unicode.use=1 -o '.$tmpFilename.' '.$xmlFilename;
 	$htmlstr.= $command.'<br/>';
@@ -199,14 +186,14 @@
 		$htmlstr.= 'dblatex fehlgeschlagen:<br>';
 		foreach($out as $o)
 			$htmlstr.= $o;
-		die('');
+		die($htmlstr);
 	}
 
 	$process = new process(escapeshellcmd($command));
 	for ($i=0;$process->status() && $i<10;$i++)
 	{
-		$htmlstr.= '<br/>The process is currently running';//ob_flush();flush();
-		usleep(200000); // wait for 0.2 Seconds
+		$htmlstr.= '<br/>The process is currently running';ob_flush();flush();
+		usleep(400000); // wait for 0.4 Seconds
 	}
 	if ($process->status())
 	{

@@ -147,12 +147,11 @@ if (!$report->loadAll())
 						</td>
 						<td>
 							<?php echo $report->format ?>
+						</td>
+						<td align="center">
 							<a href="../cis/vorschau.php?report_id=<?php echo $report->report_id?>&debug=true" target="frame_report_details">
 								<img title="<?php echo $report->title ?> generieren" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" />
 							</a>
-						</td>
-						<td align="center">
-							<a href="../cis/vorschau.php?report_id=<?php echo $report->report_id ?>" target="_blank"><img title="<?php echo $report->title ?> anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>
 						</td>
 						<td>
 							<?php echo $db->convert_html_chars(substr($report->body,0,32)) ?>...
