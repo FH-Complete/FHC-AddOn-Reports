@@ -193,7 +193,7 @@
 	for ($i=0;$process->status() && $i<10;$i++)
 	{
 		$htmlstr.= '<br/>The process is currently running';ob_flush();flush();
-		usleep(400000); // wait for 0.4 Seconds
+		usleep(1000000); // wait for 1 Second
 	}
 	if ($process->status())
 	{

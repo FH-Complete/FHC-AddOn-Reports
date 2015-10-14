@@ -770,14 +770,13 @@ EOT;
 
 				if(!isset($series_data[$l1_bezeichnung]))
 				{
-					$series_data[$l1_bezeichnung] = end($zeile);
+					$series_data[$l1_bezeichnung] = 0 + end($zeile);
 				}
 				else
 				{
 					$series_data[$l1_bezeichnung] += end($zeile);
 				}
 			}
-
 
 			$series[] = array(
 				'data' => array_values($series_data),
@@ -867,7 +866,7 @@ EOT;
 
 				if($pos !== false)
 				{
-					$prefs[$pk] = substr($p, 0, $pos);
+					$prefs[$pk] = str_replace("\t", "", substr($p, 0, $pos));
 				}
 			}
 			//und wieder zusammenfügen
