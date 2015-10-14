@@ -863,8 +863,12 @@ EOT;
 			//kommentarzeilen entfernen
 			foreach($prefs as $pk => $p)
 			{
-				if($p[0] == "/" && $p[1] == "/")
-					unset($prefs[$pk]);
+				$pos = strpos ( $p, "//");
+
+				if($pos !== false)
+				{
+					$prefs[$pk] = substr($p, 0, $pos);
+				}
 			}
 			//und wieder zusammenfügen
 			$json = join('', $prefs);

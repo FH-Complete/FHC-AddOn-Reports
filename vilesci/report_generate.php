@@ -216,17 +216,17 @@
 	}
 	else if($type == "debug")
 	{
-		echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">\n';
-		echo '<html>\n';
-		echo '<head>\n';
-		echo '<title>Reports - Generate</title>\n';
-		echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n';
-		echo '<link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">\n';
-		echo '</head>\n';
-		echo '<body style="background-color:#eeeeee;">\n';
+		echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">';
+		echo '<html>';
+		echo '<head>';
+		echo '<title>Reports - Generate</title>';
+		echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">';
+		echo '<link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">';
+		echo '</head>';
+		echo '<body style="background-color:#eeeeee;">';
 		echo $htmlstr;
-		echo '</body>\n';
-		echo '</html>\n';
+		echo '</body>';
+		echo '</html>';
 	}
 	else
 		readfile($htmlFilename);
