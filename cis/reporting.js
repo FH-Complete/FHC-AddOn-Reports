@@ -70,11 +70,10 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 		{
 			url: url,
 			data: get_params,
-			timeout:40000,
-		  error:function()
-		  {
+      error: function (xhr, ajaxOptions, thrownError)
+      {
 				$('#spinner').hide();
-		  	alert("Es ist ein Fehler aufgetreten!")
+        alert("Fehler: " + xhr.status + " \"" + thrownError + "\"");
 		  },
 			success: function(data)
 			{
@@ -82,7 +81,6 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 				$('#filter').hide();
 				$('#content').show();
 				$('#content').html(data).show();
-				$('#welcome').hide();
 				$(window).trigger('resize');
 
 				// Pivot auf volle groesse aendern
