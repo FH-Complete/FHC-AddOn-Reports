@@ -637,7 +637,7 @@ EOT;
 			case 'hcpie':
 				?>
 				<div id="hcChart<?php echo $this->chart_id ?>" class="<?php echo $class ?>" style="border: 1px solid transparent;"></div>
-				<?php $json = $this->getHighChartJSON();?>
+				<?php $json = $this->getHighChartData();?>
 				<?php if(!$json)die($this->errormsg);?>
 				<script>$("#hcChart"+<?php echo $this->chart_id ?>).highcharts(<?php echo $json; ?>);</script>
 			<?php break;
@@ -712,7 +712,7 @@ EOT;
 				$scale='2.5';
 				$width='1920';
 
-				$phantomData = $this->getHighChartJSON();
+				$phantomData = $this->getHighChartData();
 				$ph = new phantom();
 				$p = $ph->render(array("infile" => $phantomData, "scale" => $scale, "width" => $width));
 
@@ -748,7 +748,7 @@ EOT;
 	* Liefert den Highchart als JSON zurück
 	* @return JSON wenn ok, sonst false
 	*/
-	private function getHighChartJSON()
+	private function getHighChartData()
 	{
 		$this->statistik = new statistik($this->statistik_kurzbz);
 		if (!$this->statistik->loadData())
@@ -758,11 +758,11 @@ EOT;
 		$series_data = array();
 		$categories = "";
 		$hctype=substr($this->type,2);
+		$data = $this->statistik->getArray();
 
 		if ($hctype=='drill')
 		{
 			$hctype='column';
-			$data = json_decode($this->statistik->getJSON());
 
 			foreach($data as $zeile)
 			{
@@ -786,45 +786,24 @@ EOT;
 		}
 		else
 		{
-			$data = $this->statistik->getCSV();
-			$data=explode("\n", $data);
-			$first = true;
-
-			foreach($data as $line)
-			{
-				$line = explode(",", $line);
-				for($i = 0; $i < count($line); $i++)
-				{
-					if($first)
-					{
-						if($i == 0)
-						{
-							$categoriesHeader = $line[$i];
-						}
-						else
-						{
-							$series[] = array("name" => str_replace("'", "", str_replace('"', "", $line[$i])), "data" => array());
-						}
-					}
-					else if(!$first && $i == 0)
-					{
-						$categories[] = str_replace('"', "", $line[$i]);
-					}
-					else
-					{
-						$series[$i-1]["data"][] = array(str_replace('"', "", $line[0]),floatval(str_replace('"', "", $line[$i])));
-					}
-				}
-				$first = false;
-			}
-		}
-
-		// series array in assoziative umwandeln, damit sie von den
-		// preferences aus manipuliert werden können
-		foreach($series as $sk => $s)
-		{
-			$series[$s["name"]] = $series[$sk];
-			unset($series[$sk]);
+      foreach($data as $key => $item)
+      {
+			  $first = true;
+        foreach($item as $ik => $it)
+        {
+          if($first)
+          {
+          	$header = $it;
+            $categories[] = $it;
+            $first = false;
+          }
+          else
+          {
+            $series[$ik]["name"] = $ik;
+            $series[$ik]["data"][] = array($header, floatval($it));
+          }
+        }
+      }
 		}
 
 		$phantomData = array
@@ -844,7 +823,9 @@ EOT;
 					"enabled" => true,
 					"alpha" => 45,
 					"beta" => 0,
-				)*/
+				)
+				*/
+				//um 3dCharts zu ermöglichen(kann auch über die preferences geschehen)
 			),
 			'xAxis' => array
 			(
