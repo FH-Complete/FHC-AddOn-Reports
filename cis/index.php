@@ -17,6 +17,7 @@
  *
  * Authors: Christian Paminger 	< christian.paminger@technikum-wien.at >
  * 			Robert Hofer <robert.hofer@technikum-wien.at>
+ *			Andreas Moik <moik@technikum-wien.at>
  */
 require_once('../../../config/vilesci.config.inc.php');
 require_once('../../../include/globals.inc.php');
@@ -27,72 +28,90 @@ require_once('../include/chart.class.php');
 require_once('../include/report.class.php');
 require_once('../include/rp_gruppe.class.php');
 
+$user = get_uid();
+$rechte = new benutzerberechtigung();
+$rechte->getBerechtigungen($user);
+
 
 $rp_gruppe = new rp_gruppe();
 
-$daten = toArray($rp_gruppe->result,"reportgruppe_id","reportgruppe_parent_id", 0);
 
-function toArray($obj, $id, $pid)
+
+$buf = $rp_gruppe->result;
+
+for($i = 0; $i < count($rp_gruppe->result); $i++)
 {
-	$buf = $obj;
+	$gruppe = new rp_gruppe();
+	$gruppe->getGruppenzuordnung($buf[$i]->reportgruppe_id);
 
-	for($i = 0; $i < count($obj); $i++)
+	$buf[$i]->gruppe = $gruppe->gruppe;
+	$buf[$i]->statistiken = 0;
+	$buf[$i]->reports = 0;
+	$buf[$i]->charts = 0;
+
+	$buf[$i]->statistik = array();
+	$buf[$i]->report = array();
+	$buf[$i]->chart = array();
+
+	foreach($buf[$i]->gruppe as $gr)
 	{
-		$gruppe = new rp_gruppe();
-		$gruppe->getGruppenzuordnung($buf[$i]->reportgruppe_id);
-
-		$buf[$i]->gruppe = $gruppe->gruppe;
-		$buf[$i]->statistiken = 0;
-		$buf[$i]->reports = 0;
-		$buf[$i]->charts = 0;
-
-		$buf[$i]->statistik = array();
-		$buf[$i]->report = array();
-		$buf[$i]->chart = array();
-
-		foreach($buf[$i]->gruppe as $gr)
+		if(isset($gr->statistik_kurzbz))
 		{
-			if(isset($gr->statistik_kurzbz))
+			$ns = new statistik($gr->statistik_kurzbz);
+			if($ns->publish === true && ($rechte->isBerechtigt($ns->berechtigung_kurzbz)) || $ns->berechtigung_kurzbz === null)
 			{
 				$buf[$i]->statistiken ++;
-				$buf[$i]->statistik[] = new statistik($gr->statistik_kurzbz);
-			}
-			else if(isset($gr->report_id))
-			{
-				$buf[$i]->reports ++;
-				$buf[$i]->report[] = new report($gr->report_id);
-			}
-			else if(isset($gr->chart_id))
-			{
-				$buf[$i]->charts ++;
-				$buf[$i]->chart[] = new chart($gr->chart_id);
+				$buf[$i]->statistik[] = $ns;
 			}
 		}
-
-
-		if(!is_null($obj[$i]->$pid))
+		else if(isset($gr->report_id))
 		{
-			$found = false;
-			foreach($buf as $ent)
+			$nr = new report($gr->report_id);
+			if($nr->publish === true && ($rechte->isBerechtigt($nr->berechtigung_kurzbz)) || $nr->berechtigung_kurzbz === null)
 			{
-				if($buf[$i]->$pid === $ent->$id)
-				{
-					$found = true;
-
-					if(!isset($ent->sub))
-						$ent->sub = array();
-
-					$ent->sub[] = $buf[$i];
-				}
+				$buf[$i]->reports ++;
+				$buf[$i]->report[] = $nr;
 			}
-			if($found)
+		}
+		else if(isset($gr->chart_id))
+		{
+			$nc = new chart($gr->chart_id);
+
+			if(isset($nc->statistik_kurzbz))
 			{
-				unset($buf[$i]);
+				$nc->statistik = new statistik($nc->statistik_kurzbz);
+				if($nc->publish === true && ($rechte->isBerechtigt($nc->statistik->berechtigung_kurzbz)) || $nc->statistik->berechtigung_kurzbz === null)
+				{
+					$buf[$i]->charts ++;
+					$buf[$i]->chart[] = $nc;
+				}
 			}
 		}
 	}
-	return $buf;
+
+
+	if(!is_null($rp_gruppe->result[$i]->reportgruppe_parent_id))
+	{
+		$found = false;
+		foreach($buf as $ent)
+		{
+			if($buf[$i]->reportgruppe_parent_id === $ent->reportgruppe_id)
+			{
+				$found = true;
+
+				if(!isset($ent->sub))
+					$ent->sub = array();
+
+				$ent->sub[] = $buf[$i];
+			}
+		}
+		if($found)
+		{
+			unset($buf[$i]);
+		}
+	}
 }
+$daten = $buf;
 
 ?>
 <!DOCTYPE html>
@@ -127,29 +146,6 @@ function toArray($obj, $id, $pid)
 		<script src="../include/js/bootstrap.min.js"></script>
 		<script src="../include/js/offcanvas.js"></script>
 		<script type="text/javascript" src="reporting.js"></script>
-
-        <!-- <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/jquery-1.8.3.min.js"></script> -->
-        <!--<script type="text/javascript" src="../../../include/js/jquery-ui-1.11.4.custom.min.js"></script>-->
-		<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-		<!--<script src="../include/js/ie10-viewport-bug-workaround.js"></script>-->
-
-		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-		<!--[if lt IE 9]>
-		  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-		<![endif]-->
-        <!-- <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/jquery-ui-1.9.2.custom.min.js"></script> -->
-        <!-- <script type="text/javascript" src="../../../submodules/pivottable/examples/ext/d3.v3.min.js"></script>-->
-        <!--<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
-        <!--<script type="text/javascript" src="../../../submodules/pivottable/dist/d3_renderers.js"></script>-->
-
-        <!-- <script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script> -->
-		<!-- <link rel="stylesheet" href="../include/css/spider.css" type="text/css">
-		<link rel="stylesheet" href="../include/css/xchart.css" type="text/css" /> -->
-
-
-        <!-- ngGrid -->
-		<?php //echo chart::getAllHtmlHead()?>
 		<?php $reports = array(); ?>
 	</head>
 

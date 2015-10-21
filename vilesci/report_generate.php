@@ -38,9 +38,6 @@
 	$rechte = new benutzerberechtigung();
 	$rechte->getBerechtigungen($user);
 
-	if(!$rechte->isBerechtigt('addon/reports'))
-		die('Sie haben keine Berechtigung fuer dieses AddOn!');
-	// @todo Rechte der Daten und Charts pruefen
 
 
 	$htmlstr = '';
@@ -71,6 +68,18 @@
 	$charts = new chart();
 	if (!$charts->loadCharts($report->report_id))
 		die($charts->errormsg);
+
+	//wenn der nutzer nicht für addon/reports berechtigt ist, wird abgefragt, ob der report publish ist
+	//und ob der nutzer das recht für diesen report hat
+	if(!$rechte->isBerechtigt("addon/reports"))
+	{
+		if($report->publish !== true)
+			die("Dieser Report ist nicht Oeffentlich!");
+
+		if(isset($report->berechtigung_kurzbz))
+			if(!$rechte->isBerechtigt($report->berechtigung_kurzbz))
+				die('Sie haben keine Berechtigung fuer diesen Report!');
+	}
 
 	// echo count($charts->chart);
 	foreach($charts->chart as $chart)

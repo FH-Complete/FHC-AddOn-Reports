@@ -33,10 +33,7 @@ ini_set('memory_limit', '1024M');
 $uid = get_uid();
 $rechte = new benutzerberechtigung();
 $rechte->getBerechtigungen($uid);
-/* if(!$rechte->isBerechtigt('addon/reports'))
-  {
-  die('Sie haben keine Berechtigung fuer dieses AddOn');
-  } */
+
 
 $statistik = new statistik();
 
@@ -51,6 +48,9 @@ else
 {
 	die('"statistik_kurzbz" is not set!');
 }
+
+
+
 $i = 0;
 while(isset($_GET['varname' . $i]))
 {
@@ -66,7 +66,24 @@ while(isset($_GET['varname' . $i]))
 	$i++;
 }
 
-$statistik->loadData(); ?>
+$statistik->loadData();
+
+
+
+
+if($statistik->publish !== true)
+	die("Diese Statistik ist nicht Oeffentlich");
+
+
+if(isset($statistik->berechtigung_kurzbz))
+	if(!$rechte->isBerechtigt($statistik->berechtigung_kurzbz))
+		die("Sie haben keine Berechtigung fuer diese Statistik");
+
+?>
+
+
+
+
 
 <?php if($htmlbody): ?>
 <html>

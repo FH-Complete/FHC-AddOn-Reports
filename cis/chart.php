@@ -25,6 +25,11 @@ require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../../../include/filter.class.php');
 require_once('../include/chart.class.php');
 
+
+$user = get_uid();
+$rechte = new benutzerberechtigung();
+$rechte->getBerechtigungen($user);
+
 $chart = new chart();
 
 $chart_id = filter_input(INPUT_GET, 'chart_id', FILTER_VALIDATE_INT);
@@ -34,7 +39,22 @@ unset($filter['chart_id']);
 
 $chart->vars = '&' . http_build_query($filter);
 
-if($chart->load($chart_id))
-{
-	echo $chart->getHtmlDiv();
-}
+if(!$chart->load($chart_id))
+	die("Der Chart konnte nicht geladen werden!");
+
+if($chart->publish !== true)
+	die("Dieser Chart ist nicht Oeffentlich");
+
+if(!isset($chart->statistik_kurzbz))
+	die("Fuer diesen Chart gibt es keine Statistik");
+
+
+$chart->statistik = new statistik($chart->statistik_kurzbz);
+
+
+if(isset($chart->statistik->berechtigung_kurzbz))
+	if(!$rechte->isBerechtigt($chart->statistik->berechtigung_kurzbz))
+		die("Sie haben keine Berechtigung fuer diesen Chart");
+
+echo $chart->getHtmlDiv();
+
