@@ -175,33 +175,20 @@
 	$htmlstr .= "				Format: <input class='detail' type='text' name='format' size='8' maxlength='512' value='".$db->convert_html_chars($report->format)."' onchange='submitable()'></td>\n";
 	$htmlstr .= "				<td>Gruppe</td>\n";
 	$htmlstr .= "				<td><input class='detail' type='text' name='gruppe' size='22' maxlength='32' value='".$db->convert_html_chars($report->gruppe)."' onchange='submitable()'>\n";
-	$htmlstr .= "				Publish: <input class='detail' type='checkbox' name='publish' ".($report->publish?'checked="checked"':'')." onchange='submitable()'></td>\n";
-	$htmlstr .= "			</tr>\n";
-	$htmlstr .= "			<tr>\n";
-
-
-
-	$htmlstr .= "					<td>\n";
-	$htmlstr .= "					Berechtigung\n";
-	$htmlstr .= "					</td>\n";
-	$htmlstr .= "					<td>\n";
 	$berechtigung = new berechtigung();
 	$berechtigung->getBerechtigungen();
 
-	$htmlstr .= "						<select name='berechtigung_kurzbz'>\n";
+	$htmlstr .= "						Berechtigung: <select name='berechtigung_kurzbz'>\n";
 	$htmlstr .= "							<option value=''>-- keine Auswahl --</option>\n";
-
 	foreach($berechtigung->result as $row)
 	{
 		$htmlstr .= "								<option value='$row->berechtigung_kurzbz'".($row->berechtigung_kurzbz == $report->berechtigung_kurzbz ? 'selected' : '').">$row->berechtigung_kurzbz</option>\n";
 	}
-
 	$htmlstr .= "						</select>\n";
-	$htmlstr .= "					</td>\n";
+	$htmlstr .= "				Publish: <input class='detail' type='checkbox' name='publish' ".($report->publish?'checked="checked"':'')." onchange='submitable()'>\n";
+	$htmlstr .= "</td>\n";
 	$htmlstr .= "			</tr>\n";
 	$htmlstr .= "			<tr>\n";
-
-
 	$htmlstr .= "				<td valign='top'>Description</td>\n";
 	$htmlstr .= " 				<td ><textarea name='description' cols='70' rows='6' onchange='submitable()'>".$db->convert_html_chars($report->description)."</textarea></td>\n";
 	$htmlstr .= "				<td valign='top'>Header</td>\n";

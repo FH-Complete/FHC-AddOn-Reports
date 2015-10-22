@@ -58,7 +58,7 @@ for($i = 0; $i < count($rp_gruppe->result); $i++)
 		if(isset($gr->statistik_kurzbz))
 		{
 			$ns = new statistik($gr->statistik_kurzbz);
-			if($ns->publish === true && ($rechte->isBerechtigt($ns->berechtigung_kurzbz)) || $ns->berechtigung_kurzbz === null)
+			if($ns->publish === true && ($rechte->isBerechtigt($ns->berechtigung_kurzbz) || $ns->berechtigung_kurzbz === null))
 			{
 				$buf[$i]->statistiken ++;
 				$buf[$i]->statistik[] = $ns;
@@ -67,7 +67,7 @@ for($i = 0; $i < count($rp_gruppe->result); $i++)
 		else if(isset($gr->report_id))
 		{
 			$nr = new report($gr->report_id);
-			if($nr->publish === true && ($rechte->isBerechtigt($nr->berechtigung_kurzbz)) || $nr->berechtigung_kurzbz === null)
+			if($nr->publish === true && ($rechte->isBerechtigt($nr->berechtigung_kurzbz) || $nr->berechtigung_kurzbz === null))
 			{
 				$buf[$i]->reports ++;
 				$buf[$i]->report[] = $nr;
@@ -80,7 +80,7 @@ for($i = 0; $i < count($rp_gruppe->result); $i++)
 			if(isset($nc->statistik_kurzbz))
 			{
 				$nc->statistik = new statistik($nc->statistik_kurzbz);
-				if($nc->publish === true && ($rechte->isBerechtigt($nc->statistik->berechtigung_kurzbz)) || $nc->statistik->berechtigung_kurzbz === null)
+				if($nc->publish === true && ($rechte->isBerechtigt($nc->statistik->berechtigung_kurzbz) || $nc->statistik->berechtigung_kurzbz === null))
 				{
 					$buf[$i]->charts ++;
 					$buf[$i]->chart[] = $nc;

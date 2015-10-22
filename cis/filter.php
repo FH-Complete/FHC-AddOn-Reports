@@ -39,10 +39,11 @@ $user = get_uid();
 $rechte = new benutzerberechtigung();
 $rechte->getBerechtigungen($user);
 
+/*
 if(!$rechte->isBerechtigt('basis/statistik'))
 {
 	die('Sie haben keine Berechtigung fuer diese Seite!');
-}
+}*/
 
 $filter = new filter();
 $filter->loadAll();
