@@ -146,10 +146,10 @@ $daten = $buf;
 		<script src="../include/js/bootstrap.min.js"></script>
 		<script src="../include/js/offcanvas.js"></script>
 		<script type="text/javascript" src="reporting.js"></script>
-		<?php $reports = array(); ?>
 	</head>
 
 	<body>
+		<?php $reports = array(); ?>
 		<div id="test">
 			<div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
 				<div class="container">
@@ -257,14 +257,13 @@ $daten = $buf;
 							<div class="col-xs-12 col-sm-9">
 								<form class="form-inline" onsubmit="return false">
 								<div id="filter-input" style="float: left"></div>
-								<button onclick="runFilter('html')" class="btn btn-default" type="submit">Run</button>
-								<a id="filter-PdfLink" onclick="runFilter('pdf')"><img src="pdfIcon.png" width="20" alt="pdf"/></a>
+									<button style="float: left;height:40px;" onclick="runFilter('html')" class="btn btn-default" type="submit">Run</button>
+									<button style="float: left;height:40px;" onclick="runFilter('pdf')" id="filter-PdfLink" ><img src="../cis/pdfIcon.png" width="20" alt="pdf"/></button>
 								</form>
 							</div>
 						</div>
 
-						<div style="display: none;" id="content">
-						</div>
+						<div id="content"></div>
 
 					</div>
 					<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">

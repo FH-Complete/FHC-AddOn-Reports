@@ -54,31 +54,31 @@
 	</head>
 
 	<body>
-			<div id="spinner" style="display:none; width:80%; margin-left:10%; top:50px; position:absolute; z-index:10;">
-				<div class="progress">
-	  				<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-						Loading Data
-	  				</div>
-				</div>
+		<div id="spinner" style="display:none; width:80%; margin-left:10%; top:50px; position:absolute; z-index:10;">
+			<div class="progress">
+  				<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+					Loading Data
+  				</div>
 			</div>
+		</div>
 
-			<div style="display: none;" id="filter">
-				<div class="col-xs-12 col-sm-9">
-					<form class="form-inline" onsubmit="return false">
-					<div id="filter-input"></div>
-					<div style="margin-top:20px">
-						<button style="float: left;height:40px;" onclick="runFilter('html')" class="btn btn-default" type="submit">Run</button>
-						<button style="float: left;height:40px;" onclick="runFilter('pdf')" id="filter-PdfLink" ><img src="../cis/pdfIcon.png" width="20" alt="pdf"/></button>
-						<button style="float: left;height:40px;color:red;" onclick="runFilter('debug')" id="filter-debugLink">DEBUG</button>
-					</div>
-					</form>
+		<div style="display: none;" id="filter">
+			<div class="col-xs-12 col-sm-9">
+				<form class="form-inline" onsubmit="return false">
+				<div id="filter-input"></div>
+				<div style="margin-top:20px">
+					<button style="float: left;height:40px;" onclick="runFilter('html')" class="btn btn-default" type="submit">Run</button>
+					<button style="float: left;height:40px;" onclick="runFilter('pdf')" id="filter-PdfLink" ><img src="../cis/pdfIcon.png" width="20" alt="pdf"/></button>
+					<button style="float: left;height:40px;color:red;" onclick="runFilter('debug')" id="filter-debugLink">DEBUG</button>
 				</div>
+				</form>
 			</div>
-		<div style="display: none;" id="content"></div>
+		</div>
+		<div id="content"></div>
 		<script src="../include/js/bootstrap.min.js"></script>
 		<script src="../include/js/offcanvas.js"></script>
 		<script type="text/javascript" src="../cis/reporting.js"></script>
-	  <script>
+		<script>
 			<?php
 
 			if(isset($_GET["statistik_kurzbz"]))

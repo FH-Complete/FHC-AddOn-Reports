@@ -613,15 +613,23 @@ EOT;
 		{
 			case 'spider': ?>
 				<div id="spidergraphcontainer" class="<?php echo $class ?>"></div>
+				<script src="../include/js/jquery-1.11.2.min.js" type="application/javascript"></script>
 				<script type="application/javascript">
+					var chart = new Object;
 					var source = <?php echo json_encode($source) ?>;
 					<?php echo $this->preferences ?>;
 				</script>
-				<script src="../include/js/spidergraph.js" type="application/javascript"></script>
+				<script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>
 				<script src="../include/js/highcharts/init.js" type="application/javascript"></script>
+				<script>
+					initCharts();
+				</script>
 				<?php break;
+
+
 			case 'xchart': ?>
 				<figure id="xChart"></figure>
+				<script src="../include/js/jquery-1.11.2.min.js" type="application/javascript"></script>
 				<script src="../include/js/d3.js" type="application/javascript"></script>
 				<script src="../include/js/xcharts/xcharts.min.js" type="application/javascript"></script>
 				<script type="application/javascript">
@@ -629,6 +637,8 @@ EOT;
 						<?php echo $this->preferences ?>;
 				</script>
 				<?php break;
+
+
 			case 'hctimezoom':
 			case 'hcdrill':
 			case 'hcline':
@@ -649,10 +659,6 @@ EOT;
 	public function getFooter() {
 
 		ob_start(); ?>
-
-		<script type="application/javascript">
-			initCharts();
-		</script>
 
 		<?php return ob_get_clean();
 	}
