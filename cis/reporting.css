@@ -17,15 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Authors: Robert Hofer <robert.hofer@technikum-wien.at>
 */
 
-#iframe_content {
-	width: 100%;
-	min-height: 420px;
-	border: 0;
-	padding: 0;
-	margin: 0;
-	overflow: hidden;
-}
-
 html, body {
 	overflow-x: visible;
 }

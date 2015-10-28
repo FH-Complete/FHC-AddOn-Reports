@@ -18,6 +18,7 @@
  *					Andreas moik <moik@technikum-wien.at>
  */
 
+
 function die(msg)
 {
 	document.body.innerHTML = msg;
@@ -82,42 +83,7 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 		  },
 			success: function(data)
 			{
-					$('#spinner').hide();
-					$('#filter').hide();
-					$('#content').empty();
-					$('#content').html('<iframe id="conentIframe" width="100%" height="100%" frameborder="0" id="content" style="overflow-x: scroll;"></iframe>');
-
-					var all = '';
-					all += '<html lang="en">';
-					all += '<head>';
-					all += '<meta charset="utf-8">';
-					all += '<script type="text/javascript" src="../include/js/jquery-1.11.2.min.js"></script>';
-					all += '<script type="text/javascript" src="../include/js/pivottable/pivot.js"></script>';
-					all += '<script type="text/javascript" src="../include/js/pivottable/gchart_renderers.js"></script>';
-					all += '<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>';
-					all += '<link rel="stylesheet" type="text/css" href="../include/js/pivottable/pivot.css">';
-					all += '<script src="../include/js/highcharts/main.js" type="application/javascript"></script>';
-					all += '<link rel="stylesheet" href="../include/css/charts.css" type="text/css">';
-					all += '<link rel="stylesheet" href="../include/css/jquery-ui.1.11.2.min.css" type="text/css">';
-					all += '<script type="text/javascript" src="../include/js/jquery-ui.1.11.2.min.js"></script>';
-					all += '<script type="text/javascript" src="../include/js/pivottable/jquery.ui.touch-punch.min.js"></script>';
-					all += '<script src="../include/js/offcanvas.js"></script>';
-					all += '</head>';
-					all += '<body onload="javascript:resizeIframe(this);">';
-					all += data;
-					all += '</body>';
-
-					var ifrm = document.getElementById('conentIframe');
-					ifrm = (ifrm.contentWindow) ? ifrm.contentWindow : (ifrm.contentDocument.document) ? ifrm.contentDocument.document : ifrm.contentDocument;
-					ifrm.document.open();
-					ifrm.document.write(all);
-					ifrm.document.close();
-					$('#content').show();
-
-					$(window).trigger('resize');
-
-					// Pivot auf volle groesse aendern
-					$('.pvtRendererArea').css('width','100%');
+				drawAll(data, url);
 			}
 		});
 	}
@@ -125,8 +91,52 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 		alert("Es wurden keine korrekten Daten angegeben!")
 }
 
+function drawAll(data, url)
+{
+	$('#spinner').hide();
+	$('#filter').hide();
+	if(url === "grid.php" || url === "chart.php")
+	{
+		$('#content').html(data);
+	}
+	else
+	{
+		$('#content').empty();
+		$('#content').html('<iframe id="conentIframe" width="100%" height="98%" frameborder="0" id="content" style="overflow: visible;"></iframe>');
+
+		var all = '';
+		all += '<html lang="en">';
+		all += '<head>';
+		all += '<meta charset="utf-8">';
+		all += '<script type="text/javascript" src="../include/js/jquery-1.11.2.min.js"></script>';
+		all += '<script type="text/javascript" src="../include/js/pivottable/pivot.js"></script>';
+		all += '<script type="text/javascript" src="../include/js/pivottable/gchart_renderers.js"></script>';
+		all += '<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>';
+		all += '<link rel="stylesheet" type="text/css" href="../include/js/pivottable/pivot.css">';
+		all += '<script src="../include/js/highcharts/main.js" type="application/javascript"></script>';
+		all += '<link rel="stylesheet" href="../include/css/charts.css" type="text/css">';
+		all += '<link rel="stylesheet" href="../include/css/jquery-ui.1.11.2.min.css" type="text/css">';
+		all += '<script type="text/javascript" src="../include/js/jquery-ui.1.11.2.min.js"></script>';
+		all += '<script type="text/javascript" src="../include/js/pivottable/jquery.ui.touch-punch.min.js"></script>';
+		all += '<script src="../include/js/offcanvas.js"></script>';
+		all += '</head>';
+		all += '<body>';
+		all += data;
+		all += '</body>';
+
+		var ifrm = document.getElementById('conentIframe');
+		ifrm = (ifrm.contentWindow) ? ifrm.contentWindow : (ifrm.contentDocument.document) ? ifrm.contentDocument.document : ifrm.contentDocument;
+		ifrm.document.open();
+		ifrm.document.write(all);
+		ifrm.document.close();
+	}
+		$('#content').show();
+		$(window).trigger('resize');
+}
+
 function showFilter(statistik_kurzbz, report_id, chart_id)
 {
+	$(window).trigger('resize');
 
 	$('#spinner').hide();
 	$('#welcome').hide();
@@ -165,16 +175,42 @@ function showFilter(statistik_kurzbz, report_id, chart_id)
 	});
 }
 
+function resizeContent()
+{
+	if($("#sidebar").css("display") === "block")
+	{
+		$('#content').parent().removeClass('col-sm-12').addClass('col-sm-9');
+	}
+	else
+	{
+		$('#content').parent().removeClass('col-sm-9').addClass('col-sm-12');
+	}
+
+  $('#content').parent().height($(window).height() - 160);
+  $('#content').height("100%");
+  $('#content').width($('#content').parent().width());
+
+  $('#pivot').width("1%");
+  $('.pvtUi').width("1%");
+
+  $('.pvtRendererArea').width("100%");
+  $('.pvtRendererArea').css("overflow","auto");
+
+  $('#content').css("overflow-y", "visible");
+  $('#content').css("overflow-x", "auto");
+
+}
+
 
 function showSidebar(num, type)
 {
+	resizeContent();
 	$('#sidebar').show();
 	$('.reports_sidebar_entry').hide();
 	$('.report_'+num+"_"+type).show();
 	$('.hide-button').show();
 
 	$('#sidebar').attr('data-menu', type);
-	$('#content').parent().removeClass('col-sm-12').addClass('col-sm-9');
 
 	$(window).trigger('resize');
 }
@@ -182,30 +218,21 @@ function showSidebar(num, type)
 
 $(function()
 {
-	// Charts auf volle groesse aendern
-	$('#content').parent().removeClass('col-sm-9').addClass('col-sm-12');
+	$('#sidebar').hide();
 
-	// Pivot auf volle groesse aendern
-	$('.pvtRendererArea').css('width','100%');
-	$('.hide-button').hide();
+	resizeContent();
 
-    $(window).resize(function() {
-        $('#content').height( $(window).height() - 100 );
-    }).resize();
+  $(window).resize(function() {
+  resizeContent();
+  }).resize();
 });
-
 
 
 function hideSidebar()
 {
+	resizeContent();
 	// Sidebar ausblenden
 	$('#sidebar').hide();
-
-	// Charts auf volle groesse aendern
-	$('#content').parent().removeClass('col-sm-9').addClass('col-sm-12');
-
-	// Pivot auf volle groesse aendern
-	$('.pvtRendererArea').css('width','100%');
 
 	$(window).trigger('resize');
 }
@@ -231,9 +258,4 @@ function runFilter(type)
 	}
 
 	loadData(statistik_kurzbz, report_id, chart_id, get_params);
-}
-
-function resizeIframe(obj)
-{
-	obj.style.height = obj.contentWindow.document.body.scrollHeight + "px";
 }

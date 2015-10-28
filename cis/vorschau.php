@@ -74,7 +74,7 @@
 				</form>
 			</div>
 		</div>
-		<div id="content"></div>
+		<div id="content" style="display:none;"></div>
 		<script src="../include/js/bootstrap.min.js"></script>
 		<script src="../include/js/offcanvas.js"></script>
 		<script type="text/javascript" src="../cis/reporting.js"></script>
