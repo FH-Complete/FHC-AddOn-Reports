@@ -83,7 +83,30 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 		  },
 			success: function(data)
 			{
-				drawAll(data, url);
+				$('#spinner').hide();
+				$('#filter').hide();
+
+				//.show und resize müssen dürfen nicht nach dem hineinschreiben
+				//der daten in das div ausgeführt werden. Bei .show() stimmt die größe nicht
+				//und bei resize korrumpiert der resize-Prozess die animation der Charts
+				$('#content').show();
+				$(window).trigger('resize');
+
+				if(url === "grid.php" || url === "chart.php")
+				{
+					$('#content').html(data);
+				}
+				else
+				{
+					$('#content').html('<iframe id="contentIframe" width="100%" height="98%" frameborder="0" id="content" style="overflow: visible;"></iframe>');
+
+					var ifrm = document.getElementById('contentIframe');
+					ifrm = (ifrm.contentWindow) ? ifrm.contentWindow : (ifrm.contentDocument.document) ? ifrm.contentDocument.document : ifrm.contentDocument;
+					ifrm.document.open();
+					ifrm.document.write(data);
+					ifrm.document.close();
+
+				}
 			}
 		});
 	}
@@ -91,48 +114,6 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 		alert("Es wurden keine korrekten Daten angegeben!")
 }
 
-function drawAll(data, url)
-{
-	$('#spinner').hide();
-	$('#filter').hide();
-	if(url === "grid.php" || url === "chart.php")
-	{
-		$('#content').html(data);
-	}
-	else
-	{
-		$('#content').empty();
-		$('#content').html('<iframe id="conentIframe" width="100%" height="98%" frameborder="0" id="content" style="overflow: visible;"></iframe>');
-
-		var all = '';
-		all += '<html lang="en">';
-		all += '<head>';
-		all += '<meta charset="utf-8">';
-		all += '<script type="text/javascript" src="../include/js/jquery-1.11.2.min.js"></script>';
-		all += '<script type="text/javascript" src="../include/js/pivottable/pivot.js"></script>';
-		all += '<script type="text/javascript" src="../include/js/pivottable/gchart_renderers.js"></script>';
-		all += '<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>';
-		all += '<link rel="stylesheet" type="text/css" href="../include/js/pivottable/pivot.css">';
-		all += '<script src="../include/js/highcharts/main.js" type="application/javascript"></script>';
-		all += '<link rel="stylesheet" href="../include/css/charts.css" type="text/css">';
-		all += '<link rel="stylesheet" href="../include/css/jquery-ui.1.11.2.min.css" type="text/css">';
-		all += '<script type="text/javascript" src="../include/js/jquery-ui.1.11.2.min.js"></script>';
-		all += '<script type="text/javascript" src="../include/js/pivottable/jquery.ui.touch-punch.min.js"></script>';
-		all += '<script src="../include/js/offcanvas.js"></script>';
-		all += '</head>';
-		all += '<body>';
-		all += data;
-		all += '</body>';
-
-		var ifrm = document.getElementById('conentIframe');
-		ifrm = (ifrm.contentWindow) ? ifrm.contentWindow : (ifrm.contentDocument.document) ? ifrm.contentDocument.document : ifrm.contentDocument;
-		ifrm.document.open();
-		ifrm.document.write(all);
-		ifrm.document.close();
-	}
-		$('#content').show();
-		$(window).trigger('resize');
-}
 
 function showFilter(statistik_kurzbz, report_id, chart_id)
 {
