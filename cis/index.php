@@ -256,8 +256,12 @@ $daten = $buf;
 						<div class="col-xs-12 col-sm-9">
 							<form class="form-inline" onsubmit="return false">
 							<div id="filter-input" style="float: left"></div>
-								<button style="float: left;height:40px;" onclick="runFilter('html')" class="btn btn-default" type="submit">Run</button>
-								<button style="float: left;height:40px;" onclick="runFilter('pdf')" id="filter-PdfLink" ><img src="../cis/pdfIcon.png" width="20" alt="pdf"/></button>
+							<br>
+								<div style="margin-top:20px">
+									<button style="display: inline;height:40px;" onclick="runFilter('html')" class="btn btn-default" type="submit">Ausf&uuml;hren</button>
+									<button style="display: inline;height:40px;" onclick="runFilter('pdf')" id="filter-PdfLink" ><img src="../cis/pdfIcon.png" width="20" alt="pdf"/></button>
+									<button style="display: inline;height:40px;color:red;" onclick="runFilter('debug')" id="filter-debugLink">DEBUG</button>
+								</div>
 							</form>
 						</div>
 					</div>

@@ -773,22 +773,37 @@ EOT;
 			foreach($data as $zeile)
 			{
 				$l1_bezeichnung = current($zeile);
+				$l1_dd = next($zeile);
+				$l1_sum = 0 + end($zeile);
+				if(!isset($l1_dd))
+					$l1_dd = " ";
 
 				if(!isset($series_data[$l1_bezeichnung]))
 				{
-					$series_data[$l1_bezeichnung] = 0 + end($zeile);
+					$series_data[$l1_bezeichnung]["name"] = $l1_bezeichnung;
+					$series_data[$l1_bezeichnung]["drilldown"] = $l1_bezeichnung;
+					$series_data[$l1_bezeichnung]["y"] = $l1_sum;
 				}
 				else
 				{
-					$series_data[$l1_bezeichnung] += end($zeile);
+					$series_data[$l1_bezeichnung]["y"] += $l1_sum;
 				}
+
+				$drilldown[$l1_bezeichnung]["id"] =	$l1_bezeichnung;
+				$drilldown[$l1_bezeichnung]["data"][] =	array($l1_dd, $l1_sum);
 			}
 
 			$series[] = array(
-				'data' => array_values($series_data),
 				'name' => 'Series 1',
+				'colorByPoint' => true,
+				'data' => array_values($series_data),
 			);
-			$categories = array_keys($series_data);
+			$xAxis = array
+			(
+				'type' => 'category',
+				'title' => array('text' => '',),
+				'labels' => array('rotation' => -45),
+			);
 		}
 		else
 		{
@@ -810,6 +825,12 @@ EOT;
           }
         }
       }
+			$xAxis = array
+			(
+				'categories' => $categories,
+				'title' => array('text' => '',),
+				'labels' => array('rotation' => -45),
+			);
 		}
 
 		$phantomData = array
@@ -833,18 +854,18 @@ EOT;
 				*/
 				//um 3dCharts zu ermöglichen(kann auch über die preferences geschehen)
 			),
-			'xAxis' => array
-			(
-				'categories' => $categories,
-				'title' => array('text' => '',),
-				'labels' => array('rotation' => -45),
-			),
+			'xAxis' => $xAxis,
 			'yAxis' => array
 			(
 				'title' => array('text' => ' ',),
 			),
 			'series' => $series
 		);
+
+		if(isset($drilldown))
+		{
+			$phantomData["drilldown"]["series"] = $drilldown;
+		}
 
 		if(isset($this->preferences) && $this->preferences != "" && $this->preferences != null)
 		{
@@ -882,9 +903,14 @@ EOT;
 			}
 		}
 
-
 		//series wieder in normale arrays zurückwandeln, da highcharts keine assoziativen entgegen nimmt!
 		$phantomData["series"] = array_values($phantomData["series"]);
+
+		//gleiches spiel mit den drilldown infos
+		if(isset($drilldown))
+		{
+			$phantomData["drilldown"]["series"] = array_values($phantomData["drilldown"]["series"]);
+		}
 
 		return json_encode($phantomData);
 	}
