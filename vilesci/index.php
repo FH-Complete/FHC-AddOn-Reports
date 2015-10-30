@@ -48,10 +48,6 @@ if(!$rechte->isBerechtigt('addon/reports'))
 			<a href="../../../vilesci/statistik/filter_frameset.html" target="rp_main">
 				<img src="../include/images/preferences-desktop.svg" alt="" />
 			</a>
-			<!--
-			<a href="report_filter_frameset.html" target="rp_main">
-				<img src="../include/images/preferences-system.svg" alt="" />
-			</a>-->
 			<a href="data_frameset.html" target="rp_main">
 				<img src="../include/images/x-office-spreadsheet.svg" alt="" />
 			</a>

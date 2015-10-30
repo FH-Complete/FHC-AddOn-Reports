@@ -393,22 +393,34 @@ class chart extends basis_db
 	{
 
 		$hc_drill = <<<EOT
-var	level_one_format = '{point.y}',
-	level_two_format = '{point.y}';
-// Ganze Zahlen: {point.y}
-// 1 Nachkommastelle: {point.y:.1f}
-// 3 Nachkommastellen: {point.y:.3f}
-// Einheiten oder Prozentzeichen: {point.y}% oder {point.y}km/h
+//{
+// "chart":{
+//  "zoomType":"none",//Möglichkeiten: "x", "y" ("xy" ist standard)
+//  "type":"pie"
+// }
+//}
 EOT;
 
 		$hc_default = <<<EOT
-// chart.colors = ['#8d4653', '#91e8e1'];
-// HEX-Codes die die Farben der Charts bestimmen:
-// 1. Code -> 1. Spalte
-// 2. Code -> 2. Spalte usw.
-//
-// chart.x.rotation = 45;
-// Der Winkel der X-Achsenbeschriftung
+//{
+// "xAxis":{
+//  "labels":{
+//  "rotation":90  // Der Winkel der X-Achsenbeschriftung
+//  }
+// },
+// "series":{
+//  "Gesamt":{
+//  "type":"column"
+//  },
+//  "Inland":{
+//   "type":"pie","center":["10%","10%"],"size":["20%","20%"]
+//  }
+// }
+//}
+
+
+
+
 EOT;
 
 		$hc_timezoom = <<<EOT
@@ -844,6 +856,7 @@ EOT;
 			(
 				'zoomType' => "xy",
 				'type' => $hctype,
+				'animation' => true,    //animation für den zoom
 				/*
 				'options3d' => array
 				(
@@ -854,6 +867,7 @@ EOT;
 				*/
 				//um 3dCharts zu ermöglichen(kann auch über die preferences geschehen)
 			),
+			'plotOptions' => array('series' => array('animation' => true)),//initale animation
 			'xAxis' => $xAxis,
 			'yAxis' => array
 			(
@@ -875,24 +889,25 @@ EOT;
 			//kommentarzeilen entfernen
 			foreach($prefs as $pk => $p)
 			{
-				$pos = strpos ( $p, "//");
 
+				$pos = strpos ( $p, "//");
 				if($pos !== false)
 				{
-					$prefs[$pk] = str_replace("\t", "", substr($p, 0, $pos));
+					$prefs[$pk] = substr($p, 0, $pos);
 				}
+				$prefs[$pk] = str_replace("\r", "", $prefs[$pk]);
 			}
 			//und wieder zusammenfügen
 			$json = join('', $prefs);
 
-			if(!$json == "")		//nur, wenn nicht nur kommentare in den preferences standen
+			if($json != '')		//wenn nicht nur kommentare in den preferences standen
 			{
 				//in einen array umwandeln
 				$prefs = json_decode($json, true);
 
 				if(!$prefs)
 				{
-					die("Chart".$this->chart_id . ": Preferences sind keine wohlgeformten JSON-Daten:<br>". $json);
+					die("Chart".$this->chart_id . ": Preferences sind keine wohlgeformten JSON-Daten:<br>'". $json."'");
 					return false;
 				}
 
@@ -911,7 +926,6 @@ EOT;
 		{
 			$phantomData["drilldown"]["series"] = array_values($phantomData["drilldown"]["series"]);
 		}
-
 		return json_encode($phantomData);
 	}
 
