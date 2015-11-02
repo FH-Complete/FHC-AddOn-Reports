@@ -51,7 +51,7 @@
 
 	if(isset($_REQUEST["view_kurzbz"]))
 	{
-		if (isset($_REQUEST['view_kurzbz']))
+		if (!isset($_REQUEST['new']))
 		{
 			$view->load($_REQUEST["view_kurzbz"]);
 			if ($view->errormsg!='')
@@ -103,7 +103,8 @@
 	$htmlstr .= "<br>\n";
 	$htmlstr .= "<div align='right' id='sub'>\n";
 	$htmlstr .= "	<span id='submsg' style='color:red; visibility:hidden;'>Datensatz ge&auml;ndert!&nbsp;&nbsp;</span>\n";
-	//$htmlstr .= "	<input type='hidden' name='view_kurzbz' value='".$view->view_kurzbz."'>";
+	if($view->view_kurzbz == 'vw_')
+		$htmlstr .= "	<input type='hidden' name='new' value='new'>";
 	$htmlstr .= "	<input type='submit' value='save' name='action'>\n";
 	$htmlstr .= "	<input type='button' value='Reset' onclick='unchanged()'>\n";
 	$htmlstr .= "</div>";
