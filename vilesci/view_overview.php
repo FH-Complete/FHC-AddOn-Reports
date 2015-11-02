@@ -134,7 +134,7 @@ if (!$view->loadAll())
 						<td align="center">
 							<?php echo $view->lastcopy ?>
 							<a href="../cis/vorschau.php?view_kurzbz=<?php echo $view->view_kurzbz?>&debug=true" target="frame_view_details">
-								<img title="<?php echo $view->title ?> generieren" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" />
+								<img title="<?php echo $view->view_kurzbz ?> generieren" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" />
 							</a>
 						</td>
 						<td>
