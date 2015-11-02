@@ -305,7 +305,7 @@ function hcCreate(chart, hctype) {
 
 function loadHcChartFromJSON(json)
 {
-			chart.raw.data = json.parse(json);
+			chart.raw.data = JSON.parse(json);
 
 			if(chart.type === 'hcdrill')
 			{

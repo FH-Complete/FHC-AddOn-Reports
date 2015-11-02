@@ -325,6 +325,21 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_view"))
 		echo '<strong>addon.tbl_rp_view: '.$db->db_last_error().'</strong><br>';
 	else
 		echo ' addon.tbl_rp_view: Tabelle addon.tbl_rp_view hinzugefuegt!<br>';
+}
+
+// Reports (rp) Report
+if(!$result = @$db->db_query("SELECT berechtigung_kurzbz FROM addon.tbl_rp_report"))
+{
+
+	$qry = 'ALTER TABLE addon.tbl_rp_report ADD COLUMN berechtigung_kurzbz varchar(32);
+			ALTER TABLE addon.tbl_rp_report ADD CONSTRAINT "fk_rp_report_berechtigung" FOREIGN KEY (berechtigung_kurzbz) REFERENCES system.tbl_berechtigung(berechtigung_kurzbz) ON UPDATE CASCADE ON DELETE RESTRICT;
+			';
+
+	if(!$db->db_query($qry))
+		echo '<strong>addon.tbl_rp_report: '.$db->db_last_error().'</strong><br>';
+	else
+		echo ' addon.tbl_rp_report: Tabelle addon.tbl_rp_report.berechtigung_kurzbz hinzugefuegt!<br>';
+
 
 }
 echo '<br>Aktualisierung abgeschlossen<br><br>';
@@ -334,7 +349,7 @@ echo '<h2>Gegenprüfung</h2>';
 $tabellen=array(
 	"addon.tbl_rp_chart"  => array("chart_id", "title", "description", "type", "preferences", "datasource", "datasource_type", "insertamum", "insertvon", "updateamum", "updatevon", "statistik_kurzbz")
 	,"addon.tbl_rp_view"  => array("view_kurzbz", "table_kurzbz", "sql", "static", "lastcopy", "insertamum","insertvon","updateamum","updatevon")
-	,"addon.tbl_rp_report" => array("report_id","title","format","description", "header", "footer", "body","docinfo", "gruppe","publish","insertamum","insertvon","updateamum","updatevon")
+	,"addon.tbl_rp_report" => array("report_id", "title", "format", "description", "header", "footer", "body", "docinfo", "gruppe", "publish", "insertamum", "insertvon", "updateamum", "updatevon", "berechtigung_kurzbz")
 	,"addon.tbl_rp_report_chart" => array("reportchart_id","report_id","chart_id","insertamum","insertvon","updateamum","updatevon")
 	,"addon.tbl_rp_report_statistik" => array("reportstatistik_id","report_id","statistik_kurzbz","insertamum","insertvon","updateamum","updatevon")
 	,"addon.tbl_rp_gruppe" => array("reportgruppe_id","bezeichnung","reportgruppe_parent_id","insertamum","insertvon","updateamum","updatevon")

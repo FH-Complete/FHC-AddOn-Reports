@@ -26,6 +26,7 @@
 	require_once('../../../include/statistik.class.php');
 	require_once('../include/rp_report_chart.class.php');
 	require_once('../include/rp_report_statistik.class.php');
+	require_once('../../../include/berechtigung.class.php');
 
 	if (!$db = new basis_db())
 		die('Es konnte keine Verbindung zum Server aufgebaut werden.');
@@ -58,6 +59,7 @@
 	$report->body		= "=== Chart\n=== Data";
 	$report->footer		= "=== Hinweise\n[horizontal]\n==== Mögliche Fehlerquellen:\n- ";
 	$report->docinfo	= file_get_contents('../data/template-docinfo.xml');
+	$report->berechtigung_kurzbz		= null;
 	$report->insertvon		= $user;
 	$report->updatevon		= $user;
 
@@ -84,6 +86,7 @@
 			$report->docinfo = $_POST["docinfo"];
 			$report->publish = isset($_POST["publish"]);
 			$report->gruppe = $_POST["gruppe"];
+			$report->berechtigung_kurzbz = $_POST["berechtigung_kurzbz"];
 
 			if(!$report->save())
 			{
@@ -138,6 +141,7 @@
 	if ((isset($_REQUEST['report_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST['neu']!= "true")))
 	{
 		$report->load($_REQUEST["report_id"]);
+
 		$rp_report_chart->getReportCharts((int)$_REQUEST["report_id"]);
 		$rp_report_statistik->getReportStatistiken((int)$_REQUEST["report_id"]);
 
@@ -171,7 +175,18 @@
 	$htmlstr .= "				Format: <input class='detail' type='text' name='format' size='8' maxlength='512' value='".$db->convert_html_chars($report->format)."' onchange='submitable()'></td>\n";
 	$htmlstr .= "				<td>Gruppe</td>\n";
 	$htmlstr .= "				<td><input class='detail' type='text' name='gruppe' size='22' maxlength='32' value='".$db->convert_html_chars($report->gruppe)."' onchange='submitable()'>\n";
-	$htmlstr .= "				Publish: <input class='detail' type='checkbox' name='publish' ".($report->publish?'checked="checked"':'')." onchange='submitable()'></td>\n";
+	$berechtigung = new berechtigung();
+	$berechtigung->getBerechtigungen();
+
+	$htmlstr .= "						Berechtigung: <select name='berechtigung_kurzbz'>\n";
+	$htmlstr .= "							<option value=''>-- keine Auswahl --</option>\n";
+	foreach($berechtigung->result as $row)
+	{
+		$htmlstr .= "								<option value='$row->berechtigung_kurzbz'".($row->berechtigung_kurzbz == $report->berechtigung_kurzbz ? 'selected' : '').">$row->berechtigung_kurzbz</option>\n";
+	}
+	$htmlstr .= "						</select>\n";
+	$htmlstr .= "				Publish: <input class='detail' type='checkbox' name='publish' ".($report->publish?'checked="checked"':'')." onchange='submitable()'>\n";
+	$htmlstr .= "</td>\n";
 	$htmlstr .= "			</tr>\n";
 	$htmlstr .= "			<tr>\n";
 	$htmlstr .= "				<td valign='top'>Description</td>\n";

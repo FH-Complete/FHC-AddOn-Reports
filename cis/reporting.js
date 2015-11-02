@@ -18,6 +18,13 @@
  *					Andreas moik <moik@technikum-wien.at>
  */
 
+
+function die(msg)
+{
+	document.body.innerHTML = msg;
+	throw new Error(msg);
+}
+
 function loadChart(chart_id, statistik_kurzbz)
 {
 	showFilter(statistik_kurzbz, undefined, chart_id);
@@ -42,26 +49,25 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 	var url = undefined;
 
 	//charts
-	if(statistik_kurzbz != undefined && report_id == undefined && chart_id != undefined)
+	if(chart_id !== undefined && chart_id !== undefined)
 	{
 		get_params.chart_id = chart_id;
 		url = 'chart.php';
 	}
 	//pivots
-	else if(statistik_kurzbz != undefined && report_id == undefined && chart_id == undefined)
+	else if(statistik_kurzbz !== undefined)
 	{
 		get_params.statistik_kurzbz = statistik_kurzbz;
 		url = 'grid.php';
 	}
 	//reports
-	else if(statistik_kurzbz == undefined && report_id != undefined && chart_id == undefined)
+	else if(report_id !== undefined)
 	{
 		get_params.report_id = report_id;
 		url = '../vilesci/report_generate.php';
 	}
 
-
-	if(url != undefined)
+	if(typeof url !== "undefined")
 	{
 		$('#spinner').show();
 		$('#welcome').hide();
@@ -70,23 +76,37 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 		{
 			url: url,
 			data: get_params,
-			timeout:40000,
-		  error:function()
-		  {
+      error: function (xhr, ajaxOptions, thrownError)
+      {
 				$('#spinner').hide();
-		  	alert("Es ist ein Fehler aufgetreten!")
+        die("Fehler: " + xhr.status + " \"" + thrownError + "\"");
 		  },
 			success: function(data)
 			{
 				$('#spinner').hide();
 				$('#filter').hide();
+
+				//.show und resize müssen dürfen nicht nach dem hineinschreiben
+				//der daten in das div ausgeführt werden. Bei .show() stimmt die größe nicht
+				//und bei resize korrumpiert der resize-Prozess die animation der Charts
 				$('#content').show();
-				$('#content').html(data).show();
-				$('#welcome').hide();
 				$(window).trigger('resize');
 
-				// Pivot auf volle groesse aendern
-				$('.pvtRendererArea').css('width','100%');
+				if(url === "grid.php" || url === "chart.php")
+				{
+					$('#content').html(data);
+				}
+				else
+				{
+					$('#content').html('<iframe id="contentIframe" width="100%" height="98%" frameborder="0" id="content" style="overflow: visible;"></iframe>');
+
+					var ifrm = document.getElementById('contentIframe');
+					ifrm = (ifrm.contentWindow) ? ifrm.contentWindow : (ifrm.contentDocument.document) ? ifrm.contentDocument.document : ifrm.contentDocument;
+					ifrm.document.open();
+					ifrm.document.write(data);
+					ifrm.document.close();
+
+				}
 			}
 		});
 	}
@@ -94,8 +114,12 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 		alert("Es wurden keine korrekten Daten angegeben!")
 }
 
+
 function showFilter(statistik_kurzbz, report_id, chart_id)
 {
+	$(window).trigger('resize');
+
+	$('#spinner').hide();
 	$('#welcome').hide();
 	$('#content').hide();
 	$('#filter').show();
@@ -110,7 +134,6 @@ function showFilter(statistik_kurzbz, report_id, chart_id)
 		//pdf links gibt es nur bei reports
 		if(typeof report_id !== 'undefined')
 		{
-			$("#filter-PdfLink").attr("href", "../data/Report"+report_id+".pdf");
 			$("#filter-PdfLink").show();
 		}
 		//wenn keine filter existieren
@@ -121,24 +144,54 @@ function showFilter(statistik_kurzbz, report_id, chart_id)
 		}
 	});
 
+	$('#filter-input').removeAttr('data-chart_id');
+	$('#filter-input').removeAttr('data-statistik_kurzbz');
+	$('#filter-input').removeAttr('data-report_id');
+
 	$('#filter-input').attr(
 	{
-		'data-chart-id': chart_id,
-		'data-statistik-kurzbz': statistik_kurzbz,
-		'data-report-id': report_id
+		'data-chart_id': chart_id,
+		'data-statistik_kurzbz': statistik_kurzbz,
+		'data-report_id': report_id
 	});
+}
+
+function resizeContent()
+{
+	if($("#sidebar").css("display") === "block")
+	{
+		$('#content').parent().removeClass('col-sm-12').addClass('col-sm-9');
+	}
+	else
+	{
+		$('#content').parent().removeClass('col-sm-9').addClass('col-sm-12');
+	}
+
+  $('#content').parent().height($(window).height() - 160);
+  $('#content').height("100%");
+  $('#content').width($('#content').parent().width());
+
+  $('#pivot').width("1%");
+  $('.pvtUi').width("1%");
+
+  $('.pvtRendererArea').width("100%");
+  $('.pvtRendererArea').css("overflow","auto");
+
+  $('#content').css("overflow-y", "visible");
+  $('#content').css("overflow-x", "auto");
+
 }
 
 
 function showSidebar(num, type)
 {
+	resizeContent();
 	$('#sidebar').show();
 	$('.reports_sidebar_entry').hide();
 	$('.report_'+num+"_"+type).show();
 	$('.hide-button').show();
 
 	$('#sidebar').attr('data-menu', type);
-	$('#content').parent().removeClass('col-sm-12').addClass('col-sm-9');
 
 	$(window).trigger('resize');
 }
@@ -146,26 +199,21 @@ function showSidebar(num, type)
 
 $(function()
 {
-	// Charts auf volle groesse aendern
-	$('#content').parent().removeClass('col-sm-9').addClass('col-sm-12');
+	$('#sidebar').hide();
 
-	// Pivot auf volle groesse aendern
-	$('.pvtRendererArea').css('width','100%');
-	$('.hide-button').hide();
+	resizeContent();
+
+  $(window).resize(function() {
+  resizeContent();
+  }).resize();
 });
-
 
 
 function hideSidebar()
 {
+	resizeContent();
 	// Sidebar ausblenden
 	$('#sidebar').hide();
-
-	// Charts auf volle groesse aendern
-	$('#content').parent().removeClass('col-sm-9').addClass('col-sm-12');
-
-	// Pivot auf volle groesse aendern
-	$('.pvtRendererArea').css('width','100%');
 
 	$(window).trigger('resize');
 }
@@ -175,9 +223,9 @@ function runFilter(type)
 	$('#filter').hide();
 
 	var inputs = $('#filter-input > *'),
-		chart_id = $('#filter-input').attr('data-chart-id'),
-		statistik_kurzbz = $('#filter-input').attr('data-statistik-kurzbz'),
-		      report_id = $('#filter-input').attr('data-report-id'),
+		chart_id = $('#filter-input').attr('data-chart_id'),
+		statistik_kurzbz = $('#filter-input').attr('data-statistik_kurzbz'),
+		      report_id = $('#filter-input').attr('data-report_id'),
 		get_params = {},
 		url;
 
@@ -186,7 +234,8 @@ function runFilter(type)
 	for(var i = 0; i < inputs.length; i++)
 	{
 		var input = $(inputs[i]);
-		get_params[input.attr('id')] = input.val();
+		if(input.attr("id") !== undefined)
+			get_params[input.attr('id')] = input.val();
 	}
 
 	loadData(statistik_kurzbz, report_id, chart_id, get_params);

@@ -393,22 +393,34 @@ class chart extends basis_db
 	{
 
 		$hc_drill = <<<EOT
-var	level_one_format = '{point.y}',
-	level_two_format = '{point.y}';
-// Ganze Zahlen: {point.y}
-// 1 Nachkommastelle: {point.y:.1f}
-// 3 Nachkommastellen: {point.y:.3f}
-// Einheiten oder Prozentzeichen: {point.y}% oder {point.y}km/h
+//{
+// "chart":{
+//  "zoomType":"none",//Möglichkeiten: "x", "y" ("xy" ist standard)
+//  "type":"pie"
+// }
+//}
 EOT;
 
 		$hc_default = <<<EOT
-// chart.colors = ['#8d4653', '#91e8e1'];
-// HEX-Codes die die Farben der Charts bestimmen:
-// 1. Code -> 1. Spalte
-// 2. Code -> 2. Spalte usw.
-//
-// chart.x.rotation = 45;
-// Der Winkel der X-Achsenbeschriftung
+//{
+// "xAxis":{
+//  "labels":{
+//  "rotation":90  // Der Winkel der X-Achsenbeschriftung
+//  }
+// },
+// "series":{
+//  "Gesamt":{
+//  "type":"column"
+//  },
+//  "Inland":{
+//   "type":"pie","center":["10%","10%"],"size":["20%","20%"]
+//  }
+// }
+//}
+
+
+
+
 EOT;
 
 		$hc_timezoom = <<<EOT
@@ -613,15 +625,23 @@ EOT;
 		{
 			case 'spider': ?>
 				<div id="spidergraphcontainer" class="<?php echo $class ?>"></div>
+				<script src="../include/js/jquery-1.11.2.min.js" type="application/javascript"></script>
 				<script type="application/javascript">
+					var chart = new Object;
 					var source = <?php echo json_encode($source) ?>;
 					<?php echo $this->preferences ?>;
 				</script>
-				<script src="../include/js/spidergraph.js" type="application/javascript"></script>
+				<script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>
 				<script src="../include/js/highcharts/init.js" type="application/javascript"></script>
+				<script>
+					initCharts();
+				</script>
 				<?php break;
+
+
 			case 'xchart': ?>
 				<figure id="xChart"></figure>
+				<script src="../include/js/jquery-1.11.2.min.js" type="application/javascript"></script>
 				<script src="../include/js/d3.js" type="application/javascript"></script>
 				<script src="../include/js/xcharts/xcharts.min.js" type="application/javascript"></script>
 				<script type="application/javascript">
@@ -629,6 +649,8 @@ EOT;
 						<?php echo $this->preferences ?>;
 				</script>
 				<?php break;
+
+
 			case 'hctimezoom':
 			case 'hcdrill':
 			case 'hcline':
@@ -637,7 +659,7 @@ EOT;
 			case 'hcpie':
 				?>
 				<div id="hcChart<?php echo $this->chart_id ?>" class="<?php echo $class ?>" style="border: 1px solid transparent;"></div>
-				<?php $json = $this->getHighChartJSON();?>
+				<?php $json = $this->getHighChartData();?>
 				<?php if(!$json)die($this->errormsg);?>
 				<script>$("#hcChart"+<?php echo $this->chart_id ?>).highcharts(<?php echo $json; ?>);</script>
 			<?php break;
@@ -649,10 +671,6 @@ EOT;
 	public function getFooter() {
 
 		ob_start(); ?>
-
-		<script type="application/javascript">
-			initCharts();
-		</script>
 
 		<?php return ob_get_clean();
 	}
@@ -712,7 +730,7 @@ EOT;
 				$scale='2.5';
 				$width='1920';
 
-				$phantomData = $this->getHighChartJSON();
+				$phantomData = $this->getHighChartData();
 				$ph = new phantom();
 				$p = $ph->render(array("infile" => $phantomData, "scale" => $scale, "width" => $width));
 
@@ -748,7 +766,7 @@ EOT;
 	* Liefert den Highchart als JSON zurück
 	* @return JSON wenn ok, sonst false
 	*/
-	private function getHighChartJSON()
+	private function getHighChartData()
 	{
 		$this->statistik = new statistik($this->statistik_kurzbz);
 		if (!$this->statistik->loadData())
@@ -758,73 +776,73 @@ EOT;
 		$series_data = array();
 		$categories = "";
 		$hctype=substr($this->type,2);
+		$data = $this->statistik->getArray();
 
 		if ($hctype=='drill')
 		{
 			$hctype='column';
-			$data = json_decode($this->statistik->getJSON());
 
 			foreach($data as $zeile)
 			{
 				$l1_bezeichnung = current($zeile);
+				$l1_dd = next($zeile);
+				$l1_sum = 0 + end($zeile);
+				if(!isset($l1_dd))
+					$l1_dd = " ";
 
 				if(!isset($series_data[$l1_bezeichnung]))
 				{
-					$series_data[$l1_bezeichnung] = 0 + end($zeile);
+					$series_data[$l1_bezeichnung]["name"] = $l1_bezeichnung;
+					$series_data[$l1_bezeichnung]["drilldown"] = $l1_bezeichnung;
+					$series_data[$l1_bezeichnung]["y"] = $l1_sum;
 				}
 				else
 				{
-					$series_data[$l1_bezeichnung] += end($zeile);
+					$series_data[$l1_bezeichnung]["y"] += $l1_sum;
 				}
+
+				$drilldown[$l1_bezeichnung]["id"] =	$l1_bezeichnung;
+				$drilldown[$l1_bezeichnung]["data"][] =	array($l1_dd, $l1_sum);
 			}
 
 			$series[] = array(
-				'data' => array_values($series_data),
 				'name' => 'Series 1',
+				'colorByPoint' => true,
+				'data' => array_values($series_data),
 			);
-			$categories = array_keys($series_data);
+			$xAxis = array
+			(
+				'type' => 'category',
+				'title' => array('text' => '',),
+				'labels' => array('rotation' => -45),
+			);
 		}
 		else
 		{
-			$data = $this->statistik->getCSV();
-			$data=explode("\n", $data);
-			$first = true;
-
-			foreach($data as $line)
-			{
-				$line = explode(",", $line);
-				for($i = 0; $i < count($line); $i++)
-				{
-					if($first)
-					{
-						if($i == 0)
-						{
-							$categoriesHeader = $line[$i];
-						}
-						else
-						{
-							$series[] = array("name" => str_replace("'", "", str_replace('"', "", $line[$i])), "data" => array());
-						}
-					}
-					else if(!$first && $i == 0)
-					{
-						$categories[] = str_replace('"', "", $line[$i]);
-					}
-					else
-					{
-						$series[$i-1]["data"][] = array(str_replace('"', "", $line[0]),floatval(str_replace('"', "", $line[$i])));
-					}
-				}
-				$first = false;
-			}
-		}
-
-		// series array in assoziative umwandeln, damit sie von den
-		// preferences aus manipuliert werden können
-		foreach($series as $sk => $s)
-		{
-			$series[$s["name"]] = $series[$sk];
-			unset($series[$sk]);
+      foreach($data as $key => $item)
+      {
+			  $first = true;
+        foreach($item as $ik => $it)
+        {
+          if($first)
+          {
+          	$header = $it;
+            $categories[] = $it;
+            $first = false;
+          }
+          else
+          {
+            $series[$ik]["name"] = $ik;
+            $series[$ik]["data"][] = array($header, floatval($it));
+          }
+        }
+      }
+			$xAxis = array
+			(
+				'categories' => $categories,
+				'title' => array('text' => '',),
+				'labels' => array('rotation' => -45),
+			);
 		}
 
 		$phantomData = array
@@ -838,26 +856,30 @@ EOT;
 			(
 				'zoomType' => "xy",
 				'type' => $hctype,
+				'animation' => true,    //animation für den zoom
 				/*
 				'options3d' => array
 				(
 					"enabled" => true,
 					"alpha" => 45,
 					"beta" => 0,
-				)*/
+				)
+				*/
+				//um 3dCharts zu ermöglichen(kann auch über die preferences geschehen)
 			),
-			'xAxis' => array
-			(
-				'categories' => $categories,
-				'title' => array('text' => '',),
-				'labels' => array('rotation' => -45),
-			),
+			'plotOptions' => array('series' => array('animation' => true)),//initale animation
+			'xAxis' => $xAxis,
 			'yAxis' => array
 			(
 				'title' => array('text' => ' ',),
 			),
 			'series' => $series
 		);
+
+		if(isset($drilldown))
+		{
+			$phantomData["drilldown"]["series"] = $drilldown;
+		}
 
 		if(isset($this->preferences) && $this->preferences != "" && $this->preferences != null)
 		{
@@ -867,24 +889,25 @@ EOT;
 			//kommentarzeilen entfernen
 			foreach($prefs as $pk => $p)
 			{
-				$pos = strpos ( $p, "//");
 
+				$pos = strpos ( $p, "//");
 				if($pos !== false)
 				{
-					$prefs[$pk] = str_replace("\t", "", substr($p, 0, $pos));
+					$prefs[$pk] = substr($p, 0, $pos);
 				}
+				$prefs[$pk] = str_replace("\r", "", $prefs[$pk]);
 			}
 			//und wieder zusammenfügen
 			$json = join('', $prefs);
 
-			if(!$json == "")		//nur, wenn nicht nur kommentare in den preferences standen
+			if($json != '')		//wenn nicht nur kommentare in den preferences standen
 			{
 				//in einen array umwandeln
 				$prefs = json_decode($json, true);
 
 				if(!$prefs)
 				{
-					die("Chart".$this->chart_id . ": Preferences sind keine wohlgeformten JSON-Daten:<br>". $json);
+					die("Chart".$this->chart_id . ": Preferences sind keine wohlgeformten JSON-Daten:<br>'". $json."'");
 					return false;
 				}
 
@@ -895,10 +918,14 @@ EOT;
 			}
 		}
 
-
 		//series wieder in normale arrays zurückwandeln, da highcharts keine assoziativen entgegen nimmt!
 		$phantomData["series"] = array_values($phantomData["series"]);
 
+		//gleiches spiel mit den drilldown infos
+		if(isset($drilldown))
+		{
+			$phantomData["drilldown"]["series"] = array_values($phantomData["drilldown"]["series"]);
+		}
 		return json_encode($phantomData);
 	}
 

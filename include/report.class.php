@@ -90,6 +90,7 @@ class report extends basis_db
 			$this->updatevon     = $row->updatevon;
 			$this->insertamum    = $row->insertamum;
 			$this->insertvon     = $row->insertvon;
+			$this->berechtigung_kurzbz     = $row->berechtigung_kurzbz;
 		}
 		$this->new=false;
 		return true;
@@ -229,10 +230,11 @@ class report extends basis_db
 		if($this->new)
 		{
 			//Neuen Datensatz einfuegen
-			$qry='BEGIN;INSERT INTO addon.tbl_rp_report (title, description, format, header, body, footer, docinfo, gruppe, publish,
+			$qry='BEGIN;INSERT INTO addon.tbl_rp_report (title, description, berechtigung_kurzbz, format, header, body, footer, docinfo, gruppe, publish,
 			      insertamum, insertvon) VALUES('.
 			      $this->db_add_param($this->title).', '.
 			      $this->db_add_param($this->description).', '.
+			      $this->db_add_param($this->berechtigung_kurzbz).', '.
 			      $this->db_add_param($this->format).', '.
 			      $this->db_add_param($this->header).', '.
 			      $this->db_add_param($this->body).', '.
@@ -260,8 +262,9 @@ class report extends basis_db
 				' docinfo='.$this->db_add_param($this->docinfo).', '.
 				' gruppe='.$this->db_add_param($this->gruppe).', '.
 				' publish='.$this->db_add_param($this->publish, FHC_BOOLEAN).', '.
+				' berechtigung_kurzbz='.$this->db_add_param($this->berechtigung_kurzbz).', '.
 				' updateamum= now(), '.
-		      	' updatevon='.$this->db_add_param($this->updatevon).
+      	' updatevon='.$this->db_add_param($this->updatevon).
 		      	' WHERE report_id='.$this->db_add_param($this->report_id, FHC_INTEGER, false).';';
 		}
         //echo $qry;

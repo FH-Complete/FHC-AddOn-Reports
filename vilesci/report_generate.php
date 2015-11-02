@@ -38,9 +38,6 @@
 	$rechte = new benutzerberechtigung();
 	$rechte->getBerechtigungen($user);
 
-	if(!$rechte->isBerechtigt('addon/reports'))
-		die('Sie haben keine Berechtigung fuer dieses AddOn!');
-	// @todo Rechte der Daten und Charts pruefen
 
 
 	$htmlstr = '';
@@ -71,6 +68,18 @@
 	$charts = new chart();
 	if (!$charts->loadCharts($report->report_id))
 		die($charts->errormsg);
+
+	//wenn der nutzer nicht für addon/reports berechtigt ist, wird abgefragt, ob der report publish ist
+	//und ob der nutzer das recht für diesen report hat
+	if(!$rechte->isBerechtigt("addon/reports"))
+	{
+		if($report->publish !== true)
+			die("Dieser Report ist nicht Oeffentlich!");
+
+		if(isset($report->berechtigung_kurzbz))
+			if(!$rechte->isBerechtigt($report->berechtigung_kurzbz))
+				die('Sie haben keine Berechtigung fuer diesen Report!');
+	}
 
 	// echo count($charts->chart);
 	foreach($charts->chart as $chart)
@@ -145,7 +154,7 @@
 		$htmlstr.= 'Asciidoc fehlgeschlagen:<br>';
 		foreach($out as $o)
 			$htmlstr.= $o;
-		die($htmlstr);
+		die("Der Report konnte nicht erstellt werden!");
 	}
 	if(count($out) > 0)
 	{
@@ -166,7 +175,7 @@
 		$htmlstr.= 'Asciidoc fehlgeschlagen:<br>';
 		foreach($out as $o)
 			$htmlstr.= $o;
-		die($htmlstr);
+		die("Der Report konnte nicht erstellt werden!");
 	}
 	if(count($out) > 0)
 	{
@@ -186,13 +195,13 @@
 		$htmlstr.= 'dblatex fehlgeschlagen:<br>';
 		foreach($out as $o)
 			$htmlstr.= $o;
-		die($htmlstr);
+		die("Der Report konnte nicht erstellt werden!");
 	}
 
 	$process = new process(escapeshellcmd($command));
 	for ($i=0;$process->status() && $i<10;$i++)
 	{
-		$htmlstr.= '<br/>The process is currently running';ob_flush();flush();
+		$htmlstr.= '<br/>The process is currently running';//ob_flush();flush();
 		usleep(1000000); // wait for 1 Second
 	}
 	if ($process->status())
@@ -214,8 +223,16 @@
 	$htmlstr.=$pdfFilename.' is written!<br/>';
 
 	if($type == "pdf")
-	{
-		echo '<script>window.location.href = "'.$pdfFilename.'"</script>';
+	{//var_dump($_SERVER);
+		//echo '<script>$("#content").attr("src", "'.$pdfFilename.'");</script>';
+		echo '<script>window.location.href = "'.$pdfFilename.'";</script>';
+		//echo '<script>window.location.href = "http://calva.technikum-wien.at/moik/fhcomplete/addons/reports/cis/'.$pdfFilename.'";</script>';
+		/*
+		header("Content-type: application/pdf");
+		header("Content-Disposition: inline; filename=filename.pdf");
+		header('Content-Length: ' . filesize($pdfFilename));
+		@readfile($pdfFilename);
+		*/
 	}
 	else if($type == "debug")
 	{
