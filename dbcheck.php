@@ -96,9 +96,9 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_chart"))
 				dashboard boolean,
 				dashboard_layout varchar(32),
 				dashboard_pos smallint,
-				insertamum timestamp,
+				insertamum timestamp DEFAULT now(),
 				insertvon varchar(32),
-				updateamum timestamp,
+				updateamum timestamp DEFAULT now(),
 				updatevon varchar(32),
 				CONSTRAINT pk_rp_chart PRIMARY KEY (chart_id)
 			);
@@ -125,9 +125,9 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_report"))
 				format varchar(32),
 				description text,
 				body text,
-				insertamum timestamp,
+				insertamum timestamp DEFAULT now(),
 				insertvon varchar(32),
-				updateamum timestamp,
+				updateamum timestamp DEFAULT now(),
 				updatevon varchar(32),
 				CONSTRAINT pk_rp_report PRIMARY KEY (report_id)
 			);
@@ -198,9 +198,9 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_report_chart"))
 				reportchart_id serial,
 				report_id bigint,
 				chart_id bigint,
-				insertamum timestamp,
+				insertamum timestamp DEFAULT now(),
 				insertvon varchar(32),
-				updateamum timestamp,
+				updateamum timestamp DEFAULT now(),
 				updatevon varchar(32),
 				CONSTRAINT pk_rp_report_chart PRIMARY KEY (reportchart_id)
 			);
@@ -225,10 +225,10 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_report_statistik"))
 				reportstatistik_id serial,
 				report_id bigint,
 				statistik_kurzbz varchar(64),
-				insertamum timestamp,
+				insertamum timestamp DEFAULT now(),
 				insertvon varchar(32),
 				updateamum timestamp,
-				updatevon varchar(32),
+				updatevon varchar(32) DEFAULT now(),
 				CONSTRAINT pk_rp_report_statistik PRIMARY KEY (reportstatistik_id)
 			);
 			ALTER TABLE addon.tbl_rp_report_statistik ADD CONSTRAINT "fk_rp_report_statistik_statistik" FOREIGN KEY (statistik_kurzbz)
@@ -253,9 +253,9 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_gruppe"))
 				reportgruppe_id serial,
 				bezeichnung varchar(256),
 				reportgruppe_parent_id integer,
-				insertamum timestamp,
+				insertamum timestamp DEFAULT now(),
 				insertvon varchar(32),
-				updateamum timestamp,
+				updateamum timestamp DEFAULT now(),
 				updatevon varchar(32),
 				CONSTRAINT pk_rp_gruppe PRIMARY KEY (reportgruppe_id)
 			);
@@ -271,9 +271,9 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_gruppe"))
 				chart_id integer,
 				report_id integer,
 				statistik_kurzbz varchar(64),
-				insertamum timestamp,
+				insertamum timestamp DEFAULT now(),
 				insertvon varchar(32),
-				updateamum timestamp,
+				updateamum timestamp DEFAULT now(),
 				updatevon varchar(32)
 			);
 
@@ -300,12 +300,40 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_gruppe"))
 		echo ' addon.tbl_rp_gruppe: Tabelle addon.tbl_rp_gruppe hinzugefuegt!<br>';
 
 }
+
+// Views
+if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_view"))
+{
+
+	$qry = 'CREATE TABLE addon.tbl_rp_view
+			(
+				view_kurzbz varchar(64),
+				table_kurzbz varchar(64),
+				sql text,
+				static boolean DEFAULT false,
+				lastcopy TIMESTAMP with time zone,
+				insertamum timestamp DEFAULT now(),
+				insertvon varchar(32),
+				updateamum timestamp DEFAULT now(),
+				updatevon varchar(32),
+				CONSTRAINT pk_rp_view PRIMARY KEY (view_kurzbz)
+			);
+			GRANT SELECT, UPDATE, INSERT, DELETE ON addon.tbl_rp_view TO vilesci;
+			';
+
+	if(!$db->db_query($qry))
+		echo '<strong>addon.tbl_rp_view: '.$db->db_last_error().'</strong><br>';
+	else
+		echo ' addon.tbl_rp_view: Tabelle addon.tbl_rp_view hinzugefuegt!<br>';
+
+}
 echo '<br>Aktualisierung abgeschlossen<br><br>';
 echo '<h2>Gegenprüfung</h2>';
 
 // Liste der verwendeten Tabellen / Spalten des Addons
 $tabellen=array(
-	"addon.tbl_rp_chart"  => array("chart_id", "title", "description", "type", "preferences", "datasource", "datasource_type","insertamum","insertvon","updateamum","updatevon","statistik_kurzbz")
+	"addon.tbl_rp_chart"  => array("chart_id", "title", "description", "type", "preferences", "datasource", "datasource_type", "insertamum", "insertvon", "updateamum", "updatevon", "statistik_kurzbz")
+	,"addon.tbl_rp_view"  => array("view_kurzbz", "table_kurzbz", "sql", "static", "lastcopy", "insertamum","insertvon","updateamum","updatevon")
 	,"addon.tbl_rp_report" => array("report_id","title","format","description", "header", "footer", "body","docinfo", "gruppe","publish","insertamum","insertvon","updateamum","updatevon")
 	,"addon.tbl_rp_report_chart" => array("reportchart_id","report_id","chart_id","insertamum","insertvon","updateamum","updatevon")
 	,"addon.tbl_rp_report_statistik" => array("reportstatistik_id","report_id","statistik_kurzbz","insertamum","insertvon","updateamum","updatevon")
