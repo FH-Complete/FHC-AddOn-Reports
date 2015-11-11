@@ -57,6 +57,9 @@ if(!$rechte->isBerechtigt('addon/reports'))
 			<a href="report_frameset.html" target="rp_main">
 				<img src="../include/images/x-office-presentation.svg" alt="" />
 			</a>
+			<a href="cis_menue.php" target="rp_main">
+				<img src="../include/images/applications-accessories.svg" alt="" />
+			</a>
 		</div>
 		<hr>
 		<iframe id="rp_main" name="rp_main">

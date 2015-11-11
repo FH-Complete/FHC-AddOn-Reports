@@ -34,7 +34,7 @@ $rechte->getBerechtigungen($user);
 
 
 $rp_gruppe = new rp_gruppe();
-
+$rp_gruppe->loadAll();
 
 
 $buf = $rp_gruppe->result;

@@ -389,4 +389,45 @@ class report extends basis_db
 			return false;
 		}
 	}
+
+	/**
+	 * Laedt alle Reports
+	 * @return true wenn ok, sonst false
+	 */
+	public function getAll($order = FALSE)
+	{
+		$qry = 'SELECT * FROM addon.tbl_rp_report';
+
+		if($order)
+			$qry .= ' ORDER BY ' . $order;
+
+		if($result = $this->db_query($qry))
+		{
+			while($row = $this->db_fetch_object($result))
+			{
+				$obj = new report();
+
+				$obj->report_id = $row->report_id;
+				$obj->title = $row->title;
+				$obj->format = $row->format;
+				$obj->description = $row->description;
+				$obj->body = $row->body;
+				$obj->publish = $row->publish;
+				$obj->gruppe = $row->gruppe;
+				$obj->header = $row->header;
+				$obj->footer = $row->footer;
+				$obj->docinfo = $row->docinfo;
+				$obj->berechtigung_kurzbz = $row->berechtigung_kurzbz;
+
+				$this->result[] = $obj;
+			}
+
+			return true;
+		}
+		else
+		{
+			$this->errormsg = 'Fehler beim Laden der Daten';
+			return false;
+		}
+	}
 }
