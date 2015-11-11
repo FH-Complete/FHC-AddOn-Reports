@@ -40,15 +40,15 @@ $iconReport = "icon-fhc-report";
 $iconChart = "icon-fhc-chart";
 
 
-if(!isset($_REQUEST["action"]))
+if(!isset($_POST["action"]))
 	die("Keine Aktion spezifiziert!");
 
 
-$action = $_REQUEST["action"];
+$action = $_POST["action"];
 
-
-if($action === "menueBaum")
+switch($action)
 {
+	case "menueBaum":
 	$rp_gruppe->loadAll();
 	$rp_gruppe->loadRecursive();
 	$treeDaten = $rp_gruppe->recursive;
@@ -100,11 +100,10 @@ if($action === "menueBaum")
 		}
 	}
 	returnAJAX(true, $treeDaten);
-}
+	break;
 /*
 //variante 1 ohne ordner
-else if ($action === "alleDaten")
-{
+	case "alleDaten":
 	//alle daten holen
 	$alleDaten = array();
 
@@ -147,13 +146,12 @@ else if ($action === "alleDaten")
 		$alleDaten[] = $n;
 	}
 	returnAJAX(true, $alleDaten);
-}
+	break;
 
 */
 
 //variante 2 mit ordner
-else if ($action === "alleDaten")
-{
+	case "alleDaten":
 	//alle daten holen
 	$alleDaten = array(
 		array("text"=>"Reports", "children"=>array()),
@@ -203,15 +201,14 @@ else if ($action === "alleDaten")
 		$alleDaten[2]["children"][] = $n;
 	}
 	returnAJAX(true, $alleDaten);
-}
-else if ($action === "addEntityToMenue")
-{
-	if(isset($_REQUEST["reportgruppe_id"]))
+	break;
+	case "addEntityToMenue":
+	if(isset($_POST["reportgruppe_id"]))
 	{
-		if(isset($_REQUEST["report_id"]))
+		if(isset($_POST["report_id"]))
 		{
-			$report_id = $_REQUEST["report_id"];
-			$reportgruppe_id = $_REQUEST["reportgruppe_id"];
+			$report_id = $_POST["report_id"];
+			$reportgruppe_id = $_POST["reportgruppe_id"];
 
 			$gz = new rp_gruppenzuordnung();
 
@@ -226,10 +223,10 @@ else if ($action === "addEntityToMenue")
 
 			returnAJAX(false, "Fehler beim Insertieren!");
 		}
-		else if(isset($_REQUEST["statistik_kurzbz"]))
+		else if(isset($_POST["statistik_kurzbz"]))
 		{
-			$statistik_kurzbz = $_REQUEST["statistik_kurzbz"];
-			$reportgruppe_id = $_REQUEST["reportgruppe_id"];
+			$statistik_kurzbz = $_POST["statistik_kurzbz"];
+			$reportgruppe_id = $_POST["reportgruppe_id"];
 
 			$gz = new rp_gruppenzuordnung();
 
@@ -244,10 +241,10 @@ else if ($action === "addEntityToMenue")
 
 			returnAJAX(false, "Fehler beim Insertieren!");
 		}
-		else if(isset($_REQUEST["chart_id"]))
+		else if(isset($_POST["chart_id"]))
 		{
-			$chart_id = $_REQUEST["chart_id"];
-			$reportgruppe_id = $_REQUEST["reportgruppe_id"];
+			$chart_id = $_POST["chart_id"];
+			$reportgruppe_id = $_POST["reportgruppe_id"];
 
 			$gz = new rp_gruppenzuordnung();
 
@@ -266,14 +263,13 @@ else if ($action === "addEntityToMenue")
 
 
 	returnAJAX(false, "Es ist ein Fehler aufgetreten");
-}
-else if ($action === "saveReportGruppe")
-{
-	if(isset($_REQUEST["bezeichnung"]) && isset($_REQUEST["reportgruppe_parent_id"]))
+	break;
+	case "saveReportGruppe":
+	if(isset($_POST["bezeichnung"]) && isset($_POST["reportgruppe_parent_id"]))
 	{
-		if(isset( $_REQUEST["reportgruppe_id"]))
+		if(isset( $_POST["reportgruppe_id"]))
 		{
-			$rg = new rp_gruppe($_REQUEST["reportgruppe_id"]);
+			$rg = new rp_gruppe($_POST["reportgruppe_id"]);
 			$rg->updatevon = $user;
 		}
 		else
@@ -282,8 +278,8 @@ else if ($action === "saveReportGruppe")
 			$rg->insertvon = $user;
 		}
 
-		$rg->bezeichnung = $_REQUEST["bezeichnung"];
-		$rg->reportgruppe_parent_id = $_REQUEST["reportgruppe_parent_id"];
+		$rg->bezeichnung = $_POST["bezeichnung"];
+		$rg->reportgruppe_parent_id = $_POST["reportgruppe_parent_id"];
 
 		if($rg->save())
 			returnAJAX(true, "Erfolgreich");
@@ -293,33 +289,33 @@ else if ($action === "saveReportGruppe")
 
 
 	returnAJAX(false, "Es ist ein Fehler aufgetreten");
-}
-else if ($action === "removeGruppenzuordung")
-{
-	if(isset($_REQUEST["gruppenzuordnung_id"]))
+	break;
+	case "removeGruppenzuordung":
+	if(isset($_POST["gruppenzuordnung_id"]))
 	{
 		$gz = new rp_gruppenzuordnung();
-		if($gz->delete($_REQUEST["gruppenzuordnung_id"]))
+		if($gz->delete($_POST["gruppenzuordnung_id"]))
 			returnAJAX(true, "Erfolgreich");
 	}
 
 	returnAJAX(false, "Es ist ein Fehler aufgetreten");
-}
-else if ($action === "removeReportgruppe")
-{
-	if(isset($_REQUEST["reportgruppe_id"]))
+	break;
+
+
+
+	case "removeReportgruppe":
+	if(isset($_POST["reportgruppe_id"]))
 	{
 		$rg = new rp_gruppe();
-		if($rg->delete($_REQUEST["reportgruppe_id"]))
+		if($rg->delete($_POST["reportgruppe_id"]))
 			returnAJAX(true, "Erfolgreich");
 		else
 			returnAJAX(false, "fehlgeschlagen");
 	}
 
 	returnAJAX(false, "Es ist ein Fehler aufgetreten");
-}
-else
-{
+	break;
+	default:
 	returnAJAX(false, "Es wurde keine Funktion angegeben");
 }
 

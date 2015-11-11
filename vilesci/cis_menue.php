@@ -31,49 +31,49 @@ require_once('../../../config/vilesci.config.inc.php');
   <script>
 
 
-	function die(msg)
-	{
-		document.body.innerHTML = msg;
-		throw new Error(msg);
-	}
+	  function die(msg)
+	  {
+		  document.body.innerHTML = msg;
+		  throw new Error(msg);
+	  }
 
-  function AJAXCall(info, successfunction)
-	{
-		var errMsg = "<p style='color:#ff0000;font-weight:bold;font-size:17pt;text-align:center;margin:5%;'>Es ist ein schwerwiegender Fehler aufgetreten:</p>";
+    function AJAXCall(info, successfunction)
+	  {
+		  var errMsg = "<p style='color:#ff0000;font-weight:bold;font-size:17pt;text-align:center;margin:5%;'>Es ist ein schwerwiegender Fehler aufgetreten:</p>";
 
-		$.ajax(
-		{
-			url: "cis_menue.json.php",
-			type: "POST",
-			dataType: "html",
-			data: info,
-			timeout: 5000
+		  $.ajax(
+		  {
+			  url: "cis_menue.json.php",
+			  type: "POST",
+			  dataType: "html",
+			  data: info,
+			  timeout: 5000
 
-		}).done(function(result)
-		{
-			try
-			{
-				var res = JSON.parse(result)
-			}
-			catch (e)
-			{
-				die(errMsg + result);
-				return false;
-			}
-			if(res.erfolg)
-			{
-				successfunction(res.info);
-			}
-			else
-			{
-				die(errMsg + res.message);
-			}
+		  }).done(function(result)
+		  {
+			  try
+			  {
+				  var res = JSON.parse(result)
+			  }
+			  catch (e)
+			  {
+				  die(errMsg + result);
+				  return false;
+			  }
+			  if(res.erfolg)
+			  {
+				  successfunction(res.info);
+			  }
+			  else
+			  {
+				  die(errMsg + res.message);
+			  }
 
-		}).fail(function(jqXHR, status)
-		{
-			die(errMsg + result);
-		});
-	}
+		  }).fail(function(jqXHR, status)
+		  {
+			  die(errMsg + result);
+		  });
+	  }
 
 		function confdel()
 		{
