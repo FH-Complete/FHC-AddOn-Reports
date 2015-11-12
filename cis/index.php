@@ -45,9 +45,6 @@ for($i = 0; $i < count($rp_gruppe->result); $i++)
 	$gruppe->getGruppenzuordnung($buf[$i]->reportgruppe_id);
 
 	$buf[$i]->gruppe = $gruppe->gruppe;
-	$buf[$i]->statistiken = 0;
-	$buf[$i]->reports = 0;
-	$buf[$i]->charts = 0;
 
 	$buf[$i]->statistik = array();
 	$buf[$i]->report = array();
@@ -60,7 +57,6 @@ for($i = 0; $i < count($rp_gruppe->result); $i++)
 			$ns = new statistik($gr->statistik_kurzbz);
 			if($ns->publish === true && ($rechte->isBerechtigt($ns->berechtigung_kurzbz) || $ns->berechtigung_kurzbz === null))
 			{
-				$buf[$i]->statistiken ++;
 				$buf[$i]->statistik[] = $ns;
 			}
 		}
@@ -69,7 +65,6 @@ for($i = 0; $i < count($rp_gruppe->result); $i++)
 			$nr = new report($gr->report_id);
 			if($nr->publish === true && ($rechte->isBerechtigt($nr->berechtigung_kurzbz) || $nr->berechtigung_kurzbz === null))
 			{
-				$buf[$i]->reports ++;
 				$buf[$i]->report[] = $nr;
 			}
 		}
@@ -82,9 +77,10 @@ for($i = 0; $i < count($rp_gruppe->result); $i++)
 				$nc->statistik = new statistik($nc->statistik_kurzbz);
 				if($nc->publish === true && ($rechte->isBerechtigt($nc->statistik->berechtigung_kurzbz) || $nc->statistik->berechtigung_kurzbz === null))
 				{
-					$buf[$i]->charts ++;
 					$buf[$i]->chart[] = $nc;
 				}
+				else
+					unset($buf[$i]->gruppe->gruppe);
 			}
 		}
 	}
@@ -149,7 +145,6 @@ $daten = $buf;
 	</head>
 
 	<body>
-		<?php $reports = array(); ?>
 		<div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
 			<div class="container">
 				<div class="navbar-header">
@@ -191,17 +186,16 @@ $daten = $buf;
 
 									<?php if(isset($l1->sub)):?>
 										<?php foreach($l1->sub as $l2):
-										$reports[] = $l2;	//jeder report wird in $reports gespeichert, um später bei den menüpunkten nicht noch einmal alles durchloopen zu müssen
 										$empty = true;?>
 														<li><a style="font-weight: bold;"><?php echo $l2->bezeichnung;?></a></li>
-													<?php if($l2->statistiken > 0):$empty = false;?>
-														<li><a href="#" onclick='showSidebar(<?php echo $l2->reportgruppe_id;?>, "data")'>&emsp;Pivot&emsp;&emsp;<span class="badge"><?php echo $l2->statistiken?></span></a></li>
+													<?php if(count($l2->statistik) > 0):$empty = false;?>
+														<li><a href="#" onclick='showSidebar(<?php echo $l2->reportgruppe_id;?>, "data")'>&emsp;Pivot&emsp;&emsp;<span class="badge"><?php echo count($l2->statistik)?></span></a></li>
 													<?php endif;?>
-													<?php if($l2->charts > 0): $empty = false; $l2->typ = 'chart';?>
-														<li><a href="#" onclick='showSidebar(<?php echo $l2->reportgruppe_id ?>, "charts")'>&emsp;Charts&emsp;&emsp;<span class="badge"><?php echo $l2->charts?></span></a></li>
+													<?php if(count($l2->chart) > 0): $empty = false; $l2->typ = 'chart';?>
+														<li><a href="#" onclick='showSidebar(<?php echo $l2->reportgruppe_id ?>, "charts")'>&emsp;Charts&emsp;&emsp;<span class="badge"><?php echo count($l2->chart)?></span></a></li>
 													<?php endif;?>
-													<?php if($l2->reports > 0): $empty = false; $l2->typ = 'report';?>
-														<li><a href="#" onclick='showSidebar(<?php echo $l2->reportgruppe_id ?>, "reports")'>&emsp;Reports&emsp;&emsp;<span class="badge"><?php echo $l2->reports?></span></a></li>
+													<?php if(count($l2->report) > 0): $empty = false; $l2->typ = 'report';?>
+														<li><a href="#" onclick='showSidebar(<?php echo $l2->reportgruppe_id ?>, "reports")'>&emsp;Reports&emsp;&emsp;<span class="badge"><?php echo count($l2->report)?></span></a></li>
 													<?php endif;?>
 										<?php endforeach;?>
 										<?php if($empty):?>
@@ -269,33 +263,38 @@ $daten = $buf;
 					<div id="content" style="display:none;"></div>
 
 				</div>
+
+
 				<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
 					<div class="list-group">
 						<ul class="nav">
-							<?php foreach($reports as $re):?>
-								<?php foreach($re->gruppe as $gp):?>
-
-										<?php if(isset($gp->chart_id)):?>
-											<?php $ch = new chart($gp->chart_id);?>
-											<div class="report_<?php echo $gp->reportgruppe_id ?>_charts reports_sidebar_entry" style="display: none;">
-												<li><a href="#" onclick='loadChart(<?php echo urlencode($ch->chart_id)?>, "<?php echo urlencode($ch->statistik_kurzbz)?>")' class="list-group-item"><?php echo $ch->title?></a></li>
-											</div>
-
-										<?php elseif(isset($gp->report_id)): ?>
-											<?php $rp = new report($gp->report_id);?>
-											<div class="report_<?php echo $gp->reportgruppe_id ?>_reports reports_sidebar_entry" style="display: none;">
-												<li><a class="list-group-item" href="#" onclick='loadReport(<?php echo urlencode($rp->report_id)?>)'><?php echo $rp->title?></a></li>
-											</div>
-
-										<?php elseif(isset($gp->statistik_kurzbz)): ?>
-											<?php $st = new statistik($gp->statistik_kurzbz); ?>
-											<div class="report_<?php echo $gp->reportgruppe_id ?>_data reports_sidebar_entry" style="display: none;">
-												<li><a href="#" onclick='loadStatistik("<?php echo urlencode($st->statistik_kurzbz)?>")' class="list-group-item"><?php echo $st->bezeichnung?></a></li>
-											</div>
-
-										<?php endif; ?>
-								<?php endforeach; ?>
-							<?php endforeach; ?>
+							<?php foreach($daten as $l1):?>
+										<?php if(isset($l1->sub)):?>
+											<?php foreach($l1->sub as $l2):?>
+														<?php if(count($l2->statistik) > 0):?>
+															<?php foreach($l2->statistik as $st): ?>
+																<div class="report_<?php echo $l2->reportgruppe_id ?>_data reports_sidebar_entry" style="display: none;">
+																	<li><a href="#" onclick='loadStatistik("<?php echo urlencode($st->statistik_kurzbz)?>")' class="list-group-item"><?php echo $st->bezeichnung?></a></li>
+																</div>
+															<?php endforeach; ?>
+														<?php endif;?>
+														<?php if(count($l2->chart) > 0):?>
+															<?php foreach($l2->chart as $ch):?>
+																<div class="report_<?php echo $l2->reportgruppe_id ;?>_charts reports_sidebar_entry" style="display: none;">
+																	<li><a href="#" onclick='loadChart(<?php echo urlencode($ch->chart_id)?>, "<?php echo urlencode($ch->statistik_kurzbz)?>")' class="list-group-item"><?php echo $ch->title?></a></li>
+																</div>
+															<?php endforeach; ?>
+														<?php endif;?>
+														<?php if(count($l2->report) > 0):?>
+															<?php foreach($l2->report as $re): ?>
+																<div class="report_<?php echo $l2->reportgruppe_id ?>_reports reports_sidebar_entry" style="display: none;">
+																	<li><a class="list-group-item" href="#" onclick='loadReport(<?php echo urlencode($re->report_id)?>)'><?php echo $re->title?></a></li>
+																</div>
+															<?php endforeach; ?>
+														<?php endif;?>
+											<?php endforeach;?>
+										<?php endif;?>
+							<?php endforeach;?>
 							<li class="hide-button" onclick="hideSidebar()"><a href="#"><span class="glyphicon glyphicon-chevron-up"></span></a></li>
 						</ul>
 					</div>
