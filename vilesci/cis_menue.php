@@ -124,12 +124,13 @@ require_once('../../../config/vilesci.config.inc.php');
 					//es handelt sich um eine reportgruppe
 					else if(ent.reportgruppe_id)
 					{
-						var p1 = mt.tree("getRoot", node);
+						var p1 = mt.tree("getParent", ent.target);
+
 						if (p1)
 						{
 							AJAXCall(
 							"action=saveReportGruppe" +
-							"&bezeichnung=" +	ent.bezeichnung +
+							"&bezeichnung=" +	ent.text +
 							"&reportgruppe_parent_id=" +	p1.reportgruppe_id +
 							"&reportgruppe_id=" +	ent.reportgruppe_id,
 							 function(data)
@@ -193,7 +194,6 @@ require_once('../../../config/vilesci.config.inc.php');
 
  		function addEntityToMenue(ent, reportgruppe_id)
  		{
-
  			if(ent.statistik_kurzbz)
  			{
 				AJAXCall(
@@ -274,23 +274,8 @@ require_once('../../../config/vilesci.config.inc.php');
 				"&reportgruppe_parent_id=" +	"",
 				 function(data)
 				 {
-				 /*
-						$('#menueTree').tree('append',
-						{
-							data:
-							{
-								text: txt
-							}
-						});*/
 						rebuildMenue();
 				});
- 		}
-
- 		function save()
- 		{
-			$("#action").val("save");
-			$("#data").val(JSON.stringify($('#menueTree').tree('getRoots')));
-	 		$("#actionForm").submit();
  		}
   </script>
 </head>
@@ -303,17 +288,21 @@ require_once('../../../config/vilesci.config.inc.php');
 		<div class="easyui-panel" style="padding:5px;margin-top:10px;margin-bottom:10px;">
 			<ul id="menueTree" class="easyui-tree" data-options="animate:true,dnd:true"></ul>
 		</div>
+		<div>
+			Reports, Statistiken, Charts und Menüpunkte können per Rechtsklick gelöscht werden.
+		</div>
+		<div>
+			Menüpunkte müssen vor dem Löschen geleert werden!
+		</div>
 	</div>
 	<div id="zuordnung" style="float:right;width:47%;">
+		<div>
+			Neue Reports, Statistiken oder Charts können von hier aus per Drag&Drop zum Menü hinzugefügt werden.
+		</div>
 		<div class="easyui-panel" style="padding:5px;margin-top:10px;margin-bottom:10px;">
 			<ul id="entityTree" class="easyui-tree" data-options="animate:true,dnd:true"></ul>
 		</div>
 	</div>
-
-	<form style="display: hidden" action="cis_menue.php" method="POST" id="actionForm">
-		<input type="hidden" id="action" name="action" value=""/>
-		<input type="hidden" id="data" name="data" value=""/>
-	</form>
 
 </body>
 </html>

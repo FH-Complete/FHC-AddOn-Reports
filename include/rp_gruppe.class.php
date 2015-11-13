@@ -179,13 +179,18 @@ class rp_gruppe extends basis_db
 		}
 	}
 
+	/**
+	 * Laedt alle Gruppen
+	 *
+	 * @return true wenn ok, sonst false
+	 */
 	public function loadAll()
 	{
 		//Lesen der Daten aus der Datenbank
 		$qry = "
 				SELECT *
 				FROM addon.tbl_rp_gruppe AS gr
-				ORDER BY gr.reportgruppe_parent_id desc;
+				ORDER BY gr.reportgruppe_id desc, gr.reportgruppe_parent_id desc;
 			";
 
 
@@ -204,6 +209,13 @@ class rp_gruppe extends basis_db
 	}
 
 
+
+	/**
+	 * Gruppenzuordnung zu einer Reportgruppe holen
+	 *
+	 * @param $reportgruppe_id
+	 * @return true wenn ok, sonst false
+	 */
 	public function getGruppenzuordnung($reportgruppe_id)
 	{
 		$this->gruppe = array();		//eventuelle alte einträge löschen
@@ -227,6 +239,12 @@ class rp_gruppe extends basis_db
 		return true;
 	}
 
+
+	/**
+	 * Laedt die Gruppen Rekursiv
+	 *
+	 * @return true wenn ok, sonst false
+	 */
 	public function loadRecursive()
 	{
 		$buf = $this->result;
@@ -239,33 +257,36 @@ class rp_gruppe extends basis_db
 				foreach($buf as $ent)
 				{
 					$ent->text = $ent->bezeichnung;
+
 					if($buf[$i]->reportgruppe_parent_id === $ent->reportgruppe_id)
 					{
 						$found = true;
 
 						if(!isset($ent->children))
+						{
 							$ent->children = array();
+						}
 
 						$ent->children[] = $buf[$i];
 					}
 				}
+
 				if($found)
 				{
 					unset($buf[$i]);
 				}
+				else
+				{
+					$this->errormsg = "ParentID nicht gefunden!";
+					return false;
+				}
 			}
 			$this->recursive = $buf;
 		}
+
 		return true;
 	}
 
-	public function getJson($type)
-	{
-		if($type === "jstree")
-			return json_encode($this->toEasyUiArray($this->recursive));
-		else
-			return json_encode($this->toEasyUiArray($this->recursive));
-	}
 }
 
 

@@ -50,107 +50,16 @@ switch($action)
 {
 	case "menueBaum":
 	$rp_gruppe->loadAll();
-	$rp_gruppe->loadRecursive();
+
+	if(!$rp_gruppe->loadRecursive())
+		returnAJAX(false, $rp_gruppe->errormsg);
+
 	$treeDaten = $rp_gruppe->recursive;
+	$treeDaten = processMenueLevel($treeDaten);
 
-	foreach($treeDaten as $i)
-	{
-		if(isset($i->children) && $i->children !== null)
-		{
-			foreach($i->children as $j)
-			{
-				$j->children = array();
-
-				$rp_gruppe->getGruppenzuordnung($j->reportgruppe_id);
-
-				foreach($rp_gruppe->gruppe as $g)
-				{
-					if($g->statistik_kurzbz != null)
-					{
-						$ns = new statistik($g->statistik_kurzbz);
-
-						$neu["text"] = $ns->bezeichnung;
-						$neu["iconCls"] = $iconStatistik;
-						$neu["gruppenzuordnung_id"] = $g->gruppenzuordnung_id;
-
-						$j->children[] = $neu;
-					}
-					else if($g->report_id != null)
-					{
-						$nr = new report($g->report_id);
-
-						$neu["text"] = $nr->title;
-						$neu["iconCls"] = $iconReport;
-						$neu["gruppenzuordnung_id"] = $g->gruppenzuordnung_id;
-
-						$j->children[] = $neu;
-					}
-					else if($g->chart_id != null)
-					{
-						$nc = new chart($g->chart_id);
-
-						$neu["text"] = $nc->title;
-						$neu["iconCls"] = $iconChart;
-						$neu["gruppenzuordnung_id"] = $g->gruppenzuordnung_id;
-
-						$j->children[] = $neu;
-					}
-				}
-			}
-		}
-	}
 	returnAJAX(true, $treeDaten);
 	break;
-/*
-//variante 1 ohne ordner
-	case "alleDaten":
-	//alle daten holen
-	$alleDaten = array();
 
-
-	$allReps = new Report();
-	$allReps->getAll("title");
-	foreach($allReps->result as $rp)
-	{
-		$n = array(
-			"text" => $rp->title,
-			"iconCls" => $iconReport,
-		);
-
-		$alleDaten[] = $n;
-	}
-
-
-	$allCharts = new chart();
-	$allCharts->getAll("title");
-	foreach($allCharts->result as $ch)
-	{
-		$n = array(
-			"text" => $ch->title,
-			"iconCls" => $iconChart,
-		);
-
-		$alleDaten[] = $n;
-	}
-
-
-	$allStat = new Statistik();
-	$allStat->getAll("bezeichnung");
-	foreach($allStat->result as $st)
-	{
-		$n = array(
-			"text" => $st->bezeichnung,
-			"iconCls" => $iconStatistik,
-		);
-
-		$alleDaten[] = $n;
-	}
-	returnAJAX(true, $alleDaten);
-	break;
-
-*/
-
-//variante 2 mit ordner
 	case "alleDaten":
 	//alle daten holen
 	$alleDaten = array(
@@ -320,7 +229,70 @@ switch($action)
 }
 
 
+function processMenueLevel($data)
+{
+	$gefiltert = array();
 
+	foreach($data as $d)
+	{
+		$ent = array();
+
+		if(isset($d->children) && count($d->children) > 0)
+			$d->children = processMenueLevel($d->children);
+
+		findZurodnung($d);
+
+		if(isset($d->children) && count($d->children) > 0)
+			$ent["children"] = $d->children;
+
+		$ent["text"] = $d->bezeichnung;
+		$ent["reportgruppe_id"] = $d->reportgruppe_id;
+		$ent["reportgruppe_parent_id"] = $d->reportgruppe_parent_id;
+		$gefiltert[] = $ent;
+	}
+
+	return $gefiltert;
+}
+
+function findZurodnung($entity)
+{
+	$rg = new rp_gruppe();
+	$rg->getGruppenzuordnung($entity->reportgruppe_id);
+
+	foreach($rg->gruppe as $g)
+	{
+		if($g->statistik_kurzbz != null)
+		{
+			$ns = new statistik($g->statistik_kurzbz);
+
+			$neu["text"] = $ns->bezeichnung;
+			$neu["iconCls"] = "icon-fhc-statistik";
+			$neu["gruppenzuordnung_id"] = $g->gruppenzuordnung_id;
+
+			$entity->children[] = $neu;
+		}
+		else if($g->report_id != null)
+		{
+			$nr = new report($g->report_id);
+
+			$neu["text"] = $nr->title;
+			$neu["iconCls"] = "icon-fhc-report";
+			$neu["gruppenzuordnung_id"] = $g->gruppenzuordnung_id;
+
+			$entity->children[] = $neu;
+		}
+		else if($g->chart_id != null)
+		{
+			$nc = new chart($g->chart_id);
+
+			$neu["text"] = $nc->title;
+			$neu["iconCls"] = "icon-fhc-chart";
+			$neu["gruppenzuordnung_id"] = $g->gruppenzuordnung_id;
+
+			$entity->children[] = $neu;
+		}
+	}
+}
 
 
 
