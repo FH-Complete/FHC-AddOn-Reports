@@ -973,6 +973,7 @@ EOT;
 				$obj->type = $row->type;
 				$obj->preferences = $row->preferences;
 				$obj->publish		= $this->db_parse_bool($row->publish);
+				$obj->statistik_kurzbz = $row->statistik_kurzbz;
 				$obj->datasource = $row->datasource;
 				$obj->datasource_type = $row->datasource_type;
 

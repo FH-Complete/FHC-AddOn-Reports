@@ -23,7 +23,7 @@ require_once('../../../config/vilesci.config.inc.php');
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Reporting UI-Builder</title>
+  <title>Reporting Men&uuml;-Builder</title>
 
   <?php require_once("../../../include/meta/easyui.php"); ?>
 
@@ -46,7 +46,7 @@ require_once('../../../config/vilesci.config.inc.php');
   		margin-right: 3px;
 		}
 		.locked {
-			background: url("../include/images/lock_closed.svg") no-repeat center center;
+			background: url("../../../skin/images/lock.png") no-repeat center center;
   		background-size: 10px 10px;
   		padding-left: 5px;
   		padding-right: 5px;
@@ -304,7 +304,7 @@ require_once('../../../config/vilesci.config.inc.php');
   </script>
 </head>
 <body>
-  <h2>Reports UI-Builder</h2>
+  <h2>Reports Men&uuml;-Builder</h2>
 
 	<div id="builder" style="float:left;width:47%;">
 		<input id="menueAdd" placeholder="neuer Menuepunkt"></input>
@@ -313,10 +313,7 @@ require_once('../../../config/vilesci.config.inc.php');
 			<ul id="menueTree" class="easyui-tree" data-options="animate:true,dnd:true"></ul>
 		</div>
 		<div>
-			Reports, Statistiken, Charts und Menüpunkte können per Rechtsklick gelöscht werden.
-		</div>
-		<div>
-			Menüpunkte müssen vor dem Löschen geleert werden!
+			Reports, Statistiken, Charts und Menüpunkte können per Rechtsklick gelöscht werden, müssen dafür jedoch leer sein.
 		</div>
 	</div>
 	<div id="zuordnung" style="float:right;width:47%;">

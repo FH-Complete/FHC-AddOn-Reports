@@ -75,6 +75,8 @@ switch($action)
 			$text .= ' <span class="publish"></span>';
 		else
 			$text .= ' <span class="not_publish"></span>';
+		if($rp->berechtigung_kurzbz)
+			$text .= ' <span class="locked"></span>';
 
 		$n = array(
 			"report_id" => $rp->report_id,
@@ -100,6 +102,10 @@ switch($action)
 		else
 			$text .= ' <span class="not_publish"></span>';
 
+		$ch->statistik = new statistik($ch->statistik_kurzbz);
+		if($ch->statistik->berechtigung_kurzbz)
+			$text .= ' <span class="locked"></span>';
+
 		$n = array(
 			"chart_id" => $ch->chart_id,
 			"text" => $text,
@@ -121,6 +127,8 @@ switch($action)
 			$text .= ' <span class="publish"></span>';
 		else
 			$text .= ' <span class="not_publish"></span>';
+		if($st->berechtigung_kurzbz)
+			$text .= ' <span class="locked"></span>';
 
 		$n = array(
 			"statistik_kurzbz" => $st->statistik_kurzbz,
@@ -293,6 +301,8 @@ function findZurodnung($entity)
 				$text .= ' <span class="publish"></span>';
 			else
 				$text .= ' <span class="not_publish"></span>';
+			if($st->berechtigung_kurzbz)
+				$text .= ' <span class="locked"></span>';
 
 			$n = array(
 				"statistik_kurzbz" => $st->statistik_kurzbz,
@@ -308,12 +318,16 @@ function findZurodnung($entity)
 		{
 			$rp = new report($g->report_id);
 
+			$text = "";
 			$text = $rp->title;
 
 			if($rp->publish)
 				$text .= ' <span class="publish"></span>';
 			else
 				$text .= ' <span class="not_publish"></span>';
+
+			if($rp->berechtigung_kurzbz)
+				$text .= ' <span class="locked"></span>';
 
 			$n = array(
 				"report_id" => $rp->report_id,
@@ -335,6 +349,10 @@ function findZurodnung($entity)
 			}
 			else
 				$text .= ' <span class="not_publish"></span>';
+
+			$ch->statistik = new statistik($ch->statistik_kurzbz);
+			if($ch->statistik->berechtigung_kurzbz)
+				$text .= ' <span class="locked"></span>';
 
 			$n = array(
 				"chart_id" => $ch->chart_id,
