@@ -28,6 +28,30 @@ require_once('../../../config/vilesci.config.inc.php');
   <?php require_once("../../../include/meta/easyui.php"); ?>
 
 	<link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">
+	<style>
+		.publish {
+  		padding-left: 6px;
+  		padding-right: 6px;
+  		background-color: #44FF44;
+  		border-radius: 6px;
+  		margin-left: 3px;
+  		margin-right: 3px;
+		}
+		.not_publish {
+  		padding-left: 6px;
+  		padding-right: 6px;
+  		background-color: #FF4444;
+  		border-radius: 6px;
+  		margin-left: 3px;
+  		margin-right: 3px;
+		}
+		.locked {
+			background: url("../include/images/lock_closed.svg") no-repeat center center;
+  		background-size: 10px 10px;
+  		padding-left: 5px;
+  		padding-right: 5px;
+		}
+	</style>
   <script>
 
 
@@ -303,6 +327,5 @@ require_once('../../../config/vilesci.config.inc.php');
 			<ul id="entityTree" class="easyui-tree" data-options="animate:true,dnd:true"></ul>
 		</div>
 	</div>
-
 </body>
 </html>

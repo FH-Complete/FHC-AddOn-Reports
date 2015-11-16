@@ -972,6 +972,7 @@ EOT;
 				$obj->description = $row->description;
 				$obj->type = $row->type;
 				$obj->preferences = $row->preferences;
+				$obj->publish		= $this->db_parse_bool($row->publish);
 				$obj->datasource = $row->datasource;
 				$obj->datasource_type = $row->datasource_type;
 

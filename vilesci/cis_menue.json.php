@@ -35,10 +35,6 @@ $rechte->getBerechtigungen($user);
 $rp_gruppe = new rp_gruppe();
 
 
-$iconStatistik = "icon-fhc-statistik";
-$iconReport = "icon-fhc-report";
-$iconChart = "icon-fhc-chart";
-
 
 if(!isset($_POST["action"]))
 	die("Keine Aktion spezifiziert!");
@@ -73,10 +69,18 @@ switch($action)
 	$allReps->getAll("title");
 	foreach($allReps->result as $rp)
 	{
+		$text = $rp->title;
+
+		if($rp->publish)
+			$text .= ' <span class="publish"></span>';
+		else
+			$text .= ' <span class="not_publish"></span>';
+
 		$n = array(
 			"report_id" => $rp->report_id,
-			"text" => $rp->title,
-			"iconCls" => $iconReport,
+			"text" => $text,
+			"publish" => $rp->publish,
+			"iconCls" => "icon-fhc-report",
 		);
 
 		$alleDaten[0]["children"][] = $n;
@@ -87,10 +91,20 @@ switch($action)
 	$allCharts->getAll("title");
 	foreach($allCharts->result as $ch)
 	{
+		$text = $ch->title;
+
+		if($ch->publish)
+		{
+			$text .= ' <span class="publish"></span>';
+		}
+		else
+			$text .= ' <span class="not_publish"></span>';
+
 		$n = array(
 			"chart_id" => $ch->chart_id,
-			"text" => $ch->title,
-			"iconCls" => $iconChart,
+			"text" => $text,
+			"publish" => $ch->publish,
+			"iconCls" => "icon-fhc-chart",
 		);
 
 		$alleDaten[1]["children"][] = $n;
@@ -101,10 +115,18 @@ switch($action)
 	$allStat->getAll("bezeichnung");
 	foreach($allStat->result as $st)
 	{
+		$text = $st->bezeichnung;
+
+		if($st->publish)
+			$text .= ' <span class="publish"></span>';
+		else
+			$text .= ' <span class="not_publish"></span>';
+
 		$n = array(
 			"statistik_kurzbz" => $st->statistik_kurzbz,
-			"text" => $st->bezeichnung,
-			"iconCls" => $iconStatistik,
+			"text" => $text,
+			"publish" => $st->publish,
+			"iconCls" => "icon-fhc-statistik",
 		);
 
 		$alleDaten[2]["children"][] = $n;
@@ -263,33 +285,67 @@ function findZurodnung($entity)
 	{
 		if($g->statistik_kurzbz != null)
 		{
-			$ns = new statistik($g->statistik_kurzbz);
+			$st = new statistik($g->statistik_kurzbz);
 
-			$neu["text"] = $ns->bezeichnung;
-			$neu["iconCls"] = "icon-fhc-statistik";
-			$neu["gruppenzuordnung_id"] = $g->gruppenzuordnung_id;
+			$text = $st->bezeichnung;
 
-			$entity->children[] = $neu;
+			if($st->publish)
+				$text .= ' <span class="publish"></span>';
+			else
+				$text .= ' <span class="not_publish"></span>';
+
+			$n = array(
+				"statistik_kurzbz" => $st->statistik_kurzbz,
+				"text" => $text,
+				"publish" => $st->publish,
+				"iconCls" => "icon-fhc-statistik",
+			);
+
+
+			$entity->children[] = $n;
 		}
 		else if($g->report_id != null)
 		{
-			$nr = new report($g->report_id);
+			$rp = new report($g->report_id);
 
-			$neu["text"] = $nr->title;
-			$neu["iconCls"] = "icon-fhc-report";
-			$neu["gruppenzuordnung_id"] = $g->gruppenzuordnung_id;
+			$text = $rp->title;
 
-			$entity->children[] = $neu;
+			if($rp->publish)
+				$text .= ' <span class="publish"></span>';
+			else
+				$text .= ' <span class="not_publish"></span>';
+
+			$n = array(
+				"report_id" => $rp->report_id,
+				"text" => $text,
+				"publish" => $rp->publish,
+				"iconCls" => "icon-fhc-report",
+			);
+
+			$entity->children[] = $n;
 		}
 		else if($g->chart_id != null)
 		{
-			$nc = new chart($g->chart_id);
+			$ch = new chart($g->chart_id);
+			$text = $ch->title;
 
-			$neu["text"] = $nc->title;
-			$neu["iconCls"] = "icon-fhc-chart";
-			$neu["gruppenzuordnung_id"] = $g->gruppenzuordnung_id;
+			if($ch->publish)
+			{
+				$text .= ' <span class="publish"></span>';
+			}
+			else
+				$text .= ' <span class="not_publish"></span>';
 
-			$entity->children[] = $neu;
+			$n = array(
+				"chart_id" => $ch->chart_id,
+				"text" => $text,
+				"publish" => $ch->publish,
+				"iconCls" => "icon-fhc-chart",
+			);
+
+			$alleDaten[1]["children"][] = $n;
+
+			$entity->children[] = $n;
 		}
 	}
 }

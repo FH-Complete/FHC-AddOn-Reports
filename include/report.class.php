@@ -121,7 +121,7 @@ class report extends basis_db
 			$obj->format		= $row->format;
 			$obj->body			= $row->body;
 			$obj->gruppe		= $row->gruppe;
-			$obj->publish		= ($row->publish=='t' ? true : false);
+			$obj->publish			= $this->db_parse_bool($row->publish);
 			$obj->updateamum    = $row->updateamum;
 			$obj->updatevon     = $row->updatevon;
 			$obj->insertamum    = $row->insertamum;
