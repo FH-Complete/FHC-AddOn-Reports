@@ -412,7 +412,7 @@ class report extends basis_db
 				$obj->format = $row->format;
 				$obj->description = $row->description;
 				$obj->body = $row->body;
-				$obj->publish = $row->publish;
+				$obj->publish = $this->db_parse_bool($row->publish);
 				$obj->gruppe = $row->gruppe;
 				$obj->header = $row->header;
 				$obj->footer = $row->footer;

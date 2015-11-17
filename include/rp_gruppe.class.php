@@ -287,6 +287,44 @@ class rp_gruppe extends basis_db
 		return true;
 	}
 
+
+	/**
+	 * Gibt die anzahl der Kind-Reportgruppen zurück
+	 *
+	 * @param $reportgruppe_id
+	 * @return anzahl der Childs
+	 */
+	public function childCount($reportgruppe_id)
+	{
+
+		//reportgruppe_id auf gueltigkeit pruefen
+		if(!is_numeric($reportgruppe_id) || $reportgruppe_id == '')
+		{
+			$this->errormsg = 'reportgruppe_id must be a number!';
+			return false;
+		}
+
+		//Lesen der Daten aus der Datenbank
+		$qry = '
+				SELECT count(1)
+				FROM addon.tbl_rp_gruppe
+				WHERE reportgruppe_parent_id='.$reportgruppe_id.';';
+
+
+		if(!$this->db_query($qry))
+		{
+			$this->errormsg = 'Fehler beim Laden der Daten';
+			return false;
+		}
+
+		if($ret = $this->db_fetch_object())
+		{
+			return intval($ret->count);
+		}
+
+		$this->errormsg = 'Fehler beim Laden der Daten';
+		return false;
+	}
 }
 
 

@@ -82,7 +82,6 @@ require_once('../../../config/vilesci.config.inc.php');
 			  catch (e)
 			  {
 				  die(errMsg + result);
-				  return false;
 			  }
 			  if(res.erfolg)
 			  {
@@ -90,7 +89,9 @@ require_once('../../../config/vilesci.config.inc.php');
 			  }
 			  else
 			  {
-				  die(errMsg + res.message);
+				  alert(res.message);
+					rebuildMenue();
+					rebuildAllRCS();
 			  }
 
 		  }).fail(function(jqXHR, status)
@@ -199,7 +200,7 @@ require_once('../../../config/vilesci.config.inc.php');
 							});
 						}
 					}
-					else if(ent.reportgruppe_id)
+					else if(ent.reportgruppe_id && ent.gruppenzuordnung_id === undefined)
 					{
 						if(confdel())
 						{

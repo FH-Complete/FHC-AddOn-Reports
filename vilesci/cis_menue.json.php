@@ -75,13 +75,13 @@ switch($action)
 			$text .= ' <span class="publish"></span>';
 		else
 			$text .= ' <span class="not_publish"></span>';
+
 		if($rp->berechtigung_kurzbz)
 			$text .= ' <span class="locked"></span>';
 
 		$n = array(
 			"report_id" => $rp->report_id,
 			"text" => $text,
-			"publish" => $rp->publish,
 			"iconCls" => "icon-fhc-report",
 		);
 
@@ -109,7 +109,6 @@ switch($action)
 		$n = array(
 			"chart_id" => $ch->chart_id,
 			"text" => $text,
-			"publish" => $ch->publish,
 			"iconCls" => "icon-fhc-chart",
 		);
 
@@ -133,7 +132,6 @@ switch($action)
 		$n = array(
 			"statistik_kurzbz" => $st->statistik_kurzbz,
 			"text" => $text,
-			"publish" => $st->publish,
 			"iconCls" => "icon-fhc-statistik",
 		);
 
@@ -206,10 +204,16 @@ switch($action)
 	case "saveReportGruppe":
 	if(isset($_POST["bezeichnung"]) && isset($_POST["reportgruppe_parent_id"]))
 	{
-		if(isset( $_POST["reportgruppe_id"]))
+		if(isset($_POST["reportgruppe_id"]))
 		{
-			$rg = new rp_gruppe($_POST["reportgruppe_id"]);
-			$rg->updatevon = $user;
+			$gz = new rp_gruppenzuordnung();
+			if($gz->zuordnungCount($_POST["reportgruppe_id"]) === 0)
+			{
+				$rg = new rp_gruppe($_POST["reportgruppe_id"]);
+				$rg->updatevon = $user;
+			}
+			else
+				returnAJAX(false, "Es dürfen nur leere Ordner verschoben werden!");
 		}
 		else
 		{
@@ -230,6 +234,7 @@ switch($action)
 	returnAJAX(false, "Es ist ein Fehler aufgetreten");
 	break;
 	case "removeGruppenzuordung":
+
 	if(isset($_POST["gruppenzuordnung_id"]))
 	{
 		$gz = new rp_gruppenzuordnung();
@@ -245,8 +250,22 @@ switch($action)
 	case "removeReportgruppe":
 	if(isset($_POST["reportgruppe_id"]))
 	{
+		$reportgruppe_id = $_POST["reportgruppe_id"];
 		$rg = new rp_gruppe();
-		if($rg->delete($_POST["reportgruppe_id"]))
+
+		$count = $rg->childCount($reportgruppe_id);
+
+		if( $count !== 0)
+		{
+			returnAJAX(false, "Dieser Eintrag ist nicht leer!");
+		}
+
+		$gz = new rp_gruppenzuordnung();
+		if($gz->zuordnungCount($reportgruppe_id) !== 0)
+			returnAJAX(false, "Dieser Eintrag hat noch Zuordnungen!");
+
+
+		if($rg->delete($reportgruppe_id))
 			returnAJAX(true, "Erfolgreich");
 		else
 			returnAJAX(false, "fehlgeschlagen");
@@ -270,7 +289,7 @@ function processMenueLevel($data)
 		if(isset($d->children) && count($d->children) > 0)
 			$d->children = processMenueLevel($d->children);
 
-		findZurodnung($d);
+		addZurodnungen($d);
 
 		if(isset($d->children) && count($d->children) > 0)
 			$ent["children"] = $d->children;
@@ -284,7 +303,7 @@ function processMenueLevel($data)
 	return $gefiltert;
 }
 
-function findZurodnung($entity)
+function addZurodnungen($entity)
 {
 	$rg = new rp_gruppe();
 	$rg->getGruppenzuordnung($entity->reportgruppe_id);
@@ -306,8 +325,9 @@ function findZurodnung($entity)
 
 			$n = array(
 				"statistik_kurzbz" => $st->statistik_kurzbz,
+				"reportgruppe_id" => $g->reportgruppe_id,
+				"gruppenzuordnung_id" => $g->gruppenzuordnung_id,
 				"text" => $text,
-				"publish" => $st->publish,
 				"iconCls" => "icon-fhc-statistik",
 			);
 
@@ -331,8 +351,9 @@ function findZurodnung($entity)
 
 			$n = array(
 				"report_id" => $rp->report_id,
+				"reportgruppe_id" => $g->reportgruppe_id,
+				"gruppenzuordnung_id" => $g->gruppenzuordnung_id,
 				"text" => $text,
-				"publish" => $rp->publish,
 				"iconCls" => "icon-fhc-report",
 			);
 
@@ -356,8 +377,9 @@ function findZurodnung($entity)
 
 			$n = array(
 				"chart_id" => $ch->chart_id,
+				"reportgruppe_id" => $g->reportgruppe_id,
+				"gruppenzuordnung_id" => $g->gruppenzuordnung_id,
 				"text" => $text,
-				"publish" => $ch->publish,
 				"iconCls" => "icon-fhc-chart",
 			);
 
