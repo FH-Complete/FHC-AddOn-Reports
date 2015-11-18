@@ -206,14 +206,8 @@ switch($action)
 	{
 		if(isset($_POST["reportgruppe_id"]))
 		{
-			$gz = new rp_gruppenzuordnung();
-			if($gz->zuordnungCount($_POST["reportgruppe_id"]) === 0)
-			{
-				$rg = new rp_gruppe($_POST["reportgruppe_id"]);
-				$rg->updatevon = $user;
-			}
-			else
-				returnAJAX(false, "Es dürfen nur leere Ordner verschoben werden!");
+			$rg = new rp_gruppe($_POST["reportgruppe_id"]);
+			$rg->updatevon = $user;
 		}
 		else
 		{

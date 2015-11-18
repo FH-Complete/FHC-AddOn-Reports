@@ -240,6 +240,7 @@ class rp_gruppe extends basis_db
 	}
 
 
+
 	/**
 	 * Laedt die Gruppen Rekursiv
 	 *
@@ -249,43 +250,54 @@ class rp_gruppe extends basis_db
 	{
 		$buf = $this->result;
 
-		for($i = 0; $i < count($this->result); $i++)
+		foreach($buf as $key => $d)
 		{
-			if(!is_null($this->result[$i]->reportgruppe_parent_id))
+			$found = false;
+			if(!is_null($d->reportgruppe_parent_id))
 			{
-				$found = false;
-				foreach($buf as $ent)
-				{
-					$ent->text = $ent->bezeichnung;
-
-					if($buf[$i]->reportgruppe_parent_id === $ent->reportgruppe_id)
-					{
-						$found = true;
-
-						if(!isset($ent->children))
-						{
-							$ent->children = array();
-						}
-
-						$ent->children[] = $buf[$i];
-					}
-				}
+				$found = $this->findRecursive($d->reportgruppe_parent_id, $buf);
 
 				if($found)
 				{
-					unset($buf[$i]);
+					if(!isset($found->children))
+					{
+						$found->children = array();
+					}
+					$found->children[] = $d;
+					unset($buf[$key]);
 				}
 				else
 				{
-					$this->errormsg = "ParentID nicht gefunden!";
+					//sollte wegen constraints nie eintreten!
+					$this->errormsg = "ParentID nicht gefunden!(".$d->reportgruppe_parent_id.")";
 					return false;
 				}
 			}
-			$this->recursive = $buf;
 		}
+
+		$this->recursive = $buf;
 
 		return true;
 	}
+
+	private function findRecursive($pid, $data)
+	{
+		foreach($data as $d)
+		{
+			if($d->reportgruppe_id === $pid)		//gefunden
+			{
+				return $d;
+			}
+			else if(isset($d->children))				//hat children -> eine ebene tiefer
+			{
+				if($this->findRecursive($pid, $d->children))
+					return $this->findRecursive($pid, $d->children);
+			}
+		}
+		return false;
+	}
+
+
 
 
 	/**

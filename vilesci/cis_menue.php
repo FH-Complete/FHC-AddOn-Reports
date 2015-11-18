@@ -135,15 +135,11 @@ require_once('../../../config/vilesci.config.inc.php');
 					//es handelt sich um eine einzelne statistik, einen report oder einen chart!
 					if(ent.chart_id || ent.report_id || ent.statistik_kurzbz)
 					{
-						var p1 = mt.tree("getParent", node);
-						if (p1 && p1.reportgruppe_parent_id === null)
-						{
-								addEntityToMenue(ent, target.reportgruppe_id)
+						addEntityToMenue(ent, target.reportgruppe_id)
 
-								rebuildAllRCS();
-								rebuildMenue();
-								return;
-						}
+						rebuildAllRCS();
+						rebuildMenue();
+						return;
 					}
 
 					//es handelt sich um eine reportgruppe
