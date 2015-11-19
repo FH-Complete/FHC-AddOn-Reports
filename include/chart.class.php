@@ -659,7 +659,11 @@ EOT;
 			case 'hcpie':
 				?>
 				<div id="hcChart<?php echo $this->chart_id ?>" class="<?php echo $class ?>" style="border: 1px solid transparent;"></div>
-				<?php $json = $this->getHighChartData();?>
+				<?php
+					$json = $this->getHighChartData();
+					if(!$json)
+						return false;
+				?>
 				<?php if(!$json)die($this->errormsg);?>
 				<script>$("#hcChart"+<?php echo $this->chart_id ?>).highcharts(<?php echo $json; ?>);</script>
 			<?php break;
@@ -731,11 +735,18 @@ EOT;
 				$width='1920';
 
 				$phantomData = $this->getHighChartData();
+
+				if(!$phantomData)
+					return false;
+
 				$ph = new phantom();
 				$p = $ph->render(array("infile" => $phantomData, "scale" => $scale, "width" => $width));
 
 				if(!$p)
-					die("Der PhantomJS Server ist nicht erreichbar");
+				{
+					$this->errormsg = "Der PhantomJS Server ist nicht erreichbar";
+					return false;
+				}
 
 				$rsc=fopen($tmp_filename,'w');
 				$c=fwrite($rsc,base64_decode($p));
@@ -770,7 +781,10 @@ EOT;
 	{
 		$this->statistik = new statistik($this->statistik_kurzbz);
 		if (!$this->statistik->loadData())
-			die ('Data not loaded!<br/>'.$this->statistik->errormsg);
+		{
+			$this->errormsg = 'Data not loaded!<br/>'.$this->statistik->errormsg;
+			return false;
+		}
 
 		$series = array();
 		$series_data = array();
@@ -907,7 +921,7 @@ EOT;
 
 				if(!$prefs)
 				{
-					die("Chart".$this->chart_id . ": Preferences sind keine wohlgeformten JSON-Daten:<br>'". $json."'");
+					$this->errormsg = "Chart".$this->chart_id . ": Preferences sind keine wohlgeformten JSON-Daten:<br>'". $json."'";
 					return false;
 				}
 
