@@ -61,46 +61,69 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 		url = 'grid.php';
 	}
 	//reports
-	if(report_id !== undefined)
+	else if(report_id !== undefined)
 	{
+		get_params.report_id = report_id;
 		url = '../vilesci/report_generate.php';
-
-		var getStr= "?report_id=" + report_id;
-
-		for(var k in get_params)
-			getStr += "&"+k+"="+get_params[k];
-
-
-		window.open(url + getStr);
 	}
 
-	else if(typeof url !== "undefined")
+	if(typeof url !== "undefined")
 	{
 		$('#spinner').show();
 		$('#welcome').hide();
 
-		$.ajax(
+		if(get_params.type === "pdf")
 		{
-			url: url,
-			data: get_params,
-      error: function (xhr, ajaxOptions, thrownError)
-      {
-				$('#spinner').hide();
-        die("Fehler: " + xhr.status + " \"" + thrownError + "\"");
-		  },
-			success: function(data)
-			{
-				$('#spinner').hide();
-				$('#filter').hide();
+			url = '../vilesci/report_generate.php';
 
-				//.show und resize müssen dürfen nicht nach dem hineinschreiben
-				//der daten in das div ausgeführt werden. Bei .show() stimmt die größe nicht
-				//und bei resize korrumpiert der resize-Prozess die animation der Charts
-				$('#content').show();
-				$(window).trigger('resize');
-				$('#content').html(data);
-			}
-		});
+			var getStr= "?report_id=" + report_id;
+
+			for(var k in get_params)
+				getStr += "&"+k+"="+get_params[k];
+
+			window.open(encodeURI(url + getStr));
+			$('#spinner').hide();
+		}
+		else
+		{
+			$.ajax(
+			{
+				url: url,
+				data: get_params,
+		    error: function (xhr, ajaxOptions, thrownError)
+		    {
+					$('#spinner').hide();
+		      die("Fehler: " + xhr.status + " \"" + thrownError + "\"");
+				},
+				success: function(data)
+				{
+					$('#spinner').hide();
+					$('#filter').hide();
+
+					//.show und resize müssen dürfen nicht nach dem hineinschreiben
+					//der daten in das div ausgeführt werden. Bei .show() stimmt die größe nicht
+					//und bei resize korrumpiert der resize-Prozess die animation der Charts
+					$('#content').show();
+					$(window).trigger('resize');
+
+					if(url === "grid.php" || url === "chart.php")
+					{
+						$('#content').html(data);
+					}
+					else
+					{
+						$('#content').html('<iframe id="contentIframe" width="100%" height="98%" frameborder="0" id="content" style="overflow: visible;"></iframe>');
+
+						var ifrm = document.getElementById('contentIframe');
+						ifrm = (ifrm.contentWindow) ? ifrm.contentWindow : (ifrm.contentDocument.document) ? ifrm.contentDocument.document : ifrm.contentDocument;
+						ifrm.document.open();
+						ifrm.document.write(data);
+						ifrm.document.close();
+
+					}
+				}
+			});
+		}
 	}
 	else
 		alert("Es wurden keine korrekten Daten angegeben!")
