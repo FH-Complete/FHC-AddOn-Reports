@@ -15,14 +15,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  *
- * Authors: Andreas Moik <moik@technikum-wien.at> 
+ * Authors: Andreas Moik <moik@technikum-wien.at>
  */
 require_once(dirname(__FILE__).'/../../../include/basis_db.class.php');
 
 class rp_report_statistik extends basis_db
 {
 	public $result = array();
-	
+
 	//Tabellenspalten
 	public $reportstatistik_id;
 	public $report_id;
@@ -31,7 +31,7 @@ class rp_report_statistik extends basis_db
 	public $insertvon;
 	public $updateamum;
 	public $updatevon;
-	
+
 	/**
 	 * Konstruktor
 	 * @param $reportstatistik_id ID der report_statistik, welche geladen werden soll (Default=null)
@@ -45,7 +45,7 @@ class rp_report_statistik extends basis_db
 		else
 			$this->new=true;
 	}
-	
+
 	public function load($reportstatistik_id)
 	{
 		$this->errormsg = '';
@@ -60,8 +60,8 @@ class rp_report_statistik extends basis_db
 			SELECT *
 			FROM addon.tbl_rp_report_statistik
 			WHERE reportstatistik_id=".$this->db_add_param($reportstatistik_id, FHC_INTEGER);
-		
-		
+
+
 		if(!$this->db_query($qry))
 		{
 			$this->errormsg = 'Fehler beim Laden der Daten';
@@ -78,11 +78,11 @@ class rp_report_statistik extends basis_db
 			$this->insertamum		      = $row->insertamum;
 			$this->insertvon		      = $row->insertvon;
 		}
-		
+
 		$this->new=false;
 		return true;
 	}
-	
+
 	public function getReportStatistiken($report_id)
 	{
 		$this->errormsg = '';
@@ -97,8 +97,8 @@ class rp_report_statistik extends basis_db
 			SELECT *
 			FROM addon.tbl_rp_report_statistik
 			WHERE report_id=".$this->db_add_param($report_id, FHC_INTEGER);
-		
-		
+
+
 		if(!$this->db_query($qry))
 		{
 			$this->errormsg = 'Fehler beim Laden der Daten';
@@ -114,8 +114,8 @@ class rp_report_statistik extends basis_db
 		$this->new=false;
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * Speichert den aktuellen Datensatz in die Datenbank
 	 * Wenn $new auf true gesetzt ist wird ein neuer Datensatz angelegt
@@ -127,7 +127,7 @@ class rp_report_statistik extends basis_db
 
 		if($this->new)
 		{
-		
+
 			//Neuen Datensatz einfuegen
 			$qry='BEGIN;INSERT INTO addon.tbl_rp_report_statistik (report_id, statistik_kurzbz,
 			      insertamum, insertvon) VALUES('.
@@ -151,7 +151,7 @@ class rp_report_statistik extends basis_db
 		      	' updatevon='.$this->db_add_param($this->updatevon).
 		      	' WHERE reportstatistik_id='.$this->db_add_param($this->reportstatistik_id, FHC_INTEGER, false).';';
 		}
-		
+
 		if($this->db_query($qry))
 		{
 			if($this->new)
@@ -188,9 +188,9 @@ class rp_report_statistik extends basis_db
 		}
 		return $this->reportstatistik_id;
 	}
-	
 
-	
+
+
 	/**
 	 * Loescht einen Eintrag
 	 *
@@ -200,7 +200,7 @@ class rp_report_statistik extends basis_db
 	public function delete($reportstatistik_id)
 	{
 		$qry = "DELETE FROM addon.tbl_rp_report_statistik WHERE reportstatistik_id=".$this->db_add_param($reportstatistik_id).";";
-		
+
 		if($this->db_query($qry))
 		{
 			return true;
@@ -212,5 +212,5 @@ class rp_report_statistik extends basis_db
 		}
 	}
 
-	
+
 }

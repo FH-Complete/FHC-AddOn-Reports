@@ -120,7 +120,6 @@ class rp_report_chart extends basis_db
 		      	' updatevon='.$this->db_add_param($this->updatevon).
 		      	' WHERE reportchart_id='.$this->db_add_param($this->reportchart_id, FHC_INTEGER, false).';';
 		}
-
 		if($this->db_query($qry))
 		{
 			if($this->new)

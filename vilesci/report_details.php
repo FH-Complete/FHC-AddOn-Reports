@@ -230,12 +230,13 @@
 		$htmlstr .= "	<tbody>\n";
 
 
+
 		foreach($charts as $ch)
 		{
 			$htmlstr .= "	<tr>\n";
-			$htmlstr .= "	<td>".$ch->chart_id."</td>\n";
+			$htmlstr .= '	<td>'.$ch->chart_id.'<a href="../cis/vorschau.php?chart_id='.$ch->chart_id.'" target="_blank"><img title="'.$ch->title.' anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a></td>';
 			$htmlstr .= "	<td>".$ch->title."</td>\n";
-			$htmlstr .= "	<td><a href='report_details.php?action=deleteReportChart&reportchart_id=".$ch->reportchart_id."&report_id=".$report->report_id."' onclick='return confdel()'>entfernen</a>";
+			$htmlstr .= '	<td><a href="report_details.php?action=deleteReportChart&reportchart_id='.$ch->reportchart_id.'&report_id='.$report->report_id.'" onclick="return confdel()">entfernen</a></td>';
 			$htmlstr .= "	</tr>\n";
 		}
 		$htmlstr .= "	</tbody>\n";
@@ -279,7 +280,10 @@
 		foreach($statistiken as $st)
 		{
 			$htmlstr .= "	<tr>\n";
-			$htmlstr .= "	<td>".$st->statistik_kurzbz."</td>\n";
+
+
+			$htmlstr .= '	<td>'.$st->statistik_kurzbz.'<a href="../cis/vorschau.php?statistik_kurzbz='.$st->statistik_kurzbz.'&debug=true" target="_blank"><img style="float:right;" title="'.$st->gruppe.' anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>
+</td>';
 			$htmlstr .= "	<td>".$st->bezeichnung."</td>\n";
 			$htmlstr .= "	<td><a href='report_details.php?action=deleteReportStatistik&reportstatistik_id=".$st->reportstatistik_id."&report_id=".$report->report_id."' onclick='return confdel()'>entfernen</a>";
 			$htmlstr .= "	</tr>\n";
@@ -297,7 +301,7 @@
 
 		foreach($allStat->result as $st)
 		{
-			$htmlstr .= "	<option  style='max-width:30%;' value=".$st->statistik_kurzbz.">".$st->bezeichnung."</option>\n";
+			$htmlstr .= "	<option  style='max-width:30%;' value='".$st->statistik_kurzbz."'>".$st->bezeichnung."</option>\n";
 		}
 		$htmlstr .= "	</select>\n";
 		$htmlstr .= "	</td>\n";
