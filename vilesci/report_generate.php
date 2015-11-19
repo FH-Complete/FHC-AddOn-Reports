@@ -252,16 +252,13 @@
 	$htmlstr.=$pdfFilename.' is written!<br/>';
 
 	if($type == "pdf")
-	{//var_dump($_SERVER);
-		//echo '<script>$("#content").attr("src", "'.$pdfFilename.'");</script>';
-		echo '<script>window.location.href = "'.$pdfFilename.'";</script>';
-		//echo '<script>window.location.href = "http://calva.technikum-wien.at/moik/fhcomplete/addons/reports/cis/'.$pdfFilename.'";</script>';
-		/*
-		header("Content-type: application/pdf");
-		header("Content-Disposition: inline; filename=filename.pdf");
-		header('Content-Length: ' . filesize($pdfFilename));
-		@readfile($pdfFilename);
-		*/
+	{
+		header('Content-type: application/force-download');
+		header('Content-Disposition: attachment; filename="Report'.$report->report_id.'.pdf"');
+		readfile($pdfFilename);
+
+		//echo '<script>window.open("'.$pdfFilename.'","_blank");</script>';
+		//echo '<script>window.open("'.$pdfFilename.'","_self");</script>';
 	}
 	else if($type == "debug")
 	{

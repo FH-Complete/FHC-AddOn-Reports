@@ -61,13 +61,20 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 		url = 'grid.php';
 	}
 	//reports
-	else if(report_id !== undefined)
+	if(report_id !== undefined)
 	{
-		get_params.report_id = report_id;
 		url = '../vilesci/report_generate.php';
+
+		var getStr= "?report_id=" + report_id;
+
+		for(var k in get_params)
+			getStr += "&"+k+"="+get_params[k];
+
+
+		window.open(url + getStr);
 	}
 
-	if(typeof url !== "undefined")
+	else if(typeof url !== "undefined")
 	{
 		$('#spinner').show();
 		$('#welcome').hide();
@@ -91,22 +98,7 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 				//und bei resize korrumpiert der resize-Prozess die animation der Charts
 				$('#content').show();
 				$(window).trigger('resize');
-
-				if(url === "grid.php" || url === "chart.php")
-				{
-					$('#content').html(data);
-				}
-				else
-				{
-					$('#content').html('<iframe id="contentIframe" width="100%" height="98%" frameborder="0" id="content" style="overflow: visible;"></iframe>');
-
-					var ifrm = document.getElementById('contentIframe');
-					ifrm = (ifrm.contentWindow) ? ifrm.contentWindow : (ifrm.contentDocument.document) ? ifrm.contentDocument.document : ifrm.contentDocument;
-					ifrm.document.open();
-					ifrm.document.write(data);
-					ifrm.document.close();
-
-				}
+				$('#content').html(data);
 			}
 		});
 	}
