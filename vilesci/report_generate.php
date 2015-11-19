@@ -44,10 +44,19 @@
 	// *************** Pruefen ob die benoetigten Programme vorhanden sind *******************
 
 	if(!`which asciidoc`)
-		die('asciidoc ist auf diesem System nicht installiert');
-
+	{
+		if($type == "debug")
+			die('asciidoc ist auf diesem System nicht installiert');
+		else
+			die("Der Report konnte nicht erstellt werden!");
+	}
 	if(!`which dblatex`)
-		die('dbLatex ist auf diesem System nicht installiert');
+	{
+		if($type == "debug")
+			die('dbLatex ist auf diesem System nicht installiert');
+		else
+			die("Der Report konnte nicht erstellt werden!");
+	}
 
 	// *************** Parameter pruefen und Daten laden *******************
 
@@ -64,10 +73,15 @@
 	if(isset($_REQUEST['report_id']))
 		$report->load((int)$_REQUEST['report_id']);
 	else
-		die('report_id is not set');
+		die('Es wurde keine report_id angegeben');
 	$charts = new chart();
 	if (!$charts->loadCharts($report->report_id))
-		die($charts->errormsg);
+	{
+		if($type == "debug")
+			die($charts->errormsg);
+		else
+			die("Der Report konnte nicht erstellt werden!");
+	}
 
 	//wenn der nutzer nicht für addon/reports berechtigt ist, wird abgefragt, ob der report publish ist
 	//und ob der nutzer das recht für diesen report hat
@@ -95,12 +109,24 @@
 
 			$datafile='../data/data'.$chart->statistik->statistik_kurzbz.'.csv';
 			if (!$chart->statistik->writeCSV($datafile,',','"'))
-				die('File ../data/data'.$chart->statistik->statistik_kurzbz.'not written!<br/>'.$chart->statistik->errormsg);
+			{
+				if($type == "debug")
+					die('File ../data/data'.$chart->statistik->statistik_kurzbz.'not written!<br/>'.$chart->statistik->errormsg);
+				else
+					die("Der Report konnte nicht erstellt werden!");
+			}
 			else
 				$htmlstr.= 'File ../data/data'.$chart->statistik->statistik_kurzbz.' written!<br/>';
 
-			if (!$outputfilename=$chart->writePNG())
-				die ($chart->errormsg);
+			$outputfilename=$chart->writePNG();
+
+			if (!$outputfilename)
+			{
+				if($type == "debug")
+					die ($chart->errormsg);
+				else
+					die("Der Report konnte nicht erstellt werden!");
+			}
 		}
 	}
 	// @todo weitere parameter pruefen
@@ -218,7 +244,10 @@
 	else
 	{
 		//var_dump($process);
-		die('<br/>Cannot read File: '.$tmpFilename.'<br/>Maybe dblatex failed!<br/>'.escapeshellcmd($command));
+		if($type == "debug")
+			die('<br/>Cannot read File: '.$tmpFilename.'<br/>Maybe dblatex failed!<br/>'.escapeshellcmd($command));
+		else
+			die("Der Report konnte nicht erstellt werden!");
 	}
 	$htmlstr.=$pdfFilename.' is written!<br/>';
 
