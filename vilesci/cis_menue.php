@@ -30,26 +30,28 @@ require_once('../../../config/vilesci.config.inc.php');
 	<link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">
 	<style>
 		.publish {
-  		padding-left: 6px;
-  		padding-right: 6px;
-  		background-color: #44FF44;
-  		border-radius: 6px;
-  		margin-left: 3px;
-  		margin-right: 3px;
+			background: url("../../../skin/images/ampel_gruen.png") no-repeat center center;
+  		background-size: 10px 10px;
+  		padding-left: 5px;
+  		padding-right: 5px;
+  		margin-left: 2px;
+  		margin-right: 2px;
 		}
 		.not_publish {
-  		padding-left: 6px;
-  		padding-right: 6px;
-  		background-color: #FF4444;
-  		border-radius: 6px;
-  		margin-left: 3px;
-  		margin-right: 3px;
+			background: url("../../../skin/images/ampel_rot.png") no-repeat center center;
+  		background-size: 10px 10px;
+  		padding-left: 5px;
+  		padding-right: 5px;
+  		margin-left: 2px;
+  		margin-right: 2px;
 		}
 		.locked {
 			background: url("../../../skin/images/lock.png") no-repeat center center;
   		background-size: 10px 10px;
   		padding-left: 5px;
   		padding-right: 5px;
+  		margin-left: 2px;
+  		margin-right: 2px;
 		}
 	</style>
   <script>
@@ -118,18 +120,6 @@ require_once('../../../config/vilesci.config.inc.php');
 					var target = mt.tree("getData", node);
 
 
-					/* TODO
-					//um noch einen parent höher zu gehen!(tiefere menüstruktur)
-					if (p1)
-					{
-						var p2 = mt.tree("getParent", p1.target);
-						if (p2 && p2.reportgruppe_parent_id === null)
-						{
-							alert("Verschieben!");
-							return;
-						}
-					}
-					*/
 
 
 					//es handelt sich um eine einzelne statistik, einen report oder einen chart!
@@ -148,11 +138,24 @@ require_once('../../../config/vilesci.config.inc.php');
 						var p1 = mt.tree("getParent", ent.target);
 
 						if (p1)
-						{
+						{//an einem parent
 							AJAXCall(
 							"action=saveReportGruppe" +
 							"&bezeichnung=" +	ent.text +
 							"&reportgruppe_parent_id=" +	p1.reportgruppe_id +
+							"&reportgruppe_id=" +	ent.reportgruppe_id,
+							 function(data)
+							 {
+									rebuildMenue();
+							});
+							return;
+						}
+						else
+						{//root ebene
+							AJAXCall(
+							"action=saveReportGruppe" +
+							"&bezeichnung=" +	ent.text +
+							"&reportgruppe_parent_id=" +	"" +
 							"&reportgruppe_id=" +	ent.reportgruppe_id,
 							 function(data)
 							 {
@@ -311,6 +314,14 @@ require_once('../../../config/vilesci.config.inc.php');
 		</div>
 		<div>
 			Reports, Statistiken, Charts und Menüpunkte können per Rechtsklick gelöscht werden, müssen dafür jedoch leer sein.
+		</div>
+		<div>
+			<h3>Legende</h3>
+			<div>
+				<div><span class="publish"></span> Öffentlich</div>
+				<div><span class="not_publish"></span> nicht Öffentlich</div>
+				<div><span class="locked"></span> es werden Berechtigungen benötigt</div>
+			</div>
 		</div>
 	</div>
 	<div id="zuordnung" style="float:right;width:47%;">
