@@ -180,7 +180,8 @@
 		$htmlstr.= 'Asciidoc fehlgeschlagen:<br>';
 		foreach($out as $o)
 			$htmlstr.= $o;
-		die("Der Report konnte nicht erstellt werden!");
+		if($type != "debug")
+			die("Der Report konnte nicht erstellt werden!");
 	}
 	if(count($out) > 0)
 	{
@@ -201,7 +202,8 @@
 		$htmlstr.= 'Asciidoc fehlgeschlagen:<br>';
 		foreach($out as $o)
 			$htmlstr.= $o;
-		die("Der Report konnte nicht erstellt werden!");
+		if($type != "debug")
+			die("Der Report konnte nicht erstellt werden!");
 	}
 	if(count($out) > 0)
 	{
@@ -221,7 +223,8 @@
 		$htmlstr.= 'dblatex fehlgeschlagen:<br>';
 		foreach($out as $o)
 			$htmlstr.= $o;
-		die("Der Report konnte nicht erstellt werden!");
+		if($type != "debug")
+			die("Der Report konnte nicht erstellt werden!");
 	}
 
 	$process = new process(escapeshellcmd($command));
