@@ -20,8 +20,8 @@
  *			Andreas Moik <moik@technikum-wien.at>
  */
 require_once(dirname(__FILE__).'/../../../include/basis_db.class.php');
-require_once('../include/phantom.class.php');
-require_once('../../../include/statistik.class.php');
+require_once(dirname(__FILE__).'/../include/phantom.class.php');
+require_once(dirname(__FILE__).'/../../../include/statistik.class.php');
 
 class chart extends basis_db
 {

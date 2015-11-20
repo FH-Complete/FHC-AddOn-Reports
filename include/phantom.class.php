@@ -20,8 +20,7 @@
 /**
  * Klasse zur Verwaltung des zugriffs auf den PhantomJS Server
  */
-
-require_once("../../../config/global.config.inc.php");
+require_once(dirname(__FILE__).'/../reports.config.inc.php');
 
 class phantom
 {
