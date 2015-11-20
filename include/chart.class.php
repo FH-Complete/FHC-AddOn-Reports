@@ -833,24 +833,28 @@ EOT;
 		}
 		else
 		{
-      foreach($data as $key => $item)
-      {
-			  $first = true;
-        foreach($item as $ik => $it)
-        {
-          if($first)
-          {
-          	$header = $it;
-            $categories[] = $it;
-            $first = false;
-          }
-          else
-          {
-            $series[$ik]["name"] = $ik;
-            $series[$ik]["data"][] = array($header, floatval($it));
-          }
-        }
-      }
+			foreach($data as $key => $item)
+			{
+				$first = true;
+				foreach($item as $ik => $it)
+				{
+					if($first)
+					{
+						$header = $it;
+						$categories[] = $it;
+						$first = false;
+					}
+					else
+					{
+						$dt = floatval($it);
+						if($dt === false)
+						return false;
+
+						$series[$ik]["name"] = $ik;
+						$series[$ik]["data"][] = array($header, $dt);
+					}
+				}
+			}
 			$xAxis = array
 			(
 				'categories' => $categories,
