@@ -218,12 +218,17 @@ require_once('../../../config/vilesci.config.inc.php');
 
  		function addEntityToMenue(ent, reportgruppe_id)
  		{
+ 			var gruppenzuordnung_id = "";
+ 			if(ent.gruppenzuordnung_id)
+ 				gruppenzuordnung_id = ent.gruppenzuordnung_id;
+
  			if(ent.statistik_kurzbz)
  			{
 				AJAXCall(
 				"action=addEntityToMenue" +
 				"&statistik_kurzbz=" +	ent.statistik_kurzbz +
-				"&reportgruppe_id=" + reportgruppe_id,
+				"&reportgruppe_id=" + reportgruppe_id +
+				"&gruppenzuordnung_id="+gruppenzuordnung_id,
 				 function(data){
 				 	rebuildMenue();
 				 });
@@ -233,7 +238,8 @@ require_once('../../../config/vilesci.config.inc.php');
 				AJAXCall(
 				"action=addEntityToMenue" +
 				"&chart_id=" +	ent.chart_id +
-				"&reportgruppe_id=" + reportgruppe_id,
+				"&reportgruppe_id=" + reportgruppe_id +
+				"&gruppenzuordnung_id="+gruppenzuordnung_id,
 				 function(data){
 				 	rebuildMenue();
 				 });
@@ -243,7 +249,8 @@ require_once('../../../config/vilesci.config.inc.php');
 				AJAXCall(
 				"action=addEntityToMenue" +
 				"&report_id=" +	ent.report_id +
-				"&reportgruppe_id=" + reportgruppe_id,
+				"&reportgruppe_id=" + reportgruppe_id +
+				"&gruppenzuordnung_id="+gruppenzuordnung_id,
 				 function(data){
 				 	rebuildMenue();
 				 });

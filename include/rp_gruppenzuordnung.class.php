@@ -126,7 +126,7 @@ class rp_gruppenzuordnung extends basis_db
 				' reportgruppe_id='.$this->db_add_param($this->reportgruppe_id, FHC_INTEGER).', '.
 				' chart_id='.$this->db_add_param($this->chart_id, FHC_INTEGER).', '.
 				' report_id='.$this->db_add_param($this->report_id, FHC_INTEGER).', '.
-				' statistik_kurzbz='.$this->db_add_param(statistik_kurzbz).', '.
+				' statistik_kurzbz='.$this->db_add_param($this->statistik_kurzbz).', '.
 				' updateamum= now(), '.
 		      	' updatevon='.$this->db_add_param($this->updatevon).
 		      	' WHERE gruppenzuordnung_id='.$this->db_add_param($this->gruppenzuordnung_id, FHC_INTEGER, false).';';

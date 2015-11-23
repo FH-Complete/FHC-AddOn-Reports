@@ -142,59 +142,74 @@ switch($action)
 	case "addEntityToMenue":
 	if(isset($_POST["reportgruppe_id"]))
 	{
-		if(isset($_POST["report_id"]))
+		$reportgruppe_id = $_POST["reportgruppe_id"];
+
+		if(isset($_POST["gruppenzuordnung_id"]))
 		{
-			$report_id = $_POST["report_id"];
-			$reportgruppe_id = $_POST["reportgruppe_id"];
+			if($_POST["gruppenzuordnung_id"] != "")
+			{
+				$gruppenzuordnung_id = $_POST["gruppenzuordnung_id"];
+				$gz = new rp_gruppenzuordnung($gruppenzuordnung_id);
+				$gz->reportgruppe_id = $reportgruppe_id;
+				if($gz->save())
+					returnAJAX(true, "Erfolgreich");
+			}
+			else
+			{
+				if(isset($_POST["report_id"]))
+				{
+					$report_id = $_POST["report_id"];
 
-			$gz = new rp_gruppenzuordnung();
+					$gz = new rp_gruppenzuordnung();
 
-			$gz->reportgruppe_id = $reportgruppe_id;
-			$gz->chart_id = "";
-			$gz->report_id = $report_id;
-			$gz->statistik_kurzbz = "";
-			$gz->insertvon = $user;
+					$gz->reportgruppe_id = $reportgruppe_id;
+					$gz->chart_id = "";
+					$gz->report_id = $report_id;
+					$gz->statistik_kurzbz = "";
+					$gz->insertvon = $user;
 
-			if($gz->save())
-				returnAJAX(true, "Erfolgreich");
+					if($gz->save())
+						returnAJAX(true, "Erfolgreich");
 
-			returnAJAX(false, "Fehler beim Insertieren!");
-		}
-		else if(isset($_POST["statistik_kurzbz"]))
-		{
-			$statistik_kurzbz = $_POST["statistik_kurzbz"];
-			$reportgruppe_id = $_POST["reportgruppe_id"];
+					returnAJAX(false, "Fehler beim Insertieren!");
+				}
+				else if(isset($_POST["statistik_kurzbz"]))
+				{
+					$statistik_kurzbz = $_POST["statistik_kurzbz"];
+					$reportgruppe_id = $_POST["reportgruppe_id"];
 
-			$gz = new rp_gruppenzuordnung();
+					$gz = new rp_gruppenzuordnung();
 
-			$gz->reportgruppe_id = $reportgruppe_id;
-			$gz->chart_id = "";
-			$gz->report_id = "";
-			$gz->statistik_kurzbz = $statistik_kurzbz;
-			$gz->insertvon = $user;
+					$gz->reportgruppe_id = $reportgruppe_id;
+					$gz->chart_id = "";
+					$gz->report_id = "";
+					$gz->statistik_kurzbz = $statistik_kurzbz;
+					$gz->insertvon = $user;
 
-			if($gz->save())
-				returnAJAX(true, "Erfolgreich");
+					if($gz->save())
+						returnAJAX(true, "Erfolgreich");
 
-			returnAJAX(false, "Fehler beim Insertieren!");
-		}
-		else if(isset($_POST["chart_id"]))
-		{
-			$chart_id = $_POST["chart_id"];
-			$reportgruppe_id = $_POST["reportgruppe_id"];
+					returnAJAX(false, "Fehler beim Insertieren!");
+				}
+				else if(isset($_POST["chart_id"]))
+				{
+					$chart_id = $_POST["chart_id"];
+					$reportgruppe_id = $_POST["reportgruppe_id"];
 
-			$gz = new rp_gruppenzuordnung();
+					$gz = new rp_gruppenzuordnung();
 
-			$gz->reportgruppe_id = $reportgruppe_id;
-			$gz->chart_id = $chart_id;
-			$gz->report_id = "";
-			$gz->statistik_kurzbz = "";
-			$gz->insertvon = $user;
+					$gz->reportgruppe_id = $reportgruppe_id;
+					$gz->chart_id = $chart_id;
+					$gz->report_id = "";
+					$gz->statistik_kurzbz = "";
+					$gz->insertvon = $user;
 
-			if($gz->save())
-				returnAJAX(true, "Erfolgreich");
+					if($gz->save())
+						returnAJAX(true, "Erfolgreich");
 
-			returnAJAX(false, "Fehler beim Insertieren!");
+					returnAJAX(false, "Fehler beim Insertieren!");
+				}
+			}
 		}
 	}
 
