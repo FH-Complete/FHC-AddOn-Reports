@@ -28,6 +28,7 @@ class view extends basis_db
 
 	//Tabellenspalten
 	public $view_kurzbz;
+	private $view_kurzbz_old;
 	public $table_kurzbz;
 	public $sql;
 	public $static=false;
@@ -76,6 +77,7 @@ class view extends basis_db
 		{
 			$this->view_id	= $row->view_id;
 			$this->view_kurzbz	= $row->view_kurzbz;
+			$this->view_kurzbz_old	= $row->view_kurzbz;
 			$this->table_kurzbz	= $row->table_kurzbz;
 			$this->sql			= $row->sql;
 			$this->static		= $this->db_parse_bool($row->static);
@@ -124,6 +126,24 @@ class view extends basis_db
 		return true;
 	}
 
+	/**
+	 * Prueft, ob eine View bereits generiert wurde
+	 * @return true wenn erstellt, false, wenn nicht
+	 */
+	public function getView()
+	{
+		$qry = ' SELECT table_name FROM INFORMATION_SCHEMA.views WHERE table_name='.
+			$this->db_add_param($this->view_kurzbz_old).';';
+
+		if(!$this->db_query($qry))
+		{
+			$this->errormsg = 'Fehler bei einer Datenbankabfrage';
+			return false;
+		}
+
+		return $this->db_fetch_object();
+	}
+
 
 	/**
 	 * Speichert den aktuellen Datensatz in die Datenbank
@@ -133,6 +153,9 @@ class view extends basis_db
 	 */
 	public function save()
 	{
+		if(!$this->validate($this->view_kurzbz))
+			die("Ungueltige Zeichen in der view_kurzbz!");
+
 		if($this->new)
 		{
 			//Neuen Datensatz einfuegen
@@ -146,6 +169,18 @@ class view extends basis_db
 		}
 		else
 		{
+			if($this->view_kurzbz !== $this->view_kurzbz_old && $v = $this->getView())
+			{
+				$qry='ALTER VIEW reports.'.$this->view_kurzbz_old.' RENAME TO '.
+					$this->view_kurzbz.';';
+
+				if(!$this->db_query($qry))
+				{
+					$this->errormsg = 'Fehler bei einer Datenbankabfrage';
+					return false;
+				}
+			}
+
 			//Pruefen ob view_id eine gueltige Zahl ist
 			if(!is_numeric($this->view_id))
 			{
@@ -159,7 +194,7 @@ class view extends basis_db
 				' sql='.$this->db_add_param($this->sql).', '.
 				' static='.$this->db_add_param($this->static, FHC_BOOLEAN).', '.
 				' updateamum= now(), '.
-					' updatevon='.$this->db_add_param($this->updatevon).
+				' updatevon='.$this->db_add_param($this->updatevon).
 					' WHERE view_id='.$this->db_add_param($this->view_id).';';
 		}
 
@@ -197,6 +232,8 @@ class view extends basis_db
 			$this->errormsg = 'Fehler beim Update des View-Datensatzes';
 			return false;
 		}
+
+		$this->view_kurzbz_old = $this->view_kurzbz;
 		return $this->view_id;
 	}
 
@@ -204,7 +241,7 @@ class view extends basis_db
 	/**
 	 * Loescht einen Eintrag
 	 *
-	 * @param $view_kurzbz
+	 * @param $view_id
 	 * @return true wenn ok, sonst false
 	 */
 	public function delete($view_id)
@@ -223,27 +260,56 @@ class view extends basis_db
 	}
 
 	/**
+	 * Validiert einen string
+	 *
+	 * @param $str zu validierender string
+	 * @return true wenn ok, sonst false
+	 */
+	private function validate($str)
+	{
+		return preg_match("/^[a-zA-Z_]+$/", $str);
+	}
+
+	/**
 	 * Erzeugt eine View
 	 *
 	 * @return true wenn ok, sonst false
 	 */
 	public function generate()
 	{
-		if($this->new)
+		if($this->getView())
+			$this->dropView();
+
+		//Neuen Datensatz einfuegen
+		$qry="CREATE OR REPLACE VIEW reports.".
+			$this->view_kurzbz." AS ".
+			$this->sql;
+
+		if($this->db_query($qry))
 		{
-			//Neuen Datensatz einfuegen
-			$qry="CREATE VIEW reports.".
-				$this->db_add_param($this->view_kurzbz)." AS ".
-				$this->db_add_param($this->sql).';';
+			$this->db_query('COMMIT');
 		}
 		else
 		{
-			//Neuen Datensatz einfuegen
-			$qry="CREATE VIEW reports.".
-				$this->db_add_param($this->view_kurzbz)." AS ".
-				$this->db_add_param($this->sql).';';
+			$this->db_query('ROLLBACK');
+			$this->errormsg = 'Fehler beim erzeugen der View';
+			return false;
 		}
-        //echo $qry;
+		return true;
+	}
+
+	/**
+	 * Loescht eine View
+	 *
+	 * @return true wenn ok, sonst false
+	 */
+	public function dropView()
+	{
+
+		//Neuen Datensatz einfuegen
+		$qry="DROP VIEW reports.".
+			$this->view_kurzbz.";";
+
 		if($this->db_query($qry))
 		{
 			$this->db_query('COMMIT');

@@ -85,7 +85,7 @@
 		}
 		else if (isset($_REQUEST["action"]) && $_REQUEST["action"]=='generate')
 		{
-			var_dump($view);
+			$view->generate();
 		}
 	}
 

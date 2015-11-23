@@ -172,7 +172,7 @@
 
 	// ****** Create Destination Files
 
-	$cmd = 'asciidoc -o '.$htmlFilename.' -b html4 -a theme=flask -a data-uri -a toc2 --backend=xhtml11 -a linkcss -a pygments -a icons -a iconsdir='.$iconsdir.' -a asciimath '.$filename;
+	$cmd = 'asciidoc -o '.$htmlFilename.' -b html4 -a theme=flask -a data-uri -a toc2 -a pygments -a icons -a iconsdir='.$iconsdir.' -a asciimath '.$filename;
 	$htmlstr.=exec($cmd.' 2>&1', $out, $ret);
 	$htmlstr.= $cmd . '<br>';
 	if($ret != 0)
