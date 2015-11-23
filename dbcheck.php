@@ -301,12 +301,15 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_gruppe"))
 
 }
 
-// Views
+
+
+//Views
 if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_view"))
 {
 
 	$qry = 'CREATE TABLE addon.tbl_rp_view
 			(
+				view_id serial,
 				view_kurzbz varchar(64),
 				table_kurzbz varchar(64),
 				sql text,
@@ -316,16 +319,21 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_view"))
 				insertvon varchar(32),
 				updateamum timestamp DEFAULT now(),
 				updatevon varchar(32),
-				CONSTRAINT pk_rp_view PRIMARY KEY (view_kurzbz)
+				CONSTRAINT pk_rp_view
+				PRIMARY KEY (view_id),
+			  UNIQUE (view_kurzbz)
 			);
 			GRANT SELECT, UPDATE, INSERT, DELETE ON addon.tbl_rp_view TO vilesci;
+			GRANT SELECT, UPDATE ON addon.tbl_rp_view_view_id_seq TO vilesci;
 			';
 
 	if(!$db->db_query($qry))
 		echo '<strong>addon.tbl_rp_view: '.$db->db_last_error().'</strong><br>';
 	else
 		echo ' addon.tbl_rp_view: Tabelle addon.tbl_rp_view hinzugefuegt!<br>';
+
 }
+
 
 // Reports (rp) Report
 if(!$result = @$db->db_query("SELECT berechtigung_kurzbz FROM addon.tbl_rp_report"))

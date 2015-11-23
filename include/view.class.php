@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  *
  * Authors: Christian Paminger,
+ *				Andreas Moik <moik@technikum-wien.at>
  */
 require_once(dirname(__FILE__).'/../../../include/basis_db.class.php');
 
@@ -39,28 +40,31 @@ class view extends basis_db
 
 	/**
 	 * Konstruktor
-	 * @param akadgrad_id ID des zu ladenden Datensatzes
+	 * @param view_id ID des zu ladenden Datensatzes
 	 */
-	public function __construct($view_kurzbz=null)
+	public function __construct($view_id=null)
 	{
 		parent::__construct();
 
-		if(!is_null($view_kurzbz))
-			$this->load($view_kurzbz);
+		if(!is_null($view_id))
+		{
+			$this->load($view_id);
+		}
 		else
 			$this->new=true;
+
 	}
 
-	public function load($view_kurzbz='')
+	public function load($view_id=null)
 	{
-		//view_kurzbz auf gueltigkeit pruefen
-		if($view_kurzbz == '')
+		//Pruefen ob view_id eine gueltige Zahl ist
+		if(!is_numeric($view_id))
 		{
-			$this->errormsg = 'view_kurzbz must be set!';
+			$this->errormsg = 'view_id muss eine gueltige Zahl sein';
 			return false;
 		}
 		//Lesen der Daten aus der Datenbank
-		$qry = 'SELECT * FROM addon.tbl_rp_view WHERE view_kurzbz='.$this->db_add_param($view_kurzbz, FHC_STRING).';';
+		$qry = 'SELECT * FROM addon.tbl_rp_view WHERE view_id='.$this->db_add_param($view_id, FHC_INTEGER).';';
 
 		if(!$this->db_query($qry))
 		{
@@ -70,6 +74,7 @@ class view extends basis_db
 
 		if($row = $this->db_fetch_object())
 		{
+			$this->view_id	= $row->view_id;
 			$this->view_kurzbz	= $row->view_kurzbz;
 			$this->table_kurzbz	= $row->table_kurzbz;
 			$this->sql			= $row->sql;
@@ -84,7 +89,7 @@ class view extends basis_db
 		return true;
 	}
 	/**
-	 * Laedt alle Charts aus DB
+	 * Laedt alle Views aus DB
 	 * @return true wenn ok, false im Fehlerfall
 	 */
 	public function loadAll()
@@ -100,20 +105,19 @@ class view extends basis_db
 		}
 		while($row = $this->db_fetch_object())
 		{
-			//var_dump($row);
 			$obj = new view();
 
-			$obj->view_kurzbz	= $row->view_kurzbz;
-			$obj->table_kurzbz 	= $row->table_kurzbz;
-			$obj->sql			= $row->sql;
-			$obj->static		= $this->db_parse_bool($row->static);
-			$obj->lastcopy		= $row->lastcopy;
-			$obj->updateamum    = $row->updateamum;
-			$obj->updatevon     = $row->updatevon;
-			$obj->insertamum    = $row->insertamum;
-			$obj->insertvon     = $row->insertvon;
-			//$obj->report_num_rows= $this->getNumRows('sync.'.$row->report_tablename);
-			$obj->new       = false;
+			$obj->view_id		= $row->view_id;
+			$obj->view_kurzbz		= $row->view_kurzbz;
+			$obj->table_kurzbz	= $row->table_kurzbz;
+			$obj->sql						= $row->sql;
+			$obj->static				= $this->db_parse_bool($row->static);
+			$obj->lastcopy			= $row->lastcopy;
+			$obj->updateamum		= $row->updateamum;
+			$obj->updatevon			= $row->updatevon;
+			$obj->insertamum		= $row->insertamum;
+			$obj->insertvon			= $row->insertvon;
+			$obj->new						= false;
 
 			$this->result[] = $obj;
 		}
@@ -133,36 +137,67 @@ class view extends basis_db
 		{
 			//Neuen Datensatz einfuegen
 			$qry='BEGIN;INSERT INTO addon.tbl_rp_view (view_kurzbz, table_kurzbz, sql, static,
-			      insertamum, insertvon) VALUES('.
-			      $this->db_add_param($this->view_kurzbz).', '.
-			      $this->db_add_param($this->table_kurzbz).', '.
-			      $this->db_add_param($this->sql).', '.
-			      $this->db_add_param($this->static,FHC_BOOLEAN).', now(), '.
-			      $this->db_add_param($this->insertvon).');';
+				insertamum, insertvon) VALUES('.
+				$this->db_add_param($this->view_kurzbz).', '.
+				$this->db_add_param($this->table_kurzbz).', '.
+				$this->db_add_param($this->sql).', '.
+				$this->db_add_param($this->static,FHC_BOOLEAN).', now(), '.
+				$this->db_add_param($this->insertvon).');';
 		}
 		else
 		{
+			//Pruefen ob view_id eine gueltige Zahl ist
+			if(!is_numeric($this->view_id))
+			{
+				$this->errormsg = 'view_id muss eine gueltige Zahl sein';
+				return false;
+			}
+
 			$qry='UPDATE addon.tbl_rp_view SET'.
 				' view_kurzbz='.$this->db_add_param($this->view_kurzbz).', '.
 				' table_kurzbz='.$this->db_add_param($this->table_kurzbz).', '.
 				' sql='.$this->db_add_param($this->sql).', '.
 				' static='.$this->db_add_param($this->static, FHC_BOOLEAN).', '.
 				' updateamum= now(), '.
-		      	' updatevon='.$this->db_add_param($this->updatevon).
-		      	' WHERE view_kurzbz='.$this->db_add_param($this->view_kurzbz, FHC_STRING, false).';';
+					' updatevon='.$this->db_add_param($this->updatevon).
+					' WHERE view_id='.$this->db_add_param($this->view_id).';';
 		}
-        //echo $qry;
+
 		if($this->db_query($qry))
 		{
-			$this->db_query('COMMIT');
+			if($this->new)
+			{
+				//naechste ID aus der Sequence holen
+				$qry="SELECT currval('addon.tbl_rp_view_view_id_seq') as id;";
+				if($this->db_query($qry))
+				{
+					if($row = $this->db_fetch_object())
+					{
+						$this->view_id = $row->id;
+						$this->db_query('COMMIT');
+					}
+					else
+					{
+						$this->db_query('ROLLBACK');
+						$this->errormsg = "Fehler beim Auslesen der Sequence";
+						return false;
+					}
+				}
+				else
+				{
+					$this->db_query('ROLLBACK');
+					$this->errormsg = 'Fehler beim Auslesen der Sequence';
+					return false;
+				}
+			}
+
 		}
 		else
 		{
-			$this->db_query('ROLLBACK');
-			$this->errormsg = 'Fehler beim Update des Chart-Datensatzes';
+			$this->errormsg = 'Fehler beim Update des View-Datensatzes';
 			return false;
 		}
-		return $this->view_kurzbz;
+		return $this->view_id;
 	}
 
 
@@ -172,9 +207,9 @@ class view extends basis_db
 	 * @param $view_kurzbz
 	 * @return true wenn ok, sonst false
 	 */
-	public function delete($view_kurzbz)
+	public function delete($view_id)
 	{
-		$qry = "DELETE FROM addon.tbl_rp_view WHERE view_kurzbz=".$this->db_add_param($view_kurzbz, FHC_STRING).";";
+		$qry = "DELETE FROM addon.tbl_rp_view WHERE view_id=".$this->db_add_param($view_id, FHC_INTEGER).";";
 
 		if($this->db_query($qry))
 		{
@@ -185,5 +220,40 @@ class view extends basis_db
 			$this->errormsg='Fehler beim Löschen des Eintrages';
 			return false;
 		}
+	}
+
+	/**
+	 * Erzeugt eine View
+	 *
+	 * @return true wenn ok, sonst false
+	 */
+	public function generate()
+	{
+		if($this->new)
+		{
+			//Neuen Datensatz einfuegen
+			$qry="CREATE VIEW reports.".
+				$this->db_add_param($this->view_kurzbz)." AS ".
+				$this->db_add_param($this->sql).';';
+		}
+		else
+		{
+			//Neuen Datensatz einfuegen
+			$qry="CREATE VIEW reports.".
+				$this->db_add_param($this->view_kurzbz)." AS ".
+				$this->db_add_param($this->sql).';';
+		}
+        //echo $qry;
+		if($this->db_query($qry))
+		{
+			$this->db_query('COMMIT');
+		}
+		else
+		{
+			$this->db_query('ROLLBACK');
+			$this->errormsg = 'Fehler beim erzeugen der View';
+			return false;
+		}
+		return true;
 	}
 }

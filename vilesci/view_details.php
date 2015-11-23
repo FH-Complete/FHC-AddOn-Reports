@@ -22,7 +22,7 @@
 	require_once('../../../include/functions.inc.php');
 	require_once('../../../include/benutzerberechtigung.class.php');
 	require_once('../include/view.class.php');
-	
+
 	if (!$db = new basis_db())
 		die('Es konnte keine Verbindung zum Server aufgebaut werden.');
 
@@ -39,31 +39,40 @@
 	$sel = '';
 	$chk = '';
 
+
 	$view = new view();
+	$view->view_id		= 0;
 	$view->view_kurzbz		= 'vw_';
 	$view->table_kurzbz 		= 'tbl_';
 	$view->sql		= 'SELECT ';
 	$view->insertvon		= $user;
 	$view->updatevon		= $user;
-	
+
 	if(!$rechte->isBerechtigt('addon/reports', null, 'suid'))
 		die('Sie haben keine Berechtigung fuer diese Aktion');
 
-	if(isset($_REQUEST["view_kurzbz"]))
+	if(isset($_REQUEST["view_id"]))
 	{
-		if (!isset($_REQUEST['new']))
+		$view_id = intval($_REQUEST['view_id']);
+
+		if (is_numeric($view_id))
 		{
-			$view->load($_REQUEST["view_kurzbz"]);
+			$view->load($view_id);
 			if ($view->errormsg!='')
 				die($view->errormsg);
 		}
 
 		if (isset($_REQUEST["action"]) && $_REQUEST["action"]=='save')
 		{
+			$view->view_id = $_POST["view_id"];
+
+			if($view->view_id == 0)
+				$view->new = true;
+
 			$view->view_kurzbz = $_POST["view_kurzbz"];
 			$view->table_kurzbz = $_POST["table_kurzbz"];
 			$view->sql = $_POST["sql"];
-			$view->static = isset($_POST["static"]);
+			$view->static =isset($_POST["static"]);
 
 			if(!$view->save())
 			{
@@ -74,9 +83,12 @@
 			$reloadstr .= "	parent.frame_view_overview.location.href='view_overview.php';";
 			$reloadstr .= "</script>\n";
 		}
+		else if (isset($_REQUEST["action"]) && $_REQUEST["action"]=='generate')
+		{
+			var_dump($view);
+		}
 	}
 
-	
 
     if($view->view_kurzbz != 'vw_')
         $htmlstr .= "<br><div class='kopf'>View <b>".$view->view_kurzbz."</b></div>\n";
@@ -86,10 +98,11 @@
 	$htmlstr .= "	<table class='detail'>\n";
 	$htmlstr .= "			<tr>\n";
 	$htmlstr .= "				<td>View</td>\n";
-	$htmlstr .= "				<td><input class='detail' type='text' name='view_kurzbz' size='22' maxlength='32' value='".$db->convert_html_chars($view->view_kurzbz)."' onchange='submitable()'>\n";
+	$htmlstr .= "				<td><input class='detail' type='text' name='view_kurzbz' size='22' maxlength='32' value='".$db->convert_html_chars($view->view_kurzbz)."' onchange='submitable()'></td>\n";
+	$htmlstr .= "				<td style='visibility:hidden;'><input class='detail' type='text' name='view_id' size='22' maxlength='32' value='".$view->view_id."' onchange='submitable()'></td>\n";
 	$htmlstr .= "				<td>Table</td>\n";
 	$htmlstr .= "				<td><input class='detail' type='text' name='table_kurzbz' size='22' maxlength='32' value='".$db->convert_html_chars($view->table_kurzbz)."' onchange='submitable()'>\n";
-	$htmlstr .= "				Static: <input class='detail' type='checkbox' name='publish' ".($view->static?'checked="checked"':'')." onchange='submitable()'></td>\n";
+	$htmlstr .= "				Static: <input class='detail' type='checkbox' name='static' ".($view->static?'checked="checked"':'')." onchange='submitable()'></td>\n";
 	$htmlstr .= "			</tr>\n";
 	$htmlstr .= "			<tr>\n";
 	$htmlstr .= "				<td rowspan='2' valign='top'>SQL</td>\n";
@@ -107,6 +120,7 @@
 		$htmlstr .= "	<input type='hidden' name='new' value='new'>";
 	$htmlstr .= "	<input type='submit' value='save' name='action'>\n";
 	$htmlstr .= "	<input type='button' value='Reset' onclick='unchanged()'>\n";
+	$htmlstr .= "	<input type='submit' value='generate' name='action'>\n";
 	$htmlstr .= "</div>";
 	$htmlstr .= "</form>";
 	$htmlstr .= "<div class='inserterror'>".$errorstr."</div>"

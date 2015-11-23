@@ -43,14 +43,14 @@ if(isset($_GET['action']))
 {
 	if($_GET['action']=='delete')
 	{
-		if(!$view->delete($_GET['view_kurzbz']))
+		if(!$view->delete($_GET['view_id']))
 			echo '<script>alert("Der Eintrag konnte nicht gelöscht werden!");</script>';
 	}
 }
 
 if (!$view->loadAll())
 {
-    die($view->errormsg);
+		die($view->errormsg);
 }
 
 ?>
@@ -121,7 +121,7 @@ if (!$view->loadAll())
 				<?php foreach ($view->result as $view): ?>
 					<tr>
 						<td class="overview-id">
-							<a href="view_details.php?view_kurzbz=<?php echo $view->view_kurzbz ?>" target="frame_view_details">
+							<a href="view_details.php?view_id=<?php echo $view->view_id ?>" target="frame_view_details">
 								<?php echo $view->view_kurzbz ?>
 							</a>
 						</td>
@@ -141,7 +141,7 @@ if (!$view->loadAll())
 							<?php echo $db->convert_html_chars(substr($view->sql,0,32)) ?>...
 						</td>
 						<td>
-							<a href="view_overview.php?action=delete&view_kurzbz=<?php echo $view->view_kurzbz ?>" onclick="return confdel()">entfernen</a>
+							<a href="view_overview.php?action=delete&view_id=<?php echo $view->view_id ?>" onclick="return confdel()">entfernen</a>
 						</td>
 					</tr>
 				<?php endforeach; ?>
