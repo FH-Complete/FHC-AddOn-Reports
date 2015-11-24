@@ -85,7 +85,7 @@
 		}
 		else if (isset($_REQUEST["action"]) && $_REQUEST["action"]=='generate')
 		{
-			$view->generate();
+			$view->generateView();
 		}
 	}
 

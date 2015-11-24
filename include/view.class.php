@@ -126,24 +126,6 @@ class view extends basis_db
 		return true;
 	}
 
-	/**
-	 * Prueft, ob eine View bereits generiert wurde
-	 * @return true wenn erstellt, false, wenn nicht
-	 */
-	public function getView()
-	{
-		$qry = ' SELECT table_name FROM INFORMATION_SCHEMA.views WHERE table_name='.
-			$this->db_add_param($this->view_kurzbz_old).';';
-
-		if(!$this->db_query($qry))
-		{
-			$this->errormsg = 'Fehler bei einer Datenbankabfrage';
-			return false;
-		}
-
-		return $this->db_fetch_object();
-	}
-
 
 	/**
 	 * Speichert den aktuellen Datensatz in die Datenbank
@@ -155,6 +137,8 @@ class view extends basis_db
 	{
 		if(!$this->validate($this->view_kurzbz))
 			die("Ungueltige Zeichen in der view_kurzbz!");
+
+
 
 		if($this->new)
 		{
@@ -171,10 +155,10 @@ class view extends basis_db
 		{
 			if($this->view_kurzbz !== $this->view_kurzbz_old && $v = $this->getView())
 			{
-				$qry='ALTER VIEW reports.'.$this->view_kurzbz_old.' RENAME TO '.
+				$qryV='ALTER VIEW reports.'.$this->view_kurzbz_old.' RENAME TO '.
 					$this->view_kurzbz.';';
 
-				if(!$this->db_query($qry))
+				if(!$this->db_query($qryV))
 				{
 					$this->errormsg = 'Fehler bei einer Datenbankabfrage';
 					return false;
@@ -188,7 +172,7 @@ class view extends basis_db
 				return false;
 			}
 
-			$qry='UPDATE addon.tbl_rp_view SET'.
+			$qry='BEGIN;UPDATE addon.tbl_rp_view SET'.
 				' view_kurzbz='.$this->db_add_param($this->view_kurzbz).', '.
 				' table_kurzbz='.$this->db_add_param($this->table_kurzbz).', '.
 				' sql='.$this->db_add_param($this->sql).', '.
@@ -225,15 +209,39 @@ class view extends basis_db
 					return false;
 				}
 			}
+			else
+			{
+				if($this->getView())//wenn es schon eine generierte View gibt, wird sie neu generiert, um Inkonsistenzen zu vermeiden
+				{
+					if(!$this->generateView())
+					{
+						$this->db_query('ROLLBACK');
+						$this->errormsg = 'Fehler beim neu erstellen der View';
+						return false;
+					}
+					else
+					{
+						$this->db_query('COMMIT');
+					}
+				}
+				else
+				{
+						$this->db_query('COMMIT');
+				}
+
+			}
 
 		}
 		else
 		{
+			$this->db_query('ROLLBACK');
 			$this->errormsg = 'Fehler beim Update des View-Datensatzes';
 			return false;
 		}
 
 		$this->view_kurzbz_old = $this->view_kurzbz;
+
+
 		return $this->view_id;
 	}
 
@@ -246,14 +254,23 @@ class view extends basis_db
 	 */
 	public function delete($view_id)
 	{
-		$qry = "DELETE FROM addon.tbl_rp_view WHERE view_id=".$this->db_add_param($view_id, FHC_INTEGER).";";
+		$qry = "BEGIN;DELETE FROM addon.tbl_rp_view WHERE view_id=".$this->db_add_param($view_id, FHC_INTEGER).";";
+
+		if(!$this->dropView())
+		{
+			$this->db_query("ROLLBACK");
+			return false;
+		}
+
 
 		if($this->db_query($qry))
 		{
+			$this->db_query("COMMIT");
 			return true;
 		}
 		else
 		{
+			$this->db_query("ROLLBACK");
 			$this->errormsg='Fehler beim Löschen des Eintrages';
 			return false;
 		}
@@ -275,7 +292,7 @@ class view extends basis_db
 	 *
 	 * @return true wenn ok, sonst false
 	 */
-	public function generate()
+	public function generateView()
 	{
 		if($this->getView())
 			$this->dropView();
@@ -285,13 +302,8 @@ class view extends basis_db
 			$this->view_kurzbz." AS ".
 			$this->sql;
 
-		if($this->db_query($qry))
+		if(!$this->db_query($qry))
 		{
-			$this->db_query('COMMIT');
-		}
-		else
-		{
-			$this->db_query('ROLLBACK');
 			$this->errormsg = 'Fehler beim erzeugen der View';
 			return false;
 		}
@@ -310,16 +322,29 @@ class view extends basis_db
 		$qry="DROP VIEW reports.".
 			$this->view_kurzbz.";";
 
-		if($this->db_query($qry))
+		if(!$this->db_query($qry))
 		{
-			$this->db_query('COMMIT');
-		}
-		else
-		{
-			$this->db_query('ROLLBACK');
 			$this->errormsg = 'Fehler beim erzeugen der View';
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Gibt eine View zurück
+	 * @return View, wenn erstellt, false wenn nicht
+	 */
+	public function getView()
+	{
+		$qry = ' SELECT table_name FROM INFORMATION_SCHEMA.views WHERE table_name='.
+			$this->db_add_param($this->view_kurzbz_old).';';
+
+		if(!$this->db_query($qry))
+		{
+			$this->errormsg = 'Fehler bei einer Datenbankabfrage';
+			return false;
+		}
+
+		return $this->db_fetch_object();
 	}
 }

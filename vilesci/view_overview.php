@@ -97,6 +97,9 @@ if (!$view->loadAll())
 		<table class="tablesorter" id="t1">
 			<thead>
 				<tr>
+					<th title="ID der View">
+						ID
+					</th>
 					<th title="Bezeichnung der View">
 						View
 					</th>
@@ -121,6 +124,11 @@ if (!$view->loadAll())
 				<?php foreach ($view->result as $view): ?>
 					<tr>
 						<td class="overview-id">
+							<a href="view_details.php?view_id=<?php echo $view->view_id ?>" target="frame_view_details">
+								<?php echo $view->view_id ?>
+							</a>
+						</td>
+						<td>
 							<a href="view_details.php?view_id=<?php echo $view->view_id ?>" target="frame_view_details">
 								<?php echo $view->view_kurzbz ?>
 							</a>
