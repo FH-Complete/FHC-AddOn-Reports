@@ -33,7 +33,7 @@
 	if(!$rechte->isBerechtigt('addon/reports'))
 		die('Sie haben keine Berechtigung fuer dieses AddOn!');
 
-	$reloadstr = '';  // neuladen der liste im oberen frame
+	$reload = false;
 	$htmlstr = '';
 	$errorstr = ''; //fehler beim insert
 	$sel = '';
@@ -78,17 +78,19 @@
 			{
 				$errorstr .= $view->errormsg;
 			}
-
-			$reloadstr .= "<script type='text/javascript'>\n";
-			$reloadstr .= "	parent.frame_view_overview.location.href='view_overview.php';";
-			$reloadstr .= "</script>\n";
+			$reload = true;
 		}
 		else if (isset($_REQUEST["action"]) && $_REQUEST["action"]=='generate')
 		{
 			$view->generateView();
+			$reload = true;
+		}
+		else if (isset($_REQUEST["action"]) && $_REQUEST["action"]=='drop')
+		{
+			$view->dropView();
+			$reload = true;
 		}
 	}
-
 
     if($view->view_kurzbz != 'vw_')
         $htmlstr .= "<br><div class='kopf'>View <b>".$view->view_kurzbz."</b></div>\n";
@@ -121,6 +123,7 @@
 	$htmlstr .= "	<input type='submit' value='save' name='action'>\n";
 	$htmlstr .= "	<input type='button' value='Reset' onclick='unchanged()'>\n";
 	$htmlstr .= "	<input type='submit' value='generate' name='action'>\n";
+	$htmlstr .= "	<input type='submit' value='drop' name='action'>\n";
 	$htmlstr .= "</div>";
 	$htmlstr .= "</form>";
 	$htmlstr .= "<div class='inserterror'>".$errorstr."</div>"
@@ -210,8 +213,13 @@ function submitable()
 
 <?php
 	echo $htmlstr;
-	echo $reloadstr;
+
 ?>
+<?php if($reload): ?>
+<script type='text/javascript'>
+	parent.frame_view_overview.location.href='view_overview.php';
+</script>
+<?php endif; ?>
 
 </body>
 </html>

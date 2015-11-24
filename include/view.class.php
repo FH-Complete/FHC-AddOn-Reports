@@ -246,6 +246,23 @@ class view extends basis_db
 	}
 
 
+	public function setLastCopy($time = null)
+	{
+		//Pruefen ob view_id eine gueltige Zahl ist
+		if(!is_numeric($this->view_id))
+		{
+			$this->errormsg = 'view_id muss eine gueltige Zahl sein';
+			return false;
+		}
+
+		$qry='UPDATE addon.tbl_rp_view SET'.
+		' lastcopy='.$this->db_add_param($time).
+			' WHERE view_id='.$this->db_add_param($this->view_id).';';
+
+		$this->db_query($qry);
+		return true;
+	}
+
 	/**
 	 * Loescht einen Eintrag
 	 *
@@ -307,6 +324,8 @@ class view extends basis_db
 			$this->errormsg = 'Fehler beim erzeugen der View';
 			return false;
 		}
+
+		$this->setLastCopy('now()');
 		return true;
 	}
 
@@ -327,6 +346,7 @@ class view extends basis_db
 			$this->errormsg = 'Fehler beim erzeugen der View';
 			return false;
 		}
+		$this->setLastCopy(null);
 		return true;
 	}
 

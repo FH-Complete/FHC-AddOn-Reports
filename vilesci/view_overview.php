@@ -21,6 +21,7 @@ require_once('../../../config/vilesci.config.inc.php');
 require_once('../../../include/functions.inc.php');
 require_once('../include/view.class.php');
 require_once('../../../include/benutzerberechtigung.class.php');
+require_once('../../../include/datum.class.php');
 
 if (!$db = new basis_db())
 {
@@ -69,6 +70,15 @@ if (!$view->loadAll())
 				padding: 0;
 				vertical-align: middle;
 			}
+
+		.notGenerated {
+			background: url("../../../skin/images/ampel_rot.png") no-repeat center center;
+  		background-size: 10px 10px;
+  		padding-left: 5px;
+  		padding-right: 5px;
+  		margin-left: 2px;
+  		margin-right: 2px;
+		}
 		</style>
 		<script language="JavaScript" type="text/javascript">
 			$(function() {
@@ -140,10 +150,15 @@ if (!$view->loadAll())
 							<?php if ($view->static) echo '✓' ?>
 						</td>
 						<td align="center">
-							<?php echo $view->lastcopy ?>
-							<a href="../cis/vorschau.php?view_kurzbz=<?php echo $view->view_kurzbz?>&debug=true" target="frame_view_details">
-								<img title="<?php echo $view->view_kurzbz ?> generieren" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" />
-							</a>
+							<?php
+							if(!isset($view->lastcopy))
+								echo '<span class="notGenerated"></span>';
+							else
+							{
+								$dt = new datum();
+								echo $dt->formatDatum($view->lastcopy);
+							}
+							?>
 						</td>
 						<td>
 							<?php echo $db->convert_html_chars(substr($view->sql,0,32)) ?>...
