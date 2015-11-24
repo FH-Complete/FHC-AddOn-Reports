@@ -410,10 +410,11 @@ EOT;
 // },
 // "series":{
 //  "Gesamt":{
-//  "type":"column"
+//    "zIndex": -1,
+//    "type":"column"
 //  },
 //  "Inland":{
-//   "type":"pie","center":["10%","10%"],"size":["20%","20%"]
+//    "type":"pie","center":["10%","10%"],"size":["20%","20%"]
 //  }
 // }
 //}
@@ -661,10 +662,8 @@ EOT;
 				<div id="hcChart<?php echo $this->chart_id ?>" class="<?php echo $class ?>" style="border: 1px solid transparent;"></div>
 				<?php
 					$json = $this->getHighChartData();
-					if(!$json)
-						return false;
 				?>
-				<?php if(!$json)die($this->errormsg);?>
+				<?php if(!$json)return false;?>
 				<script>$("#hcChart"+<?php echo $this->chart_id ?>).highcharts(<?php echo $json; ?>);</script>
 			<?php break;
 		}
@@ -736,8 +735,8 @@ EOT;
 
 				$phantomData = $this->getHighChartData();
 
-				if(!$phantomData)
-					return false;
+
+				if(!$phantomData)return false;
 
 				$ph = new phantom();
 				$p = $ph->render(array("infile" => $phantomData, "scale" => $scale, "width" => $width));

@@ -74,7 +74,13 @@ if ($htmlbody): ?>
 				$i++;
 			}
 
-			echo $chart->getHtmlDiv($class);
+			$htmlDiv = $chart->getHtmlDiv($class);
+
+			if(!$htmlDiv)
+				die ($chart->errormsg);
+
+
+			echo $htmlDiv;
 		endforeach;
 
 		echo $chart->getFooter();

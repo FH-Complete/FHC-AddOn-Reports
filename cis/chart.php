@@ -56,5 +56,10 @@ if(isset($chart->statistik->berechtigung_kurzbz))
 	if(!$rechte->isBerechtigt($chart->statistik->berechtigung_kurzbz))
 		die("Sie haben keine Berechtigung fuer diesen Chart");
 
-echo $chart->getHtmlDiv();
+$htmlDiv = $chart->getHtmlDiv();
+
+if(!$htmlDiv)
+	die ($chart->errormsg);
+
+echo $htmlDiv;
 
