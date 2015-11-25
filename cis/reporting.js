@@ -43,8 +43,6 @@ function loadStatistik(statistik_kurzbz)
 
 function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 {
-	// generisch
-	$('#filter').hide();
 
 	var url = undefined;
 
@@ -98,7 +96,6 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 				success: function(data)
 				{
 					$('#spinner').hide();
-					$('#filter').hide();
 
 					//.show und resize müssen dürfen nicht nach dem hineinschreiben
 					//der daten in das div ausgeführt werden. Bei .show() stimmt die größe nicht
@@ -132,12 +129,12 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 
 function showFilter(statistik_kurzbz, report_id, chart_id)
 {
+	$('#filter').show();
 	$(window).trigger('resize');
 
 	$('#spinner').hide();
 	$('#welcome').hide();
 	$('#content').hide();
-	$('#filter').show();
 	$("#filter-PdfLink").hide();
 	$("#filter-debugLink").hide();
 
@@ -154,6 +151,7 @@ function showFilter(statistik_kurzbz, report_id, chart_id)
 		//wenn keine filter existieren
 		if(!$.trim($('#filter-input').html()) && report_id === undefined)
 		{
+			$('#filter').hide();
 			//laden wir direkt die daten
 			loadData(statistik_kurzbz, report_id, chart_id,{});
 		}
@@ -235,7 +233,6 @@ function hideSidebar()
 
 function runFilter(type)
 {
-	$('#filter').hide();
 
 	var inputs = $('#filter-input > *'),
 		chart_id = $('#filter-input').attr('data-chart_id'),
