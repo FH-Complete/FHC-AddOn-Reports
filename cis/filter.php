@@ -154,11 +154,11 @@ else if(isset($report_id) && $report_id != 'undefined')
 	{
 		if($filter->isFilter($var))
 		{
-			$html .= $var . ': ' . $filter->getHtmlWidget($var)."<br>";
+			$html .= $var . ': ' . $filter->getHtmlWidget($var);
 		}
 		else
 		{
-			$html .= $var . ': <input type="text" id="' . $var . '" name="' . $var . '" value=""><br>';
+			$html .= $var . ': <input type="text" id="' . $var . '" name="' . $var . '" value="">';
 		}
 	}
 
