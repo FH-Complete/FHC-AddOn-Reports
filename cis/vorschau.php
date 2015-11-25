@@ -52,7 +52,6 @@
 		<script type="text/javascript" src="../include/js/pivottable/jquery.ui.touch-punch.min.js"></script>
 
 	</head>
-
 	<body>
 		<div id="spinner" style="display:none; width:80%; margin-left:10%; top:50px; position:absolute; z-index:10;">
 			<div class="progress">
@@ -101,7 +100,8 @@
 			}
 
 			?>
-	  </script>
+
+		</script>
 	</body>
 </html>
 

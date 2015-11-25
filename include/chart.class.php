@@ -405,13 +405,30 @@ EOT;
 //{
 // "xAxis":{
 //  "labels":{
-//  "rotation":90  // Der Winkel der X-Achsenbeschriftung
+//   "rotation":90  // Der Winkel der X-Achsenbeschriftung
 //  }
 // },
+// "yAxis":[
+//  {
+//   "title":{"text":"Test Achse(rechts)"},
+//   "labels":{
+//    "format":"{value} Personen",
+//    "style":{"color":"#FF0000"}
+//   },
+//   "opposite":true
+//  },
+//  {"title":{"text":"Test Achse(links)"}}
+// ],
 // "series":{
-//  "Gesamt":{
+//  "Ausland":{
 //    "zIndex": -1,
-//    "type":"column"
+//    "type":"column",
+//    "yAxis":1
+//  },
+//  "Ausland 2Stg":{
+//    "zIndex": -1,
+//    "type":"column",
+//    "yAxis":1
 //  },
 //  "Inland":{
 //    "type":"pie","center":["10%","10%"],"size":["20%","20%"]
@@ -886,10 +903,6 @@ EOT;
 			),
 			'plotOptions' => array('series' => array('animation' => true)),//initale animation
 			'xAxis' => $xAxis,
-			'yAxis' => array
-			(
-				'title' => array('text' => ' ',),
-			),
 			'series' => $series
 		);
 
@@ -935,8 +948,14 @@ EOT;
 			}
 		}
 
-		//series wieder in normale arrays zurückwandeln, da highcharts keine assoziativen entgegen nimmt!
+		//series und yAxis in normale arrays zurückwandeln, da highcharts keine assoziativen entgegen nimmt!
 		$phantomData["series"] = array_values($phantomData["series"]);
+
+		//die info yAxis muss existieren, darum wird hier abgefragt, ob welche in den preferences definiert wurden, wenn nicht wird eine leere angelegt
+		if(isset($phantomData["yAxis"]))
+			$phantomData["yAxis"] = array_values($phantomData["yAxis"]);
+		else
+			$phantomData["yAxis"] = array('title' => array('text' => ' ',));
 
 		//gleiches spiel mit den drilldown infos
 		if(isset($drilldown))

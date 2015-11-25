@@ -62,4 +62,5 @@ if(!$htmlDiv)
 	die ($chart->errormsg);
 
 echo $htmlDiv;
+?>
 
