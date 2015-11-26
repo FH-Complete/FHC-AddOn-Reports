@@ -55,7 +55,10 @@ require_once('../../../config/vilesci.config.inc.php');
 		}
 	</style>
   <script>
-
+	var folderStates = ["Reports", "Charts", "Statistiken"];
+	folderStates["Reports"] = "closed";
+	folderStates["Charts"] = "closed";
+	folderStates["Statistiken"] = "closed";
 
 	  function die(msg)
 	  {
@@ -180,6 +183,11 @@ require_once('../../../config/vilesci.config.inc.php');
 				}
 			});
 
+	 		$('#entityTree').tree({
+				onExpand: function(node){
+					folderStates[node.text] = node.state;
+				}
+			});
 	 		$('#menueTree').tree({
 				onContextMenu: function(e, node)
 				{
@@ -243,9 +251,9 @@ require_once('../../../config/vilesci.config.inc.php');
 				 function(data){
 				 	rebuildMenue();
 				 });
- 			}
- 			else if(ent.report_id)
- 			{
+			}
+			else if(ent.report_id)
+			{
 				AJAXCall(
 				"action=addEntityToMenue" +
 				"&report_id=" +	ent.report_id +
@@ -254,48 +262,48 @@ require_once('../../../config/vilesci.config.inc.php');
 				 function(data){
 				 	rebuildMenue();
 				 });
- 			}
- 		}
+			}
+		}
 
- 		function rebuildMenue()
- 		{
+		function rebuildMenue()
+		{
 			AJAXCall("action=menueBaum", function(data)
 			{
-	 			$('#menueTree').tree({data: data});
+				$('#menueTree').tree({data: data});
 			});
- 		}
+		}
 
- 		function rebuildAllRCS()		//alle Reports Charts und Statistiken neu holen und anzeigen
- 		{
+		function rebuildAllRCS()		//alle Reports Charts und Statistiken neu holen und anzeigen
+		{
 			AJAXCall("action=alleDaten", function(data)
 			{
-				//report/statistik/chart-Ordner schließen
-				data[0].state = "closed"
-				data[1].state = "closed"
-				data[2].state = "closed"
+				//report/statistik/chart-Ordner geöffnet status
+				data[0].state = folderStates["Reports"];
+				data[1].state = folderStates["Charts"];
+				data[2].state = folderStates["Statistiken"];
 				$('#entityTree').tree({data: data});
 			});
- 		}
+		}
 
- 		function saveNewEntry(entry)
- 		{
+		function saveNewEntry(entry)
+		{
 			alert("spinner show ");
 
 			AJAXCall("action=alleDaten", function(data){
 				alert("hackerl show ");
 			});
- 		}
+		}
 
 
 
- 		function add()
- 		{
- 			var txt = $("#menueAdd").val();
- 			if(txt === "")
- 			{
- 				alert("Es wurde kein Name angegeben");
- 				return;
- 			}
+		function add()
+		{
+			var txt = $("#menueAdd").val();
+			if(txt === "")
+			{
+				alert("Es wurde kein Name angegeben");
+				return;
+			}
 
  			$("#menueAdd").val("");
 
