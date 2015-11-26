@@ -17,15 +17,15 @@
  *
  * Authors: Andreas Moik <moik@technikum-wien.at>
  */
-require_once('../../../config/vilesci.config.inc.php');
-require_once('../../../include/globals.inc.php');
-require_once('../../../include/functions.inc.php');
-require_once('../../../include/benutzerberechtigung.class.php');
-require_once('../../../include/statistik.class.php');
-require_once('../include/chart.class.php');
-require_once('../include/report.class.php');
-require_once('../include/rp_gruppe.class.php');
-require_once('../include/rp_gruppenzuordnung.class.php');
+require_once(dirname(__FILE__).'/../../../config/vilesci.config.inc.php');
+require_once(dirname(__FILE__).'/../../../include/globals.inc.php');
+require_once(dirname(__FILE__).'/../../../include/functions.inc.php');
+require_once(dirname(__FILE__).'/../../../include/benutzerberechtigung.class.php');
+require_once(dirname(__FILE__).'/../../../include/statistik.class.php');
+require_once(dirname(__FILE__).'/../include/chart.class.php');
+require_once(dirname(__FILE__).'/../include/report.class.php');
+require_once(dirname(__FILE__).'/../include/rp_gruppe.class.php');
+require_once(dirname(__FILE__).'/../include/rp_gruppenzuordnung.class.php');
 
 $user = get_uid();
 $rechte = new benutzerberechtigung();

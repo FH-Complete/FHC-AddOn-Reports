@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  *
  * Authors: Christian Paminger,
+ *			Andreas Moik <moik@technikum-wien.at>
  */
 
 // pChart library inclusions

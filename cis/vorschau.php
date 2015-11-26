@@ -61,7 +61,7 @@
 			</div>
 		</div>
 
-		<div style="display: none;" id="filter">
+		<div style="display: none;margin-top:2%;margin-bottom:2%;" id="filter">
 			<div class="col-xs-12 col-sm-9">
 				<form class="form-inline" onsubmit="return false">
 					<span id="filter-input"></span>

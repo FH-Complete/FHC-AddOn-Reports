@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  *
  * Authors: Andreas Österreicher <andreas.oesterreicher@technikum-wien.at>
+ *			Andreas Moik <moik@technikum-wien.at>
  */
 require_once('../../../config/vilesci.config.inc.php');
 require_once('../../../include/globals.inc.php');

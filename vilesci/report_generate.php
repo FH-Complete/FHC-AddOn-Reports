@@ -103,7 +103,7 @@
 		{
 			$chart->statistik = new statistik($chart->statistik_kurzbz);
 			if (!$chart->statistik->loadData())
-				die ('Data not loaded!<br/>'.$chart->statistik->errormsg);
+				die ('Data not loaded!'.$chart->statistik->errormsg);
 
 			$vars = $chart->statistik->parseVars($chart->statistik->sql);
 
@@ -111,12 +111,12 @@
 			if (!$chart->statistik->writeCSV($datafile,',','"'))
 			{
 				if($type == "debug")
-					die('File ../data/data'.$chart->statistik->statistik_kurzbz.'not written!<br/>'.$chart->statistik->errormsg);
+					die('File ../data/data'.$chart->statistik->statistik_kurzbz.'not written!'.$chart->statistik->errormsg);
 				else
 					die("Der Report konnte nicht erstellt werden!");
 			}
 			else
-				$htmlstr.= 'File ../data/data'.$chart->statistik->statistik_kurzbz.' written!<br/>';
+				$htmlstr.= '<br><br>File ../data/data'.$chart->statistik->statistik_kurzbz.' written!';
 
 			$outputfilename=$chart->writePNG();
 
@@ -161,23 +161,22 @@
 	$fh=fopen($docinfoFilename,'w');
 	fwrite($fh,$report->docinfo);
 	fclose($fh);
-	$htmlstr.= $docinfoFilename.' is written!<br/>';
+	$htmlstr.= '<br><br>'.$docinfoFilename.' is written!';
 
 	// ***** Write ContentFile
 	$fh=fopen($filename,'w');
 	fwrite($fh,$content);
 	fclose($fh);
-	$htmlstr.=$filename.' is written!<br/>';
-	$htmlstr.= '<br><br>';
+	$htmlstr.='<br><br>'.$filename.' is written!';
 
 	// ****** Create Destination Files
 
 	$cmd = 'asciidoc -o '.$htmlFilename.' -b html4 -a theme=flask -a data-uri -a toc2 -a pygments -a icons -a iconsdir='.$iconsdir.' -a asciimath '.$filename;
 	$htmlstr.=exec($cmd.' 2>&1', $out, $ret);
-	$htmlstr.= $cmd . '<br>';
+	$htmlstr.= '<br><br>'.$cmd;
 	if($ret != 0)
 	{
-		$htmlstr.= 'Asciidoc fehlgeschlagen:<br>';
+		$htmlstr.= '<br><br>Asciidoc fehlgeschlagen:<br>';
 		foreach($out as $o)
 			$htmlstr.= $o;
 		if($type != "debug")
@@ -185,21 +184,20 @@
 	}
 	if(count($out) > 0)
 	{
-		$htmlstr.= 'Asciidoc Warnungen:<br>';
+		$htmlstr.= '<br><br>Asciidoc Warnungen:<br>';
 		foreach($out as $o)
 			$htmlstr.= $o;
 	}
-	$htmlstr.=$htmlFilename.' is written!<br/>';
-	$htmlstr.= '<br><br>';
+	$htmlstr.='<br><br>'.$htmlFilename.' is written!';
 
 
 
 	$cmd = 'asciidoc -a docinfo -b docbook -o '.$xmlFilename.' '.$filename;
 	$htmlstr.=exec($cmd.' 2>&1', $out, $ret);
-	$htmlstr.= $cmd . '<br>';
+	$htmlstr.= '<br><br>'.$cmd;
 	if($ret != 0)
 	{
-		$htmlstr.= 'Asciidoc fehlgeschlagen:<br>';
+		$htmlstr.= '<br><br>Asciidoc fehlgeschlagen:<br>';
 		foreach($out as $o)
 			$htmlstr.= $o;
 		if($type != "debug")
@@ -207,20 +205,19 @@
 	}
 	if(count($out) > 0)
 	{
-		$htmlstr.= 'Asciidoc Warnungen:<br>';
+		$htmlstr.= '<br><br>Asciidoc Warnungen:<br>';
 		foreach($out as $o)
 			$htmlstr.= $o;
 	}
-	$htmlstr.=$xmlFilename.' is written!<br/>';
-	$htmlstr.= '<br><br>';
+	$htmlstr.='<br><br>'.$xmlFilename.' is written!';
 
 	// DB Latex is tricky so i used a new process
 	$command='dblatex -f docbook -t pdf -P latex.encoding=utf8 -P latex.unicode.use=1 -o '.$tmpFilename.' '.$xmlFilename;
-	$htmlstr.= $command.'<br/>';
+	$htmlstr.= '<br><br>'.$command;
 	$lastout=exec($command.' 2>&1', $out, $ret);
 	if($ret)
 	{
-		$htmlstr.= 'dblatex fehlgeschlagen:<br>';
+		$htmlstr.= '<br><br>dblatex fehlgeschlagen:<br>';
 		foreach($out as $o)
 			$htmlstr.= $o;
 		if($type != "debug")
@@ -230,29 +227,29 @@
 	$process = new process(escapeshellcmd($command));
 	for ($i=0;$process->status() && $i<10;$i++)
 	{
-		$htmlstr.= '<br/>The process is currently running';//ob_flush();flush();
+		$htmlstr.= '<br><br>The process is currently running';//ob_flush();flush();
 		usleep(1000000); // wait for 1 Second
 	}
 	if ($process->status())
 	{
 		$process->stop();
-		die ('<br/>Timeout in dbLatex execution!<br/>'.escapeshellcmd($command).'<br/>');
+		die ('Timeout in dbLatex execution: <br>"'.escapeshellcmd($command).'"');
 	}
 	elseif (@fopen($tmpFilename,'r'))
 	{
 		// move file
 		if (!rename($tmpFilename,$pdfFilename))
-			die ('<br/>Cannot remove File from '.$tmpFilename.' to '.$pdfFilename.'<br/>');
+			die ('Cannot remove File from '.$tmpFilename.' to '.$pdfFilename);
 	}
 	else
 	{
 		//var_dump($process);
 		if($type == "debug")
-			die('<br/>Cannot read File: '.$tmpFilename.'<br/>Maybe dblatex failed!<br/>'.escapeshellcmd($command));
+			die('Cannot read File: '.$tmpFilename.'<br>Maybe dblatex failed!'.escapeshellcmd($command));
 		else
 			die("Der Report konnte nicht erstellt werden!");
 	}
-	$htmlstr.=$pdfFilename.' is written!<br/>';
+	$htmlstr.='<br><br>'.$pdfFilename.' is written!';
 
 	if($type == "pdf")
 	{
