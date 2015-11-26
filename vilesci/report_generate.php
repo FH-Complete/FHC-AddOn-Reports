@@ -58,6 +58,17 @@
 			die("Der Report konnte nicht erstellt werden!");
 	}
 
+	// *************** Asciidoc Version Prüfen *******************
+	$asciidocHtmlVersion = "html5";		//standard
+
+	exec('asciidoc --version'.' 2>&1', $out, $ret);
+	$asciiVer = str_replace("asciidoc ","",$out);
+	if(!version_compare ( "8.6.4" , $asciiVer[0], "<" ))
+	{
+		$htmlstr .= "<br><br><span style='color:red;'>Achtung: Diese Asciidoc Version unterstützt nur html4!</span>";
+		$asciidocHtmlVersion = "html4";
+	}
+
 	// *************** Parameter pruefen und Daten laden *******************
 
 
@@ -178,7 +189,7 @@
 
 	// ****** Create Destination Files
 
-	$cmd = 'asciidoc -o '.$htmlFilename.' -b html4 -a theme=flask -a data-uri -a toc2 -a pygments -a icons -a iconsdir='.$iconsdir.' -a asciimath '.$filename;
+	$cmd = 'asciidoc -o '.$htmlFilename.' -b '.$asciidocHtmlVersion.' -a theme=flask -a data-uri -a toc2 -a pygments -a icons -a iconsdir='.$iconsdir.' -a asciimath '.$filename;
 	$htmlstr.=exec($cmd.' 2>&1', $out, $ret);
 	$htmlstr.= '<br><br>'.$cmd;
 	if($ret != 0)
