@@ -128,6 +128,13 @@
 					die("Der Report konnte nicht erstellt werden!");
 			}
 		}
+
+		if(isset($chart->description))
+		{
+			$mdfile='../data/Chart'.$chart->chart_id.'.md';
+			file_put_contents($mdfile, $chart->description);
+		}
+
 	}
 	// @todo weitere parameter pruefen
 
