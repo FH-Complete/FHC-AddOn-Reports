@@ -92,6 +92,8 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 					<th>Kurzbz</th>
 					<th>Pub</th>
 					<th>Bezeichnung</th>
+					<th>URL</th>
+					<th>SQL</th>
 					<th>Beschr.</th>
 					<th colspan="2">Aktion</th>
 				</tr>
@@ -113,6 +115,12 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 						</td>
 						<td>
 							<?php echo $row->bezeichnung; ?>
+						</td>
+						<td>
+							<?php if($row->url != null)echo substr($row->url, 0, 25)."..." ?>
+						</td>
+						<td>
+							<?php if($row->sql != null)echo substr($row->sql, 0, 25)."..." ?>
 						</td>
 						<td>
 							<a href="#" onclick="window.open('../../cms/content.php?content_id=<?php echo $row->content_id ?>', 'Beschreibung', 'width=600,height=600, scrollbars=yes');">
