@@ -303,6 +303,21 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_gruppe"))
 
 
 
+// Reports (rp) Report
+if(!$result = @$db->db_query("SELECT berechtigung_kurzbz FROM addon.tbl_rp_report"))
+{
+
+	$qry = 'ALTER TABLE addon.tbl_rp_report ADD COLUMN berechtigung_kurzbz varchar(32);
+			ALTER TABLE addon.tbl_rp_report ADD CONSTRAINT "fk_rp_report_berechtigung" FOREIGN KEY (berechtigung_kurzbz) REFERENCES system.tbl_berechtigung(berechtigung_kurzbz) ON UPDATE CASCADE ON DELETE RESTRICT;
+			';
+
+	if(!$db->db_query($qry))
+		echo '<strong>addon.tbl_rp_report: '.$db->db_last_error().'</strong><br>';
+	else
+		echo ' addon.tbl_rp_report: Tabelle addon.tbl_rp_report.berechtigung_kurzbz hinzugefuegt!<br>';
+}
+
+
 //Views
 if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_view"))
 {
@@ -338,24 +353,220 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_view"))
 // Reports (rp) Report
 if(!$result = @$db->db_query("SELECT berechtigung_kurzbz FROM addon.tbl_rp_report"))
 {
-
 	$qry = 'ALTER TABLE addon.tbl_rp_report ADD COLUMN berechtigung_kurzbz varchar(32);
 			ALTER TABLE addon.tbl_rp_report ADD CONSTRAINT "fk_rp_report_berechtigung" FOREIGN KEY (berechtigung_kurzbz) REFERENCES system.tbl_berechtigung(berechtigung_kurzbz) ON UPDATE CASCADE ON DELETE RESTRICT;
 			';
-
 	if(!$db->db_query($qry))
 		echo '<strong>addon.tbl_rp_report: '.$db->db_last_error().'</strong><br>';
 	else
 		echo ' addon.tbl_rp_report: Tabelle addon.tbl_rp_report.berechtigung_kurzbz hinzugefuegt!<br>';
-
-
 }
+
+
+
+
+
+
+/************************************  SELECT RECHTE FÜR USER "web"  ************************************/
+
+
+// Reports (rp) Chart
+if($result = @$db->db_query("SELECT * FROM information_schema.role_table_grants WHERE table_name='tbl_rp_chart' AND table_schema='addon' AND privilege_type='SELECT' AND grantee='web'"))
+{
+	if(!$db->db_fetch_object($result))
+	{
+		$qry = 'GRANT SELECT ON addon.tbl_rp_chart TO web;';
+
+		if(!$db->db_query($qry))
+			echo '<strong>addon.tbl_rp_chart: '.$db->db_last_error().'</strong><br>';
+		else
+			echo ' addon.tbl_rp_chart: User "web" SELECT Rechte gewaehrt!<br>';
+	}
+}
+
+
+
+
+// Reports (rp) Gruppe
+if($result = @$db->db_query("SELECT * FROM information_schema.role_table_grants WHERE table_name='tbl_rp_gruppe' AND table_schema='addon' AND privilege_type='SELECT' AND grantee='web'"))
+{
+	if(!$db->db_fetch_object($result))
+	{
+		$qry = 'GRANT SELECT ON addon.tbl_rp_gruppe TO web;';
+
+		if(!$db->db_query($qry))
+			echo '<strong>addon.tbl_rp_gruppe: '.$db->db_last_error().'</strong><br>';
+		else
+			echo ' addon.tbl_rp_gruppe: User "web" SELECT Rechte gewaehrt!<br>';
+	}
+}
+
+
+
+// (rp) gruppenzuordnung
+if($result = @$db->db_query("SELECT * FROM information_schema.role_table_grants WHERE table_name='tbl_rp_gruppenzuordnung' AND table_schema='addon' AND privilege_type='SELECT' AND grantee='web'"))
+{
+	if(!$db->db_fetch_object($result))
+	{
+		$qry = 'GRANT SELECT ON addon.tbl_rp_gruppenzuordnung TO web;';
+
+		if(!$db->db_query($qry))
+			echo '<strong>addon.tbl_rp_gruppenzuordnung: '.$db->db_last_error().'</strong><br>';
+		else
+			echo ' addon.tbl_rp_gruppenzuordnung: User "web" SELECT Rechte gewaehrt!<br>';
+	}
+}
+
+
+
+// Reports (rp) Report
+if($result = @$db->db_query("SELECT * FROM information_schema.role_table_grants WHERE table_name='tbl_rp_report' AND table_schema='addon' AND privilege_type='SELECT' AND grantee='web'"))
+{
+	if(!$db->db_fetch_object($result))
+	{
+		$qry = 'GRANT SELECT ON addon.tbl_rp_report TO web;';
+
+		if(!$db->db_query($qry))
+			echo '<strong>addon.tbl_rp_report: '.$db->db_last_error().'</strong><br>';
+		else
+			echo ' addon.tbl_rp_report: User "web" SELECT Rechte gewaehrt!<br>';
+	}
+}
+
+
+
+// Reports (rp) Report_chart
+if($result = @$db->db_query("SELECT * FROM information_schema.role_table_grants WHERE table_name='tbl_rp_report_chart' AND table_schema='addon' AND privilege_type='SELECT' AND grantee='web'"))
+{
+	if(!$db->db_fetch_object($result))
+	{
+		$qry = 'GRANT SELECT ON addon.tbl_rp_report_chart TO web;';
+
+		if(!$db->db_query($qry))
+			echo '<strong>addon.tbl_rp_report_chart: '.$db->db_last_error().'</strong><br>';
+		else
+			echo ' addon.tbl_rp_report_chart: User "web" SELECT Rechte gewaehrt!<br>';
+	}
+}
+
+
+
+// Reports (rp) Report_statistik
+if($result = @$db->db_query("SELECT * FROM information_schema.role_table_grants WHERE table_name='tbl_rp_report_statistik' AND table_schema='addon' AND privilege_type='SELECT' AND grantee='web'"))
+{
+	if(!$db->db_fetch_object($result))
+	{
+		$qry = 'GRANT SELECT ON addon.tbl_rp_report_statistik TO web;';
+
+		if(!$db->db_query($qry))
+			echo '<strong>addon.tbl_rp_report_statistik: '.$db->db_last_error().'</strong><br>';
+		else
+			echo ' addon.tbl_rp_report_statistik: User "web" SELECT Rechte gewaehrt!<br>';
+	}
+}
+
+
+// Reports (rp) Views
+if($result = @$db->db_query("SELECT * FROM information_schema.role_table_grants WHERE table_name='tbl_rp_view' AND table_schema='addon' AND privilege_type='SELECT' AND grantee='web' AND grantee='web'"))
+{
+	if(!$db->db_fetch_object($result))
+	{
+		$qry = 'GRANT SELECT ON addon.tbl_rp_view TO web;';
+
+		if(!$db->db_query($qry))
+			echo '<strong>addon.tbl_rp_view: '.$db->db_last_error().'</strong><br>';
+		else
+			echo ' addon.tbl_rp_view: User "web" SELECT Rechte gewaehrt!<br>';
+	}
+}
+
+
+
+
+// (public) filter
+if($result = @$db->db_query("SELECT * FROM information_schema.role_table_grants WHERE table_name='tbl_filter' AND table_schema='public' AND privilege_type='SELECT' AND grantee='web' AND grantee='web'"))
+{
+	if(!$db->db_fetch_object($result))
+	{
+		$qry = 'GRANT SELECT ON public.tbl_filter TO web;';
+
+		if(!$db->db_query($qry))
+			echo '<strong>public.tbl_filter: '.$db->db_last_error().'</strong><br>';
+		else
+			echo ' public.tbl_filter: User "web" SELECT Rechte gewaehrt!<br>';
+	}
+}
+
+
+// Reports (rp) Schema Reports
+if($result = @$db->db_query("SELECT * FROM information_schema.role_table_grants WHERE table_schema='reports' AND privilege_type='SELECT' AND grantee='web'"))
+{
+	if(!$db->db_fetch_object($result))
+	{
+		$qry = 'GRANT SELECT ON ALL TABLES IN SCHEMA reports TO web;';
+
+		if(!$db->db_query($qry))
+			echo '<strong>reports.*: '.$db->db_last_error().'</strong><br>';
+		else
+			echo ' reports.*: User "web" SELECT Rechte gewaehrt!<br>';
+	}
+}
+
+
+
+
+
+
+
+/************************************  11.15 tbl_rp_chart änderungen  ************************************/
+//longtitle einfuegen
+if(!$result = @$db->db_query("SELECT longtitle FROM addon.tbl_rp_chart LIMIT 1"))
+{
+	$qry = "ALTER TABLE addon.tbl_rp_chart ADD COLUMN longtitle varchar(128);";
+
+	if(!$db->db_query($qry))
+		echo '<strong>addon.tbl_rp_chart: '.$db->db_last_error().'</strong><br>';
+	else
+		echo ' addon.tbl_rp_chart: Spalte "longtitle" eingefuegt!<br>';
+}
+
+//aenderung title von varchar(32) auf varchar(64)
+if($result = @$db->db_query("SELECT * FROM information_schema.columns WHERE table_schema='addon' AND table_name='tbl_rp_chart' AND column_name='title'"))
+{
+	if($db->db_fetch_object($result)->character_maximum_length == 32)
+	{
+		$qry = "ALTER TABLE addon.tbl_rp_chart ALTER COLUMN title TYPE varchar(64)";
+
+		if(!$db->db_query($qry))
+			echo '<strong>addon.tbl_rp_chart: '.$db->db_last_error().'</strong><br>';
+		else
+			echo ' addon.tbl_rp_chart: Spalte "title" von varchar(32) auf varchar(64) geaendert!<br>';
+	}
+}
+
+//aenderung description von varchar(512) auf text
+if($result = @$db->db_query("SELECT * FROM information_schema.columns WHERE table_schema='addon' AND table_name='tbl_rp_chart' AND column_name='description'"))
+{
+	if($db->db_fetch_object($result)->data_type == "character varying")
+	{
+		$qry = "ALTER TABLE addon.tbl_rp_chart ALTER COLUMN description TYPE text";
+
+		if(!$db->db_query($qry))
+			echo '<strong>addon.tbl_rp_chart: '.$db->db_last_error().'</strong><br>';
+		else
+			echo ' addon.tbl_rp_chart: Spalte "description" von varchar(512) auf text geaendert!<br>';
+	}
+}
+
+
+
+
 echo '<br>Aktualisierung abgeschlossen<br><br>';
 echo '<h2>Gegenprüfung</h2>';
 
 // Liste der verwendeten Tabellen / Spalten des Addons
 $tabellen=array(
-	"addon.tbl_rp_chart"  => array("chart_id", "title", "description", "type", "preferences", "datasource", "datasource_type", "insertamum", "insertvon", "updateamum", "updatevon", "statistik_kurzbz")
+	"addon.tbl_rp_chart"  => array("chart_id", "title", "longtitle", "description", "type", "preferences", "datasource", "datasource_type", "insertamum", "insertvon", "updateamum", "updatevon", "statistik_kurzbz")
 	,"addon.tbl_rp_view"  => array("view_kurzbz", "table_kurzbz", "sql", "static", "lastcopy", "insertamum","insertvon","updateamum","updatevon")
 	,"addon.tbl_rp_report" => array("report_id", "title", "format", "description", "header", "footer", "body", "docinfo", "gruppe", "publish", "insertamum", "insertvon", "updateamum", "updatevon", "berechtigung_kurzbz")
 	,"addon.tbl_rp_report_chart" => array("reportchart_id","report_id","chart_id","insertamum","insertvon","updateamum","updatevon")

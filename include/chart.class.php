@@ -35,6 +35,7 @@ class chart extends basis_db
 	//Tabellenspalten
 	public $chart_id;
 	public $title;
+	public $longtitle;
 	public $description;
 	public $type;
 	public $sourcetype;
@@ -86,6 +87,7 @@ class chart extends basis_db
 		{
 			$this->chart_id			= $row->chart_id;
 			$this->title			= $row->title;
+			$this->longtitle			= $row->longtitle;
 			$this->description		= $row->description;
 			$this->type				= $row->type;
 			$this->sourcetype		= $row->sourcetype;
@@ -141,6 +143,7 @@ class chart extends basis_db
 
 			$obj->chart_id			= $row->chart_id;
 			$obj->title				= $row->title;
+			$obj->longtitle				= $row->longtitle;
 			$obj->description		= $row->description;
 			$obj->type				= $row->type;
 			$obj->sourcetype		= $row->sourcetype;
@@ -189,6 +192,7 @@ class chart extends basis_db
 
 			$obj->chart_id			= $row->chart_id;
 			$obj->title				= $row->title;
+			$obj->longtitle				= $row->longtitle;
 			$obj->description		= $row->description;
 			$obj->type				= $row->type;
 			$obj->sourcetype		= $row->sourcetype;
@@ -233,6 +237,7 @@ class chart extends basis_db
 
 				$obj->chart_id			= $row->chart_id;
 				$obj->title				= $row->title;
+				$obj->longtitle				= $row->longtitle;
 				$obj->description		= $row->description;
 				$obj->type				= $row->type;
 				$obj->sourcetype		= $row->sourcetype;
@@ -284,6 +289,7 @@ class chart extends basis_db
 
 			$obj->chart_id			= $row->chart_id;
 			$obj->title				= $row->title;
+			$obj->longtitle				= $row->longtitle;
 			$obj->description		= $row->description;
 			$obj->type				= $row->type;
 			$obj->sourcetype		= $row->sourcetype;
@@ -477,9 +483,10 @@ EOT;
 		{
 
 			//Neuen Datensatz einfuegen
-			$qry='BEGIN;INSERT INTO addon.tbl_rp_chart (title, description, publish, dashboard, dashboard_layout, dashboard_pos, statistik_kurzbz, type,sourcetype,preferences,datasource,datasource_type,
+			$qry='BEGIN;INSERT INTO addon.tbl_rp_chart (title, longtitle, description, publish, dashboard, dashboard_layout, dashboard_pos, statistik_kurzbz, type,sourcetype,preferences,datasource,datasource_type,
 			      insertamum, insertvon) VALUES('.
 			      $this->db_add_param($this->title).', '.
+			      $this->db_add_param($this->longtitle).', '.
 			      $this->db_add_param($this->description).', '.
 			      $this->db_add_param($this->publish, FHC_BOOLEAN).', '.
 			      $this->db_add_param($this->dashboard, FHC_BOOLEAN).', '.
@@ -503,6 +510,7 @@ EOT;
 			}
 			$qry='UPDATE addon.tbl_rp_chart SET'.
 				' title='.$this->db_add_param($this->title).', '.
+				' longtitle='.$this->db_add_param($this->longtitle).', '.
 				' description='.$this->db_add_param($this->description).', '.
 				' publish='.$this->db_add_param($this->publish, FHC_BOOLEAN).', '.
 				' dashboard='.$this->db_add_param($this->dashboard, FHC_BOOLEAN).', '.
@@ -1005,6 +1013,7 @@ EOT;
 
 				$obj->chart_id = $row->chart_id;
 				$obj->title = $row->title;
+				$obj->longtitle = $row->longtitle;
 				$obj->description = $row->description;
 				$obj->type = $row->type;
 				$obj->preferences = $row->preferences;

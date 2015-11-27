@@ -255,13 +255,11 @@
 	}
 	elseif (@fopen($tmpFilename,'r'))
 	{
-		// move file
 		if (!rename($tmpFilename,$pdfFilename))
 			die ('Cannot remove File from '.$tmpFilename.' to '.$pdfFilename);
 	}
 	else
 	{
-		//var_dump($process);
 		if($type == "debug")
 			die('Cannot read File: '.$tmpFilename.'<br>Maybe dblatex failed!'.escapeshellcmd($command));
 		else

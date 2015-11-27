@@ -67,6 +67,7 @@ if(isset($_REQUEST["action"]) && isset($_REQUEST["chart_id"]))
 	if ($_REQUEST["action"]=='save')
 	{
 		$chart->title = $_POST["title"];
+		$chart->longtitle = $_POST["longtitle"];
 		$chart->description = $_POST["description"];
 		$chart->type = $_POST["type"];
 		$chart->sourcetype = $_POST["sourcetype"];
@@ -129,7 +130,7 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 							Title
 						</td>
 						<td>
-							<input class="detail" type="text" name="title" size="22" maxlength="32" value="<?php echo $chart->title ?>" onchange="submitable()">
+							<input class="detail" type="text" name="title" size="22" maxlength="64" value="<?php echo $chart->title ?>" onchange="submitable()">
 						</td>
 						<td>
 							Type
@@ -151,6 +152,23 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 							<input class='detail' type='text' name='sourcetype' size='8' maxlength='16' value='<?php echo $chart->sourcetype ?>' onchange='submitable()'>
 						</td>
 					</tr>
+
+
+					<tr>
+						<td>
+							Long Title
+						</td>
+						<td>
+							<input class="detail" type="text" name="longtitle" size="22" maxlength="128" value="<?php echo $chart->longtitle ?>" onchange="submitable()">
+						</td>
+					</tr>
+
+
+
+
+
+
+
 					<tr>
 						<td>Datasource Type</td>
 						<td colspan="5">
