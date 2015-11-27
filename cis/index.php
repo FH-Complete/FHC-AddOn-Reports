@@ -37,6 +37,13 @@ $rp_gruppe = new rp_gruppe();
 $rp_gruppe->loadAll();
 
 
+//Sortierfunktionen für das seitliche Menue
+function titleSort($a, $b) {return strcmp($a->title, $b->title);}
+function bezeichnungSort($a, $b) {return strcmp($a->bezeichnung, $b->bezeichnung);}
+
+
+
+
 $buf = $rp_gruppe->result;
 
 for($i = 0; $i < count($rp_gruppe->result); $i++)
@@ -269,6 +276,7 @@ $daten = $buf;
 										<?php if(isset($l1->sub)):?>
 											<?php foreach($l1->sub as $l2):?>
 														<?php if(count($l2->statistik) > 0):?>
+														<?php usort($l2->statistik, "bezeichnungSort");?>
 															<?php foreach($l2->statistik as $st): ?>
 																<div class="report_<?php echo $l2->reportgruppe_id ?>_data reports_sidebar_entry" style="display: none;">
 																	<li><a href="#" onclick='loadStatistik("<?php echo urlencode($st->statistik_kurzbz)?>")' class="list-group-item"><?php echo $st->bezeichnung?></a></li>
@@ -276,6 +284,7 @@ $daten = $buf;
 															<?php endforeach; ?>
 														<?php endif;?>
 														<?php if(count($l2->chart) > 0):?>
+														<?php usort($l2->chart, "titleSort");?>
 															<?php foreach($l2->chart as $ch):?>
 																<div class="report_<?php echo $l2->reportgruppe_id ;?>_charts reports_sidebar_entry" style="display: none;">
 																	<li><a href="#" onclick='loadChart(<?php echo urlencode($ch->chart_id)?>, "<?php echo urlencode($ch->statistik_kurzbz)?>")' class="list-group-item"><?php echo $ch->title?></a></li>
@@ -283,6 +292,7 @@ $daten = $buf;
 															<?php endforeach; ?>
 														<?php endif;?>
 														<?php if(count($l2->report) > 0):?>
+														<?php usort($l2->report, "titleSort");?>
 															<?php foreach($l2->report as $re): ?>
 																<div class="report_<?php echo $l2->reportgruppe_id ?>_reports reports_sidebar_entry" style="display: none;">
 																	<li><a class="list-group-item" href="#" onclick='loadReport(<?php echo urlencode($re->report_id)?>)'><?php echo $re->title?></a></li>
