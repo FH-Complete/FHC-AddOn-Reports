@@ -158,15 +158,19 @@ if (!$view->loadAll())
 						</td>
 						<td align="center">
 							<?php
-							if(!isset($view->lastcopy))
-								echo '<span class="notGenerated"></span>';
-							else
+							if($view->static)
 							{
 								echo '<a href="view_overview.php?action=generateTable&view_id='.$view->view_id.'">';
 								echo '<img title="Tabelle generieren" anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" />';
 								echo '</a> ';
-								$dt = new datum();
-								echo $dt->formatDatum($view->lastcopy);
+
+								if(!isset($view->lastcopy))
+									echo '<span class="notGenerated"></span>';
+								else
+								{
+									$dt = new datum();
+									echo $dt->formatDatum($view->lastcopy);
+								}
 							}
 							?>
 						</td>
