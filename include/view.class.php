@@ -325,7 +325,6 @@ class view extends basis_db
 			return false;
 		}
 
-		$this->setLastCopy('now()');
 		return true;
 	}
 
@@ -346,7 +345,6 @@ class view extends basis_db
 			$this->errormsg = 'Fehler beim erzeugen der View';
 			return false;
 		}
-		$this->setLastCopy(null);
 		return true;
 	}
 

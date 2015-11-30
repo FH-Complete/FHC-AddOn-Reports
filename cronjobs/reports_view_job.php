@@ -53,6 +53,7 @@ foreach($view->result as $v)
 			{
 				die('Fehler bei einer Datenbankabfrage');
 			}
+			$v->setLastCopy(null);
 		}
 
 		//neue tabelle erzeugen
@@ -64,6 +65,7 @@ foreach($view->result as $v)
 		{
 			die('Fehler bei einer Datenbankabfrage');
 		}
+		$v->setLastCopy('now()');
 	}
 }
 
