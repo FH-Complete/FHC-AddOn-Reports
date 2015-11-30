@@ -22,6 +22,7 @@
 require_once(dirname(__FILE__).'/../../../include/basis_db.class.php');
 require_once(dirname(__FILE__).'/../include/phantom.class.php');
 require_once(dirname(__FILE__).'/../../../include/statistik.class.php');
+require_once(dirname(__FILE__).'/../../../vendor/autoload.php');
 
 class chart extends basis_db
 {
@@ -692,6 +693,9 @@ EOT;
 				<script>$("#hcChart"+<?php echo $this->chart_id ?>).highcharts(<?php echo $json; ?>);</script>
 			<?php break;
 		}
+
+		$md =  \Michelf\Markdown::defaultTransform($this->description);
+		echo '<div>'.$md.'</div>';
 
 		return ob_get_clean();
 	}
