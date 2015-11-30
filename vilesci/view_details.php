@@ -137,9 +137,7 @@
 <link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">
 <script src="../../../include/js/mailcheck.js"></script>
 <script src="../../../include/js/datecheck.js"></script>
-		<script type="text/javascript" src="../../../include/js/jquery.min.1.11.1.js"></script>
-<script type="text/javascript" src="../../../submodules/tablesorter/jquery.tablesorter.min.js"></script>
-<link rel="stylesheet" href="../../../skin/tablesort.css" type="text/css"/>
+<?php require_once("../../../include/meta/jquery.php"); ?>
 <style>
 	table.tablesorter tbody td
 	{

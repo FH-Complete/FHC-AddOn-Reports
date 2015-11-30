@@ -106,7 +106,7 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 	<head>
 		<title>DI-Quelle - Details</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<script type="text/javascript" src="../include/js/jquery-1.11.2.min.js"></script>
+		<?php require_once("../../../include/meta/jquery.php"); ?>
 		<link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">
 		<script src="../../../include/js/mailcheck.js"></script>
 		<script src="../../../include/js/datecheck.js"></script>
@@ -258,7 +258,6 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 			</script>
 		<?php endif; ?>
 
-		<script src="../../../include/js/jquery.min.1.11.1.js"></script>
 		<script src="../include/js/chart_details.js"></script>
 	</body>
 </html>
