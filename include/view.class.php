@@ -365,4 +365,44 @@ class view extends basis_db
 
 		return $this->db_fetch_object();
 	}
+
+	public function generateTable()
+	{
+		//nur statische
+		if($this->static)
+		{
+			//pruefen, ob bereits vorhanden
+			$qry = ' SELECT table_name FROM INFORMATION_SCHEMA.tables WHERE table_name='.
+				$this->db_add_param($this->table_kurzbz).';';
+
+			if(!$this->db_query($qry))
+			{
+				die('Fehler bei einer Datenbankabfrage');
+			}
+
+			//wenn bereits vorhanden, löschen
+			if($this->db_fetch_object())
+			{
+				$qry = ' DROP TABLE reports.'.
+				$this->table_kurzbz;
+
+				if(!$this->db_query($qry))
+				{
+					die('Fehler bei einer Datenbankabfrage');
+				}
+				$this->setLastCopy(null);
+			}
+
+			//neue tabelle erzeugen
+			$qry="CREATE TABLE reports.".
+				$this->table_kurzbz." AS ".
+				$this->sql;
+
+			if(!$this->db_query($qry))
+			{
+				die('Fehler bei einer Datenbankabfrage');
+			}
+			$this->setLastCopy('now()');
+		}
+	}
 }

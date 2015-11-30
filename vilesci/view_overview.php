@@ -47,6 +47,14 @@ if(isset($_GET['action']))
 		if(!$view->delete($_GET['view_id']))
 			echo '<script>alert("Der Eintrag konnte nicht gelöscht werden!");</script>';
 	}
+	else if ($_GET["action"]=='generateTable')
+	{
+		if (isset($_GET["view_id"]))
+		{
+			$gv = new view($_GET["view_id"]);
+			$gv->generateTable();
+		}
+	}
 }
 
 if (!$view->loadAll())
@@ -154,6 +162,9 @@ if (!$view->loadAll())
 								echo '<span class="notGenerated"></span>';
 							else
 							{
+								echo '<a href="view_overview.php?action=generateTable&view_id='.$view->view_id.'">';
+								echo '<img title="Tabelle generieren" anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" />';
+								echo '</a> ';
 								$dt = new datum();
 								echo $dt->formatDatum($view->lastcopy);
 							}

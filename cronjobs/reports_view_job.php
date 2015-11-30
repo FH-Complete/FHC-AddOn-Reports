@@ -30,43 +30,7 @@ $db = new basis_db();
 
 foreach($view->result as $v)
 {
-	//nur statische
-	if($v->static)
-	{
-
-		//pruefen, ob bereits vorhanden
-		$qry = ' SELECT table_name FROM INFORMATION_SCHEMA.tables WHERE table_name='.
-			$db->db_add_param($v->table_kurzbz).';';
-
-		if(!$db->db_query($qry))
-		{
-			die('Fehler bei einer Datenbankabfrage');
-		}
-
-		//wenn bereits vorhanden, löschen
-		if($db->db_fetch_object())
-		{
-			$qry = ' DROP TABLE reports.'.
-			$v->table_kurzbz;
-
-			if(!$db->db_query($qry))
-			{
-				die('Fehler bei einer Datenbankabfrage');
-			}
-			$v->setLastCopy(null);
-		}
-
-		//neue tabelle erzeugen
-		$qry="CREATE TABLE reports.".
-			$v->table_kurzbz." AS ".
-			$v->sql;
-
-		if(!$db->db_query($qry))
-		{
-			die('Fehler bei einer Datenbankabfrage');
-		}
-		$v->setLastCopy('now()');
-	}
+	$v->generateTable();
 }
 
 
