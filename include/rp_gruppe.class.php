@@ -25,6 +25,7 @@ class rp_gruppe extends basis_db
 	public $bezeichnung;
 	public $reportgruppe_id;
 	public $reportgruppe_parent_id;
+	public $sortorder;
 	public $insertamum;
 	public $insertvon;
 	public $updateamum;
@@ -43,6 +44,7 @@ class rp_gruppe extends basis_db
 		$this->bezeichnung = "";
 		$this->reportgruppe_id = "";
 		$this->reportgruppe_parent_id = "";
+		$this->sortorder = null;
 
 		if(!is_null($reportgruppe_id))
 			$this->load($reportgruppe_id);
@@ -70,13 +72,14 @@ class rp_gruppe extends basis_db
 
 		if($row = $this->db_fetch_object())
 		{
-			$this->reportgruppe_id			    = $row->reportgruppe_id;
-			$this->bezeichnung			        = $row->bezeichnung;
+			$this->reportgruppe_id					= $row->reportgruppe_id;
+			$this->bezeichnung							= $row->bezeichnung;
 			$this->reportgruppe_parent_id		= $row->reportgruppe_parent_id;
-			$this->updateamum		= $row->updateamum;
-			$this->updatevon		= $row->updatevon;
-			$this->insertamum		= $row->insertamum;
-			$this->insertvon		= $row->insertvon;
+			$this->sortorder								= $row->sortorder;
+			$this->updateamum								= $row->updateamum;
+			$this->updatevon								= $row->updatevon;
+			$this->insertamum								= $row->insertamum;
+			$this->insertvon								= $row->insertvon;
 		}
 		$this->new=false;
 		return true;
@@ -93,15 +96,21 @@ class rp_gruppe extends basis_db
 	 */
 	public function save()
 	{
+		if($this->reportgruppe_id != "" && $this->reportgruppe_id === $this->reportgruppe_parent_id)
+		{
+			$this->errormsg = 'reportgruppe_id darf nicht gleich reportgruppe_parent_id sein';
+			return false;
+		}
 
 		if($this->new)
 		{
 
 			//Neuen Datensatz einfuegen
-			$qry='BEGIN;INSERT INTO addon.tbl_rp_gruppe (bezeichnung, reportgruppe_parent_id,
+			$qry='BEGIN;INSERT INTO addon.tbl_rp_gruppe (bezeichnung, reportgruppe_parent_id, sortorder,
 					  insertamum, insertvon) VALUES('.
 					  $this->db_add_param($this->bezeichnung).', '.
 					  $this->db_add_param($this->reportgruppe_parent_id, FHC_INTEGER).', '.
+					  $this->db_add_param($this->sortorder, FHC_INTEGER).', '.
 					  'now(), '.
 					  $this->db_add_param($this->insertvon).');';
 		}
@@ -116,6 +125,7 @@ class rp_gruppe extends basis_db
 			$qry='UPDATE addon.tbl_rp_gruppe SET'.
 				' bezeichnung='.$this->db_add_param($this->bezeichnung).', '.
 				' reportgruppe_parent_id='.$this->db_add_param($this->reportgruppe_parent_id, FHC_INTEGER).', '.
+				' sortorder='.$this->db_add_param($this->sortorder, FHC_INTEGER).', '.
 				' updateamum= now(), '.
       	' updatevon='.$this->db_add_param($this->updatevon).
       	' WHERE reportgruppe_id='.$this->db_add_param($this->reportgruppe_id, FHC_INTEGER, false).';';
@@ -190,7 +200,7 @@ class rp_gruppe extends basis_db
 		$qry = "
 				SELECT *
 				FROM addon.tbl_rp_gruppe AS gr
-				ORDER BY gr.reportgruppe_id desc, gr.reportgruppe_parent_id desc;
+				ORDER BY gr.sortorder ASC;
 			";
 
 
@@ -204,7 +214,6 @@ class rp_gruppe extends basis_db
 		{
 			$this->result[] = $row;
 		}
-
 		return true;
 	}
 
@@ -240,7 +249,6 @@ class rp_gruppe extends basis_db
 	}
 
 
-
 	/**
 	 * Laedt die Gruppen Rekursiv
 	 *
@@ -263,6 +271,7 @@ class rp_gruppe extends basis_db
 					{
 						$found->children = array();
 					}
+
 					$found->children[] = $d;
 					unset($buf[$key]);
 				}

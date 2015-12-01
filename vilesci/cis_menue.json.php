@@ -217,8 +217,9 @@ switch($action)
 	returnAJAX(false, "Es ist ein Fehler aufgetreten");
 	break;
 	case "saveReportGruppe":
-	if(isset($_POST["bezeichnung"]) && isset($_POST["reportgruppe_parent_id"]))
+	if(isset($_POST["bezeichnung"]) && isset($_POST["reportgruppe_parent_id"]) && isset($_POST["sortorder"]))
 	{
+
 		if(isset($_POST["reportgruppe_id"]))
 		{
 			$rg = new rp_gruppe($_POST["reportgruppe_id"]);
@@ -232,6 +233,7 @@ switch($action)
 
 		$rg->bezeichnung = $_POST["bezeichnung"];
 		$rg->reportgruppe_parent_id = $_POST["reportgruppe_parent_id"];
+		$rg->sortorder = $_POST["sortorder"];
 
 		if($rg->save())
 			returnAJAX(true, "Erfolgreich");
@@ -240,7 +242,7 @@ switch($action)
 	}
 
 
-	returnAJAX(false, "Es ist ein Fehler aufgetreten");
+	returnAJAX(false, "Unzureichende Parameter");
 	break;
 	case "removeGruppenzuordung":
 
@@ -306,6 +308,7 @@ function processMenueLevel($data)
 		$ent["text"] = $d->bezeichnung;
 		$ent["reportgruppe_id"] = $d->reportgruppe_id;
 		$ent["reportgruppe_parent_id"] = $d->reportgruppe_parent_id;
+		$ent["sortorder"] = $d->sortorder;
 		$gefiltert[] = $ent;
 	}
 
