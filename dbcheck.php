@@ -558,6 +558,17 @@ if($result = @$db->db_query("SELECT * FROM information_schema.columns WHERE tabl
 	}
 }
 
+/************************************  12.15 tbl_rp_gruppe sortierung  ************************************/
+//sortorder einfuegen
+if(!$result = @$db->db_query("SELECT sortorder FROM addon.tbl_rp_gruppe LIMIT 1"))
+{
+	$qry = "ALTER TABLE addon.tbl_rp_gruppe ADD COLUMN sortorder integer;";
+
+	if(!$db->db_query($qry))
+		echo '<strong>addon.tbl_rp_gruppe: '.$db->db_last_error().'</strong><br>';
+	else
+		echo ' addon.tbl_rp_gruppe: Spalte "sortorder" eingefuegt!<br>';
+}
 
 
 
@@ -571,7 +582,7 @@ $tabellen=array(
 	,"addon.tbl_rp_report" => array("report_id", "title", "format", "description", "header", "footer", "body", "docinfo", "gruppe", "publish", "insertamum", "insertvon", "updateamum", "updatevon", "berechtigung_kurzbz")
 	,"addon.tbl_rp_report_chart" => array("reportchart_id","report_id","chart_id","insertamum","insertvon","updateamum","updatevon")
 	,"addon.tbl_rp_report_statistik" => array("reportstatistik_id","report_id","statistik_kurzbz","insertamum","insertvon","updateamum","updatevon")
-	,"addon.tbl_rp_gruppe" => array("reportgruppe_id","bezeichnung","reportgruppe_parent_id","insertamum","insertvon","updateamum","updatevon")
+	,"addon.tbl_rp_gruppe" => array("reportgruppe_id","bezeichnung","reportgruppe_parent_id","sortorder","insertamum","insertvon","updateamum","updatevon")
 	,"addon.tbl_rp_gruppenzuordnung" => array("gruppenzuordnung_id","reportgruppe_id","chart_id","report_id","statistik_kurzbz","insertamum","insertvon","updateamum","updatevon")
 );
 
