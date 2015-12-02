@@ -154,19 +154,6 @@ function confdel()
 	return confirm("Wollen Sie diesen Eintrag wirklich löschen?");
 }
 
-$(function() {
-	$("#t1").tablesorter(
-	{
-		sortList: [[1,0]],
-		widgets: ["zebra"]
-	});
-
-	$("#t2").tablesorter(
-	{
-		sortList: [[1,0]],
-		widgets: ["zebra"]
-	});
-});
 
 function unchanged()
 {
