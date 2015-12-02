@@ -155,11 +155,13 @@ require_once('../../../config/vilesci.config.inc.php');
 							var parent = mt.tree('getParent',node);
 							if(point === "bottom")
 							{
-								sortorder = parseInt(nodeData.sortorder) + 1;
+								if(nodeData.sortorder > 0)
+									sortorder = parseInt(nodeData.sortorder) + 1;
 							}
 							else
 							{
-								sortorder = parseInt(nodeData.sortorder) - 1;
+								if(nodeData.sortorder > 0)
+									sortorder = parseInt(nodeData.sortorder) - 1;
 							}
 						}
 
