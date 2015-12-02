@@ -42,46 +42,38 @@ $daten=$rp_gruppe->recursive;
 function titleSort($a, $b) {return strcmp($a->title, $b->title);}
 function bezeichnungSort($a, $b) {return strcmp($a->bezeichnung, $b->bezeichnung);}
 
-function drawMenue($data)
+function getHtmlMenue($data, $rechte)
 {
 	$htmlstr = '';
-	$empty = true;
 
 	foreach($data as $d)
 	{
-		if(isset($d->reportgruppe_id))
+		if(addZurodnungen($d, $rechte))
 		{
-			$empty = false;
 			$htmlstr.='<li><a style="font-weight: bold;"> '.$d->bezeichnung.'</a></li>';
-		}
 
-		addZurodnungen($d);
-		if(isset($d->charts) && count($d->charts)>0)
-		{
-			$empty = false;
-			$htmlstr.='<li><a href="#" onclick="showSidebar('.$d->reportgruppe_id.', \'charts\')">&emsp;Charts&emsp;&emsp;<span class="badge">'.count($d->charts).'</span></a></li>';
-		}
-		if(isset($d->statistiken) && count($d->statistiken)>0)
-		{
-			$empty = false;
-			$htmlstr.='<li><a href="#" onclick="showSidebar('.$d->reportgruppe_id.', \'data\')">&emsp;Pivot&emsp;&emsp;<span class="badge">'.count($d->statistiken).'</span></a></li>';
-		}
-		if(isset($d->reports) && count($d->reports)>0)
-		{
-			$empty = false;
-			$htmlstr.='<li><a href="#" onclick="showSidebar('.$d->reportgruppe_id.', \'reports\')">&emsp;Reports&emsp;&emsp;<span class="badge">'.count($d->reports).'</span></a></li>';
+			if(isset($d->charts) && count($d->charts)>0)
+			{
+				$htmlstr.='<li><a href="#" onclick="showSidebar('.$d->reportgruppe_id.', \'charts\')">&emsp;Charts&emsp;&emsp;<span class="badge">'.count($d->charts).'</span></a></li>';
+			}
+			if(isset($d->statistiken) && count($d->statistiken)>0)
+			{
+				$htmlstr.='<li><a href="#" onclick="showSidebar('.$d->reportgruppe_id.', \'data\')">&emsp;Pivot&emsp;&emsp;<span class="badge">'.count($d->statistiken).'</span></a></li>';
+			}
+			if(isset($d->reports) && count($d->reports)>0)
+			{
+				$htmlstr.='<li><a href="#" onclick="showSidebar('.$d->reportgruppe_id.', \'reports\')">&emsp;Reports&emsp;&emsp;<span class="badge">'.count($d->reports).'</span></a></li>';
+			}
 		}
 	}
 
-	if(!$empty)
-		echo $htmlstr;
-	else
-		echo '<li><a>Keine Einträge vorhanden</a></li>';
+	return $htmlstr;
 }
 
 
-function addZurodnungen($entity)
+function addZurodnungen($entity,$rechte)
 {
+	$inhalt = false;
 	$rg = new rp_gruppe();
 	$rg->getGruppenzuordnung($entity->reportgruppe_id);
 
@@ -90,19 +82,36 @@ function addZurodnungen($entity)
 		if($g->statistik_kurzbz != null)
 		{
 			$st = new statistik($g->statistik_kurzbz);
-			$entity->statistiken[] = $st;
+			if($st->publish === true && ($rechte->isBerechtigt($st->berechtigung_kurzbz) || $st->berechtigung_kurzbz === null))
+			{
+				$inhalt = true;
+				$entity->statistiken[] = $st;
+			}
 		}
 		else if($g->report_id != null)
 		{
 			$rp = new report($g->report_id);
-			$entity->reports[] = $rp;
+			if($rp->publish === true && ($rechte->isBerechtigt($rp->berechtigung_kurzbz) || $rp->berechtigung_kurzbz === null))
+			{
+				$inhalt = true;
+				$entity->reports[] = $rp;
+			}
 		}
 		else if($g->chart_id != null)
 		{
 			$ch = new chart($g->chart_id);
-			$entity->charts[] = $ch;
+			if(isset($ch->statistik_kurzbz))
+			{
+				$ch->statistik = new statistik($ch->statistik_kurzbz);
+				if($ch->publish === true && ($rechte->isBerechtigt($ch->statistik->berechtigung_kurzbz) || $ch->statistik->berechtigung_kurzbz === null))
+				{
+					$inhalt = true;
+					$entity->charts[] = $ch;
+				}
+			}
 		}
 	}
+	return $inhalt;
 }
 
 ?>
@@ -158,6 +167,8 @@ function addZurodnungen($entity)
 				<div class="collapse navbar-collapse">
 					<ul class="nav navbar-nav">
 						<?php foreach($daten as $l1):?>
+							<?php $dd = getHtmlMenue($l1->children, $rechte); ?>
+							<?php if($dd != ""): ?>
 							<li class="dropdown">
 								<a href="#data" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"><?php echo $l1->bezeichnung?> <span class="caret"></span></a>
 								<ul class="dropdown-menu multi-level" role="menu">
@@ -179,10 +190,10 @@ function addZurodnungen($entity)
 										</ul>
 									</li>
 									-->
-
-									<?php drawMenue($l1->children); ?>
+									<?php echo $dd; ?>
 								</ul>
 							</li>
+							<?php endif;?>
 						<?php endforeach;?>
 					</ul>
 				</div>
