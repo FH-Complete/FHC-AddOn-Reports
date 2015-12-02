@@ -167,7 +167,7 @@ function addZurodnungen($entity,$rechte)
 				<div class="collapse navbar-collapse">
 					<ul class="nav navbar-nav">
 						<?php foreach($daten as $l1):?>
-							<?php $dd = getHtmlMenue($l1->children, $rechte); ?>
+							<?php if(isset($l1->children))$dd = getHtmlMenue($l1->children, $rechte); ?>
 							<?php if($dd != ""): ?>
 							<li class="dropdown">
 								<a href="#data" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"><?php echo $l1->bezeichnung?> <span class="caret"></span></a>
