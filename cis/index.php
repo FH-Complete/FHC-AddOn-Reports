@@ -167,7 +167,7 @@ function addZurodnungen($entity,$rechte)
 				<div class="collapse navbar-collapse">
 					<ul class="nav navbar-nav">
 						<?php foreach($daten as $l1):?>
-							<?php if(isset($l1->children))$dd = getHtmlMenue($l1->children, $rechte); ?>
+							<?php $dd =""; if(isset($l1->children))$dd = getHtmlMenue($l1->children, $rechte); ?>
 							<?php if($dd != ""): ?>
 							<li class="dropdown">
 								<a href="#data" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"><?php echo $l1->bezeichnung?> <span class="caret"></span></a>
@@ -199,6 +199,7 @@ function addZurodnungen($entity,$rechte)
 				</div>
 			</div>
 		</div>
+
 		<div id="spinner" style="display:none; width:80%; margin-left:10%; top:50px; position:absolute; z-index:10;">
 			<div class="progress">
   				<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
