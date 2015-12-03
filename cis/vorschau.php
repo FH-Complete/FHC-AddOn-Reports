@@ -48,7 +48,6 @@
 		<script type="text/javascript" src="../include/js/pivottable/gchart_renderers.js"></script>
 
 		<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>
-		<script src="../include/js/highcharts/main.js" type="application/javascript"></script>
 		<script type="text/javascript" src="../include/js/pivottable/jquery.ui.touch-punch.min.js"></script>
 
 	</head>

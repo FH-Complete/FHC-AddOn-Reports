@@ -105,20 +105,6 @@ class chart extends basis_db
 			$this->dashboard_layout	= $row->dashboard_layout;
 			$this->dashboard_pos	= $row->dashboard_pos;
 		}
-		/*switch ($chart_id)
-		{
-			case 1:
-				$this->title='DropOut - Spidergraph';
-				$this->type='spider';
-				$this->datasource_type='json';
-				$this->datasource='../../../content/statistik/dropout.php?outputformat=json';
-				break;
-			case 2:
-				$this->title='DropOut - xChart';
-				$this->type='xchart';
-				$this->sourcetype='json';
-				$this->datasource='../../../content/statistik/dropout.php?outputformat=json';
-		}*/
 		$this->new=false;
 		return true;
 	}
@@ -358,14 +344,11 @@ class chart extends basis_db
 	{
 		// Convention: Highcharts must start with "hc" followed by the real charttype
 		return array(
-			'xchart' => 'XChart',
-			'spider' => 'Spider',
 			'hcline' => 'Highcharts Line',
 			'hccolumn' => 'Highcharts Column',
 			'hcbar' => 'Highcharts Bar',
 			'hcpie' => 'Highcharts Pie',
 			'hcdrill' => 'Highcharts Drilldown',
-			'hctimezoom' => 'Highcharts Timezoom',
 		);
 	}
 	/**
@@ -410,7 +393,8 @@ EOT;
 
 		$hc_default = <<<EOT
 //{
-// "xAxis":{
+ "chart":{"type":"column"}
+// ,"xAxis":{
 //  "labels":{
 //   "rotation":90  // Der Winkel der X-Achsenbeschriftung
 //  }
@@ -448,26 +432,13 @@ EOT;
 
 EOT;
 
-		$hc_timezoom = <<<EOT
-// chart.raw.x = {
-//		spalte: 'datum',
-//		label: 'Datum'
-// };
-// chart.raw.y = [{
-//		spalte: 'anzahl',
-//		label: 'Anzahl'
-// }];
-EOT;
 
 		return array(
-			'xchart' => "",
-			'spider' => "",
 			'hcline' => $hc_default,
 			'hccolumn' => $hc_default,
 			'hcbar' => $hc_default,
 			'hcpie' => $hc_default,
 			'hcdrill' => $hc_drill,
-			'hctimezoom' => $hc_timezoom,
 		);
 
 	}
@@ -572,13 +543,6 @@ EOT;
 
 		<?php switch ($this->type)
 		{
-			case 'spider': ?>
-				<script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>
-				<link rel="stylesheet" href="../include/css/spider.css" type="text/css">
-				<?php break;
-			case 'xchart': ?>
-				<link rel="stylesheet" href="../include/css/xchart.css" type="text/css" />
-				<?php break;
 			case 'ngGrid': ?>
 				<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ng-grid.css" />
 				<script src="../include/js/ngGrid/angular.min.js" type="application/javascript"></script>
@@ -587,14 +551,12 @@ EOT;
 				<?php break;
 			case 'hcdrill': ?>
 				<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>
-				<script src="../include/js/highcharts/main.js" type="application/javascript"></script>
 				<?php break;
 			case 'hcline':
 			case 'hccolumn':
 			case 'hcbar':
 			case 'hcpie': ?>
 				<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>
-				<script src="../include/js/highcharts/main.js" type="application/javascript"></script>
 				<script src="../include/js/highcharts/exporting.js" type="application/javascript"></script>
 				<?php break;
 		}
@@ -607,16 +569,12 @@ EOT;
 		ob_start(); ?>
 			<script type="text/javascript" src="../../../content/phantom.js.php"></script>
 			<script src="../include/js/jquery-1.11.2.min.js" type="application/javascript"></script>
-			<script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>
 			<link rel="stylesheet" href="../include/css/charts.css" type="text/css">
-			<link rel="stylesheet" href="../include/css/spider.css" type="text/css">
-			<link rel="stylesheet" href="../include/css/xchart.css" type="text/css" />
 			<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ng-grid.css" />
 			<script src="../include/js/ngGrid/angular.min.js" type="application/javascript"></script>
 			<script src="../include/js/ngGrid/ng-grid.debug.js" type="application/javascript"></script>
 			<script src="../include/js/ngGrid/main.js" type="application/javascript"></script>
 			<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>
-			<script src="../include/js/highcharts/main.js" type="application/javascript"></script>
 			<script>
 				$(function() {
 
@@ -650,35 +608,6 @@ EOT;
 		$source = $this->datasource.$this->vars;
 		switch ($this->type)
 		{
-			case 'spider': ?>
-				<div id="spidergraphcontainer" class="<?php echo $class ?>"></div>
-				<script src="../include/js/jquery-1.11.2.min.js" type="application/javascript"></script>
-				<script type="application/javascript">
-					var chart = new Object;
-					var source = <?php echo json_encode($source) ?>;
-					<?php echo $this->preferences ?>;
-				</script>
-				<script src="../include/js/spidergraph/jquery.spidergraph.js" type="application/javascript"></script>
-				<script src="../include/js/highcharts/init.js" type="application/javascript"></script>
-				<script>
-					initCharts();
-				</script>
-				<?php break;
-
-
-			case 'xchart': ?>
-				<figure id="xChart"></figure>
-				<script src="../include/js/jquery-1.11.2.min.js" type="application/javascript"></script>
-				<script src="../include/js/d3.js" type="application/javascript"></script>
-				<script src="../include/js/xcharts/xcharts.min.js" type="application/javascript"></script>
-				<script type="application/javascript">
-						var source = <?php echo json_encode($this->datasource.$this->vars) ?>;
-						<?php echo $this->preferences ?>;
-				</script>
-				<?php break;
-
-
-			case 'hctimezoom':
 			case 'hcdrill':
 			case 'hcline':
 			case 'hccolumn':
@@ -754,7 +683,6 @@ EOT;
 			case 'hccolumn':
 			case 'hcbar':
 			case 'hcpie':
-			case 'hctimezoom':
 			case 'hcdrill':
 				$tmp_filename=$this->addon_root.'data/images/chart'.$this->chart_id.date('Y-m-d_H:i:s').'.png';
 				$output_filename=$this->addon_root.'data/images/chart'.$this->chart_id.'.png';
