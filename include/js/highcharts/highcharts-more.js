@@ -1,8 +1,6 @@
 /*
  Highcharts JS v4.1.5 (2015-04-13)
-
  (c) 2009-2014 Torstein Honsi
-
  License: www.highcharts.com/license
 */
 (function(k,D){function K(a,b,c){this.init.call(this,a,b,c)}var P=k.arrayMin,Q=k.arrayMax,t=k.each,H=k.extend,o=k.merge,R=k.map,q=k.pick,x=k.pInt,p=k.getOptions().plotOptions,g=k.seriesTypes,v=k.extendClass,L=k.splat,u=k.wrap,M=k.Axis,y=k.Tick,I=k.Point,S=k.Pointer,T=k.CenteredSeriesMixin,z=k.TrackerMixin,s=k.Series,w=Math,E=w.round,B=w.floor,N=w.max,U=k.Color,r=function(){};H(K.prototype,{init:function(a,b,c){var d=this,e=d.defaultOptions;d.chart=b;if(b.angular)e.background={};d.options=a=o(e,a);

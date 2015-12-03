@@ -550,13 +550,13 @@ EOT;
 				<script src="../include/js/ngGrid/main.js" type="application/javascript"></script>
 				<?php break;
 			case 'hcdrill': ?>
-				<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>
+				<?php require_once("../include/meta/highcharts.php"); ?>
 				<?php break;
 			case 'hcline':
 			case 'hccolumn':
 			case 'hcbar':
 			case 'hcpie': ?>
-				<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>
+				<?php require_once("../include/meta/highcharts.php"); ?>
 				<script src="../include/js/highcharts/exporting.js" type="application/javascript"></script>
 				<?php break;
 		}
@@ -574,7 +574,7 @@ EOT;
 			<script src="../include/js/ngGrid/angular.min.js" type="application/javascript"></script>
 			<script src="../include/js/ngGrid/ng-grid.debug.js" type="application/javascript"></script>
 			<script src="../include/js/ngGrid/main.js" type="application/javascript"></script>
-			<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>
+			<?php require_once("../include/meta/highcharts.php"); ?>
 			<script>
 				$(function() {
 
@@ -825,6 +825,15 @@ EOT;
 			'title' => array
 			(
 				'text' => $this->title,
+			),
+			'credits' => array
+			(
+				'text' => 'fhcomplete.org',
+				'href' => 'http://fhcomplete.org'
+			),
+			'exporting' => array
+			(
+				'url' => "chart_export.php"
 			),
 			'chart' => array
 			(

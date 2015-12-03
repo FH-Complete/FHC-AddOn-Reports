@@ -47,7 +47,7 @@
 		<script type="text/javascript" src="../include/js/pivottable/pivot.js"></script>
 		<script type="text/javascript" src="../include/js/pivottable/gchart_renderers.js"></script>
 
-		<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>
+		<?php require_once("../include/meta/highcharts.php"); ?>
 		<script type="text/javascript" src="../include/js/pivottable/jquery.ui.touch-punch.min.js"></script>
 
 	</head>
