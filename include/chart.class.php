@@ -687,8 +687,6 @@ EOT;
 				$tmp_filename=$this->addon_root.'data/images/chart'.$this->chart_id.date('Y-m-d_H:i:s').'.png';
 				$output_filename=$this->addon_root.'data/images/chart'.$this->chart_id.'.png';
 				$output=array();
-				$scale='2.5';
-				$width='1920';
 
 				$phantomData = $this->getHighChartData();
 
@@ -696,7 +694,7 @@ EOT;
 				if(!$phantomData)return false;
 
 				$ph = new phantom();
-				$p = $ph->render(array("infile" => $phantomData, "scale" => $scale, "width" => $width));
+				$p = $ph->render(array("infile" => $phantomData));
 
 				if(!$p)
 				{
@@ -828,12 +826,15 @@ EOT;
 			),
 			'credits' => array
 			(
-				'text' => 'fhcomplete.org',
+				'text' => '',
 				'href' => 'http://fhcomplete.org'
 			),
 			'exporting' => array
 			(
-				'url' => "chart_export.php"
+				'url' => "chart_export.php",
+				'sourceHeight' => 450,
+				'sourceWidth' => 800,
+				'scale' => 1,			//wird von width überschrieben!
 			),
 			'chart' => array
 			(

@@ -18,7 +18,9 @@
  * Authors: Andreas Moik <moik@technikum-wien.at>
  */
 require_once('../include/phantom.class.php');
-
+require_once('../../../config/cis.config.inc.php');
+require_once('../../../include/dokument_export.class.php');
+require_once('../../../include/functions.inc.php');
 
 
 if(!isset($_POST['filename'])
@@ -31,17 +33,14 @@ if(!isset($_POST['filename'])
 
 $filename = $_POST['filename'];
 $type = $_POST['type'];
-$width = $_POST['width'];
-$scale = $_POST['scale'];
 $svg = $_POST['svg'];
-
 
 if($type === "image/png" || $type === "image/jpeg")
 {
 	$shorttype = str_replace("image/", "", $type);
 
 	$ph = new phantom();
-	$p = $ph->render(array("infile" => $svg, "scale" => $scale, "width" => $width, "type" => $shorttype));
+	$p = $ph->render(array("type" => $shorttype, "infile" => $svg));
 
 	header('Content-Disposition: attachment;filename="'.$filename.'.'.$shorttype.'"');
 	header('Content-Type: application/force-download');
@@ -56,7 +55,31 @@ else if($type === "image/svg+xml")
 	header('Content-Type: application/force-download');
 	echo $svg;
 }
+else if($type === "application/pdf")
+{
+	$ph = new phantom();
+	$p = $ph->render(array("type" => "png", "infile" => $svg));
+	$user = get_uid();
+	$pngPath = '../data/export_'.$user.'.png';
+
+
+
+	if(!$rsc=fopen($pngPath,'w'))
+		die("Das PDF konnte nicht erstellt werden");
+	if(!fwrite($rsc,base64_decode($p)))
+		die("Das PDF konnte nicht erstellt werden");
+
+	$doc = new dokument_export('HCPDFExport');
+	$doc->addImage(APP_ROOT."addons/reports/data/".$pngPath, '100000000000001000000009BE233EADC2452A3F.png', 'image/png');
+	$doc->addDataArray(array(),'chart');
+	if(!$doc->create('pdf'))
+		die($doc->errormsg);
+	$doc->output();
+	$doc->close();
+	unlink($pngPath);
+}
 else
-	die("Dateityp \"".$type."\" wird noch nicht unterstützt!");
+	die("Dateityp \"".$type."\" wird nicht unterstützt!");
+
 
 ?>

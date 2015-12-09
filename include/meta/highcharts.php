@@ -29,8 +29,8 @@ echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/highcha
 echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/modules/exporting.js"></script>';
 
 
-//echo '<script src="'.$dr.'addons/reports/include/js/highcharts.old/highcharts-custom.js"></script>';
-//echo '<script src="'.$dr.'addons/reports/include/js/highcharts.old/highcharts-more.js"></script>';
+//echo '<script src="'.$dr.'addons/reports/include/js/highcharts/highcharts-custom.js"></script>';
+//echo '<script src="'.$dr.'addons/reports/include/js/highcharts/highcharts-more.js"></script>';
 
 
 //Anpassungen
