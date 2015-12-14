@@ -383,49 +383,58 @@ class chart extends basis_db
 	{
 
 		$hc_drill = <<<EOT
-//{
-// "chart":{
-//  "zoomType":"none",//Möglichkeiten: "x", "y" ("xy" ist standard)
-//  "type":"pie"
-// }
-//}
+/*
+{
+ "chart":{
+  "zoomType":"none",//Möglichkeiten: "x", "y" ("xy" ist standard)
+  "type":"pie"
+ }
+}
+*/
 EOT;
 
 		$hc_default = <<<EOT
-//{
+{
  "chart":{"type":"column"}
-// ,"xAxis":{
-//  "labels":{
-//   "rotation":90  // Der Winkel der X-Achsenbeschriftung
-//  }
-// },
-// "yAxis":[
-//  {
-//   "title":{"text":"Test Achse(rechts)"},
-//   "labels":{
-//    "format":"{value} Personen",
-//    "style":{"color":"#FF0000"}
-//   },
-//   "opposite":true
-//  },
-//  {"title":{"text":"Test Achse(links)"}}
-// ],
-// "series":{
-//  "Ausland":{
-//    "zIndex": -1,
-//    "type":"column",
-//    "yAxis":1
-//  },
-//  "Ausland 2Stg":{
-//    "zIndex": -1,
-//    "type":"column",
-//    "yAxis":1
-//  },
-//  "Inland":{
-//    "type":"pie","center":["10%","10%"],"size":["20%","20%"]
-//  }
-// }
-//}
+
+ /*,"xAxis":{
+  "labels":{
+   "rotation":90  // Der Winkel der X-Achsenbeschriftung
+  }
+ },
+ "yAxis":[
+  {
+   "title":{"text":"Test Achse(rechts)"},
+   "labels":{
+    "format":"{value} Personen",
+    "style":{"color":"#FF0000"}
+   },
+   "opposite":true
+  },
+  {"title":{"text":"Test Achse(links)"}}
+ ],
+ "series":{
+  "Ausland":{
+    "zIndex": -1,
+    "type":"column",
+    "yAxis":1
+  },
+  "Ausland 2Stg":{
+    "zIndex": -1,
+    "type":"column",
+    "yAxis":1
+  },
+  "Inland":{
+    "type":"pie","center":["10%","10%"],"size":["20%","20%"]
+  }
+ }*/
+}
+
+
+
+
+
+
 
 
 
@@ -875,17 +884,42 @@ EOT;
 		{
 			//einstellungen aufteilen
 			$prefs = explode("\n", $this->preferences);
+			$aktivMz = false;
 
 			//kommentarzeilen entfernen
 			foreach($prefs as $pk => $p)
 			{
-
-				$pos = strpos ( $p, "//");
-				if($pos !== false)
-				{
-					$prefs[$pk] = substr($p, 0, $pos);
-				}
+				// \r entfernen
 				$prefs[$pk] = str_replace("\r", "", $prefs[$pk]);
+
+
+				// mehrzeilige kommentare
+				$posMz = strpos($prefs[$pk], "/*");
+				if($posMz !== false  && !$aktivMz)		//anfang eines Mehrzeiligen kommentars gefunden
+				{
+					$prefs[$pk] = substr($prefs[$pk], 0, $posMz);
+					$aktivMz = true;
+				}
+				$posMzE = strpos($prefs[$pk], "*/");
+				if($posMzE !== false && $aktivMz)		//ende des Mehrzeiligen kommentars gefunden
+				{
+					$prefs[$pk] = substr($prefs[$pk], $posMzE+2, count($prefs[$pk]));
+					$aktivMz = false;
+				}
+				if($posMz === false && $posMzE === false && $aktivMz)		//zeile komplett auskommentiert
+				{
+					unset($prefs[$pk]);
+					continue;		//doppelslashes werden somit umgangen wenn sie /* // */ eingekapselt sind
+				}
+
+
+
+				// doppelslash-kommentare
+				$posEz = strpos ( $p, "//");
+				if($posEz !== false)
+				{
+					$prefs[$pk] = substr($p, 0, $posEz);
+				}
 			}
 			//und wieder zusammenfügen
 			$json = join('', $prefs);
