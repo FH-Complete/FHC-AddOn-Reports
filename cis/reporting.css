@@ -36,3 +36,24 @@ li.hide-button {
 .navbar-brand span {
     float: right;
 }
+
+#logo
+{
+	background: url('../../../skin/styles/tw/logo_ws_50x25.png');
+	width:50px;
+	height:25px;
+	float:left;
+}
+
+#logo:hover
+{
+	background: url('../../../skin/styles/tw/logo_50x25.png');
+	width:50px;
+	height:25px;
+	float:left;
+}
+
+#navBrand
+{
+	float:right;
+}

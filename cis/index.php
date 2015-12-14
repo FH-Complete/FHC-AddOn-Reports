@@ -141,8 +141,7 @@ function addZurodnungen($entity,$rechte)
 		<script type="text/javascript" src="../include/js/pivottable/pivot.js"></script>
 		<script type="text/javascript" src="../include/js/pivottable/gchart_renderers.js"></script>
 
-		<script src="../include/js/highcharts/highcharts-custom.js" type="application/javascript"></script>
-		<script src="../include/js/highcharts/main.js" type="application/javascript"></script>
+		<?php require_once("../include/meta/highcharts.php"); ?>
 		<script type="text/javascript" src="../include/js/pivottable/jquery.ui.touch-punch.min.js"></script>
 		<script src="../include/js/bootstrap.min.js"></script>
 		<script src="../include/js/offcanvas.js"></script>
@@ -160,8 +159,8 @@ function addZurodnungen($entity,$rechte)
 						<span class="icon-bar"></span>
 					</button>
 					<a class="navbar-brand" href="">
-						<img src="../../../skin/styles/tw/logo_ws_50x25.png" height="25" />
-						<span>Reporting</span>
+						<div id="logo"></div>
+						<div id="navBrand">Reporting</div>
 					</a>
 				</div>
 				<div class="collapse navbar-collapse">

@@ -746,6 +746,7 @@ EOT;
 		$hctype=substr($this->type,2);
 		$data = $this->statistik->getArray();
 
+
 		if ($hctype=='drill')
 		{
 			$hctype='column';
@@ -819,6 +820,7 @@ EOT;
 
 		$phantomData = array
 		(
+			'FHCBoxplotType' => 0,
 			'div_id' => 'hcChart' . $this->chart_id,
 			'title' => array
 			(
@@ -851,7 +853,15 @@ EOT;
 				*/
 				//um 3dCharts zu ermöglichen(kann auch über die preferences geschehen)
 			),
-			'plotOptions' => array('series' => array('animation' => true)),//initale animation
+			'plotOptions' => array
+			(
+				'series' => array('animation' => true),
+				'boxplot' => array
+				(
+					'grouping' => false,
+					'stickyTracking' => false,
+				)
+			),
 			'xAxis' => $xAxis,
 			'series' => $series
 		);
@@ -912,6 +922,100 @@ EOT;
 		{
 			$phantomData["drilldown"]["series"] = array_values($phantomData["drilldown"]["series"]);
 		}
+
+
+
+
+
+
+
+
+
+		//nur für boxplot charts!
+		if($phantomData["chart"]["type"] == "boxplot")
+		{
+			if(!isset($phantomData["drilldown"]))
+			{
+				$this->errormsg = "Boxplots müssen als Drilldown angegeben werden!";
+				return false;
+			}
+
+			$bpMaxCount = 0;
+			$bpCount = 0;
+			$boxplotData = array();
+			$bpCategories = array();
+
+			foreach($phantomData["series"][0]["data"] as $d)
+			{
+				foreach($phantomData["drilldown"]["series"] as $s)
+				{
+					if($phantomData["FHCBoxplotType"] == 0)
+					{
+						if($s["id"] == $d["drilldown"])
+							foreach($s["data"] as $dd)
+							{
+								if(!isset($boxplotData[$dd[0]]))
+									$bpCategories[] = $dd[0];
+
+								$boxplotData[$dd[0]][]= $dd[1];
+							}
+					}
+					else
+					{
+						$singleBoxPlot = array();
+						foreach($s["data"] as $bp)
+						{
+							$singleBoxPlot[] = $bp[1];
+						}
+						$bpCategories[] = $s["id"];
+						$boxplotData[] = $singleBoxPlot;
+					}
+				}
+			}
+
+
+			//maximum an inhalten herausfinden
+			foreach($boxplotData as $bpd)
+			{
+				if(count($bpd) > $bpMaxCount)
+				{
+					$bpMaxCount = count($bpd);
+				}
+			}
+
+			//anzahl angleichen
+			foreach($boxplotData as $k => $bpd)
+			{
+				$diff = $bpMaxCount - count($boxplotData[$k]);
+				for($i = 0; $i < $diff; $i++)
+				{
+					$boxplotData[$k][] = 0;
+				}
+			}
+
+			//sortieren(highcharts nehmen aus performancegründen nur sortierte entgegen)
+			foreach($boxplotData as $k => $bpd)
+			{
+				if(!asort($boxplotData[$k]))
+				{
+					$this->errormsg = "Ein Array konnte nicht sortiert werden!";
+					return false;
+				}
+				$boxplotData[$k] = array_values($boxplotData[$k]);
+				array_unshift($boxplotData[$k], $bpCount);
+				$bpCount ++;
+			}
+
+			//und in normale array umwandeln
+			$boxplotData = array_values($boxplotData);
+			unset($phantomData["drilldown"]);
+
+			$phantomData["series"][0]["data"] = $boxplotData;
+			$phantomData["xAxis"]["categories"] = $bpCategories;
+
+
+		}
+
 		return json_encode($phantomData);
 	}
 
