@@ -16,9 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Authors: Robert Hofer <robert.hofer@technikum-wien.at>
+ * 					Andreas Moik <moik@technikum-wien.at>
  */
 
-if(false): ?><script><?php endif; ?>
+require_once("../reports.config.inc.php");
+
+if(DASHBOARD): ?>
 
 addon.push(
 {
@@ -35,7 +38,7 @@ addon.push(
 		var iframe = document.createElement("iframe");
 		iframe.setAttribute("id","addon-reports-tabpannel-iframe");
 		iframe.setAttribute('src', '../addons/reports/vilesci/dashboard.php');
-		
+
 		var maintabpanels=document.getElementById("tabpanels-main");
 		maintabpanels.appendChild(iframe);
 	},
@@ -55,3 +58,4 @@ addon.push(
 	{
 	}
 });
+<?php endif; ?>

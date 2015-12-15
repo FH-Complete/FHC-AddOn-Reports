@@ -26,15 +26,15 @@ li.hide-button {
 }
 
 .navbar-brand {
-    width: 200px;
+	width: 200px;
 }
 
 .navbar-brand img {
-    float: left;
+	float: left;
 }
 
 .navbar-brand span {
-    float: right;
+	float: right;
 }
 
 #logo

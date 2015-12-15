@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Authors: Robert Hofer <robert.hofer@technikum-wien.at>
+ *					Andreas Moik <moik@technikum-wien.at>
  */
 
 require_once('../../../config/vilesci.config.inc.php');
