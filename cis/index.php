@@ -58,7 +58,7 @@ function getHtmlMenue($data, $rechte)
 			}
 			if(isset($d->statistiken) && count($d->statistiken)>0)
 			{
-				$htmlstr.='<li><a href="#" onclick="showSidebar('.$d->reportgruppe_id.', \'data\')">&emsp;Pivot&emsp;&emsp;<span class="badge">'.count($d->statistiken).'</span></a></li>';
+				$htmlstr.='<li><a href="#" onclick="showSidebar('.$d->reportgruppe_id.', \'data\')">&emsp;Pivots&emsp;&emsp;<span class="badge">'.count($d->statistiken).'</span></a></li>';
 			}
 			if(isset($d->reports) && count($d->reports)>0)
 			{
