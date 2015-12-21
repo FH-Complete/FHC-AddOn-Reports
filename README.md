@@ -12,7 +12,13 @@ FH-Complete AddOn for creating Charts and Reports
 - Create and Manage Dashboards in the CIS-GUI
 - Add Charts to the Dashboards
 
-
+####Installation
+The following additional Packages are required:
+- asciidoc
+- dblatex
+- texlive-lang-cyrillic
+- texlive-lang-german
+- phantomjs
 
 External Libraries (wish list)
 ------------------------------
