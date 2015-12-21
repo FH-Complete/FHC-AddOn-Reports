@@ -730,7 +730,7 @@ EOT;
 					return $output_filename;
 				}
 				else
-					$this->errormsg='<br/>Cannot remove File from '.$tmp_filename.' to '.$output_filename.'<br/>';
+					$this->errormsg='<br/>Cannot move File from '.$tmp_filename.' to '.$output_filename.'<br/>';
 
 				return false;
 		}

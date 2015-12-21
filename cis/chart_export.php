@@ -60,7 +60,7 @@ else if($type === "application/pdf")
 	$ph = new phantom();
 	$p = $ph->render(array("type" => "png", "infile" => $svg));
 	$user = get_uid();
-	$pngPath = '../data/export_'.$user.'.png';
+	$pngPath =sys_get_temp_dir().'/export_'.$user.'.png';
 
 
 
@@ -70,7 +70,7 @@ else if($type === "application/pdf")
 		die("Das PDF konnte nicht erstellt werden");
 
 	$doc = new dokument_export('HCPDFExport');
-	$doc->addImage(APP_ROOT."addons/reports/data/".$pngPath, '100000000000001000000009BE233EADC2452A3F.png', 'image/png');
+	$doc->addImage($pngPath, '100000000000001000000009BE233EADC2452A3F.png', 'image/png');
 	$doc->addDataArray(array(),'chart');
 	if(!$doc->create('pdf'))
 		die($doc->errormsg);
