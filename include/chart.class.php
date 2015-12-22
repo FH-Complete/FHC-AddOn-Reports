@@ -967,45 +967,36 @@ EOT;
 		//nur für boxplot charts!
 		if($phantomData["chart"]["type"] == "boxplot")
 		{
-			if(!isset($phantomData["drilldown"]))
-			{
-				$this->errormsg = "Boxplots müssen als Drilldown angegeben werden!";
-				return false;
-			}
-
 			$bpMaxCount = 0;
 			$bpCount = 0;
 			$boxplotData = array();
 			$bpCategories = array();
 
-			foreach($phantomData["series"][0]["data"] as $d)
+			foreach($series as $sk => $se)
 			{
-				foreach($phantomData["drilldown"]["series"] as $s)
-				{
 					if($phantomData["FHCBoxplotType"] == 0)
 					{
-						if($s["id"] == $d["drilldown"])
-							foreach($s["data"] as $dd)
-							{
-								if(!isset($boxplotData[$dd[0]]))
-									$bpCategories[] = $dd[0];
+					$bpCategories[] = $se["name"];
 
-								$boxplotData[$dd[0]][]= $dd[1];
-							}
-					}
-					else
+					$singleBoxPlot = array();
+					foreach($se["data"] as $d)
 					{
-						$singleBoxPlot = array();
-						foreach($s["data"] as $bp)
-						{
-							$singleBoxPlot[] = $bp[1];
-						}
-						$bpCategories[] = $s["id"];
-						$boxplotData[] = $singleBoxPlot;
+						$singleBoxPlot[] = $d[1];
+					}
+					$boxplotData[] = $singleBoxPlot;
+				}
+				else
+				{
+					$singleBoxPlot = array();
+					foreach($se["data"] as $d)
+					{
+						if(!isset($bpCategories[$d[0]]))
+							$bpCategories[] = $d[0];
+
+						$boxplotData[$d[0]][] = $d[1];
 					}
 				}
-			}
-
+		}
 
 			//maximum an inhalten herausfinden
 			foreach($boxplotData as $bpd)
