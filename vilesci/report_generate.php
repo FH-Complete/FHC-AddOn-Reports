@@ -94,7 +94,7 @@
 			die("Der Report konnte nicht erstellt werden!");
 	}
 
-	//wenn der nutzer nicht für addon/reports berechtigt ist, wird abgefragt, ob der report publish ist
+	//wenn der nutzer nicht für addon/reports berechtigt ist, wird abgefragt, ob der report oeffentlich ist
 	//und ob der nutzer das recht für diesen report hat
 	if(!$rechte->isBerechtigt("addon/reports"))
 	{
@@ -106,10 +106,17 @@
 				die('Sie haben keine Berechtigung fuer diesen Report!');
 	}
 
-	// echo count($charts->chart);
+	// ***** Define Filenames ******************
+	$filesDir ='../data/';
+	$tmpFilename=$filesDir.'Report'.$report->report_id.date('Y-m-d_H:i:s').'.tmp';
+	$filename=$filesDir.'Report'.$report->report_id;
+	$docinfoFilename=$filesDir.'Report'.$report->report_id.'-docinfo.xml';
+	$htmlFilename=$filesDir.'Report'.$report->report_id.'.html';
+	$xmlFilename=$filesDir.'Report'.$report->report_id.'.xml';
+	$pdfFilename=$filesDir.'Report'.$report->report_id.'.pdf';
+
 	foreach($charts->chart as $chart)
 	{
-		// echo $chart->chart_id;
 		if(isset($chart->statistik_kurzbz))
 		{
 			$chart->statistik = new statistik($chart->statistik_kurzbz);
@@ -118,16 +125,16 @@
 
 			$vars = $chart->statistik->parseVars($chart->statistik->sql);
 
-			$datafile='../data/data'.$chart->statistik->statistik_kurzbz.'.csv';
+			$datafile=$filesDir.'data'.$chart->statistik->statistik_kurzbz.'.csv';
 			if (!$chart->statistik->writeCSV($datafile,',','"'))
 			{
 				if($type == "debug")
-					die('File ../data/data'.$chart->statistik->statistik_kurzbz.'not written!'.$chart->statistik->errormsg);
+					die('File '.$datafile.' not written!'.$chart->statistik->errormsg);
 				else
 					die("Der Report konnte nicht erstellt werden!");
 			}
 			else
-				$htmlstr.= '<br><br>File ../data/data'.$chart->statistik->statistik_kurzbz.' written!';
+				$htmlstr.= '<br><br>File '.$datafile.' written!';
 
 			$outputfilename=$chart->writePNG();
 
@@ -142,7 +149,7 @@
 
 		if(isset($chart->description))
 		{
-			$mdfile='../data/Chart'.$chart->chart_id.'.md';
+			$mdfile=$filesDir.'Chart'.$chart->chart_id.'.md';
 			file_put_contents($mdfile, $chart->description);
 		}
 
@@ -152,12 +159,12 @@
 	// *************** Startwerte Setzen ************************
 	$crlf=PHP_EOL;
 	$content = '';
-	$ext='';
 	$errorstr = ''; //fehler beim insert
 
 	switch ($report->format)
 	{
-		case 'asciidoc': $ext='.asciidoc';
+		case 'asciidoc':
+			$filename.='.asciidoc';
 			$content.='= Report - '.$report->title.$crlf;
 			$content.=$report->header.$crlf.$report->printParam('attr',$crlf).$crlf;
 			$content.=$crlf.'== Beschreibung'.$crlf.$report->description.$crlf;
@@ -166,14 +173,6 @@
 			$content.=$crlf.'== Hinweise'.$crlf.$report->footer.$crlf;
 			break;
 	}
-
-	// ***** Define Filenames ******************
-	$tmpFilename='../data/Report'.$report->report_id.date('Y-m-d_H:i:s').'.tmp';
-	$filename='../data/Report'.$report->report_id.$ext;
-	$docinfoFilename='../data/Report'.$report->report_id.'-docinfo.xml';
-	$htmlFilename='../data/Report'.$report->report_id.'.html';
-	$xmlFilename='../data/Report'.$report->report_id.'.xml';
-	$pdfFilename='../data/Report'.$report->report_id.'.pdf';
 
 	// **** Write DocInfo
 	$fh=fopen($docinfoFilename,'w');

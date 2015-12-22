@@ -31,7 +31,6 @@ class chart extends basis_db
 	public $chart = array();  // for DB-Results
 	public $vars = '';
 	public $statistik;
-	public $addon_root;
 
 	//Tabellenspalten
 	public $chart_id;
@@ -60,7 +59,7 @@ class chart extends basis_db
 	public function __construct($chart_id=null)
 	{
 		parent::__construct();
-		$this->addon_root=dirname(__FILE__).'/../';
+
 		if(!is_null($chart_id))
 			$this->load($chart_id);
 		else
@@ -693,8 +692,8 @@ EOT;
 			case 'hcbar':
 			case 'hcpie':
 			case 'hcdrill':
-				$tmp_filename=$this->addon_root.'data/images/chart'.$this->chart_id.date('Y-m-d_H:i:s').'.png';
-				$output_filename=$this->addon_root.'data/images/chart'.$this->chart_id.'.png';
+				$tmp_filename=sys_get_temp_dir().'/chart'.$this->chart_id.date('Y-m-d_H:i:s').'.png';
+				$output_filename=sys_get_temp_dir().'/chart'.$this->chart_id.'.png';
 				$output=array();
 
 				$phantomData = $this->getHighChartData();

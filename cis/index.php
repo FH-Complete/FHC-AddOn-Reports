@@ -54,15 +54,15 @@ function getHtmlMenue($data, $rechte)
 
 			if(isset($d->charts) && count($d->charts)>0)
 			{
-				$htmlstr.='<li><a href="#" onclick="showSidebar('.$d->reportgruppe_id.', \'charts\')">&emsp;Charts&emsp;&emsp;<span class="badge">'.count($d->charts).'</span></a></li>';
+				$htmlstr.='<li><a href="#" onclick="showSidebar('.$d->reportgruppe_id.', \'charts\')"><span style="float:left;">&emsp;Charts</span><span class="badge" style="float:right;">'.count($d->charts).'</span></a></li>';
 			}
 			if(isset($d->statistiken) && count($d->statistiken)>0)
 			{
-				$htmlstr.='<li><a href="#" onclick="showSidebar('.$d->reportgruppe_id.', \'data\')">&emsp;Pivots&emsp;&emsp;<span class="badge">'.count($d->statistiken).'</span></a></li>';
+				$htmlstr.='<li><a href="#" onclick="showSidebar('.$d->reportgruppe_id.', \'data\')"><span style="float:left;">&emsp;Pivots</span><span class="badge" style="float:right;">'.count($d->statistiken).'</span></a></li>';
 			}
 			if(isset($d->reports) && count($d->reports)>0)
 			{
-				$htmlstr.='<li><a href="#" onclick="showSidebar('.$d->reportgruppe_id.', \'reports\')">&emsp;Reports&emsp;&emsp;<span class="badge">'.count($d->reports).'</span></a></li>';
+				$htmlstr.='<li><a href="#" onclick="showSidebar('.$d->reportgruppe_id.', \'reports\')"><span style="float:left;">&emsp;Reports</span><span class="badge" style="float:right;">'.count($d->reports).'</span></a></li>';
 			}
 		}
 	}
