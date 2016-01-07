@@ -974,18 +974,7 @@ EOT;
 
 			foreach($series as $sk => $se)
 			{
-					if($phantomData["FHCBoxplotType"] == 0)
-					{
-					$bpCategories[] = $se["name"];
-
-					$singleBoxPlot = array();
-					foreach($se["data"] as $d)
-					{
-						$singleBoxPlot[] = $d[1];
-					}
-					$boxplotData[] = $singleBoxPlot;
-				}
-				else
+				if($phantomData["FHCBoxplotType"] == 0)
 				{
 					$singleBoxPlot = array();
 					foreach($se["data"] as $d)
@@ -996,7 +985,22 @@ EOT;
 						$boxplotData[$d[0]][] = $d[1];
 					}
 				}
+				else
+				{
+					$bpCategories[] = $se["name"];
+
+					$singleBoxPlot = array();
+					foreach($se["data"] as $d)
+					{
+						$singleBoxPlot[] = $d[1];
+					}
+					$boxplotData[] = $singleBoxPlot;
+				}
 		}
+
+
+
+/*
 
 			//maximum an inhalten herausfinden
 			foreach($boxplotData as $bpd)
@@ -1016,7 +1020,6 @@ EOT;
 					$boxplotData[$k][] = 0;
 				}
 			}
-
 			//sortieren(highcharts nehmen aus performancegründen nur sortierte entgegen)
 			foreach($boxplotData as $k => $bpd)
 			{
@@ -1028,7 +1031,7 @@ EOT;
 				$boxplotData[$k] = array_values($boxplotData[$k]);
 				array_unshift($boxplotData[$k], $bpCount);
 				$bpCount ++;
-			}
+			}*/
 
 			//und in normale array umwandeln
 			$boxplotData = array_values($boxplotData);
