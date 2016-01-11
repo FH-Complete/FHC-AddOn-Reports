@@ -273,10 +273,13 @@ class view extends basis_db
 	{
 		$qry = "BEGIN;DELETE FROM addon.tbl_rp_view WHERE view_id=".$this->db_add_param($view_id, FHC_INTEGER).";";
 
-		if(!$this->dropView())
+		if($this->getView())
 		{
-			$this->db_query("ROLLBACK");
-			return false;
+			if(!$this->dropView())
+			{
+				$this->db_query("ROLLBACK");
+				return false;
+			}
 		}
 
 
