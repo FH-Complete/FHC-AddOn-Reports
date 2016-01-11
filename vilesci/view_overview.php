@@ -39,21 +39,29 @@ if($rechte->isBerechtigt('addon/reports', 'suid'))
 }
 
 $view = new view();
+$reports_view_job_msg = "";
 
-if(isset($_GET['action']))
+if(isset($_REQUEST['action']))
 {
-	if($_GET['action']=='delete')
+	if($_REQUEST['action']=='delete')
 	{
-		if(!$view->delete($_GET['view_id']))
+		if(!$view->delete($_REQUEST['view_id']))
 			echo '<script>alert("Der Eintrag konnte nicht gelöscht werden!");</script>';
 	}
-	else if ($_GET["action"]=='generateTable')
+	else if ($_REQUEST["action"]=='generateTable')
 	{
-		if (isset($_GET["view_id"]))
+		if (isset($_REQUEST["view_id"]))
 		{
-			$gv = new view($_GET["view_id"]);
+			$gv = new view($_REQUEST["view_id"]);
 			$gv->generateTable();
 		}
+	}
+	else if($_REQUEST["action"]=='Statische Tabellen generieren')
+	{
+		if(reports_view_job_START())
+			$reports_view_job_msg .= "<span style='color:green;margin-left:5px;'>Erfolgreich abgeschlossen</span>";
+		else
+			$reports_view_job_msg .= "<span style='color:red;margin-left:5px;'>Es sind Fehler aufgetreten</span>";
 	}
 }
 
@@ -106,7 +114,9 @@ if (!$view->loadAll())
 
 	<body class="background_main">
 		<a href="view_details.php" target="frame_view_details">Neue View</a>
-		<p><a href="../cronjobs/reports_view_job.php" target="frame_view_details"><button>Statische Tabellen generieren</button></a></p>
+		<form action='view_overview.php' method='POST' name='rebuildForm'>
+			<input type='submit' value='Statische Tabellen generieren' name='action'><?php echo $reports_view_job_msg; ?>
+		</form>
 
 		<form name="formular">
 			<input type="hidden" name="check" value="">

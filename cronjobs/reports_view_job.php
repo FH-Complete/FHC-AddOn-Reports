@@ -23,19 +23,8 @@ require_once(dirname(__FILE__).'/../../../include/globals.inc.php');
 require_once(dirname(__FILE__).'/../../../include/basis_db.class.php');
 require_once(dirname(__FILE__).'/../include/view.class.php');
 
+reports_view_job_START();
 
-$view = new view();
-$view->loadAll();
-$db = new basis_db();
-$errors = false;
 
-foreach($view->result as $v)
-{
-	if(!$v->generateTable())
-		$errors = true;
-}
-
-if(!$errors)
-	echo "Erfolgreich abgeschlossen";
 
 ?>

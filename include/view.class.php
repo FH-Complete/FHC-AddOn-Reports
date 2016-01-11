@@ -396,6 +396,9 @@ class view extends basis_db
 				$this->setLastCopy(null);
 			}
 
+			if(!$this->getView())
+				$this->generateView();
+
 			//neue tabelle erzeugen
 			$qry="CREATE TABLE reports.".
 				$this->table_kurzbz." AS SELECT * FROM reports.".
@@ -409,4 +412,24 @@ class view extends basis_db
 		}
 		return true;
 	}
+}
+
+
+
+function reports_view_job_START()
+{
+	$view = new view();
+	$view->loadAll();
+	$db = new basis_db();
+	$errors = false;
+
+	foreach($view->result as $v)
+	{
+		if(!$v->generateTable())
+			$errors = true;
+	}
+
+	if(!$errors)
+		return true;
+	return false;
 }
