@@ -106,6 +106,7 @@ if (!$view->loadAll())
 
 	<body class="background_main">
 		<a href="view_details.php" target="frame_view_details">Neue View</a>
+		<p><a href="../cronjobs/reports_view_job.php" target="frame_view_details"><button>Statische Tabellen generieren</button></a></p>
 
 		<form name="formular">
 			<input type="hidden" name="check" value="">
