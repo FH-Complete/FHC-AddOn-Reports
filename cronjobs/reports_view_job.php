@@ -27,11 +27,15 @@ require_once(dirname(__FILE__).'/../include/view.class.php');
 $view = new view();
 $view->loadAll();
 $db = new basis_db();
+$errors = false;
 
 foreach($view->result as $v)
 {
-	$v->generateTable();
+	if(!$v->generateTable())
+		$errors = true;
 }
 
+if(!$errors)
+	echo "Erfolgreich abgeschlossen";
 
 ?>

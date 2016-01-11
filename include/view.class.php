@@ -404,5 +404,6 @@ class view extends basis_db
 			}
 			$this->setLastCopy('now()');
 		}
+		return true;
 	}
 }
