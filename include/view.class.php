@@ -416,7 +416,7 @@ class view extends basis_db
 
 
 
-function reports_view_job_START()
+function rp_generateAllViews()
 {
 	$view = new view();
 	$view->loadAll();

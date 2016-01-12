@@ -39,7 +39,7 @@ if($rechte->isBerechtigt('addon/reports', 'suid'))
 }
 
 $view = new view();
-$reports_view_job_msg = "";
+$rp_generateAllViews_msg = "";
 
 if(isset($_REQUEST['action']))
 {
@@ -58,10 +58,10 @@ if(isset($_REQUEST['action']))
 	}
 	else if($_REQUEST["action"]=='Statische Tabellen generieren')
 	{
-		if(reports_view_job_START())
-			$reports_view_job_msg .= "<span style='color:green;margin-left:5px;'>Erfolgreich abgeschlossen</span>";
+		if(rp_generateAllViews())
+			$rp_generateAllViews_msg .= "<span style='color:green;margin-left:5px;'>Erfolgreich abgeschlossen</span>";
 		else
-			$reports_view_job_msg .= "<span style='color:red;margin-left:5px;'>Es sind Fehler aufgetreten</span>";
+			$rp_generateAllViews_msg .= "<span style='color:red;margin-left:5px;'>Es sind Fehler aufgetreten</span>";
 	}
 }
 
@@ -86,13 +86,14 @@ if (!$view->loadAll())
 				vertical-align: middle;
 			}
 
-		.notGenerated {
+		.notGenerated
+		{
 			background: url("../../../skin/images/ampel_rot.png") no-repeat center center;
-  		background-size: 10px 10px;
-  		padding-left: 5px;
-  		padding-right: 5px;
-  		margin-left: 2px;
-  		margin-right: 2px;
+			background-size: 10px 10px;
+			padding-left: 5px;
+			padding-right: 5px;
+			margin-left: 2px;
+			margin-right: 2px;
 		}
 		</style>
 		<script language="JavaScript" type="text/javascript">
@@ -115,7 +116,7 @@ if (!$view->loadAll())
 	<body class="background_main">
 		<a href="view_details.php" target="frame_view_details">Neue View</a>
 		<form action='view_overview.php' method='POST' name='rebuildForm'>
-			<input type='submit' value='Statische Tabellen generieren' name='action'><?php echo $reports_view_job_msg; ?>
+			<input type='submit' value='Statische Tabellen generieren' name='action'><?php echo $rp_generateAllViews_msg; ?>
 		</form>
 
 		<form name="formular">

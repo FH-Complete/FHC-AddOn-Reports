@@ -23,7 +23,7 @@ require_once(dirname(__FILE__).'/../../../include/globals.inc.php');
 require_once(dirname(__FILE__).'/../../../include/basis_db.class.php');
 require_once(dirname(__FILE__).'/../include/view.class.php');
 
-reports_view_job_START();
+rp_generateAllViews();
 
 
 
