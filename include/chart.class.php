@@ -841,7 +841,7 @@ EOT;
 			),
 			'exporting' => array
 			(
-				'url' => "chart_export.php",
+				'url' => "../cis/chart_export.php",
 				'sourceHeight' => 450,
 				'sourceWidth' => 800,
 				'scale' => 1,			//wird von width überschrieben!
