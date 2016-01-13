@@ -644,7 +644,7 @@ EOT;
 		<?php return ob_get_clean();
 	}
 
-	public function writePNG()
+	public function writePNG($targetDir)
 	{
 		switch ($this->type)
 		{
@@ -692,8 +692,8 @@ EOT;
 			case 'hcbar':
 			case 'hcpie':
 			case 'hcdrill':
-				$tmp_filename=sys_get_temp_dir().'/chart'.$this->chart_id.date('Y-m-d_H:i:s').'.png';
-				$output_filename=sys_get_temp_dir().'/chart'.$this->chart_id.'.png';
+				$tmp_filename=$targetDir.'/chart'.$this->chart_id.date('Y-m-d_H:i:s').'.png';
+				$output_filename=$targetDir.'/chart'.$this->chart_id.'.png';
 				$output=array();
 
 				$phantomData = $this->getHighChartData();

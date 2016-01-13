@@ -28,6 +28,7 @@
 	require_once('../../../include/filter.class.php');
 
 	$iconsdir='/etc/asciidoc/images/icons';
+	$chartPNGDir = sys_get_temp_dir() . "/charts_" . get_uid();
 
 
 	if (!$db = new basis_db())
@@ -136,7 +137,11 @@
 			else
 				$htmlstr.= '<br><br>File '.$datafile.' written!';
 
-			$outputfilename=$chart->writePNG();
+
+			if (!file_exists($chartPNGDir))
+				mkdir($chartPNGDir, 0777, true);
+
+			$outputfilename=$chart->writePNG($chartPNGDir);
 
 			if (!$outputfilename)
 			{
@@ -144,6 +149,10 @@
 					die ($chart->errormsg);
 				else
 					die("Der Report konnte nicht erstellt werden!");
+			}
+			else
+			{
+				$htmlstr .= '<br><br>'.$outputfilename.' has been written!';
 			}
 		}
 
@@ -166,7 +175,7 @@
 		case 'asciidoc':
 			$filename.='.asciidoc';
 			$content.='= Report - '.$report->title.$crlf;
-			$content.=$report->header.$crlf.$report->printParam('attr',$crlf).$crlf;
+			$content.=$report->header.$crlf.$report->printParam('attr',$crlf).":chartDir: ".$chartPNGDir.$crlf;
 			$content.=$crlf.'== Beschreibung'.$crlf.$report->description.$crlf;
 			$content.=$crlf.'=== Parameter'.$crlf.'- Erstellung: *'.date("D, j M Y").'*'.$crlf.'- Datenstand: *'.date(DATE_RFC2822).'*'.$crlf.$report->printParam('param',$crlf).$crlf;
 			$content.=$crlf.'<<<'.$crlf.$crlf.'== Report'.$crlf.$report->body.$crlf;
