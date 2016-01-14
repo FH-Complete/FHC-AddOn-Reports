@@ -21,7 +21,8 @@
 
 $dr = DOC_ROOT;
 $dr = str_replace($_SERVER["DOCUMENT_ROOT"], "", $dr);
-
+if($dr=='')
+	$dr='/';
 
 //Originaldateien des Herstellers
 echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/highcharts.js"></script>';
