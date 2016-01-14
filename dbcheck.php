@@ -158,6 +158,19 @@ if(!$result = @$db->db_query("SELECT statistik_kurzbz FROM addon.tbl_rp_chart"))
 }
 
 // Reports (rp) Report
+if(!$result = @$db->db_query("SELECT publish FROM addon.tbl_rp_chart"))
+{
+
+	$qry = 'ALTER TABLE addon.tbl_rp_chart ADD COLUMN publish boolean;';
+
+	if(!$db->db_query($qry))
+		echo '<strong>addon.tbl_rp_chart: '.$db->db_last_error().'</strong><br>';
+	else
+		echo ' addon.tbl_rp_chart: Spalte publish hinzugefuegt!<br>';
+
+}
+
+// Reports (rp) Report
 if(!$result = @$db->db_query("SELECT dashboard FROM addon.tbl_rp_chart"))
 {
 
@@ -174,7 +187,6 @@ if(!$result = @$db->db_query("SELECT dashboard FROM addon.tbl_rp_chart"))
 // Reports (rp) Publish
 if(!$result = @$db->db_query("SELECT gruppe, publish, header, footer, docinfo FROM addon.tbl_rp_report"))
 {
-
 	$qry = 'ALTER TABLE addon.tbl_rp_report ADD COLUMN publish boolean NOT NULL DEFAULT FALSE;
 			ALTER TABLE addon.tbl_rp_report ADD COLUMN gruppe varchar(256);
 			ALTER TABLE addon.tbl_rp_report ADD COLUMN header text;
@@ -186,6 +198,39 @@ if(!$result = @$db->db_query("SELECT gruppe, publish, header, footer, docinfo FR
 	else
 		echo ' addon.tbl_rp_report: Spalte gruppe, header, footer, docinfo und publish hinzugefuegt!<br>';
 
+}
+
+// Reports (rp) footer
+if(!$result = @$db->db_query("SELECT footer FROM addon.tbl_rp_report"))
+{
+	$qry = 'ALTER TABLE addon.tbl_rp_report ADD COLUMN footer text;';
+
+	if(!$db->db_query($qry))
+		echo '<strong>addon.tbl_rp_chart: '.$db->db_last_error().'</strong><br>';
+	else
+		echo ' addon.tbl_rp_report: Spalte footer hinzugefuegt!<br>';
+}
+
+// Reports (rp) docinfo
+if(!$result = @$db->db_query("SELECT docinfo FROM addon.tbl_rp_report"))
+{
+	$qry = 'ALTER TABLE addon.tbl_rp_report ADD COLUMN docinfo xml;';
+
+	if(!$db->db_query($qry))
+		echo '<strong>addon.tbl_rp_chart: '.$db->db_last_error().'</strong><br>';
+	else
+		echo ' addon.tbl_rp_report: Spalte docinfo hinzugefuegt!<br>';
+}
+
+// Reports (rp) header
+if(!$result = @$db->db_query("SELECT header FROM addon.tbl_rp_report"))
+{
+	$qry = 'ALTER TABLE addon.tbl_rp_report ADD COLUMN header text;';
+
+	if(!$db->db_query($qry))
+		echo '<strong>addon.tbl_rp_chart: '.$db->db_last_error().'</strong><br>';
+	else
+		echo ' addon.tbl_rp_report: Spalte header hinzugefuegt!<br>';
 }
 
 // Reports (rp) to Charts
