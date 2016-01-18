@@ -332,6 +332,42 @@ class view extends basis_db
 	}
 
 	/**
+	 * fuehrt ein EXPLAIN aus
+	 *
+	 * @return string wenn ok, sonst false
+	 */
+	public function explainView()
+	{
+		if($this->getView())
+			$this->dropView();
+
+		if(!$this->sql || $this->sql == "SELECT " || $this->sql == "")
+		{
+			$this->errormsg = 'SQL-Befehl ist leer';
+			return false;
+		}
+
+		$qry="EXPLAIN ANALYZE " .
+			$this->sql;
+
+		$result = $this->db_query($qry);
+
+		if(!$result)
+		{
+			$this->errormsg = 'Fehler beim explain';
+			return false;
+		}
+		$str = $this->db_fetch_array($result);
+		if(!$str)
+		{
+			$this->errormsg = 'Fehler beim explain';
+			return false;
+		}
+
+		return $str[0];
+	}
+
+	/**
 	 * Loescht eine View
 	 *
 	 * @return true wenn ok, sonst false

@@ -38,6 +38,7 @@
 	$errorstr = ''; //fehler beim insert
 	$sel = '';
 	$chk = '';
+	$explain_output = '';
 
 
 	$view = new view();
@@ -90,6 +91,12 @@
 			$view->dropView();
 			$reload = true;
 		}
+		else if(isset($_REQUEST["action"]) && $_REQUEST["action"]=='Test-Explain')
+		{
+			$explain_output = $view->explainView();
+			if(!$explain_output)
+				$explain_output = "Fehlgeschlagen: " . $view->errormsg;
+		}
 	}
 
     if($view->view_kurzbz != 'vw_')
@@ -109,11 +116,12 @@
 	$htmlstr .= "			<tr>\n";
 	$htmlstr .= "				<td rowspan='2' valign='top'>SQL</td>\n";
 	$htmlstr .= " 				<td rowspan='2' colspan='3'>
-									<textarea name='sql' cols='70' rows='14' onchange='submitable()'>".$db->convert_html_chars($view->sql)."</textarea>
-								</td>\n";
-	$htmlstr .= "			</tr>\n";
+													<textarea name='sql' cols='70' rows='14' onchange='submitable()'>".$db->convert_html_chars($view->sql)."</textarea>
+												</td>\n";
+	$htmlstr .= 				"<td>$explain_output</td>\n";
+	$htmlstr .=	"			</td>\n";
+	$htmlstr .= "		</tr>\n";
 	$htmlstr .= "	</table>\n";
-
 
 	$htmlstr .= "<br>\n";
 	$htmlstr .= "<div align='right' id='sub'>\n";
@@ -124,6 +132,7 @@
 	$htmlstr .= "	<input type='button' value='Reset' onclick='unchanged()'>\n";
 	$htmlstr .= "	<input type='submit' value='generate' name='action'>\n";
 	$htmlstr .= "	<input type='submit' value='drop' name='action'>\n";
+	$htmlstr .= "	<input type='submit' value='Test-Explain' name='action'>\n";
 	$htmlstr .= "</div>";
 	$htmlstr .= "</form>";
 	$htmlstr .= "<div class='inserterror'>".$errorstr."</div>"

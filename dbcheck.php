@@ -659,6 +659,7 @@ AND nspname='reports';")))
 		echo ' reports.*: User "web" CREATE Rechte gewaehrt!<br>';
 }
 
+
 echo '<br>Aktualisierung abgeschlossen<br><br>';
 echo '<h2>Gegenprüfung</h2>';
 
