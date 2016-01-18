@@ -616,6 +616,48 @@ if(!$result = @$db->db_query("SELECT sortorder FROM addon.tbl_rp_gruppe LIMIT 1"
 }
 
 
+//CREATE für vilesci
+if(!$db->db_fetch_object(@$db->db_query("SELECT nspname,
+       coalesce(nullif(role.name,''), 'PUBLIC') AS name,
+       substring(
+          CASE WHEN position('U' in split_part(split_part((','||array_to_string(nspacl,',')), ','||role.name||'=',2 ) ,'/',1)) > 0 THEN ', USAGE' ELSE '' END
+          || CASE WHEN position('C' in split_part(split_part((','||array_to_string(nspacl,',')), ','||role.name||'=',2 ) ,'/',1)) > 0 THEN ', CREATE' ELSE '' END
+       , 3,10000) AS privileges
+FROM pg_namespace pn, (SELECT pg_roles.rolname AS name
+   FROM pg_roles UNION ALL SELECT '' AS name) AS role
+ WHERE (','||array_to_string(nspacl,',')) LIKE '%,'||role.name||'=%'
+AND name='vilesci'
+AND position('C' in split_part(split_part((','||array_to_string(nspacl,',')), ','||role.name||'=',2 ) ,'/',1)) > 0
+AND nspname='reports';")))
+{
+// Create für vilesci
+	if(!$db->db_query("GRANT USAGE, CREATE ON SCHEMA reports TO vilesci;"))
+		echo '<strong>Reports: '.$db->db_last_error().'</strong><br>';
+	else
+		echo ' reports.*: User "vilesci" CREATE Rechte gewaehrt!<br>';
+}
+
+
+//CREATE für web
+if(!$db->db_fetch_object(@$db->db_query("SELECT nspname,
+       coalesce(nullif(role.name,''), 'PUBLIC') AS name,
+       substring(
+          CASE WHEN position('U' in split_part(split_part((','||array_to_string(nspacl,',')), ','||role.name||'=',2 ) ,'/',1)) > 0 THEN ', USAGE' ELSE '' END
+          || CASE WHEN position('C' in split_part(split_part((','||array_to_string(nspacl,',')), ','||role.name||'=',2 ) ,'/',1)) > 0 THEN ', CREATE' ELSE '' END
+       , 3,10000) AS privileges
+FROM pg_namespace pn, (SELECT pg_roles.rolname AS name
+   FROM pg_roles UNION ALL SELECT '' AS name) AS role
+ WHERE (','||array_to_string(nspacl,',')) LIKE '%,'||role.name||'=%'
+AND name='web'
+AND position('C' in split_part(split_part((','||array_to_string(nspacl,',')), ','||role.name||'=',2 ) ,'/',1)) > 0
+AND nspname='reports';")))
+{
+	// Create für web
+	if(!$db->db_query("GRANT USAGE, CREATE ON SCHEMA reports TO web;"))
+		echo '<strong>Reports: '.$db->db_last_error().'</strong><br>';
+	else
+		echo ' reports.*: User "web" CREATE Rechte gewaehrt!<br>';
+}
 
 echo '<br>Aktualisierung abgeschlossen<br><br>';
 echo '<h2>Gegenprüfung</h2>';

@@ -50,7 +50,7 @@ if(isset($_GET['action']))
 
 if (!$report->loadAll())
 {
-    die($report->errormsg);
+	die($report->errormsg);
 }
 
 ?>
@@ -71,7 +71,8 @@ if (!$report->loadAll())
 			}
 		</style>
 		<script language="JavaScript" type="text/javascript">
-			$(function() {
+			$(function()
+			{
 				$("#t1").tablesorter(
 				{
 					sortList: [[3,1]],
