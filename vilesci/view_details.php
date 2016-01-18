@@ -118,7 +118,6 @@
 	$htmlstr .= " 				<td rowspan='2' colspan='3'>
 													<textarea name='sql' cols='70' rows='14' onchange='submitable()'>".$db->convert_html_chars($view->sql)."</textarea>
 												</td>\n";
-	$htmlstr .= 				"<td>$explain_output</td>\n";
 	$htmlstr .=	"			</td>\n";
 	$htmlstr .= "		</tr>\n";
 	$htmlstr .= "	</table>\n";
@@ -135,7 +134,8 @@
 	$htmlstr .= "	<input type='submit' value='Test-Explain' name='action'>\n";
 	$htmlstr .= "</div>";
 	$htmlstr .= "</form>";
-	$htmlstr .= "<div class='inserterror'>".$errorstr."</div>"
+	$htmlstr .= "<div class='inserterror'>".$errorstr."</div>\n";
+	$htmlstr .= "<div>$explain_output</div>\n";
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">

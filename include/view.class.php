@@ -347,7 +347,7 @@ class view extends basis_db
 			return false;
 		}
 
-		$qry="EXPLAIN ANALYZE " .
+		$qry="EXPLAIN " .
 			$this->sql;
 
 		$result = $this->db_query($qry);
@@ -357,14 +357,14 @@ class view extends basis_db
 			$this->errormsg = 'Fehler beim explain';
 			return false;
 		}
-		$str = $this->db_fetch_array($result);
-		if(!$str)
-		{
-			$this->errormsg = 'Fehler beim explain';
-			return false;
-		}
 
-		return $str[0];
+		$str="<pre>";
+
+		while($s = $this->db_fetch_array($result))
+			$str.=$s[0]."<br>";
+
+		$str .= "</pre>";
+		return $str;
 	}
 
 	/**
