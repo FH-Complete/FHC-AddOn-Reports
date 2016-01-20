@@ -24,8 +24,8 @@ require_once('../../../include/functions.inc.php');
 require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../../../include/statistik.class.php');
 require_once('../../../include/filter.class.php');
-require_once('../include/report.class.php');
-require_once('../include/chart.class.php');
+require_once('../include/rp_report.class.php');
+require_once('../include/rp_chart.class.php');
 require_once('../include/rp_report_chart.class.php');
 require_once('../include/rp_report_statistik.class.php');
 

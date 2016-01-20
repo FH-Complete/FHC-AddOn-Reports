@@ -21,7 +21,7 @@
 require_once(dirname(__FILE__).'/../../../config/vilesci.config.inc.php');
 require_once(dirname(__FILE__).'/../../../include/globals.inc.php');
 require_once(dirname(__FILE__).'/../../../include/basis_db.class.php');
-require_once(dirname(__FILE__).'/../include/view.class.php');
+require_once(dirname(__FILE__).'/../include/rp_view.class.php');
 
 rp_generateAllViews();
 

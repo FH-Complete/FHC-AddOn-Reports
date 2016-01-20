@@ -22,8 +22,8 @@ require_once(dirname(__FILE__).'/../../../include/globals.inc.php');
 require_once(dirname(__FILE__).'/../../../include/functions.inc.php');
 require_once(dirname(__FILE__).'/../../../include/benutzerberechtigung.class.php');
 require_once(dirname(__FILE__).'/../../../include/statistik.class.php');
-require_once(dirname(__FILE__).'/../include/chart.class.php');
-require_once(dirname(__FILE__).'/../include/report.class.php');
+require_once(dirname(__FILE__).'/../include/rp_chart.class.php');
+require_once(dirname(__FILE__).'/../include/rp_report.class.php');
 require_once(dirname(__FILE__).'/../include/rp_gruppe.class.php');
 require_once(dirname(__FILE__).'/../include/rp_gruppenzuordnung.class.php');
 

@@ -18,6 +18,7 @@
  * Authors: Christian Paminger 	< christian.paminger@technikum-wien.at >
  *          Andreas Oesterreicher 	< andreas.oesterreicher@technikum-wien.at >
  *          Karl Burkhart 		< burkhart@technikum-wien.at >
+ *					Andreas Moik <moik@technikum-wien.at>
  */
 require_once('../../../config/vilesci.config.inc.php');
 require_once('../../../include/statistik.class.php');

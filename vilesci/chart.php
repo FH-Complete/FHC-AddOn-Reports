@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  *
  * Authors: Christian Paminger,
+ *					Andreas Moik <moik@technikum-wien.at>
  */
 
 // pChart library inclusions
@@ -27,7 +28,7 @@ require_once('../../../config/vilesci.config.inc.php');
 require_once('../../../include/functions.inc.php');
 require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../../../include/filter.class.php');
-require_once('../include/chart.class.php');
+require_once('../include/rp_chart.class.php');
 
 $uid = get_uid();
 $rechte = new benutzerberechtigung();

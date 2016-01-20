@@ -22,8 +22,8 @@
 	require_once('../../../include/globals.inc.php');
 	require_once('../../../include/functions.inc.php');
 	require_once('../../../include/benutzerberechtigung.class.php');
-	require_once('../include/report.class.php');
-	require_once('../include/chart.class.php');
+	require_once('../include/rp_report.class.php');
+	require_once('../include/rp_chart.class.php');
 	require_once('../../../include/process.class.php');
 	require_once('../../../include/filter.class.php');
 

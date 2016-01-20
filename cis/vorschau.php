@@ -18,7 +18,7 @@
  * Authors: Andreas Moik <moik@technikum-wien.at>
  */
 	require_once('../../../config/vilesci.config.inc.php');
-	require_once('../include/chart.class.php');
+	require_once('../include/rp_chart.class.php');
 ?>
 
 <!DOCTYPE html>

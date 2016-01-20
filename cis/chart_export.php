@@ -17,7 +17,7 @@
  *
  * Authors: Andreas Moik <moik@technikum-wien.at>
  */
-require_once('../include/phantom.class.php');
+require_once('../include/rp_phantom.class.php');
 require_once('../../../config/cis.config.inc.php');
 require_once('../../../include/dokument_export.class.php');
 require_once('../../../include/functions.inc.php');

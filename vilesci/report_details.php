@@ -16,13 +16,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  *
  * Authors: Christian Paminger 	< christian.paminger@technikum-wien.at >
+ *					Andreas Moik <moik@technikum-wien.at>
  */
 	require_once('../../../config/vilesci.config.inc.php');
 	require_once('../../../include/globals.inc.php');
 	require_once('../../../include/functions.inc.php');
 	require_once('../../../include/benutzerberechtigung.class.php');
-	require_once('../include/report.class.php');
-	require_once('../include/chart.class.php');
+	require_once('../include/rp_report.class.php');
+	require_once('../include/rp_chart.class.php');
 	require_once('../../../include/statistik.class.php');
 	require_once('../include/rp_report_chart.class.php');
 	require_once('../include/rp_report_statistik.class.php');
