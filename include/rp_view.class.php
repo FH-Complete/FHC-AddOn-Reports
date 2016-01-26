@@ -56,6 +56,10 @@ class view extends basis_db
 
 	}
 
+	/**
+	 * Laedt eine View aus DB
+	 * @return true wenn ok, false im Fehlerfall
+	 */
 	public function load($view_id=null)
 	{
 		//Pruefen ob view_id eine gueltige Zahl ist

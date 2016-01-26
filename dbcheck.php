@@ -614,8 +614,6 @@ if(!$result = @$db->db_query("SELECT sortorder FROM addon.tbl_rp_gruppe LIMIT 1"
 	else
 		echo ' addon.tbl_rp_gruppe: Spalte "sortorder" eingefuegt!<br>';
 }
-
-
 //CREATE für vilesci
 if(!$db->db_fetch_object(@$db->db_query("SELECT nspname,
        coalesce(nullif(role.name,''), 'PUBLIC') AS name,
@@ -660,6 +658,84 @@ AND nspname='reports';")))
 }
 
 
+/************************************  01.16 tbl_rp_attribut  ************************************/
+if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_attribut"))
+{
+	$qry = "
+
+	CREATE SEQUENCE addon.tbl_rp_attribut_attribut_id_seq
+		INCREMENT BY 1
+		NO MAXVALUE
+		NO MINVALUE
+		CACHE 1;
+
+	CREATE TABLE addon.tbl_rp_attribut
+	(
+		attribut_id integer NOT NULL DEFAULT nextval('addon.tbl_rp_attribut_attribut_id_seq'),
+		shorttitle varchar(64)[],
+		middletitle varchar(256)[],
+		longtitle varchar(512)[],
+		description TEXT[],
+		insertamum timestamp DEFAULT now(),
+		insertvon varchar(32),
+		updateamum timestamp DEFAULT now(),
+		updatevon varchar(32),
+		CONSTRAINT pk_rp_attribut PRIMARY KEY (attribut_id)
+	);
+
+
+	GRANT SELECT, UPDATE, INSERT, DELETE ON addon.tbl_rp_attribut TO vilesci;
+	GRANT SELECT, UPDATE ON addon.tbl_rp_attribut_attribut_id_seq TO vilesci;
+	";
+
+	if(!$db->db_query($qry))
+		echo '<strong>addon.tbl_rp_attribut: '.$db->db_last_error().'</strong><br>';
+	else
+		echo ' addon.tbl_rp_attribut: Tabelle addon.tbl_rp_attribut hinzugefuegt!<br>';
+}
+
+
+
+/************************************  01.16 tbl_rp_attribut_zuweisungen  ************************************/
+if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_attribut_zuweisungen"))
+{
+	$qry = "
+
+	CREATE SEQUENCE addon.tbl_rp_attribut_zuweisungen_rp_attribut_zuweisungen_id_seq
+		INCREMENT BY 1
+		NO MAXVALUE
+		NO MINVALUE
+		CACHE 1;
+
+	CREATE TABLE addon.tbl_rp_attribut_zuweisungen
+	(
+		rp_attribut_zuweisungen_id integer NOT NULL DEFAULT nextval('addon.tbl_rp_attribut_zuweisungen_rp_attribut_zuweisungen_id_seq'),
+		attribut_id integer NOT NULL,
+		view_id integer NOT NULL,
+		insertamum timestamp DEFAULT now(),
+		insertvon varchar(32),
+		updateamum timestamp DEFAULT now(),
+		updatevon varchar(32),
+		CONSTRAINT pk_rp_attribut_zuweisungen PRIMARY KEY (rp_attribut_zuweisungen_id)
+	);
+
+
+	ALTER TABLE addon.tbl_rp_attribut_zuweisungen ADD CONSTRAINT \"fk_rp_attribut_zuweisungen_attribut\" FOREIGN KEY (attribut_id)
+	REFERENCES addon.tbl_rp_attribut(attribut_id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+	ALTER TABLE addon.tbl_rp_attribut_zuweisungen ADD CONSTRAINT \"fk_rp_attribut_zuweisungen_view\" FOREIGN KEY (view_id)
+	REFERENCES addon.tbl_rp_view(view_id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+	GRANT SELECT, UPDATE, INSERT, DELETE ON addon.tbl_rp_attribut_zuweisungen TO vilesci;
+	GRANT SELECT, UPDATE ON addon.tbl_rp_attribut_zuweisungen_rp_attribut_zuweisungen_id_seq TO vilesci;
+	";
+
+	if(!$db->db_query($qry))
+		echo '<strong>addon.tbl_rp_attribut_zuweisungen: '.$db->db_last_error().'</strong><br>';
+	else
+		echo ' addon.tbl_rp_attribut_zuweisungen: Tabelle addon.tbl_rp_attribut_zuweisungen hinzugefuegt!<br>';
+}
+
 echo '<br>Aktualisierung abgeschlossen<br><br>';
 echo '<h2>Gegenprüfung</h2>';
 
@@ -672,8 +748,9 @@ $tabellen=array(
 	,"addon.tbl_rp_report_statistik" => array("reportstatistik_id","report_id","statistik_kurzbz","insertamum","insertvon","updateamum","updatevon")
 	,"addon.tbl_rp_gruppe" => array("reportgruppe_id","bezeichnung","reportgruppe_parent_id","sortorder","insertamum","insertvon","updateamum","updatevon")
 	,"addon.tbl_rp_gruppenzuordnung" => array("gruppenzuordnung_id","reportgruppe_id","chart_id","report_id","statistik_kurzbz","insertamum","insertvon","updateamum","updatevon")
+	,"addon.tbl_rp_attribut" => array("attribut_id","shorttitle","middletitle","longtitle","description","insertamum","insertvon","updateamum","updatevon")
+	,"addon.tbl_rp_attribut_zuweisungen" => array("rp_attribut_zuweisungen_id","attribut_id","view_id","insertamum","insertvon","updateamum","updatevon")
 );
-
 
 $tabs=array_keys($tabellen);
 $i=0;

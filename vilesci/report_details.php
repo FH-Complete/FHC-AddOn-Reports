@@ -217,9 +217,9 @@
 	$htmlstr .= "</div>";
 	$htmlstr .= "</form>";
 
-  if($report->report_id > 0)
-  {
-  	//charts
+	if($report->report_id > 0)
+	{
+		//charts
 		$htmlstr .= "	<table  class='tablesorter' id='t1' style='margin: 20px; float:left;width:45%'>";
 		$htmlstr .= "	<thead>\n";
 		$htmlstr .= "	<tr>\n";

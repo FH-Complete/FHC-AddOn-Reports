@@ -22,6 +22,8 @@
 	require_once('../../../include/globals.inc.php');
 	require_once('../../../include/functions.inc.php');
 	require_once('../../../include/benutzerberechtigung.class.php');
+	require_once('../include/rp_attribut_zuweisungen.class.php');
+	require_once('../include/rp_attribut.class.php');
 	require_once('../include/rp_view.class.php');
 
 	if (!$db = new basis_db())
@@ -50,6 +52,11 @@
 	$view->insertvon		= $user;
 	$view->updatevon		= $user;
 
+	$allAttribute = new rp_attribut();
+	$allAttribute->loadAll();
+
+	$attribut_zuweisungen = new rp_attribut_zuweisungen();
+
 	if(!$rechte->isBerechtigt('addon/reports', null, 'suid'))
 		die('Sie haben keine Berechtigung fuer diese Aktion');
 
@@ -64,39 +71,60 @@
 				die($view->errormsg);
 		}
 
-		if (isset($_REQUEST["action"]) && $_REQUEST["action"]=='save')
+		if(isset($_REQUEST["action"]))
 		{
-			$view->view_id = $_POST["view_id"];
-
-			if($view->view_id == 0)
-				$view->new = true;
-
-			$view->view_kurzbz = $_POST["view_kurzbz"];
-			$view->table_kurzbz = $_POST["table_kurzbz"];
-			$view->sql = $_POST["sql"];
-			$view->static =isset($_POST["static"]);
-
-			if(!$view->save())
+			if ($_REQUEST["action"]=='save')
 			{
-				$errorstr .= $view->errormsg;
+				$view->view_id = $_POST["view_id"];
+
+				if($view->view_id == 0)
+					$view->new = true;
+
+				$view->view_kurzbz = $_POST["view_kurzbz"];
+				$view->table_kurzbz = $_POST["table_kurzbz"];
+				$view->sql = $_POST["sql"];
+				$view->static =isset($_POST["static"]);
+
+				if(!$view->save())
+				{
+					$errorstr .= $view->errormsg;
+				}
+				$reload = true;
 			}
-			$reload = true;
-		}
-		else if (isset($_REQUEST["action"]) && $_REQUEST["action"]=='generate')
-		{
-			$view->generateView();
-			$reload = true;
-		}
-		else if (isset($_REQUEST["action"]) && $_REQUEST["action"]=='drop')
-		{
-			$view->dropView();
-			$reload = true;
-		}
-		else if(isset($_REQUEST["action"]) && $_REQUEST["action"]=='Test-Explain')
-		{
-			$explain_output = $view->explainView();
-			if(!$explain_output)
-				$explain_output = "Fehlgeschlagen: " . $view->errormsg;
+			else if ($_REQUEST["action"]=='generate')
+			{
+				$view->generateView();
+				$reload = true;
+			}
+			else if ($_REQUEST["action"]=='drop')
+			{
+				$view->dropView();
+				$reload = true;
+			}
+			else if($_REQUEST["action"]=='Test-Explain')
+			{
+				$explain_output = $view->explainView();
+				if(!$explain_output)
+					$explain_output = "Fehlgeschlagen: " . $view->errormsg;
+			}
+			else if($_REQUEST["action"]=='saveAttributZuweisung')
+			{
+				if(isset($_REQUEST["view_id"]) && isset($_REQUEST["attribut_id"]))
+				{
+					$saveZuweisung = new rp_attribut_zuweisungen();
+					$saveZuweisung->view_id = $_REQUEST["view_id"];
+					$saveZuweisung->attribut_id = $_REQUEST["attribut_id"];
+					$saveZuweisung->save();
+				}
+			}
+			else if($_REQUEST["action"]=='deleteAttributZuweisung')
+			{
+				if(isset($_REQUEST["attribut_zuweisungen_id"]))
+				{
+					$delZuweisung = new rp_attribut_zuweisungen();
+					$delZuweisung->delete($_REQUEST["attribut_zuweisungen_id"]);
+				}
+			}
 		}
 	}
 
@@ -116,10 +144,9 @@
 	$htmlstr .= "			</tr>\n";
 	$htmlstr .= "			<tr>\n";
 	$htmlstr .= "				<td rowspan='2' valign='top'>SQL</td>\n";
-	$htmlstr .= " 				<td rowspan='2' colspan='3'>
-													<textarea name='sql' cols='70' rows='14' onchange='submitable()'>".$db->convert_html_chars($view->sql)."</textarea>
-												</td>\n";
-	$htmlstr .=	"			</td>\n";
+	$htmlstr .= " 			<td rowspan='2' colspan='3'>
+												<textarea name='sql' cols='70' rows='14' onchange='submitable()'>".$db->convert_html_chars($view->sql)."</textarea>
+											</td>\n";
 	$htmlstr .= "		</tr>\n";
 	$htmlstr .= "	</table>\n";
 
@@ -135,6 +162,55 @@
 	$htmlstr .= "	<input type='submit' value='Test-Explain' name='action'>\n";
 	$htmlstr .= "</div>";
 	$htmlstr .= "</form>";
+
+	if($view->view_id != 0)
+	{
+		$htmlstr .= "<br>\n";
+		$htmlstr .= "	<table  class='tablesorter' id='t1' style='margin-left: 5%;width:90%;'>";
+		$htmlstr .= "	<thead>\n";
+		$htmlstr .= "	<tr>\n";
+		$htmlstr .= "	<th>Attribut</th>\n";
+		$htmlstr .= "	<th>Titel</th>\n";
+		$htmlstr .= "	<th></th>\n";
+		$htmlstr .= "	</tr>\n";
+		$htmlstr .= "	</thead>\n";
+		$htmlstr .= "	<tbody>\n";
+
+		$attribut_zuweisungen->loadAllFromView($view->view_id);
+		foreach($attribut_zuweisungen->result as $az)
+		{
+			$oneAttribut = new rp_attribut($az->attribut_id);
+
+			$htmlstr .= "	<tr>\n";
+			$htmlstr .= '	<td>'.$az->attribut_id.'</td>';
+			$htmlstr .= "	<td>".$oneAttribut->shorttitle["German"]."</td>\n";
+			$htmlstr .= '	<td><a href="view_details.php?action=deleteAttributZuweisung&attribut_zuweisungen_id='.$az->rp_attribut_zuweisungen_id.'&view_id='.$view->view_id.'" onclick="return confdel()">entfernen</a></td>';
+			$htmlstr .= "	</tr>\n";
+		}
+		$htmlstr .= "	</tbody>\n";
+		$htmlstr .= "	<tr>\n";
+
+
+
+		$htmlstr .= "<form action='view_details.php' method='POST' name='view_attrform'>\n";
+		$htmlstr .= "	<input type='hidden' name='view_id' value='".$view->view_id."'>";
+		$htmlstr .= "	<td></td>\n";
+		$htmlstr .= "	<td>\n";
+		$htmlstr .= "	<select name='attribut_id' style='max-width:150px;'>\n";
+
+		foreach($allAttribute->result as $attr)
+		{
+			$htmlstr .= "	<option value=".$attr->attribut_id.">".$attr->shorttitle["German"]."</option>\n";
+		}
+		$htmlstr .= "	</select>\n";
+		$htmlstr .= "	</td>\n";
+		$htmlstr .= "	<input type='hidden' name='action' value='saveAttributZuweisung'>";
+		$htmlstr .= "	<td><input type='submit' value='Hinzuf&uuml;gen'></td>\n";
+		$htmlstr .= "</form>\n";
+		$htmlstr .= "	</tr>\n";
+		$htmlstr .= "	</table>\n";
+		$htmlstr .= "<br>\n";
+	}
 	$htmlstr .= "<div class='inserterror'>".$errorstr."</div>\n";
 	$htmlstr .= "<div>$explain_output</div>\n";
 ?>
@@ -148,6 +224,7 @@
 <script src="../../../include/js/mailcheck.js"></script>
 <script src="../../../include/js/datecheck.js"></script>
 <?php require_once("../../../include/meta/jquery.php"); ?>
+<?php require_once("../../../include/meta/jquery-tablesorter.php"); ?>
 <style>
 	table.tablesorter tbody td
 	{
@@ -157,51 +234,58 @@
 	}
 </style>
 <script type="text/javascript">
+	$(function() {
+		$("#t1").tablesorter(
+		{
+			sortList: [[0,1]],
+			widgets: ["zebra"]
+		});
+	});
 
 
-function confdel()
-{
-	return confirm("Wollen Sie diesen Eintrag wirklich löschen?");
-}
-
-
-function unchanged()
-{
-		document.viewform.reset();
-		document.viewform.schick.disabled = true;
-		document.getElementById("submsg").style.visibility="hidden";
-		checkrequired(document.viewform.view_kurzbz);
-}
-
-function checkrequired(feld)
-{
-	if(feld.value == '')
+	function confdel()
 	{
-		feld.className = "input_error";
-		return false;
+		return confirm("Wollen Sie diesen Eintrag wirklich löschen?");
 	}
-	else
-	{
-		feld.className = "input_ok";
-		return true;
-	}
-}
 
-function submitable()
-{
-	required1 = checkrequired(document.viewform.view_kurzbz);
 
-	if(!required1)
+	function unchanged()
 	{
-		document.viewform.schick.disabled = true;
-		document.getElementById("submsg").style.visibility="hidden";
+			document.viewform.reset();
+			document.viewform.schick.disabled = true;
+			document.getElementById("submsg").style.visibility="hidden";
+			checkrequired(document.viewform.view_kurzbz);
 	}
-	else
+
+	function checkrequired(feld)
 	{
-		document.viewform.schick.disabled = false;
-		document.getElementById("submsg").style.visibility="visible";
+		if(feld.value == '')
+		{
+			feld.className = "input_error";
+			return false;
+		}
+		else
+		{
+			feld.className = "input_ok";
+			return true;
+		}
 	}
-}
+
+	function submitable()
+	{
+		required1 = checkrequired(document.viewform.view_kurzbz);
+
+		if(!required1)
+		{
+			document.viewform.schick.disabled = true;
+			document.getElementById("submsg").style.visibility="hidden";
+		}
+		else
+		{
+			document.viewform.schick.disabled = false;
+			document.getElementById("submsg").style.visibility="visible";
+		}
+	}
 </script>
 </head>
 <body style="background-color:#eeeeee;">
