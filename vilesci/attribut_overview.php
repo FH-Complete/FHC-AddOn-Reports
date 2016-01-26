@@ -15,19 +15,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  *
- * Authors: Christian Paminger 	< christian.paminger@technikum-wien.at >
- *					Andreas Moik <moik@technikum-wien.at>
+ * Authors: Andreas Moik <moik@technikum-wien.at>
  */
 require_once('../../../config/vilesci.config.inc.php');
 require_once('../../../include/functions.inc.php');
 require_once('../include/rp_attribut.class.php');
 require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../../../include/datum.class.php');
-
-if (!$db = new basis_db())
-{
-	die('Es konnte keine Verbindung zum Server aufgebaut werden.');
-}
 
 $user = get_uid();
 
@@ -120,6 +114,7 @@ if (!$attribut->loadAll())
 							<a href="attribut_details.php?attribut_id=<?php echo $attribut->attribut_id ?>" style="float:left;" target="frame_attribut_details">
 								<?php echo $attribut->attribut_id ?>
 							</a>
+							<a href="attribut_vorschau.php?attribut_id=<?php echo $attribut->attribut_id ?>" target="frame_attribut_details"><img style="float:left;" title="Vorschau zu <?php echo $attribut->shorttitle["German"];?>" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>
 						</td>
 						<td>
 							<a href="attribut_details.php?attribut_id=<?php echo $attribut->attribut_id ?>" target="frame_attribut_details">
