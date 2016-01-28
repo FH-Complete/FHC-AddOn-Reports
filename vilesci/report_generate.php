@@ -107,19 +107,18 @@
 				die('Sie haben keine Berechtigung fuer diesen Report!');
 	}
 
-	// ***** Define Filenames ******************
-	$filesDir ='../data/';
-	$tmpFilename=$filesDir.'Report'.$report->report_id.date('Y-m-d_H:i:s').'.tmp';
-	$filename=$filesDir.'Report'.$report->report_id;
-	$docinfoFilename=$filesDir.'Report'.$report->report_id.'-docinfo.xml';
-	$htmlFilename=$filesDir.'Report'.$report->report_id.'.html';
-	$xmlFilename=$filesDir.'Report'.$report->report_id.'.xml';
-	$pdfFilename=$filesDir.'Report'.$report->report_id.'.pdf';
-
-
 	//create the folder in temp, which will be removed afterwards
 	if (!file_exists($chartTmpDir))
 		mkdir($chartTmpDir, 0777, true);
+
+	// ***** Define Filenames ******************
+	$tmpFilename=$chartTmpDir.'Report'.$report->report_id.date('Y-m-d_H:i:s').'.tmp';
+	$filename=$chartTmpDir.'Report'.$report->report_id;
+	$docinfoFilename=$chartTmpDir.'Report'.$report->report_id.'-docinfo.xml';
+	$htmlFilename=$chartTmpDir.'Report'.$report->report_id.'.html';
+	$xmlFilename=$chartTmpDir.'Report'.$report->report_id.'.xml';
+	$pdfFilename=$chartTmpDir.'Report'.$report->report_id.'.pdf';
+
 
 	foreach($charts->chart as $chart)
 	{
@@ -131,7 +130,7 @@
 
 			$vars = $chart->statistik->parseVars($chart->statistik->sql);
 
-			$datafile=$filesDir.'data'.$chart->statistik->statistik_kurzbz.'.csv';
+			$datafile=$chartTmpDir.'data'.$chart->statistik->statistik_kurzbz.'.csv';
 			if (!$chart->statistik->writeCSV($datafile,',','"'))
 			{
 				if($type == "debug")
@@ -160,7 +159,7 @@
 
 		if(isset($chart->description))
 		{
-			$mdfile=$filesDir.'Chart'.$chart->chart_id.'.md';
+			$mdfile=$chartTmpDir.'Chart'.$chart->chart_id.'.md';
 			file_put_contents($mdfile, $chart->description);
 		}
 
