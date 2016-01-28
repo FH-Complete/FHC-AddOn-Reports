@@ -20,6 +20,7 @@
 require_once('../../../config/vilesci.config.inc.php');
 require_once('../../../include/functions.inc.php');
 require_once('../include/rp_attribut.class.php');
+require_once('../include/rp_attribut_zuweisungen.class.php');
 require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../../../include/datum.class.php');
 
@@ -42,8 +43,18 @@ if(isset($_REQUEST['action']))
 {
 	if($_REQUEST['action']=='delete')
 	{
-		if(!$attribut->delete($_REQUEST['attribut_id']))
-			echo '<script>alert("Der Eintrag konnte nicht gelöscht werden!");</script>';
+		$zuweisungen = new rp_attribut_zuweisungen();
+		$zuweisungen->loadAllFromAttribut($_REQUEST['attribut_id']);
+
+		if(count($zuweisungen->result) > 0)
+		{
+			echo "<script>alert('Es gibt noch Zuweisungen!');</script>";
+		}
+		else
+		{
+			if(!$attribut->delete($_REQUEST['attribut_id']))
+				echo '<script>alert("Der Eintrag konnte nicht gelöscht werden!");</script>';
+		}
 	}
 }
 

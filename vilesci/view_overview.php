@@ -68,7 +68,7 @@ if(isset($_REQUEST['action']))
 
 if (!$view->loadAll())
 {
-		die($view->errormsg);
+	die($view->errormsg);
 }
 
 ?>

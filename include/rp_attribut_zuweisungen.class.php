@@ -136,6 +136,48 @@ class rp_attribut_zuweisungen extends basis_db
 		return true;
 	}
 
+	/**
+	 * Laedt ein Attribut aus DB
+	 * @return true wenn ok, false im Fehlerfall
+	 */
+	public function loadAllFromAttribut($attribut_id)
+	{
+		//Pruefen ob attribut_id eine gueltige Zahl ist
+		if(!is_numeric($attribut_id))
+		{
+			$this->errormsg = 'attribut_id muss eine gueltige Zahl sein';
+			return false;
+		}
+		//Lesen der Daten aus der Datenbank
+		$qry = 'SELECT * FROM addon.tbl_rp_attribut_zuweisungen WHERE attribut_id='.$this->db_add_param($attribut_id, FHC_INTEGER).';';
+
+		if(!$this->db_query($qry))
+		{
+			$this->errormsg = 'Fehler bei einer Datenbankabfrage';
+			return false;
+		}
+
+		$buf = array();
+
+		while($row = $this->db_fetch_object())
+		{
+			$obj = new rp_attribut_zuweisungen();
+			$obj->rp_attribut_zuweisungen_id	= $row->rp_attribut_zuweisungen_id;
+			$obj->attribut_id	= $row->attribut_id;
+			$obj->view_id	= $row->view_id;
+
+			$obj->updateamum		= $row->updateamum;
+			$obj->updatevon		= $row->updatevon;
+			$obj->insertamum		= $row->insertamum;
+			$obj->insertvon		= $row->insertvon;
+			$buf[] = $obj;
+		}
+
+		$this->result = $buf;
+
+		return true;
+	}
+
 
 
 
