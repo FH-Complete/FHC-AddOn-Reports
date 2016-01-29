@@ -42,12 +42,20 @@ if(count($chart->result)>0)
 
 	$get_string = '&' . http_build_query($params);
 
+	usort($chart->result, "dashboard_sort");
 
 	foreach($chart->result as $onechart)
 	{
+		$onechart->inDashboard = true;
 		$onechart->vars = $get_string;
 		echo $onechart->getHtmlDiv($onechart->dashboard_layout);
 	}
 
 	echo $chart->getFooter();
+}
+
+
+function dashboard_sort($a,$b)
+{
+	return $a->dashboard_pos>$b->dashboard_pos;
 }

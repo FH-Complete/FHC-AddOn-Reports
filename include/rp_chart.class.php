@@ -51,6 +51,7 @@ class chart extends basis_db
 	public $dashboard;
 	public $dashboard_layout;
 	public $dashboard_pos;
+	public $inDashboard;
 
 	/**
 	 * Konstruktor
@@ -621,8 +622,27 @@ EOT;
 			case 'hccolumn':
 			case 'hcbar':
 			case 'hcpie':
+
+			$chartAttributes = "";
+
+			if($this->inDashboard)
+			{
+				switch($this->dashboard_layout)
+				{
+					case "half":
+						$chartAttributes .= 'style="width:50%;float:left;"';
+					break;
+					case "third":
+						$chartAttributes .= 'style="width:33%;float:left;';
+					break;
+					default:
+						$chartAttributes .= 'style="width:100%;float:left;"';
+					break;
+				}
+			}
+
 				?>
-				<div id="hcChart<?php echo $this->chart_id ?>" class="<?php echo $class ?>" style="border: 1px solid transparent;"></div>
+				<div id="hcChart<?php echo $this->chart_id ?>" <?php echo $chartAttributes ?> class="<?php echo $class ?>" style="border: 1px solid transparent;"></div>
 				<?php
 					$json = $this->getHighChartData();
 				?>
@@ -631,8 +651,11 @@ EOT;
 			<?php break;
 		}
 
-		$md =  \Michelf\Markdown::defaultTransform($this->description);
-		echo '<div>'.$md.'</div>';
+		if(!$this->inDashboard)
+		{
+			$md = \Michelf\Markdown::defaultTransform($this->description);
+			echo '<div>'.$md.'</div>';
+		}
 
 		return ob_get_clean();
 	}
