@@ -738,64 +738,73 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_attribut_zuweisungen"))
 }
 
 /************************************  02.16 highcharts typen ************************************/
+/*
+ * In folgenden Abschnitt geht es einerseits darum, die alten HighCharts-typen zu konvertieren und dass bei Charts-preferences nun kein javascript mehr steht, sondern JSON.
+ *
+ * Nun gibt es nurnoch 2 Typen: "hcnorm" und "hcdrill"
+ * Diese beiden gibt es, da der Drilldown noch einmal aufgesplittet werden kann, weshalb die Daten anders aussehen müssen.
+ * Die typen werden nun nurnoch über die Preferences manipuliert
+*/
 if($result = @$db->db_query("SELECT * FROM addon.tbl_rp_chart WHERE type!='hcnorm' AND type!='hcdrill'"))
 {
 	if($db->db_num_rows($result)!=0)
 	{
-		if($result = @$db->db_query("SELECT * FROM addon.tbl_rp_chart WHERE type!='hcnorm' OR type is NULL"))
+		if($result = @$db->db_query("SELECT * FROM addon.tbl_rp_chart"))		//alle charts holen
 		{
 			while($row = $db->db_fetch_object($result))
 			{
 				$c = new chart();
-				$prefBuf = $c->removeCommentsFromJson($row->preferences);
+				$prefBuf = $c->removeCommentsFromJson($row->preferences);		//kommentare entfernen, damit es ein valides JSON ergibt
 				$prefsArray = json_decode($prefBuf);
+				$newChartType = "line";																			//standard, falls nirgendwo einer gesetzt wurde
 
-				if($prefsArray)
+				switch($row->type)																					//obsolete typen werden konvertiert
 				{
-					if(!isset($prefsArray->chart))
-						$prefsArray->chart = new stdClass();
-					if(!isset($prefsArray->chart->type))
-						$prefsArray->chart->type = "line";		//if no type is set
-
+					case "hcline":
+						$newChartType = "line";
+						break;
+					case "hccolumn":
+						$newChartType = "column";
+						break;
+					case "hcbar":
+						$newChartType = "bar";
+						break;
+					case "hcpie":
+						$newChartType = "pie";
+						break;
+					case "hcdrill":
+						$newChartType = "column";
+						break;
+					default:		// nur falls aus einem unersichtlichen grund kein zulässiger typ angegeben wurde(man weiß ja nie)
+						ob_start();
+						var_dump($row->type);
+						$output = ob_get_clean();
+						echo "<span style='float:left;'>unknown type: </span><span style='float:left;'>" . $output . "</span><div style='clear:both'></div>";
+						$newChartType = "line";
 				}
-				else
-				{
-					$prefsArray = new stdClass();
-					if(!isset($prefsArray->chart))
-						$prefsArray->chart = new stdClass();
 
-					switch($row->type)
-					{//we use the type from the db
-						case "hcline":
-							$prefsArray->chart->type = "line";
-							break;
-						case "hccolumn":
-							$prefsArray->chart->type = "column";
-							break;
-						case "hcbar":
-							$prefsArray->chart->type = "bar";
-							break;
-						case "hcpie":
-							$prefsArray->chart->type = "pie";
-							break;
-						case "hcdrill":
-							$prefsArray->chart->type = "column";
-							break;
-						default:
-							ob_start();
-							var_dump($row->type);
-							$output = ob_get_clean();
-							echo "<span style='float:left;'>unknown type: </span><span style='float:left;'>" . $output . "</span><div style='clear:both'></div>";
-							$prefsArray->chart->type = "line";
-					}
+
+				if($prefsArray)																													//es ist ein valides JSON
+				{
+					if(!isset($prefsArray->chart))																				//alle nötigen objekte erstellen, falls es sie noch nicht gibt
+						$prefsArray->chart = new stdClass();
+					if(!isset($prefsArray->chart->type))																	//falls noch kein charttyp im json gesetzt wurde, wird er nun der vorhin ermittelte eingetragen(json hat vorrang)
+						$prefsArray->chart->type = $newChartType;
+				}
+				else																																		//es ist KEIN valides JSON(vermutlich noch alter JS-code)
+				{
+					$prefsArray = new stdClass();																					//wir erstellen die
+					$prefsArray->chart = new stdClass();																	//nötigen objekte
+
+					$prefsArray->chart->type = $newChartType;															//und setzen den typen, welchen wir vorhin konvertiert haben
 				}
 
 
 				$newPrefs = json_encode($prefsArray);
 				if($row->preferences != "")
-					$newPrefs .= "\n/*\n//OLD PREFERENCES:\n".$row->preferences."\n*/";
+					$newPrefs .= "\n/*\n//OLD PREFERENCES:\n".$row->preferences."\n*/";		//sollte es vorher schon preferences gegeben haben, hängen wir diese auskommentiert unten daran, damit keine infos verloren gehen
 
-				if($row->type != "hcnorm" && $row->type != "hcdrill")
+				if($row->type != "hcnorm" && $row->type != "hcdrill")										//zum abschluss stellen wir, falls nötig noch einen validen charttypen ein
 				{
 					$row->type = "hcnorm";
 				}
