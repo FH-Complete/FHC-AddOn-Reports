@@ -25,6 +25,7 @@ require_once('../../config/system.config.inc.php');
 require_once('../../include/basis_db.class.php');
 require_once('../../include/functions.inc.php');
 require_once('../../include/benutzerberechtigung.class.php');
+require_once('include/rp_chart.class.php');
 
 // Datenbank Verbindung
 $db = new basis_db();
@@ -735,6 +736,89 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_attribut_zuweisungen"))
 	else
 		echo ' addon.tbl_rp_attribut_zuweisungen: Tabelle addon.tbl_rp_attribut_zuweisungen hinzugefuegt!<br>';
 }
+
+/************************************  02.16 highcharts typen ************************************/
+if($result = @$db->db_query("SELECT * FROM addon.tbl_rp_chart WHERE type!='hcnorm' AND type!='hcdrill'"))
+{
+	if($db->db_num_rows($result)!=0)
+	{
+		if($result = @$db->db_query("SELECT * FROM addon.tbl_rp_chart WHERE type!='hcnorm' OR type is NULL"))
+		{
+			while($row = $db->db_fetch_object($result))
+			{
+				$c = new chart();
+				$prefBuf = $c->removeCommentsFromJson($row->preferences);
+				$prefsArray = json_decode($prefBuf);
+
+				if($prefsArray)
+				{
+					if(!isset($prefsArray->chart))
+						$prefsArray->chart = new stdClass();
+					if(!isset($prefsArray->chart->type))
+						$prefsArray->chart->type = "line";		//if no type is set
+
+				}
+				else
+				{
+					$prefsArray = new stdClass();
+					if(!isset($prefsArray->chart))
+						$prefsArray->chart = new stdClass();
+
+					switch($row->type)
+					{//we use the type from the db
+						case "hcline":
+							$prefsArray->chart->type = "line";
+							break;
+						case "hccolumn":
+							$prefsArray->chart->type = "column";
+							break;
+						case "hcbar":
+							$prefsArray->chart->type = "bar";
+							break;
+						case "hcpie":
+							$prefsArray->chart->type = "pie";
+							break;
+						case "hcdrill":
+							$prefsArray->chart->type = "column";
+							break;
+						default:
+							ob_start();
+							var_dump($row->type);
+							$output = ob_get_clean();
+							echo "<span style='float:left;'>unknown type: </span><span style='float:left;'>" . $output . "</span><div style='clear:both'></div>";
+							$prefsArray->chart->type = "line";
+					}
+				}
+
+
+				$newPrefs = json_encode($prefsArray);
+				if($row->preferences != "")
+					$newPrefs .= "\n/*\n//OLD PREFERENCES:\n".$row->preferences."\n*/";
+
+				if($row->type != "hcnorm" && $row->type != "hcdrill")
+				{
+					$row->type = "hcnorm";
+				}
+
+
+				$updQry = 'UPDATE addon.tbl_rp_chart SET'.
+						' preferences='.$db->db_add_param($newPrefs).', '.
+						' type='.$db->db_add_param($row->type).', '.
+						' updateamum= now(), '.
+						' updatevon='.$db->db_add_param("DBCHECK").
+							' WHERE chart_id='.$db->db_add_param($row->chart_id, FHC_INTEGER, false).';';
+
+				if (!@$db->db_query($updQry))
+					echo '<strong>addon.tbl_rp_chart: '.$db->db_last_error().'</strong><br>';
+				else
+					echo ' addon.tbl_rp_chart: Chart '.$row->chart_id.' angepasst<br>';
+
+			}
+		}
+	}
+}
+
+
 
 echo '<br>Aktualisierung abgeschlossen<br><br>';
 echo '<h2>Gegenprüfung</h2>';

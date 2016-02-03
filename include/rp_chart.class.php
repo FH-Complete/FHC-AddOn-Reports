@@ -344,10 +344,7 @@ class chart extends basis_db
 	{
 		// Convention: Highcharts must start with "hc" followed by the real charttype
 		return array(
-			'hcline' => 'Highcharts Line',
-			'hccolumn' => 'Highcharts Column',
-			'hcbar' => 'Highcharts Bar',
-			'hcpie' => 'Highcharts Pie',
+			'hcnorm' => 'Highcharts Normal',
 			'hcdrill' => 'Highcharts Drilldown',
 		);
 	}
@@ -430,23 +427,11 @@ EOT;
  }*/
 }
 
-
-
-
-
-
-
-
-
-
 EOT;
 
 
 		return array(
-			'hcline' => $hc_default,
-			'hccolumn' => $hc_default,
-			'hcbar' => $hc_default,
-			'hcpie' => $hc_default,
+			'hcnorm' => $hc_default,
 			'hcdrill' => $hc_drill,
 		);
 
@@ -552,19 +537,10 @@ EOT;
 
 		<?php switch ($this->type)
 		{
-			case 'ngGrid': ?>
-				<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ng-grid.css" />
-				<script src="../include/js/ngGrid/angular.min.js" type="application/javascript"></script>
-				<script src="../include/js/ngGrid/ng-grid.debug.js" type="application/javascript"></script>
-				<script src="../include/js/ngGrid/main.js" type="application/javascript"></script>
-				<?php break;
 			case 'hcdrill': ?>
 				<?php require_once("../include/meta/highcharts.php"); ?>
 				<?php break;
-			case 'hcline':
-			case 'hccolumn':
-			case 'hcbar':
-			case 'hcpie': ?>
+			case 'hcnorm': ?>
 				<?php require_once("../include/meta/highcharts.php"); ?>
 				<script src="../include/js/highcharts/exporting.js" type="application/javascript"></script>
 				<?php break;
@@ -579,10 +555,6 @@ EOT;
 			<script type="text/javascript" src="../../../content/phantom.js.php"></script>
 			<script src="../include/js/jquery-1.11.2.min.js" type="application/javascript"></script>
 			<link rel="stylesheet" href="../include/css/charts.css" type="text/css">
-			<link rel="stylesheet" type="text/css" href="../include/js/ngGrid/ng-grid.css" />
-			<script src="../include/js/ngGrid/angular.min.js" type="application/javascript"></script>
-			<script src="../include/js/ngGrid/ng-grid.debug.js" type="application/javascript"></script>
-			<script src="../include/js/ngGrid/main.js" type="application/javascript"></script>
 			<?php require_once("../include/meta/highcharts.php"); ?>
 			<script>
 				$(function() {
@@ -617,11 +589,8 @@ EOT;
 		$source = $this->datasource.$this->vars;
 		switch ($this->type)
 		{
+			case 'hcnorm':
 			case 'hcdrill':
-			case 'hcline':
-			case 'hccolumn':
-			case 'hcbar':
-			case 'hcpie':
 
 			$chartAttributes = "";
 
@@ -710,10 +679,7 @@ EOT;
 				$myPicture->autoOutput("data/images/example.drawBarChart.floating.png");
 				break;
 
-			case 'hcline':
-			case 'hccolumn':
-			case 'hcbar':
-			case 'hcpie':
+			case 'hcnorm':
 			case 'hcdrill':
 				$tmp_filename=$targetDir.'/chart'.$this->chart_id.date('Y-m-d_H:i:s').'.png';
 				$output_filename=$targetDir.'/chart'.$this->chart_id.'.png';
@@ -777,11 +743,8 @@ EOT;
 		$hctype=substr($this->type,2);
 		$data = $this->statistik->getArray();
 
-
 		if ($hctype=='drill')
 		{
-			$hctype='column';
-
 			foreach($data as $zeile)
 			{
 				$l1_bezeichnung = current($zeile);
@@ -872,7 +835,7 @@ EOT;
 			'chart' => array
 			(
 				'zoomType' => "xy",
-				'type' => $hctype,
+				'type' => "column",
 				'animation' => true,    //animation für den zoom
 				/*
 				'options3d' => array
@@ -904,62 +867,19 @@ EOT;
 
 		if(isset($this->preferences) && $this->preferences != "" && $this->preferences != null)
 		{
-			//einstellungen aufteilen
-			$prefs = explode("\n", $this->preferences);
-			$aktivMz = false;
-
-			//kommentarzeilen entfernen
-			foreach($prefs as $pk => $p)
-			{
-				// \r entfernen
-				$prefs[$pk] = str_replace("\r", "", $prefs[$pk]);
-
-
-				// mehrzeilige kommentare
-				$posMz = strpos($prefs[$pk], "/*");
-				if($posMz !== false  && !$aktivMz)		//anfang eines Mehrzeiligen kommentars gefunden
-				{
-					$prefs[$pk] = substr($prefs[$pk], 0, $posMz);
-					$aktivMz = true;
-				}
-				$posMzE = strpos($prefs[$pk], "*/");
-				if($posMzE !== false && $aktivMz)		//ende des Mehrzeiligen kommentars gefunden
-				{
-					$prefs[$pk] = substr($prefs[$pk], $posMzE+2, count($prefs[$pk]));
-					$aktivMz = false;
-				}
-				if($posMz === false && $posMzE === false && $aktivMz)		//zeile komplett auskommentiert
-				{
-					unset($prefs[$pk]);
-					continue;		//doppelslashes werden somit umgangen wenn sie /* // */ eingekapselt sind
-				}
-
-
-
-				// doppelslash-kommentare
-				$posEz = strpos ( $p, "//");
-				if($posEz !== false)
-				{
-					$prefs[$pk] = substr($p, 0, $posEz);
-				}
-			}
-			//und wieder zusammenfügen
-			$json = join('', $prefs);
+			$json = $this->removeCommentsFromJson($this->preferences);
 
 			if($json != '')		//wenn nicht nur kommentare in den preferences standen
 			{
 				//in einen array umwandeln
 				$prefs = json_decode($json, true);
-
 				if(!$prefs)
 				{
 					$this->errormsg = "Chart".$this->chart_id . ": Preferences sind keine wohlgeformten JSON-Daten:<br>'". $json."'";
 					return false;
 				}
-
 				//und über die phantom daten mergen
 				$erg = array_replace_recursive($phantomData, $prefs);
-
 				$phantomData = $erg;
 			}
 		}
@@ -1021,53 +941,86 @@ EOT;
 				}
 		}
 
-
-
-/*
-
-			//maximum an inhalten herausfinden
-			foreach($boxplotData as $bpd)
-			{
-				if(count($bpd) > $bpMaxCount)
-				{
-					$bpMaxCount = count($bpd);
-				}
-			}
-
-			//anzahl angleichen
-			foreach($boxplotData as $k => $bpd)
-			{
-				$diff = $bpMaxCount - count($boxplotData[$k]);
-				for($i = 0; $i < $diff; $i++)
-				{
-					$boxplotData[$k][] = 0;
-				}
-			}
-			//sortieren(highcharts nehmen aus performancegründen nur sortierte entgegen)
-			foreach($boxplotData as $k => $bpd)
-			{
-				if(!asort($boxplotData[$k]))
-				{
-					$this->errormsg = "Ein Array konnte nicht sortiert werden!";
-					return false;
-				}
-				$boxplotData[$k] = array_values($boxplotData[$k]);
-				array_unshift($boxplotData[$k], $bpCount);
-				$bpCount ++;
-			}*/
-
 			//und in normale array umwandeln
 			$boxplotData = array_values($boxplotData);
 			unset($phantomData["drilldown"]);
 
 			$phantomData["series"][0]["data"] = $boxplotData;
 			$phantomData["xAxis"]["categories"] = $bpCategories;
-
-
 		}
 
 		return json_encode($phantomData);
 	}
+
+
+
+
+
+
+
+
+
+	public function removeCommentsFromJson($jsonString)
+	{
+		$Array = explode("\n", $jsonString);
+		$commentCount = 0;
+
+		foreach($Array as $key => $p)
+		{
+			// \r entfernen
+			$Array[$key] = str_replace("\r", "", $Array[$key]);
+
+			// mehrzeilige kommentare
+			$posMz = strpos($Array[$key], "/*");
+			if($posMz !== false)		//anfang eines Mehrzeiligen kommentars gefunden
+			{
+				$commentCount ++;
+				if($commentCount == 1)	//wenn noch kein kommentar im gange ist
+				{
+					$Array[$key] = substr($Array[$key], 0, $posMz);
+				}
+				else
+					$posMz = false;
+			}
+			$posMzE = strpos($Array[$key], "*/");
+			if($posMzE !== false)		//ende des Mehrzeiligen kommentars gefunden
+			{
+				$commentCount --;
+				if($commentCount == 0)	//wenn alle kommentare beendet wurden
+				{
+					$Array[$key] = substr($Array[$key], $posMzE+2, count($Array[$key]));
+				}
+				else
+					$posMzE = false;
+			}
+
+			if($posMz === false && $posMzE === false && $commentCount > 0)		//zeile komplett auskommentiert
+			{
+				unset($Array[$key]);
+				continue;		//doppelslashes werden somit umgangen wenn sie /* // */ eingekapselt sind
+			}
+
+
+
+			// doppelslash-kommentare
+			$posEz = strpos ( $p, "//");
+			if($posEz !== false)
+			{
+				$Array[$key] = substr($p, 0, $posEz);
+			}
+		}
+		//und wieder zusammenfügen
+		$json = join('', $Array);
+
+		return $json;
+	}
+
+
+
+
+
+
+
 
 	/**
 	 * Loescht einen Eintrag
