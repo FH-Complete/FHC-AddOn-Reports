@@ -819,6 +819,34 @@ if($result = @$db->db_query("SELECT * FROM addon.tbl_rp_chart WHERE type!='hcnor
 }
 
 
+/************************************  02.16 highcharts pdf-export Vorlage ************************************/
+if($result = $db->db_query("SELECT * FROM public.tbl_vorlage WHERE vorlage_kurzbz='HCPDFExport'"))
+{
+	if($db->db_num_rows($result)==0)
+	{
+		$qry_oe = "SELECT oe_kurzbz FROM public.tbl_organisationseinheit WHERE oe_parent_kurzbz is null";
+		if($result = $db->db_query($qry_oe))
+		{
+			$qry = "INSERT INTO public.tbl_vorlage(vorlage_kurzbz, bezeichnung, anmerkung,mimetype)
+			VALUES('HCPDFExport','HighCharts Pdf Export', 'wird für den PDF-Export der Charts verwendet', 'application/vnd.oasis.opendocument.text');";
+
+			$text = file_get_contents('system/xsl/HCPDFExport.xml');
+
+			while($row = $db->db_fetch_object($result))
+			{
+				$qry.="INSERT INTO public.tbl_vorlagestudiengang(vorlage_kurzbz, studiengang_kz, version, text,
+				oe_kurzbz, style, berechtigung, anmerkung_vorlagestudiengang, aktiv) VALUES(
+				'HCPDFExport',0,0,".$db->db_add_param($text).",".$db->db_add_param($row->oe_kurzbz).",null,null,'',true);";
+			}
+		}
+
+		if(!$db->db_query($qry))
+			echo '<strong>HCPDFExport Dokumentenvorlage: '.$db->db_last_error().'</strong><br>';
+		else
+			echo 'HCPDFExport Dokumentenvorlage hinzugefuegt<br>';
+	}
+}
+
 
 echo '<br>Aktualisierung abgeschlossen<br><br>';
 echo '<h2>Gegenprüfung</h2>';
