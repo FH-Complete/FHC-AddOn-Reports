@@ -857,6 +857,26 @@ if($result = $db->db_query("SELECT * FROM public.tbl_vorlage WHERE vorlage_kurzb
 }
 
 
+
+if(!`which dblatex`)
+{
+	echo '<strong style="color:red;">dblatex nicht installiert:</strong> ohne dblatex können keine Reports generiert werden!<br>';
+}
+
+if(!`which asciidoc`)
+{
+	echo '<strong style="color:red;">asciidoc nicht installiert:</strong> ohne asciidoc können keine Reports generiert werden!<br>';
+}
+else
+{
+	exec('asciidoc --version'.' 2>&1', $out, $ret);
+	$asciiVer = str_replace("asciidoc ","",$out);
+	if(!version_compare ( "8.6.4" , $asciiVer[0], "<" ))
+	{
+		echo '<strong style="color:red;">asciidoc Version:</strong> Diese asciidoc Version unterstützt nur html4!<br>';
+	}
+}
+
 echo '<br>Aktualisierung abgeschlossen<br><br>';
 echo '<h2>Gegenprüfung</h2>';
 
