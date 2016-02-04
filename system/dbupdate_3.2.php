@@ -15,45 +15,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  *
- */
-/**
- * FH-Complete Addon Report Datenbank Check
  *
- * Prueft und aktualisiert die Datenbank
+ * FH-Complete Addon Report Datenbank Check
+ * Beschreibung:
+ * Dieses Skript prueft die Datenbank auf aktualitaet, dabei werden fehlende Attribute angelegt.
  */
-require_once('../../config/system.config.inc.php');
-require_once('../../include/basis_db.class.php');
-require_once('../../include/functions.inc.php');
-require_once('../../include/benutzerberechtigung.class.php');
-require_once('include/rp_chart.class.php');
 
-// Datenbank Verbindung
-$db = new basis_db();
-
-echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
-        "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<link rel="stylesheet" href="../../skin/fhcomplete.css" type="text/css">
-	<link rel="stylesheet" href="../../skin/vilesci.css" type="text/css">
-	<title>Addon Datenbank Check</title>
-</head>
-<body>
-<h1>Addon Datenbank Check</h1>';
-
-$uid = get_uid();
-$rechte = new benutzerberechtigung();
-$rechte->getBerechtigungen($uid);
-
-if(!$rechte->isBerechtigt('basis/addon'))
-{
-    exit('Sie haben keine Berechtigung für die Verwaltung von Addons');
-}
-
-echo '<h2>Aktualisierung der Datenbank</h2>';
-
-// Code fuer die Datenbankanpassungen
+if(!defined("CHECKSYSTEM"))
+	die("<span style='color:red;'>Dieses Skript sollte nicht direkt aufgerufen werden!</span>");
 
 //Neue Berechtigung für das Addon hinzufügen
 if($result = $db->db_query("SELECT * FROM system.tbl_berechtigung WHERE berechtigung_kurzbz='addon/reports'"))
@@ -857,28 +826,8 @@ if($result = $db->db_query("SELECT * FROM public.tbl_vorlage WHERE vorlage_kurzb
 }
 
 
-
-if(!`which dblatex`)
-{
-	echo '<strong style="color:red;">dblatex nicht installiert:</strong> ohne dblatex können keine Reports generiert werden!<br>';
-}
-
-if(!`which asciidoc`)
-{
-	echo '<strong style="color:red;">asciidoc nicht installiert:</strong> ohne asciidoc können keine Reports generiert werden!<br>';
-}
-else
-{
-	exec('asciidoc --version'.' 2>&1', $out, $ret);
-	$asciiVer = str_replace("asciidoc ","",$out);
-	if(!version_compare ( "8.6.4" , $asciiVer[0], "<" ))
-	{
-		echo '<strong style="color:red;">asciidoc Version:</strong> Diese asciidoc Version unterstützt nur html4!<br>';
-	}
-}
-
 echo '<br>Aktualisierung abgeschlossen<br><br>';
-echo '<h2>Gegenprüfung</h2>';
+echo '<h2>'.$addon_name.' Gegenprüfung</h2>';
 
 // Liste der verwendeten Tabellen / Spalten des Addons
 $tabellen=array(
@@ -909,4 +858,5 @@ foreach ($tabellen AS $attribute)
 	flush();
 	$i++;
 }
+echo '<br>Aktualisierung abgeschlossen<br><br>';
 ?>

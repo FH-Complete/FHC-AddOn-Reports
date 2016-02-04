@@ -16,17 +16,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  *
  * Authors: Christian Paminger
- * 
+ *
  */
 
 // Name des Addons
 $addon_name = 'Reports';
 
 // Versionsnummer des Addons
-$addon_version = '0.01';
+$addon_version = '0.02';
 
 // FH-Complete Min-Version
-$fhcomplete_target_version = '3.0';
+$fhcomplete_target_version = '3.2';
 
 $addon_description = '
 Addon zum Sichten der Daten in Form von Charts und Reports.
@@ -35,8 +35,8 @@ Das AddOn erweitert das bestehende Modul "Auswertung" von FH-Complete.
 Es werden also im ersten Schritt Auswertungen mittels SQL im FH-Complete angelegt. Diese Ausertungen können dann mithilfe dieses AddOns in Verschiedenen ansichten betrachtet werden.
 Derzeit stehen folgende Ansichten zur Verfügung:
 - Tabelle mit Gruppierung, Sortierung, Summen, ... ().
-- Chart (xChart)
-- NetzChart (SpiderGraph)
+- Chart (HighCharts)
+- Reports
 
 
 ';
