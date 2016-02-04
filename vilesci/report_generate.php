@@ -280,11 +280,8 @@
 	{
 		removeFolder($chartTmpDir);		//cleanup
 		header('Content-type: application/force-download');
-		header('Content-Disposition: attachment; filename="Report'.$report->report_id.'.pdf"');
+		header('Content-Disposition: attachment; filename="'.$report->title.'.pdf"');
 		readfile($pdfFilename);
-
-		//echo '<script>window.open("'.$pdfFilename.'","_blank");</script>';
-		//echo '<script>window.open("'.$pdfFilename.'","_self");</script>';
 	}
 	else if($type == "debug")
 	{
