@@ -28,7 +28,7 @@
 	require_once('../../../include/filter.class.php');
 
 	$iconsdir='/etc/asciidoc/images/icons';
-	$chartTmpDir = sys_get_temp_dir() . "/charts_" . uniqid();
+	$reportsTmpDir = sys_get_temp_dir() . "/reports_" . uniqid();
 
 
 	if (!$db = new basis_db())
@@ -108,16 +108,16 @@
 	}
 
 	//create the folder in temp, which will be removed afterwards
-	if (!file_exists($chartTmpDir))
-		mkdir($chartTmpDir, 0777, true);
+	if (!file_exists($reportsTmpDir))
+		mkdir($reportsTmpDir, 0777, true);
 
 	// ***** Define Filenames ******************
-	$tmpFilename=$chartTmpDir.'Report'.$report->report_id.date('Y-m-d_H:i:s').'.tmp';
-	$filename=$chartTmpDir.'Report'.$report->report_id;
-	$docinfoFilename=$chartTmpDir.'Report'.$report->report_id.'-docinfo.xml';
-	$htmlFilename=$chartTmpDir.'Report'.$report->report_id.'.html';
-	$xmlFilename=$chartTmpDir.'Report'.$report->report_id.'.xml';
-	$pdfFilename=$chartTmpDir.'Report'.$report->report_id.'.pdf';
+	$tmpFilename=$reportsTmpDir.'/Report'.$report->report_id.date('Y-m-d_H:i:s').'.tmp';
+	$filename=$reportsTmpDir.'/Report'.$report->report_id;
+	$docinfoFilename=$reportsTmpDir.'/Report'.$report->report_id.'-docinfo.xml';
+	$htmlFilename=$reportsTmpDir.'/Report'.$report->report_id.'.html';
+	$xmlFilename=$reportsTmpDir.'/Report'.$report->report_id.'.xml';
+	$pdfFilename=$reportsTmpDir.'/Report'.$report->report_id.'.pdf';
 
 
 	foreach($charts->chart as $chart)
@@ -126,30 +126,30 @@
 		{
 			$chart->statistik = new statistik($chart->statistik_kurzbz);
 			if (!$chart->statistik->loadData())
-				cleanUpAndDie('Data not loaded!'.$chart->statistik->errormsg, $chartTmpDir);
+				cleanUpAndDie('Data not loaded!'.$chart->statistik->errormsg, $reportsTmpDir);
 
 			$vars = $chart->statistik->parseVars($chart->statistik->sql);
 
-			$datafile=$chartTmpDir.'data'.$chart->statistik->statistik_kurzbz.'.csv';
+			$datafile=$reportsTmpDir.'/data'.$chart->statistik->statistik_kurzbz.'.csv';
 			if (!$chart->statistik->writeCSV($datafile,',','"'))
 			{
 				if($type == "debug")
-					cleanUpAndDie('File '.$datafile.' not written!'.$chart->statistik->errormsg, $chartTmpDir);
+					cleanUpAndDie('File '.$datafile.' not written!'.$chart->statistik->errormsg, $reportsTmpDir);
 				else
-					cleanUpAndDie("Der Report konnte nicht erstellt werden!", $chartTmpDir);
+					cleanUpAndDie("Der Report konnte nicht erstellt werden!", $reportsTmpDir);
 			}
 			else
 				$htmlstr.= '<br><br>File '.$datafile.' written!';
 
 
-			$outputfilename=$chart->writePNG($chartTmpDir);
+			$outputfilename=$chart->writePNG($reportsTmpDir);
 
 			if (!$outputfilename)
 			{
 				if($type == "debug")
-					cleanUpAndDie($chart->errormsg, $chartTmpDir);
+					cleanUpAndDie($chart->errormsg, $reportsTmpDir);
 				else
-					cleanUpAndDie("Der Report konnte nicht erstellt werden!", $chartTmpDir);
+					cleanUpAndDie("Der Report konnte nicht erstellt werden!", $reportsTmpDir);
 			}
 			else
 			{
@@ -159,12 +159,11 @@
 
 		if(isset($chart->description))
 		{
-			$mdfile=$chartTmpDir.'Chart'.$chart->chart_id.'.md';
+			$mdfile=$reportsTmpDir.'/Chart'.$chart->chart_id.'.md';
 			file_put_contents($mdfile, $chart->description);
 		}
 
 	}
-	// @todo weitere parameter pruefen
 
 	// *************** Startwerte Setzen ************************
 	$crlf=PHP_EOL;
@@ -176,7 +175,7 @@
 		case 'asciidoc':
 			$filename.='.asciidoc';
 			$content.='= Report - '.$report->title.$crlf;
-			$content.=$report->header.$crlf.$report->printParam('attr',$crlf).":chartDir: ".$chartTmpDir.$crlf;
+			$content.=$report->header.$crlf.$report->printParam('attr',$crlf).":chartDir: ".$reportsTmpDir.$crlf;
 			$content.=$crlf.'== Beschreibung'.$crlf.$report->description.$crlf;
 			$content.=$crlf.'=== Parameter'.$crlf.'- Erstellung: *'.date("D, j M Y").'*'.$crlf.'- Datenstand: *'.date(DATE_RFC2822).'*'.$crlf.$report->printParam('param',$crlf).$crlf;
 			$content.=$crlf.'<<<'.$crlf.$crlf.'== Report'.$crlf.$report->body.$crlf;
@@ -207,7 +206,7 @@
 		foreach($out as $o)
 			$htmlstr.= $o;
 		if($type != "debug")
-			cleanUpAndDie("Der Report konnte nicht erstellt werden!", $chartTmpDir);
+			cleanUpAndDie("Der Report konnte nicht erstellt werden!", $reportsTmpDir);
 	}
 	if(count($out) > 0)
 	{
@@ -228,13 +227,13 @@
 		foreach($out as $o)
 			$htmlstr.= $o;
 		if($type != "debug")
-			cleanUpAndDie("Der Report konnte nicht erstellt werden!", $chartTmpDir);
+			cleanUpAndDie("Der Report konnte nicht erstellt werden!", $reportsTmpDir);
 	}
 	if(count($out) > 0)
 	{
 		$htmlstr.= '<br><br>Asciidoc Warnungen:<br>';
 		foreach($out as $o)
-			$htmlstr.= $o;
+			$htmlstr.= $o."<br>";
 	}
 	$htmlstr.='<br><br>'.$xmlFilename.' is written!';
 
@@ -248,7 +247,7 @@
 		foreach($out as $o)
 			$htmlstr.= $o;
 		if($type != "debug")
-			cleanUpAndDie("Der Report konnte nicht erstellt werden!", $chartTmpDir);
+			cleanUpAndDie("Der Report konnte nicht erstellt werden!", $reportsTmpDir);
 	}
 
 	$process = new process(escapeshellcmd($command));
@@ -260,32 +259,30 @@
 	if ($process->status())
 	{
 		$process->stop();
-		cleanUpAndDie('Timeout in dbLatex execution: <br>"'.escapeshellcmd($command).'"', $chartTmpDir);
+		cleanUpAndDie('Timeout in dbLatex execution: <br>"'.escapeshellcmd($command).'"', $reportsTmpDir);
 	}
 	elseif (@fopen($tmpFilename,'r'))
 	{
 		if (!rename($tmpFilename,$pdfFilename))
-			cleanUpAndDie('Cannot remove File from '.$tmpFilename.' to '.$pdfFilename, $chartTmpDir);
+			cleanUpAndDie('Cannot remove File from '.$tmpFilename.' to '.$pdfFilename, $reportsTmpDir);
 	}
 	else
 	{
 		if($type == "debug")
-			cleanUpAndDie('Cannot read File: '.$tmpFilename.'<br>Maybe dblatex failed!'.escapeshellcmd($command), $chartTmpDir);
+			cleanUpAndDie('Cannot read File: '.$tmpFilename.'<br>Maybe dblatex failed!'.escapeshellcmd($command), $reportsTmpDir);
 		else
-			cleanUpAndDie("Der Report konnte nicht erstellt werden!", $chartTmpDir);
+			cleanUpAndDie("Der Report konnte nicht erstellt werden!", $reportsTmpDir);
 	}
 	$htmlstr.='<br><br>'.$pdfFilename.' is written!';
 
 	if($type == "pdf")
 	{
-		removeFolder($chartTmpDir);		//cleanup
 		header('Content-type: application/force-download');
 		header('Content-Disposition: attachment; filename="'.$report->title.'.pdf"');
 		readfile($pdfFilename);
 	}
 	else if($type == "debug")
 	{
-		removeFolder($chartTmpDir);		//cleanup
 		echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">';
 		echo '<html>';
 		echo '<head>';
@@ -300,9 +297,9 @@
 	}
 	else
 	{
-		removeFolder($chartTmpDir);		//cleanup
 		readfile($htmlFilename);
 	}
+	removeFolder($reportsTmpDir);		//cleanup
 
 
 
@@ -311,9 +308,9 @@
 
 
 
-	function cleanUpAndDie($msg, $chartTmpDir)
+	function cleanUpAndDie($msg, $reportsTmpDir)
 	{
-		removeFolder($chartTmpDir);
+		removeFolder($reportsTmpDir);
 		die($msg);
 	}
 
@@ -323,19 +320,15 @@
 	{
 		if($dir == "/")
 			return false;
-
 		if (is_dir($dir) === true)
 		{
 			$files = array_diff(scandir($dir), array('.', '..'));
-
 			foreach ($files as $file)
 			{
 				unlink($dir . "/" . $file);
 			}
-
 			return rmdir($dir);
 		}
-
 		return false;
 	}
 ?>
