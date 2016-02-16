@@ -808,7 +808,7 @@ if($result = $db->db_query("SELECT * FROM public.tbl_vorlage WHERE vorlage_kurzb
 			$qry = "INSERT INTO public.tbl_vorlage(vorlage_kurzbz, bezeichnung, anmerkung,mimetype)
 			VALUES('HCPDFExport','HighCharts Pdf Export', 'wird für den PDF-Export der Charts verwendet', 'application/vnd.oasis.opendocument.text');";
 
-			$text = file_get_contents('system/xsl/HCPDFExport.xml');
+			$text = file_get_contents('xsl/HCPDFExport.xml');
 
 			while($row = $db->db_fetch_object($result))
 			{
