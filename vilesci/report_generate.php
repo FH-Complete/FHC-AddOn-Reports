@@ -41,6 +41,11 @@
 
 
 
+	if(!isset($_REQUEST['type']))
+		$type = "html";
+	else
+		$type = $_REQUEST['type'];
+
 	$htmlstr = '';
 	// *************** Pruefen ob die benoetigten Programme vorhanden sind *******************
 
@@ -72,11 +77,6 @@
 
 	// *************** Parameter pruefen und Daten laden *******************
 
-
-	if(!isset($_REQUEST['type']))
-		$type = "html";
-	else
-		$type = $_REQUEST['type'];
 
 	$filter = new filter();
 	$filter->loadAll();
