@@ -441,8 +441,8 @@ class view extends basis_db
 
 			//neue tabelle erzeugen
 			$qry="CREATE TABLE reports.".
-				$this->table_kurzbz." AS SELECT * FROM reports.".
-				$this->view_kurzbz;
+				$this->table_kurzbz." AS SELECT * FROM reports.".$this->view_kurzbz.";
+				GRANT SELECT ON TABLE reports.".$this->table_kurzbz." TO web;";
 
 			if(!$this->db_query($qry))
 			{
