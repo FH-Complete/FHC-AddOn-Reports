@@ -46,7 +46,7 @@
 	foreach($languages as $lang)
 	{
 		$md =  \Michelf\Markdown::defaultTransform($attribut->description[$lang]);
-		echo '<h1>'.$lang.':</h1><div style="padding:5px;margin-bottom:50px;border: thick solid #ff0000;">'.$md.'</div>';
+		echo '<h2>'.$lang.':</h2><div style="padding:5px;margin-bottom:50px">'.$md.'</div>';
 	}
 ?>
 <html>
