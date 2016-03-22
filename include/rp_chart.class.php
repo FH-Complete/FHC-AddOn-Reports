@@ -850,6 +850,7 @@ EOT;
 			'plotOptions' => array
 			(
 				'series' => array('animation' => true),
+				'column' => array('stacking' => 'normal'), //normal/percent/STD:undefined
 				'boxplot' => array
 				(
 					'grouping' => false,
