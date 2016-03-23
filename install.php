@@ -56,7 +56,7 @@ if($fhcomplete_version>=$fhcomplete_target_version)
 	 * Fuegen Sie hier Ihre Installationsroutine hinzu
 	 */
 
- 	echo '<a href="dbcheck.php">&gt;&gt; weiter zur Aktualisierung der Datenbank</a>';
+ 	echo '<a href="system/checksystem.php">&gt;&gt; weiter zur Aktualisierung der Datenbank</a>';
 }
 else
 {
