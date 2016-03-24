@@ -346,6 +346,7 @@ class chart extends basis_db
 		return array(
 			'hcnorm' => 'Highcharts Normal',
 			'hcdrill' => 'Highcharts Drilldown',
+			'hcgroupedstacked' => 'Highcharts Grouped Stacked',
 		);
 	}
 	/**
@@ -379,6 +380,16 @@ class chart extends basis_db
 	public static function getDefaultPreferences()
 	{
 
+		$hc_grstacked = <<<EOT
+/*
+{
+ "chart":{
+  "zoomType":"none",//Möglichkeiten: "x", "y" ("xy" ist standard)
+  "type":"pie"
+ }
+}
+*/
+EOT;
 		$hc_drill = <<<EOT
 /*
 {
@@ -433,6 +444,7 @@ EOT;
 		return array(
 			'hcnorm' => $hc_default,
 			'hcdrill' => $hc_drill,
+			'hcgroupedstacked' => $hc_grstacked,
 		);
 
 	}
@@ -492,7 +504,7 @@ EOT;
 		      	' updatevon='.$this->db_add_param($this->updatevon).
 		      	' WHERE chart_id='.$this->db_add_param($this->chart_id, FHC_INTEGER, false).';';
 		}
-        //echo $qry;
+
 		if($this->db_query($qry))
 		{
 			if($this->new)
@@ -537,10 +549,9 @@ EOT;
 
 		<?php switch ($this->type)
 		{
+			case 'hcnorm':
+			case 'hcgroupedstacked':
 			case 'hcdrill': ?>
-				<?php require_once("../include/meta/highcharts.php"); ?>
-				<?php break;
-			case 'hcnorm': ?>
 				<?php require_once("../include/meta/highcharts.php"); ?>
 				<script src="../include/js/highcharts/exporting.js" type="application/javascript"></script>
 				<?php break;
@@ -591,6 +602,7 @@ EOT;
 		{
 			case 'hcnorm':
 			case 'hcdrill':
+			case 'hcgroupedstacked':
 
 			$chartAttributes = "";
 
@@ -681,6 +693,7 @@ EOT;
 
 			case 'hcnorm':
 			case 'hcdrill':
+			case 'hcgroupedstacked':
 				$tmp_filename=$targetDir.'/chart'.$this->chart_id.date('Y-m-d_H:i:s').'.png';
 				$output_filename=$targetDir.'/chart'.$this->chart_id.'.png';
 				$output=array();
@@ -800,7 +813,13 @@ EOT;
 						return false;
 
 						$series[$ik]["name"] = $ik;
-						$series[$ik]["data"][] = array($header, $dt);
+						if ($hctype=='groupedstacked')
+						{
+							$series[$ik]["stack"] = $header;
+							$series[$ik]["data"][] = $dt;
+						}
+						else
+							$series[$ik]["data"][] = array($header, $dt);
 					}
 				}
 			}
@@ -811,6 +830,7 @@ EOT;
 				'labels' => array('rotation' => -45),
 			);
 		}
+
 
 		$phantomData = array
 		(
@@ -901,13 +921,6 @@ EOT;
 		}
 
 
-
-
-
-
-
-
-
 		//nur für boxplot charts!
 		if($phantomData["chart"]["type"] == "boxplot")
 		{
@@ -940,7 +953,7 @@ EOT;
 					}
 					$boxplotData[] = $singleBoxPlot;
 				}
-		}
+			}
 
 			//und in normale array umwandeln
 			$boxplotData = array_values($boxplotData);
@@ -950,7 +963,9 @@ EOT;
 			$phantomData["xAxis"]["categories"] = $bpCategories;
 		}
 
-		return json_encode($phantomData);
+
+		$data = json_encode($phantomData);
+		return $data;
 	}
 
 
