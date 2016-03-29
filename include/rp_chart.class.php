@@ -817,7 +817,6 @@ EOT;
 			foreach($data as $zeile)
 			{
 				//loop every entry
-
 				$category = current($zeile);if(!isset($category)){$category = " ";}
 				$stack = next($zeile);if(!isset($stack)){$stack = " ";}
 				$name = next($zeile);if(!isset($name)){$name = " ";}
@@ -827,9 +826,9 @@ EOT;
 				$categories[$category] = "";
 
 				//and all groups
-				if(!isset($groups[$name]))
+				if(!isset($groups[$name."_".$stack]))
 				{
-					$groups[$name] = array("data" => array());
+					$groups[$name."_".$stack] = array("data" => array());
 				}
 			}
 
@@ -853,9 +852,9 @@ EOT;
 				$name = next($zeile);if(!isset($name)){$name = " ";}
 				$partValue = (int) end($zeile);if(!$partValue){$partValue = 0;}
 
-				$groups[$name]["name"] = $name;
-				$groups[$name]["stack"] = $stack;
-				$groups[$name]["data"][$category] += $partValue;
+				$groups[$name."_".$stack]["name"] = $name;
+				$groups[$name."_".$stack]["stack"] = $stack;
+				$groups[$name."_".$stack]["data"][$category] += $partValue;
 			}
 
 			$series = $groups;
