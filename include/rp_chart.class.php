@@ -625,10 +625,16 @@ EOT;
 				?>
 				<div id="hcChart<?php echo $this->chart_id ?>" <?php echo $chartAttributes ?> class="<?php echo $class ?>" style="border: 1px solid transparent;"></div>
 				<?php
-					$json = $this->getHighChartData();
+					$hcData = $this->getHighChartData();
 				?>
-				<?php if(!$json)return false;?>
-				<script>$("#hcChart"+<?php echo $this->chart_id ?>).highcharts(<?php echo $json; ?>);</script>
+				<?php if(!$hcData)return false;?>
+				<script>
+					var hcData = <?php echo $hcData; ?>;
+					if(hcData.FHCChartType == "groupedstacked")
+						hcData.tooltip = {formatter: function() {return '<b>'+ this.series.options.stack + '</b><br/>'+ this.series.name +': '+ this.y;}};
+
+					$("#hcChart"+<?php echo $this->chart_id ?>).highcharts(hcData);
+				</script>
 			<?php break;
 		}
 
@@ -762,16 +768,18 @@ EOT;
 			{
 				$l1_bezeichnung = current($zeile);
 				$l1_dd = next($zeile);
-				$l1_sum = 0 + end($zeile);
+				$l1_sum = (int) end($zeile);
 				if(!isset($l1_dd))
 					$l1_dd = " ";
 
+				//create a drilldown, if not already
 				if(!isset($series_data[$l1_bezeichnung]))
 				{
 					$series_data[$l1_bezeichnung]["name"] = $l1_bezeichnung;
 					$series_data[$l1_bezeichnung]["drilldown"] = $l1_bezeichnung;
 					$series_data[$l1_bezeichnung]["y"] = $l1_sum;
 				}
+				//or add the data to an existing
 				else
 				{
 					$series_data[$l1_bezeichnung]["y"] += $l1_sum;
@@ -793,6 +801,72 @@ EOT;
 				'labels' => array('rotation' => -45),
 			);
 		}
+		else if($hctype=='groupedstacked')
+		{
+			$xAxis = array
+			(
+				'type' => 'category',
+				'title' => array('text' => '',),
+				'labels' => array('rotation' => -45),
+				'categories' => array(),
+			);
+
+			$categories = array();
+			$groups = array();
+
+			foreach($data as $zeile)
+			{
+				//loop every entry
+
+				$category = current($zeile);if(!isset($category)){$category = " ";}
+				$stack = next($zeile);if(!isset($stack)){$stack = " ";}
+				$name = next($zeile);if(!isset($name)){$name = " ";}
+				$partValue = (int) end($zeile);if(!isset($partValue)){$partValue = 0;}
+
+				//to add all categories
+				$categories[$category] = "";
+
+				//and all groups
+				if(!isset($groups[$name]))
+				{
+					$groups[$name] = array("data" => array());
+				}
+			}
+
+			//set the categories
+			$xAxis["categories"] = array_keys($categories);
+
+			//add every category to every group and set the data to 0
+			foreach($groups as $k => $v)
+			{
+				foreach($xAxis["categories"] as $cat)
+				{
+					$groups[$k]["data"][$cat] = 0;
+				}
+			}
+
+			//loop everything again and add the data to the correct group/category
+			foreach($data as $zeile)
+			{
+				$category = reset($zeile);if(!isset($category)){$category = " ";}
+				$stack = next($zeile);if(!isset($stack)){$stack = " ";}
+				$name = next($zeile);if(!isset($name)){$name = " ";}
+				$partValue = (int) end($zeile);if(!$partValue){$partValue = 0;}
+
+				$groups[$name]["name"] = $name;
+				$groups[$name]["stack"] = $stack;
+				$groups[$name]["data"][$category] += $partValue;
+			}
+
+			$series = $groups;
+
+
+			//convert all data from associative arrays to normal arrays
+			foreach($series as $key => $value)
+			{
+				$series[$key]["data"] = array_values($series[$key]["data"]);
+			}
+		}
 		else
 		{
 			foreach($data as $key => $item)
@@ -813,13 +887,7 @@ EOT;
 						return false;
 
 						$series[$ik]["name"] = $ik;
-						if ($hctype=='groupedstacked')
-						{
-							$series[$ik]["stack"] = $header;
-							$series[$ik]["data"][] = $dt;
-						}
-						else
-							$series[$ik]["data"][] = array($header, $dt);
+						$series[$ik]["data"][] = array($header, $dt);
 					}
 				}
 			}
@@ -831,9 +899,9 @@ EOT;
 			);
 		}
 
-
 		$phantomData = array
 		(
+			'FHCChartType' => $hctype,
 			'FHCBoxplotType' => 0,
 			'div_id' => 'hcChart' . $this->chart_id,
 			'title' => array
@@ -955,14 +1023,13 @@ EOT;
 				}
 			}
 
-			//und in normale array umwandeln
+			//und in normalen array umwandeln
 			$boxplotData = array_values($boxplotData);
 			unset($phantomData["drilldown"]);
 
 			$phantomData["series"][0]["data"] = $boxplotData;
 			$phantomData["xAxis"]["categories"] = $bpCategories;
 		}
-
 
 		$data = json_encode($phantomData);
 		return $data;
