@@ -761,6 +761,7 @@ EOT;
 		$categories = "";
 		$hctype=substr($this->type,2);
 		$data = $this->statistik->getArray();
+		$stacking = "";
 
 		if ($hctype=='drill')
 		{
@@ -803,6 +804,7 @@ EOT;
 		}
 		else if($hctype=='groupedstacked')
 		{
+			$stacking = "normal"; //normal/percent/STD:undefined
 			$xAxis = array
 			(
 				'type' => 'category',
@@ -937,7 +939,7 @@ EOT;
 			'plotOptions' => array
 			(
 				'series' => array('animation' => true),
-				'column' => array('stacking' => 'normal'), //normal/percent/STD:undefined
+				'column' => array('stacking' => $stacking),
 				'boxplot' => array
 				(
 					'grouping' => false,
