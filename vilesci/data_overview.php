@@ -95,6 +95,7 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 					<th>Bezeichnung</th>
 					<th>URL</th>
 					<th>SQL</th>
+					<th>Publish</th>
 					<th>Beschr.</th>
 					<th colspan="2">Aktion</th>
 				</tr>
@@ -122,6 +123,9 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 						</td>
 						<td>
 							<?php if($row->sql != null)echo substr($row->sql, 0, 25)."..." ?>
+						</td>
+						<td>
+							<?php echo ($row->publish ?  "✓" : "");?>
 						</td>
 						<td>
 							<a href="#" onclick="window.open('../../cms/content.php?content_id=<?php echo $row->content_id ?>', 'Beschreibung', 'width=600,height=600, scrollbars=yes');">
