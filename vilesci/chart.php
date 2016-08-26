@@ -53,7 +53,6 @@ if ($htmlbody): ?>
 	<!DOCTYPE HTML>
 	<html>
 		<head>
-			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 			<?php echo $chart->getAllHtmlHead() ?>
 			<title><?php echo $chart->title ?></title>
 		</head>

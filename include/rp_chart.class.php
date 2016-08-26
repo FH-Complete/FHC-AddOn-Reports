@@ -563,19 +563,19 @@ EOT;
 	public static function getAllHtmlHead()
 	{
 		ob_start(); ?>
-			<script type="text/javascript" src="../../../content/phantom.js.php"></script>
-			<script src="../include/js/jquery-1.11.2.min.js" type="application/javascript"></script>
-			<link rel="stylesheet" href="../include/css/charts.css" type="text/css">
-			<?php require_once("../include/meta/highcharts.php"); ?>
-			<script>
-				$(function() {
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<script type="text/javascript" src="../../../content/phantom.js.php"></script>
+		<script src="../include/js/jquery-1.11.2.min.js" type="application/javascript"></script>
+		<link rel="stylesheet" href="../include/css/charts.css" type="text/css">
+		<?php require_once("../include/meta/highcharts.php"); ?>
+		<script>
+			$(function() {
+				if(typeof $.datepicker !== 'undefined') {
 
-					if(typeof $.datepicker !== 'undefined') {
-
-						$.datepicker.setDefaults({dateFormat: "yy-mm-dd"});
-					}
-				});
-			</script>
+					$.datepicker.setDefaults({dateFormat: "yy-mm-dd"});
+				}
+			});
+		</script>
 		<?php
 
 		return ob_get_clean();
@@ -604,26 +604,26 @@ EOT;
 			case 'hcdrill':
 			case 'hcgroupedstacked':
 
-			$chartAttributes = "";
+			$style = "border: 1px solid transparent;";
 
 			if($this->inDashboard)
 			{
 				switch($this->dashboard_layout)
 				{
 					case "half":
-						$chartAttributes .= 'style="width:50%;float:left;"';
+						$style .= "width:50%;float:left;";
 					break;
 					case "third":
-						$chartAttributes .= 'style="width:33%;float:left;';
+						$style .= "width:33%;float:left;";
 					break;
 					default:
-						$chartAttributes .= 'style="width:100%;float:left;"';
+						$style .= "width:100%;float:left;";
 					break;
 				}
 			}
 
 				?>
-				<div id="hcChart<?php echo $this->chart_id ?>" <?php echo $chartAttributes ?> class="<?php echo $class ?>" style="border: 1px solid transparent;"></div>
+				<div id="hcChart<?php echo $this->chart_id ?>" class="<?php echo $class ?>" style="<?php echo $style;?>"></div>
 				<?php
 					$hcData = $this->getHighChartData();
 				?>
