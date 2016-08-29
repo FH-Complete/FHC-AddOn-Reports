@@ -19,6 +19,7 @@
  */
 	require_once('../../../config/vilesci.config.inc.php');
 	require_once('../include/rp_chart.class.php');
+	require_once('../include/rp_report.class.php');
 ?>
 
 <!DOCTYPE html>
@@ -52,11 +53,26 @@
 
 	</head>
 	<body>
+	<?php
+
+		if(isset($_GET["report_id"]))
+		{
+			$report = new report();
+			if($report->load($_GET["report_id"]))
+				echo "<h5>" . $report->title . "</h5>";
+		}
+	?>
+			<div id="cleanup" hidden>
+				<span>Es wurden noch alte Reports gefunden:</span>
+				<input onclick='reportsCleanup()' style='color:red;margin-left:20px;' type='button' value='Aufr&auml;umen'/>
+			</div>
+
+
 		<div id="spinner" style="display:none; width:80%; margin-left:10%; top:50px; position:absolute; z-index:10;">
 			<div class="progress">
-  				<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+					<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
 					Loading Data
-  				</div>
+					</div>
 			</div>
 		</div>
 
@@ -77,7 +93,6 @@
 		<script type="text/javascript" src="../cis/reporting.js"></script>
 		<script>
 			<?php
-
 			if(isset($_GET["statistik_kurzbz"]))
 			{
 				echo "loadStatistik('".$_GET['statistik_kurzbz']."');";
@@ -87,6 +102,7 @@
 			{
 				if(isset($_GET["debug"]))
 					echo "var debug = true;";
+
 				echo "loadReport('".$_GET['report_id']."');";
 			}
 
@@ -96,10 +112,54 @@
 				$c = new chart($_GET["chart_id"]);
 				echo "loadChart('".$cid."','".$c->statistik_kurzbz."');";
 			}
-
 			?>
+			$(function()
+			{
+				var req = $.ajax
+				({
+					url: "../vilesci/reports_cleanup.php",
+					method: "POST",
+					data: {action: "hasOldReports"}
+				});
 
+				req.done(function(a)
+				{
+					if(a == "true")
+					{
+						$("#cleanup").show();
+					}
+				});
+			});
+
+			function reportsCleanup()
+			{
+				var req = $.ajax
+				({
+					url: "../vilesci/reports_cleanup.php",
+					method: "POST",
+					data: {action: "cleanup"}
+				});
+
+				req.done(function(a)
+				{
+					if(a == "true")
+						location.reload(true);
+					else
+						alert("Fehlgeschlagen: " + a);
+				});
+
+				req.fail(function(){alert("Fehlgeschlagen");});
+			}
 		</script>
 	</body>
 </html>
 
+
+<?php
+	function checkIfOldReports()
+	{
+		if(!isset($_GET["debug"]))
+			return false;
+		return true;
+	}
+?>

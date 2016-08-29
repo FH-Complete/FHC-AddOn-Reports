@@ -15,8 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  *
- * Authors: Christian Paminger 	< christian.paminger@technikum-wien.at >
- * Authors: Andreas Moik 	< moik@technikum-wien.at >
+ * Authors: Christian Paminger     < christian.paminger@technikum-wien.at > and
+ *          Andreas Moik           < moik@technikum-wien.at >.
  */
 	require_once('../../../config/vilesci.config.inc.php');
 	require_once('../../../include/globals.inc.php');
@@ -24,6 +24,7 @@
 	require_once('../../../include/benutzerberechtigung.class.php');
 	require_once('../include/rp_report.class.php');
 	require_once('../include/rp_chart.class.php');
+	require_once('../include/rp_report_statistik.class.php');
 	require_once('../../../include/process.class.php');
 	require_once('../../../include/filter.class.php');
 
@@ -46,7 +47,7 @@
 	else
 		$type = $_REQUEST['type'];
 
-	$htmlstr = '';
+	$errstr = '';
 	// *************** Pruefen ob die benoetigten Programme vorhanden sind *******************
 
 	if(!`which asciidoc`)
@@ -67,11 +68,12 @@
 	// *************** Asciidoc Version Prüfen *******************
 	$asciidocHtmlVersion = "html5";		//standard
 
+	$out = array();	/* empty the out array, to remove the old entries */
 	exec('asciidoc --version'.' 2>&1', $out, $ret);
 	$asciiVer = str_replace("asciidoc ","",$out);
 	if(!version_compare ( "8.6.4" , $asciiVer[0], "<" ))
 	{
-		$htmlstr .= "<br><br><span style='color:red;'>Achtung: Diese Asciidoc Version unterstützt nur html4!</span>";
+		addOutput($errstr, 0, "Achtung: Diese Asciidoc Version unterstützt nur html4!");
 		$asciidocHtmlVersion = "html4";
 	}
 
@@ -124,36 +126,18 @@
 	{
 		if(isset($chart->statistik_kurzbz))
 		{
-			$chart->statistik = new statistik($chart->statistik_kurzbz);
-			if (!$chart->statistik->loadData())
-				cleanUpAndDie('Data not loaded!'.$chart->statistik->errormsg, $reportsTmpDir);
-
-			$vars = $chart->statistik->parseVars($chart->statistik->sql);
-
-			$datafile=$reportsTmpDir.'/data'.$chart->statistik->statistik_kurzbz.'.csv';
-			if (!$chart->statistik->writeCSV($datafile,',','"'))
-			{
-				if($type == "debug")
-					cleanUpAndDie('File '.$datafile.' not written!'.$chart->statistik->errormsg, $reportsTmpDir);
-				else
-					cleanUpAndDie("Der Report konnte nicht erstellt werden!", $reportsTmpDir);
-			}
-			else
-				$htmlstr.= '<br><br>File '.$datafile.' written!';
-
+			generateStatistik($chart->statistik_kurzbz, $reportsTmpDir, $errstr, $type);
 
 			$outputfilename=$chart->writePNG($reportsTmpDir);
 
 			if (!$outputfilename)
 			{
-				if($type == "debug")
-					cleanUpAndDie($chart->errormsg, $reportsTmpDir);
-				else
-					cleanUpAndDie("Der Report konnte nicht erstellt werden!", $reportsTmpDir);
+				addOutput($errstr, 0, "PNG not written: " . $chart->errormsg);
+				cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
 			}
 			else
 			{
-				$htmlstr .= '<br><br>'.$outputfilename.' has been written!';
+				addOutput($errstr, 1, "PNG: '.$outputfilename.' has been written!");
 			}
 		}
 
@@ -162,7 +146,15 @@
 			$mdfile=$reportsTmpDir.'/Chart'.$chart->chart_id.'.md';
 			file_put_contents($mdfile, $chart->description);
 		}
+	}
 
+
+	$report_statistik = new rp_report_statistik();
+	$report_statistik->getReportStatistiken($report->report_id);
+
+	foreach($report_statistik->result as $s)
+	{
+		generateStatistik($s->statistik_kurzbz, $reportsTmpDir, $errstr, $type);
 	}
 
 	// *************** Startwerte Setzen ************************
@@ -187,93 +179,96 @@
 	$fh=fopen($docinfoFilename,'w');
 	fwrite($fh,$report->docinfo);
 	fclose($fh);
-	$htmlstr.= '<br><br>'.$docinfoFilename.' is written!';
+	addOutput($errstr, 1, "DOCINFO: '.$docinfoFilename.' has been written!");
 
 	// ***** Write ContentFile
 	$fh=fopen($filename,'w');
 	fwrite($fh,$content);
 	fclose($fh);
-	$htmlstr.='<br><br>'.$filename.' is written!';
 
-	// ****** Create Destination Files
+	addOutput($errstr, 1, "ASCIIDOC: '.$filename.' has been written!");
 
+
+	/* HTML creation */
+	$out = array();	/* empty the out array, to remove the old entries */
 	$cmd = 'asciidoc -o '.$htmlFilename.' -b '.$asciidocHtmlVersion.' -a theme=flask -a data-uri -a toc2 -a pygments -a icons -a iconsdir='.$iconsdir.' -a asciimath '.$filename;
-	$htmlstr.=exec($cmd.' 2>&1', $out, $ret);
-	$htmlstr.= '<br><br>'.$cmd;
+	exec($cmd.' 2>&1', $out, $ret);
+
 	if($ret != 0)
 	{
-		$htmlstr.= '<br><br>Asciidoc fehlgeschlagen:<br>';
+		addOutput($errstr, 0, "Asciidoc fehlgeschlagen:");
 		foreach($out as $o)
-			$htmlstr.= $o;
+			addOutput($errstr, 0, $o, 1);
 		if($type != "debug")
-			cleanUpAndDie("Der Report konnte nicht erstellt werden!", $reportsTmpDir);
+			cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
 	}
 	if(count($out) > 0)
 	{
-		$htmlstr.= '<br><br>Asciidoc Warnungen:<br>';
+		addOutput($errstr, 2, "Asciidoc Warnungen:");
 		foreach($out as $o)
-			$htmlstr.= $o;
+			addOutput($errstr, 2, $o, 1);
 	}
-	$htmlstr.='<br><br>'.$htmlFilename.' is written!';
+	addOutput($errstr, 1, "HTML: '.$htmlFilename.' has been written!");
 
 
-
+	/* XML creation */
+	$out = array();	/* empty the out array, to remove the old entries */
 	$cmd = 'asciidoc -a docinfo -b docbook -o '.$xmlFilename.' '.$filename;
-	$htmlstr.=exec($cmd.' 2>&1', $out, $ret);
-	$htmlstr.= '<br><br>'.$cmd;
+	exec($cmd.' 2>&1', $out, $ret);
+
 	if($ret != 0)
 	{
-		$htmlstr.= '<br><br>Asciidoc fehlgeschlagen:<br>';
+		addOutput($errstr, 0, "Asciidoc fehlgeschlagen:");
 		foreach($out as $o)
-			$htmlstr.= $o;
+			addOutput($errstr, 0, $o, 1);
 		if($type != "debug")
-			cleanUpAndDie("Der Report konnte nicht erstellt werden!", $reportsTmpDir);
+			cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
 	}
 	if(count($out) > 0)
 	{
-		$htmlstr.= '<br><br>Asciidoc Warnungen:<br>';
+		addOutput($errstr, 2, "Asciidoc Warnungen:");
 		foreach($out as $o)
-			$htmlstr.= $o."<br>";
+			addOutput($errstr, 2, $o, 1);
 	}
-	$htmlstr.='<br><br>'.$xmlFilename.' is written!';
+	addOutput($errstr, 1, "XML: '.$xmlFilename.' has been written!");
 
 	// DB Latex is tricky so i used a new process
 	$command='dblatex -f docbook -t pdf -P latex.encoding=utf8 -P latex.unicode.use=1 -o '.$tmpFilename.' '.$xmlFilename;
-	$htmlstr.= '<br><br>'.$command;
-	$lastout=exec($command.' 2>&1', $out, $ret);
-	if($ret)
+
+	$out = array();	/* empty the out array, to remove the old entries */
+	exec($command.' 2>&1', $out, $ret);
+
+	if($ret != 0)
 	{
-		$htmlstr.= '<br><br>dblatex fehlgeschlagen:<br>';
+		addOutput($errstr, 0, "dblatex failed!");
 		foreach($out as $o)
-			$htmlstr.= $o;
-		if($type != "debug")
-			cleanUpAndDie("Der Report konnte nicht erstellt werden!", $reportsTmpDir);
+			addOutput($errstr, 0, $o, 1);
+		cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
 	}
 
 	$process = new process(escapeshellcmd($command));
 	for ($i=0;$process->status() && $i<10;$i++)
 	{
-		$htmlstr.= '<br><br>The process is currently running';//ob_flush();flush();
 		usleep(1000000); // wait for 1 Second
 	}
 	if ($process->status())
 	{
 		$process->stop();
-		cleanUpAndDie('Timeout in dbLatex execution: <br>"'.escapeshellcmd($command).'"', $reportsTmpDir);
+		cleanUpAndDie('Timeout in dbLatex execution: <br>"'.escapeshellcmd($command).'"', $errstr, $reportsTmpDir, $type);
 	}
 	elseif (@fopen($tmpFilename,'r'))
 	{
 		if (!rename($tmpFilename,$pdfFilename))
-			cleanUpAndDie('Cannot remove File from '.$tmpFilename.' to '.$pdfFilename, $reportsTmpDir);
+			cleanUpAndDie('Cannot remove File from '.$tmpFilename.' to '.$pdfFilename, $errstr, $reportsTmpDir, $type);
 	}
 	else
 	{
 		if($type == "debug")
-			cleanUpAndDie('Cannot read File: '.$tmpFilename.'<br>Maybe dblatex failed!'.escapeshellcmd($command), $reportsTmpDir);
+			addOutput($errstr, 0, 'Cannot read File: '.$tmpFilename);
 		else
-			cleanUpAndDie("Der Report konnte nicht erstellt werden!", $reportsTmpDir);
+			cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
 	}
-	$htmlstr.='<br><br>'.$pdfFilename.' is written!';
+	addOutput($errstr, 1, 'PDF: '.$pdfFilename.' has been written!', 1);
 
 	if($type == "pdf")
 	{
@@ -283,17 +278,7 @@
 	}
 	else if($type == "debug")
 	{
-		echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">';
-		echo '<html>';
-		echo '<head>';
-		echo '<title>Reports - Generate</title>';
-		echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">';
-		echo '<link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">';
-		echo '</head>';
-		echo '<body style="background-color:#eeeeee;">';
-		echo $htmlstr;
-		echo '</body>';
-		echo '</html>';
+		cleanUpAndDie("", $errstr, $reportsTmpDir, $type);
 	}
 	else
 	{
@@ -302,14 +287,48 @@
 	removeFolder($reportsTmpDir);		//cleanup
 
 
-
-
-
-
-
-
-	function cleanUpAndDie($msg, $reportsTmpDir)
+	function generateStatistik($statistik_kurzbz, $reportsTmpDir, &$errstr, $type)
 	{
+		$statistik = new statistik($statistik_kurzbz);
+		if (!$statistik->loadData())
+		{
+			addOutput($errstr, 0, 'Data not loaded('.$statistik->statistik_kurzbz.'): '.$statistik->errormsg);
+			cleanUpAndDie('Data not loaded!'.$statistik->errormsg, $errstr, $reportsTmpDir, $type);
+		}
+
+		$vars = $statistik->parseVars($statistik->sql);
+
+		$datafile=$reportsTmpDir.'/data'.$statistik_kurzbz.'.csv';
+		if (!$statistik->writeCSV($datafile,',','"'))
+		{
+			addOutput($errstr, 0, 'File '.$datafile.' not written: ' . $statistik->errormsg);
+			cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
+		}
+		else
+			addOutput($errstr, 1, "CSV: '.$datafile.' has been written!");
+	}
+
+
+
+
+
+	function cleanUpAndDie($msg, $errstr, $reportsTmpDir, $type)
+	{
+		if($type == "debug")
+		{
+			echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">';
+			echo '<html>';
+			echo '<head>';
+			echo '<title>Reports - Generate</title>';
+			echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">';
+			echo '<link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">';
+			echo '</head>';
+			echo '<body style="background-color:#eeeeee;">';
+			echo $errstr;
+			echo '</body>';
+			echo '</html>';
+			die("");
+		}
 		removeFolder($reportsTmpDir);
 		die($msg);
 	}
@@ -330,5 +349,22 @@
 			return rmdir($dir);
 		}
 		return false;
+	}
+
+	function addOutput(&$str, $level, $addstr, $offset = 0)
+	{
+		$offset *= 20;
+
+		$color = "orange";
+		switch($level)
+		{
+			case 0:
+				$color = "red";
+				break;
+			case 1:
+				$color = "green";
+				break;
+		}
+		$str .= '<p style="color:'.$color.'; margin-left:'.$offset.'">'.$addstr.'</p>';
 	}
 ?>

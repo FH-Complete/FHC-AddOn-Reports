@@ -164,10 +164,11 @@
 			die($report->errormsg);
 	}
 
-    if($report->report_id > 0)
-        $htmlstr .= "<br><div class='kopf'>Report <b>".$report->report_id."</b></div>\n";
-    else
-        $htmlstr .="<br><div class='kopf'>Neuer Report</div>\n";
+	if($report->report_id > 0)
+		$htmlstr .= "<br><div class='kopf'>Report <b>".$report->report_id."</b></div>\n";
+	else
+		$htmlstr .="<br><div class='kopf'>Neuer Report</div>\n";
+
 	$htmlstr .= "<form action='report_details.php' method='POST' name='reportform'>\n";
 	$htmlstr .= "	<table class='detail'>\n";
 	$htmlstr .= "			<tr>\n";
