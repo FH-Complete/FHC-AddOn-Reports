@@ -416,7 +416,8 @@ class view extends basis_db
 		{
 			//pruefen, ob bereits vorhanden
 			$qry = ' SELECT table_name FROM INFORMATION_SCHEMA.tables WHERE table_name='.
-				$this->db_add_param($this->table_kurzbz).';';
+				$this->db_add_param($this->table_kurzbz).'
+				AND table_schema=\'reports\';';
 
 			if(!$this->db_query($qry))
 			{
