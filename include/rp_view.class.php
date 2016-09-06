@@ -397,8 +397,9 @@ class view extends basis_db
 	 */
 	public function getView()
 	{
-		$qry = ' SELECT table_name FROM INFORMATION_SCHEMA.views WHERE table_name='.
-			$this->db_add_param($this->view_kurzbz_old).';';
+		$qry = 'SELECT table_name FROM INFORMATION_SCHEMA.views WHERE table_name='.
+			$this->db_add_param($this->view_kurzbz_old).'
+			AND table_schema=\'reports\';';
 
 		if(!$this->db_query($qry))
 		{
