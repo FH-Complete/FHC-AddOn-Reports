@@ -91,17 +91,17 @@
 				}
 				$reload = true;
 			}
-			else if ($_REQUEST["action"]=='generate')
+			else if ($_REQUEST["action"]=='View anlegen/speichern')
 			{
 				$view->generateView();
 				$reload = true;
 			}
-			else if ($_REQUEST["action"]=='drop')
+			else if ($_REQUEST["action"]=='Drop View')
 			{
 				$view->dropView();
 				$reload = true;
 			}
-			else if($_REQUEST["action"]=='Test-Explain')
+			else if($_REQUEST["action"]=='Explain')
 			{
 				$explain_output = $view->explainView();
 				if(!$explain_output)
@@ -156,10 +156,9 @@
 	if($view->view_kurzbz == 'vw_')
 		$htmlstr .= "	<input type='hidden' name='new' value='new'>";
 	$htmlstr .= "	<input type='submit' value='save' name='action'>\n";
-	$htmlstr .= "	<input type='button' value='Reset' onclick='unchanged()'>\n";
-	$htmlstr .= "	<input type='submit' value='generate' name='action'>\n";
-	$htmlstr .= "	<input type='submit' value='drop' name='action'>\n";
-	$htmlstr .= "	<input type='submit' value='Test-Explain' name='action'>\n";
+	$htmlstr .= "	<input type='submit' value='View anlegen/speichern' name='action'>\n";
+	$htmlstr .= "	<input type='submit' value='Drop View' name='action'>\n";
+	$htmlstr .= "	<input type='submit' value='Explain' name='action'>\n";
 	$htmlstr .= "</div>";
 	$htmlstr .= "</form>";
 
@@ -248,14 +247,6 @@
 		return confirm("Wollen Sie diesen Eintrag wirklich löschen?");
 	}
 
-
-	function unchanged()
-	{
-			document.viewform.reset();
-			document.viewform.schick.disabled = true;
-			document.getElementById("submsg").style.visibility="hidden";
-			checkrequired(document.viewform.view_kurzbz);
-	}
 
 	function checkrequired(feld)
 	{

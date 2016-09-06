@@ -142,8 +142,6 @@ class view extends basis_db
 		if(!$this->validate($this->view_kurzbz))
 			die("Ungueltige Zeichen in der view_kurzbz!");
 
-
-
 		if($this->new)
 		{
 			//Neuen Datensatz einfuegen
@@ -157,8 +155,10 @@ class view extends basis_db
 		}
 		else
 		{
+			// if there is already a generated view and the name has changed
 			if($this->view_kurzbz !== $this->view_kurzbz_old && $v = $this->getView())
 			{
+				// we rename the existing view
 				$qryV='ALTER VIEW reports.'.$this->view_kurzbz_old.' RENAME TO '.
 					$this->view_kurzbz.';';
 
@@ -215,24 +215,7 @@ class view extends basis_db
 			}
 			else
 			{
-				if($this->getView())//wenn es schon eine generierte View gibt, wird sie neu generiert, um Inkonsistenzen zu vermeiden
-				{
-					if(!$this->generateView())
-					{
-						$this->db_query('ROLLBACK');
-						$this->errormsg = 'Fehler beim neu erstellen der View';
-						return false;
-					}
-					else
-					{
-						$this->db_query('COMMIT');
-					}
-				}
-				else
-				{
-						$this->db_query('COMMIT');
-				}
-
+				$this->db_query('COMMIT');
 			}
 
 		}
@@ -244,7 +227,6 @@ class view extends basis_db
 		}
 
 		$this->view_kurzbz_old = $this->view_kurzbz;
-
 
 		return $this->view_id;
 	}
