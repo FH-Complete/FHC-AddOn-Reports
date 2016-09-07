@@ -143,8 +143,8 @@
 
 		if(isset($chart->description))
 		{
-			$mdfile=$reportsTmpDir.'/Chart'.$chart->chart_id.'.md';
-			file_put_contents($mdfile, $chart->description);
+			$textile = $reportsTmpDir.'/Chart'.$chart->chart_id.'.textile';
+			file_put_contents($textile, $chart->description);
 		}
 	}
 
