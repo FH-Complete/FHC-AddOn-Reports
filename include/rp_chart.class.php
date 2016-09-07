@@ -640,8 +640,10 @@ EOT;
 
 		if(!$this->inDashboard)
 		{
-			$md = \Michelf\Markdown::defaultTransform($this->description);
-			echo '<div>'.$md.'</div>';
+			$parser = new \Netcarver\Textile\Parser();
+			$textile = $parser->textileThis($this->description);
+
+			echo '<div>'.$textile.'</div>';
 		}
 
 		return ob_get_clean();
