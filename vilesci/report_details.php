@@ -54,7 +54,7 @@
 	$report = new report();
 	$report->report_id		= 0;
 	$report->title 			= 'NewReport';
-	$report->description		= '=== Beschreibung';
+	$report->description		= '=== Einleitung';
 	$report->format			= 'asciidoc';
 	$report->header		= "";
 	$report->body		= "=== Chart\n=== Data";
