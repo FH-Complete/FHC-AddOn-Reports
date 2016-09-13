@@ -706,7 +706,11 @@ EOT;
 				$output_filename=$targetDir.'/chart'.$this->chart_id.'.png';
 				$output=array();
 
-				$phantomData = $this->getHighChartData();
+				/*
+				* animationen deaktivieren, da diese Anzeigefehler verursachen können
+				* dataLabels funktionieren z.B. mit Animationen nicht
+				*/
+				$phantomData = $this->getHighChartData(false);
 
 
 				if(!$phantomData)return false;
@@ -747,9 +751,10 @@ EOT;
 
 	/**
 	* Liefert den Highchart als JSON zurück
+	 * @param $animation animationen aktivieren/deaktivieren(default = true)
 	* @return JSON wenn ok, sonst false
 	*/
-	private function getHighChartData()
+	private function getHighChartData($animation = true)
 	{
 		$this->statistik = new statistik($this->statistik_kurzbz);
 		if (!$this->statistik->loadData())
@@ -927,7 +932,7 @@ EOT;
 			(
 				'zoomType' => "xy",
 				'type' => "column",
-				'animation' => true,    //animation für den zoom
+				'animation' => $animation,    //animation für den zoom
 				/*
 				'options3d' => array
 				(
@@ -940,7 +945,7 @@ EOT;
 			),
 			'plotOptions' => array
 			(
-				'series' => array('animation' => true),
+				'series' => array('animation' => $animation),
 				'column' => array('stacking' => $stacking),
 				'boxplot' => array
 				(
