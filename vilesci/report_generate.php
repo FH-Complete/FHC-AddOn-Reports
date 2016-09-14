@@ -141,11 +141,13 @@
 			}
 		}
 
+		$description = "";
+		$textile = $reportsTmpDir.'/Chart'.$chart->chart_id.'.textile';
 		if(isset($chart->description))
 		{
-			$textile = $reportsTmpDir.'/Chart'.$chart->chart_id.'.textile';
-			file_put_contents($textile, $chart->description);
+			$description = $chart->description;
 		}
+		file_put_contents($textile, $description);
 	}
 
 
@@ -169,9 +171,12 @@
 			$content.='= Report - '.$report->title.$crlf;
 			$content.=$report->header.$crlf.$report->printParam('attr',$crlf).":chartDir: ".$reportsTmpDir.$crlf;
 			$content.=$crlf.'== Einleitung'.$crlf.$report->description.$crlf;
-			$content.=$crlf.'=== Parameter'.$crlf.'- Erstellung: *'.date("D, j M Y").'*'.$crlf.'- Datenstand: *'.date(DATE_RFC2822).'*'.$crlf.$report->printParam('param',$crlf).$crlf;
-			$content.=$crlf.'<<<'.$crlf.$crlf.'== Report'.$crlf.$report->body.$crlf;
+			$content.=$crlf.'<<<'.$crlf.$crlf;
+			$content.=$crlf.'== Report'.$crlf.$report->body.$crlf;
+			$content.=$crlf.'<<<'.$crlf.$crlf;
 			$content.=$crlf.'== Hinweise'.$crlf.$report->footer.$crlf;
+			$content.=$crlf.'<<<'.$crlf.$crlf;
+			$content.=$crlf.'== Parameter'.$crlf.'- Erstellung: *'.date("D, j M Y").'*'.$crlf.'- Datenstand: *'.date(DATE_RFC2822).'*'.$crlf.$report->printParam('param',$crlf).$crlf;
 			break;
 	}
 

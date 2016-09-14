@@ -62,10 +62,6 @@
 				echo "<h5>" . $report->title . "</h5>";
 		}
 	?>
-			<div id="cleanup" hidden>
-				<span>Es wurden noch alte Reports gefunden:</span>
-				<input onclick='reportsCleanup()' style='color:red;margin-left:20px;' type='button' value='Aufr&auml;umen'/>
-			</div>
 
 
 		<div id="spinner" style="display:none; width:80%; margin-left:10%; top:50px; position:absolute; z-index:10;">
@@ -76,14 +72,18 @@
 			</div>
 		</div>
 
-		<div style="display: none;margin-top:2%;margin-bottom:2%;" id="filter">
+		<div style="display: none;margin-top:50px;margin-bottom:2%;" id="filter">
 			<div class="col-xs-12 col-sm-9">
 				<form class="form-inline" onsubmit="return false">
 					<span id="filter-input"></span>
 					<button style="display: inline;height:40px;" onclick="runFilter('html')" class="btn btn-default" type="submit">Ausf&uuml;hren</button>
-					<button style="display: inline;height:40px;" onclick="runFilter('pdf')" id="filter-PdfLink" ><img src="../cis/pdfIcon.png" width="20" alt="pdf"/></button>
-					<button style="display: inline;height:40px;color:red;" onclick="runFilter('debug')" id="filter-debugLink">DEBUG</button>
+					<button style="display: inline;height:40px;" onclick="runFilter('pdf')" class="btn btn-default" id="filter-PdfLink" ><img src="../cis/pdfIcon.png" width="20" alt="pdf"/></button>
+					<button style="display: inline;height:40px;" onclick="runFilter('debug')" class="btn btn-warning" id="filter-debugLink"">DEBUG</button>
 				</form>
+				<div id="cleanup" hidden style="margin-top: 10px;">
+					<span>Es wurden noch alte Reports gefunden:</span>
+					<input onclick='reportsCleanup()' style='margin-left:20px;' class="btn btn-warning" type='button' value='Aufr&auml;umen'/>
+				</div>
 			</div>
 		</div>
 
