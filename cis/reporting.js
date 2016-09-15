@@ -233,11 +233,10 @@ function hideSidebar()
 
 function runFilter(type)
 {
-
 	var inputs = $('#filter-input > *'),
 		chart_id = $('#filter-input').attr('data-chart_id'),
 		statistik_kurzbz = $('#filter-input').attr('data-statistik_kurzbz'),
-		      report_id = $('#filter-input').attr('data-report_id'),
+		report_id = $('#filter-input').attr('data-report_id'),
 		get_params = {},
 		url;
 
@@ -251,4 +250,6 @@ function runFilter(type)
 	}
 
 	loadData(statistik_kurzbz, report_id, chart_id, get_params);
+
+	checkForOldReports();
 }

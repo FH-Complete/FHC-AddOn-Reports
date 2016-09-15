@@ -115,6 +115,11 @@
 			?>
 			$(function()
 			{
+				checkForOldReports();
+			});
+
+			function checkForOldReports()
+			{
 				var req = $.ajax
 				({
 					url: "../vilesci/reports_cleanup.php",
@@ -129,7 +134,7 @@
 						$("#cleanup").show();
 					}
 				});
-			});
+			}
 
 			function reportsCleanup()
 			{

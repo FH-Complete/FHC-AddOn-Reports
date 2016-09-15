@@ -170,13 +170,13 @@
 			$filename.='.asciidoc';
 			$content.='= Report - '.$report->title.$crlf;
 			$content.=$report->header.$crlf.$report->printParam('attr',$crlf).":chartDir: ".$reportsTmpDir.$crlf;
+			$content.=$crlf.'<<<'.$crlf.$crlf;
 			$content.=$crlf.'== Einleitung'.$crlf.$report->description.$crlf;
 			$content.=$crlf.'<<<'.$crlf.$crlf;
 			$content.=$crlf.'== Report'.$crlf.$report->body.$crlf;
 			$content.=$crlf.'<<<'.$crlf.$crlf;
 			$content.=$crlf.'== Hinweise'.$crlf.$report->footer.$crlf;
-			$content.=$crlf.'<<<'.$crlf.$crlf;
-			$content.=$crlf.'== Parameter'.$crlf.'- Erstellung: *'.date("D, j M Y").'*'.$crlf.'- Datenstand: *'.date(DATE_RFC2822).'*'.$crlf.$report->printParam('param',$crlf).$crlf;
+			$content.=$crlf.'=== Parameter'.$crlf.'- Erstellung: *'.date("D, j M Y").'*'.$crlf.'- Datenstand: *'.date(DATE_RFC2822).'*'.$crlf.$report->printParam('param',$crlf).$crlf;
 			break;
 	}
 
@@ -204,8 +204,8 @@
 		addOutput($errstr, 0, "Asciidoc fehlgeschlagen:");
 		foreach($out as $o)
 			addOutput($errstr, 0, $o, 1);
-		if($type != "debug")
-			cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
+
+		cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
 	}
 	if(count($out) > 0)
 	{
@@ -215,65 +215,27 @@
 	}
 	addOutput($errstr, 1, "HTML: '.$htmlFilename.' has been written!");
 
-
-	/* XML creation */
+	/* PDF creation */
 	$out = array();	/* empty the out array, to remove the old entries */
-	$cmd = 'asciidoc -a docinfo -b docbook -o '.$xmlFilename.' '.$filename;
+	$cmd = 'a2x -a docinfo -f pdf --dblatex-opts="--param=latex.encoding=utf8 -P latex.unicode.use=1 -f docbook -p ../system/asciidoc/asciidoc-dblatex.xsl" ' . $filename;
 	exec($cmd.' 2>&1', $out, $ret);
 
 	if($ret != 0)
 	{
-		addOutput($errstr, 0, "Asciidoc fehlgeschlagen:");
+		addOutput($errstr, 0, "a2x fehlgeschlagen:");
 		foreach($out as $o)
 			addOutput($errstr, 0, $o, 1);
-		if($type != "debug")
-			cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
+
+		cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
 	}
 	if(count($out) > 0)
 	{
-		addOutput($errstr, 2, "Asciidoc Warnungen:");
+		addOutput($errstr, 2, "a2x Warnungen:");
 		foreach($out as $o)
 			addOutput($errstr, 2, $o, 1);
 	}
-	addOutput($errstr, 1, "XML: '.$xmlFilename.' has been written!");
+	addOutput($errstr, 1, "PDF: '.$pdfFilename.' has been written!");
 
-	// DB Latex is tricky so i used a new process
-	$command='dblatex -f docbook -t pdf -P latex.encoding=utf8 -P latex.unicode.use=1 -o '.$tmpFilename.' '.$xmlFilename;
-
-	$out = array();	/* empty the out array, to remove the old entries */
-	exec($command.' 2>&1', $out, $ret);
-
-	if($ret != 0)
-	{
-		addOutput($errstr, 0, "dblatex failed!");
-		foreach($out as $o)
-			addOutput($errstr, 0, $o, 1);
-		cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
-	}
-
-	$process = new process(escapeshellcmd($command));
-	for ($i=0;$process->status() && $i<10;$i++)
-	{
-		usleep(1000000); // wait for 1 Second
-	}
-	if ($process->status())
-	{
-		$process->stop();
-		cleanUpAndDie('Timeout in dbLatex execution: <br>"'.escapeshellcmd($command).'"', $errstr, $reportsTmpDir, $type);
-	}
-	elseif (@fopen($tmpFilename,'r'))
-	{
-		if (!rename($tmpFilename,$pdfFilename))
-			cleanUpAndDie('Cannot remove File from '.$tmpFilename.' to '.$pdfFilename, $errstr, $reportsTmpDir, $type);
-	}
-	else
-	{
-		if($type == "debug")
-			addOutput($errstr, 0, 'Cannot read File: '.$tmpFilename);
-		else
-			cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
-	}
-	addOutput($errstr, 1, 'PDF: '.$pdfFilename.' has been written!', 1);
 
 	if($type == "pdf")
 	{
