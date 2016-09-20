@@ -100,8 +100,10 @@
 
 			else if(isset($_GET["report_id"]))
 			{
+				echo "var debug = false;";
+
 				if(isset($_GET["debug"]))
-					echo "var debug = true;";
+					echo "debug = true;";
 
 				echo "loadReport('".$_GET['report_id']."');";
 			}
@@ -120,6 +122,9 @@
 
 			function checkForOldReports()
 			{
+				if(!debug)
+					return;
+
 				var req = $.ajax
 				({
 					url: "../vilesci/reports_cleanup.php",
@@ -158,13 +163,3 @@
 		</script>
 	</body>
 </html>
-
-
-<?php
-	function checkIfOldReports()
-	{
-		if(!isset($_GET["debug"]))
-			return false;
-		return true;
-	}
-?>
