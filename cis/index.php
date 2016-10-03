@@ -199,15 +199,15 @@ function addZurodnungen($entity,$rechte)
 			</div>
 		</div>
 
-		<div id="spinner" style="display:none; width:80%; margin-left:10%; top:50px; position:absolute; z-index:10;">
+		<div id="spinner" style="display:none; width:80%; margin-left:10%; top:55px; position:absolute; z-index:10;">
 			<div class="progress">
-  				<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+				<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
 					Loading Data
-  				</div>
+				</div>
 			</div>
 		</div>
 
-		<div class="container-fluid">
+		<div class="container-fluid" style="margin-top:75px;">
 			<div class="row row-offcanvas row-offcanvas-right">
 				<div class="col-xs-12 col-sm-9">
 					<p class="pull-right visible-xs">
