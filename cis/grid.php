@@ -41,15 +41,15 @@ $statistik = new statistik();
 $statistik_kurzbz = filter_input(INPUT_GET, 'statistik_kurzbz');
 $htmlbody = filter_input(INPUT_GET, 'htmlbody', FILTER_VALIDATE_BOOLEAN);
 
-if(isset($statistik_kurzbz))
-{
-	$statistik->load($statistik_kurzbz);
-}
-else
+if(!isset($statistik_kurzbz))
 {
 	die('"statistik_kurzbz" is not set!');
 }
 
+if(!$statistik->load($statistik_kurzbz))
+{
+	die('Fehler: ' . $statistik->errormsg);
+}
 
 
 $i = 0;
@@ -68,7 +68,6 @@ while(isset($_GET['varname' . $i]))
 }
 
 $statistik->loadData();
-
 
 
 
