@@ -30,7 +30,11 @@
 
 	$iconsdir='/etc/asciidoc/images/icons';
 	$reportsTmpDir = sys_get_temp_dir() . "/reports_" . uniqid();
+	$pthreadsEnabled = extension_loaded('pthreads');
+	$workers = array();
 
+	if($pthreadsEnabled)
+		require_once('../include/rp_chart_thread.class.php');
 
 	if (!$db = new basis_db())
 		die('Es konnte keine Verbindung zum Server aufgebaut werden.');
@@ -128,7 +132,13 @@
 		{
 			generateStatistik($chart->statistik_kurzbz, $reportsTmpDir, $errstr, $type);
 
-			$outputfilename=$chart->writePNG($reportsTmpDir);
+			if(!$pthreadsEnabled)
+				$outputfilename=$chart->writePNG($reportsTmpDir);
+			else
+			{
+				$workers[$chart->chart_id] = new ChartThread($chart, $reportsTmpDir);
+				$workers[$chart->chart_id]->start();
+			}
 
 			if (!$outputfilename)
 			{
@@ -148,6 +158,14 @@
 			$description = $chart->description;
 		}
 		file_put_contents($textile, $description);
+	}
+
+	if($pthreadsEnabled)
+	{
+		foreach($workers as $wk => $wv)
+		{
+			$wv->join();
+		}
 	}
 
 
