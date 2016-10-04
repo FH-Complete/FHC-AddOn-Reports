@@ -32,9 +32,17 @@
 	$reportsTmpDir = sys_get_temp_dir() . "/reports_" . uniqid();
 	$pthreadsEnabled = extension_loaded('pthreads');
 	$workers = array();
+	$errstr = '';
 
 	if($pthreadsEnabled)
+	{
 		require_once('../include/rp_chart_thread.class.php');
+		addOutput($errstr, 1, "PTHREADS: enabled!");
+	}
+	else
+	{
+		addOutput($errstr, 0, "PTHREADS: disabled!");
+	}
 
 	if (!$db = new basis_db())
 		die('Es konnte keine Verbindung zum Server aufgebaut werden.');
@@ -51,7 +59,6 @@
 	else
 		$type = $_REQUEST['type'];
 
-	$errstr = '';
 	// *************** Pruefen ob die benoetigten Programme vorhanden sind *******************
 
 	if(!`which asciidoc`)
@@ -133,21 +140,23 @@
 			generateStatistik($chart->statistik_kurzbz, $reportsTmpDir, $errstr, $type);
 
 			if(!$pthreadsEnabled)
+			{
 				$outputfilename=$chart->writePNG($reportsTmpDir);
+
+				if (!$outputfilename)
+				{
+					addOutput($errstr, 0, "PNG not written: " . $chart->errormsg);
+					cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
+				}
+				else
+				{
+					addOutput($errstr, 1, "PNG: '".$outputfilename."' has been written!");
+				}
+			}
 			else
 			{
 				$workers[$chart->chart_id] = new ChartThread($chart, $reportsTmpDir);
 				$workers[$chart->chart_id]->start();
-			}
-
-			if (!$outputfilename)
-			{
-				addOutput($errstr, 0, "PNG not written: " . $chart->errormsg);
-				cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
-			}
-			else
-			{
-				addOutput($errstr, 1, "PNG: '.$outputfilename.' has been written!");
 			}
 		}
 
@@ -165,6 +174,15 @@
 		foreach($workers as $wk => $wv)
 		{
 			$wv->join();
+			if (!$wv->outputfilename)
+			{
+				addOutput($errstr, 0, "PNG not written: " . $wv->errormsg);
+				cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
+			}
+			else
+			{
+				addOutput($errstr, 1, "PNG: '".$wv->outputfilename."' has been written!");
+			}
 		}
 	}
 
