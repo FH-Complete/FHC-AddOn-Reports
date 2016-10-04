@@ -174,14 +174,14 @@
 		foreach($workers as $wk => $wv)
 		{
 			$wv->join();
-			if (!$wv->outputfilename)
+			if (!$wv->getOutputfilename())
 			{
 				addOutput($errstr, 0, "PNG not written: " . $wv->errormsg);
 				cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
 			}
 			else
 			{
-				addOutput($errstr, 1, "PNG: '".$wv->outputfilename."' has been written!");
+				addOutput($errstr, 1, "PNG: '".$wv->getOutputfilename()."' has been written!");
 			}
 		}
 	}
