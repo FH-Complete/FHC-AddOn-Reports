@@ -25,14 +25,16 @@ class ChartThread extends Thread
 	private $chart_id;
 	private $chart;
 	private $targetDir;
-	private $outputfilename;
+	public $outputfilename;
+	public $errormsg;
 
 	public function __construct($workerId, $chart, $targetDir)
 	{
 		$this->chart_id = $chart->chart_id;
 		$this->chart = $chart;
 		$this->targetDir = $targetDir;
-		$this->outputfilename = "";
+		$this->outputfilename = false;
+		$this->errormsg = "";
 	}
 
 	public function run()
