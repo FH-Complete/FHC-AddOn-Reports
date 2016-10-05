@@ -54,6 +54,7 @@ $report = new report();
 $statistik_kurzbz = filter_input(INPUT_GET, 'statistik_kurzbz');
 $report_id = filter_input(INPUT_GET, 'report_id', FILTER_SANITIZE_NUMBER_INT);
 $htmlbody = filter_input(INPUT_GET, 'htmlbody', FILTER_VALIDATE_BOOLEAN);
+$putlog = filter_input(INPUT_GET, 'putlog', FILTER_VALIDATE_BOOLEAN);
 $html = '';
 
 if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
@@ -162,6 +163,8 @@ else if(isset($report_id) && $report_id != 'undefined')
 			$html .= $var . ': <input type="text" id="' . $var . '" name="' . $var . '" value="">';
 		}
 	}
+	if($putlog === true)
+		$html .= '<input type="hidden" name="putlog" value="true">';
 
 	if($htmlbody)
 	{

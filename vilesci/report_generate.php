@@ -27,6 +27,7 @@
 	require_once('../include/rp_report_statistik.class.php');
 	require_once('../../../include/process.class.php');
 	require_once('../../../include/filter.class.php');
+	require_once('../../../include/webservicelog.class.php');
 
 	$iconsdir='/etc/asciidoc/images/icons';
 	$reportsTmpDir = sys_get_temp_dir() . "/reports_" . uniqid();
@@ -44,7 +45,11 @@
 	$rechte = new benutzerberechtigung();
 	$rechte->getBerechtigungen($user);
 
-
+	$putlog = false;
+	if(isset($_REQUEST["putlog"]) && $_REQUEST["putlog"] === "true")
+	{
+		$putlog = true;
+	}
 
 	if(!isset($_REQUEST['type']))
 		$type = "html";
@@ -125,6 +130,16 @@
 	$xmlFilename=$reportsTmpDir.'/Report'.$report->report_id.'.xml';
 	$pdfFilename=$reportsTmpDir.'/Report'.$report->report_id.'.pdf';
 
+	if($putlog === true)
+	{
+		$log = new webservicelog();
+		$log->request_data = '?type=' . $type . $filter->getVars();
+		$log->webservicetyp_kurzbz = 'reports';
+		$log->request_id = $report->report_id;
+		$log->beschreibung = 'report';
+		$log->execute_user = $user;
+		$log->save(true);
+	}
 
 	foreach($charts->chart as $chart)
 	{

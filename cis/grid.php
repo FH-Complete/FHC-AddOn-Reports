@@ -29,6 +29,8 @@ require_once('../../../include/functions.inc.php');
 require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../../../include/filter.class.php');
 require_once('../../../include/statistik.class.php');
+require_once('../../../include/webservicelog.class.php');
+require_once('../../../include/filter.class.php');
 
 ini_set('memory_limit', '1024M');
 $uid = get_uid();
@@ -67,7 +69,6 @@ while(isset($_GET['varname' . $i]))
 	$i++;
 }
 
-$statistik->loadData();
 
 
 
@@ -79,6 +80,28 @@ if(isset($statistik->berechtigung_kurzbz))
 	if(!$rechte->isBerechtigt($statistik->berechtigung_kurzbz))
 		die("Sie haben keine Berechtigung fuer diese Statistik");
 
+
+$putlog = false;
+if(isset($_REQUEST["putlog"]) && $_REQUEST["putlog"] === "true")
+{
+	$putlog = true;
+}
+
+if($putlog === true)
+{
+	$filter = new filter();
+	$filter->loadAll();
+
+	$log = new webservicelog();
+	$log->request_data = $filter->getVars();
+	$log->webservicetyp_kurzbz = 'reports';
+	$log->request_id = $statistik_kurzbz;
+	$log->beschreibung = 'statistik';
+	$log->execute_user = $uid;
+	$log->save(true);
+}
+
+$statistik->loadData();
 ?>
 
 

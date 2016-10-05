@@ -54,7 +54,7 @@ function getHtmlMenue($data, $rechte)
 
 			if(isset($d->charts) && count($d->charts)>0)
 			{
-				$htmlstr.='<li><a href="#" onclick="showSidebar('.$d->reportgruppe_id.', \'charts\')"><span style="float:left;">&emsp;Charts</span><span class="badge" style="float:right;">'.count($d->charts).'</span></a></li>';
+				$htmlstr.='<li class="ddReport"><a href="#" onclick="showSidebar('.$d->reportgruppe_id.', \'charts\')"><span style="float:left;">&emsp;Charts</span><span class="badge" style="display:inline; float:right;">'.count($d->charts).'</span></a></li>';
 			}
 			if(isset($d->statistiken) && count($d->statistiken)>0)
 			{
@@ -146,6 +146,7 @@ function addZurodnungen($entity,$rechte)
 		<script src="../include/js/bootstrap.min.js"></script>
 		<script src="../include/js/offcanvas.js"></script>
 		<script type="text/javascript" src="reporting.js"></script>
+
 	</head>
 
 	<body>
@@ -238,9 +239,9 @@ function addZurodnungen($entity,$rechte)
 						<div class="col-xs-12 col-sm-9">
 							<form class="form-inline" onsubmit="return false">
 								<span id="filter-input"></span>
-								<button style="display: inline;height:40px;" onclick="runFilter('html')" class="btn btn-default" type="submit">Ausf&uuml;hren</button>
-								<button style="display: inline;height:40px;" onclick="runFilter('pdf')" id="filter-PdfLink" ><img src="../cis/pdfIcon.png" width="20" alt="pdf"/></button>
-								<button style="display: inline;height:40px;color:red;" onclick="runFilter('debug')" id="filter-debugLink">DEBUG</button>
+								<button style="display: inline;height:40px;" onclick="runFilter('html', true)" class="btn btn-default" type="submit">Ausf&uuml;hren</button>
+								<button style="display: inline;height:40px;" onclick="runFilter('pdf', true)" id="filter-PdfLink" ><img src="../cis/pdfIcon.png" width="20" alt="pdf"/></button>
+								<button style="display: inline;height:40px;color:red;" onclick="runFilter('debug', true)" id="filter-debugLink">DEBUG</button>
 							</form>
 						</div>
 					</div>
@@ -260,7 +261,7 @@ function addZurodnungen($entity,$rechte)
 														<?php usort($l2->statistiken, "bezeichnungSort");?>
 															<?php foreach($l2->statistiken as $st): ?>
 																<div class="report_<?php echo $l2->reportgruppe_id ?>_data reports_sidebar_entry" style="display: none;">
-																	<li><a href="#" onclick='loadStatistik("<?php echo urlencode($st->statistik_kurzbz)?>")' class="list-group-item"><?php echo $st->bezeichnung?></a></li>
+																	<li><a href="#" onclick='loadStatistik("<?php echo urlencode($st->statistik_kurzbz)?>", true)' class="list-group-item"><?php echo $st->bezeichnung?></a></li>
 																</div>
 															<?php endforeach; ?>
 														<?php endif;?>
@@ -268,7 +269,7 @@ function addZurodnungen($entity,$rechte)
 														<?php usort($l2->charts, "titleSort");?>
 															<?php foreach($l2->charts as $ch):?>
 																<div class="report_<?php echo $l2->reportgruppe_id ;?>_charts reports_sidebar_entry" style="display: none;">
-																	<li><a href="#" onclick='loadChart(<?php echo urlencode($ch->chart_id)?>, "<?php echo urlencode($ch->statistik_kurzbz)?>")' class="list-group-item"><?php echo $ch->title?></a></li>
+																	<li><a href="#" onclick='loadChart(<?php echo urlencode($ch->chart_id)?>, "<?php echo urlencode($ch->statistik_kurzbz)?>", true)' class="list-group-item"><?php echo $ch->title?></a></li>
 																</div>
 															<?php endforeach; ?>
 														<?php endif;?>
@@ -276,7 +277,7 @@ function addZurodnungen($entity,$rechte)
 														<?php usort($l2->reports, "titleSort");?>
 															<?php foreach($l2->reports as $re): ?>
 																<div class="report_<?php echo $l2->reportgruppe_id ?>_reports reports_sidebar_entry" style="display: none;">
-																	<li><a class="list-group-item" href="#" onclick='loadReport(<?php echo urlencode($re->report_id)?>)'><?php echo $re->title?></a></li>
+																	<li><a class="list-group-item" href="#" onclick='loadReport(<?php echo urlencode($re->report_id)?>, true)'><?php echo $re->title?></a></li>
 																</div>
 															<?php endforeach; ?>
 														<?php endif;?>

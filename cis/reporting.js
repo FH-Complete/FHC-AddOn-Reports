@@ -25,19 +25,19 @@ function die(msg)
 	throw new Error(msg);
 }
 
-function loadChart(chart_id, statistik_kurzbz)
+function loadChart(chart_id, statistik_kurzbz, putlog)
 {
-	showFilter(statistik_kurzbz, undefined, chart_id);
+	showFilter(statistik_kurzbz, undefined, chart_id, putlog);
 }
 
-function loadReport(report_id)
+function loadReport(report_id, putlog)
 {
-	showFilter(undefined, report_id, undefined);
+	showFilter(undefined, report_id, undefined, putlog);
 }
 
-function loadStatistik(statistik_kurzbz)
+function loadStatistik(statistik_kurzbz, putlog)
 {
-	showFilter(statistik_kurzbz, undefined, undefined);
+	showFilter(statistik_kurzbz, undefined, undefined, putlog);
 }
 
 
@@ -127,7 +127,7 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 }
 
 
-function showFilter(statistik_kurzbz, report_id, chart_id)
+function showFilter(statistik_kurzbz, report_id, chart_id, putlog)
 {
 	$('#filter').show();
 	$(window).trigger('resize');
@@ -138,7 +138,7 @@ function showFilter(statistik_kurzbz, report_id, chart_id)
 	$("#filter-PdfLink").hide();
 	$("#filter-debugLink").hide();
 
-	$('#filter-input').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz + '&report_id=' + report_id, function()
+	$('#filter-input').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz + '&report_id=' + report_id + "&putlog=" + putlog, function()
 	{
 		if(typeof debug !== "undefined")
 			$("#filter-debugLink").show();
@@ -153,7 +153,7 @@ function showFilter(statistik_kurzbz, report_id, chart_id)
 		{
 			$('#filter').hide();
 			//laden wir direkt die daten
-			loadData(statistik_kurzbz, report_id, chart_id,{});
+			loadData(statistik_kurzbz, report_id, chart_id,{putlog:putlog});
 		}
 	});
 
@@ -231,13 +231,13 @@ function hideSidebar()
 	$(window).trigger('resize');
 }
 
-function runFilter(type)
+function runFilter(type, putlog)
 {
 	var inputs = $('#filter-input > *'),
 		chart_id = $('#filter-input').attr('data-chart_id'),
 		statistik_kurzbz = $('#filter-input').attr('data-statistik_kurzbz'),
 		report_id = $('#filter-input').attr('data-report_id'),
-		get_params = {},
+		get_params = {putlog:putlog},
 		url;
 
 	get_params.type = type;

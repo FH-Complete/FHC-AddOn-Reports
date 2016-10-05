@@ -25,6 +25,8 @@ require_once('../../../include/functions.inc.php');
 require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../../../include/filter.class.php');
 require_once('../include/rp_chart.class.php');
+require_once('../../../include/webservicelog.class.php');
+require_once('../../../include/filter.class.php');
 
 
 $user = get_uid();
@@ -56,6 +58,27 @@ $chart->statistik = new statistik($chart->statistik_kurzbz);
 if(isset($chart->statistik->berechtigung_kurzbz))
 	if(!$rechte->isBerechtigt($chart->statistik->berechtigung_kurzbz))
 		die("Sie haben keine Berechtigung fuer diesen Chart");
+
+$putlog = false;
+if(isset($_REQUEST["putlog"]) && $_REQUEST["putlog"] === "true")
+{
+	$putlog = true;
+}
+
+if($putlog === true)
+{
+	$filter = new filter();
+	$filter->loadAll();
+
+	$log = new webservicelog();
+	$log->request_data = $filter->getVars();
+	$log->webservicetyp_kurzbz = 'reports';
+	$log->request_id = $chart_id;
+	$log->beschreibung = 'chart';
+	$log->execute_user = $user;
+	$log->save(true);
+}
+
 
 $htmlDiv = $chart->getHtmlDiv();
 
