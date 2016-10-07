@@ -769,6 +769,24 @@ EOT;
 		$hctype=substr($this->type,2);
 		$data = $this->statistik->getArray();
 		$stacking = "";
+		$prefs = array();
+
+		/* Get the preferences */
+		if(isset($this->preferences) && $this->preferences != "" && $this->preferences != null)
+		{
+			$json = $this->removeCommentsFromJson($this->preferences);
+
+			if($json != '')		//wenn nicht nur kommentare in den preferences standen
+			{
+				//in einen array umwandeln
+				$prefs = json_decode($json, true);
+				if(!$prefs)
+				{
+					$this->errormsg = "Chart".$this->chart_id . ": Preferences sind keine wohlgeformten JSON-Daten:<br>'". $json."'";
+					return false;
+				}
+			}
+		}
 
 		if ($hctype=='drill')
 		{
@@ -819,9 +837,12 @@ EOT;
 				'labels' => array('rotation' => -45),
 				'categories' => array(),
 			);
+			$colors = ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#2b908f', '#f45b5b', '#91e8e1'];
+			$colorCount = 0;
 
 			$categories = array();
 			$groups = array();
+			$mainGroups = array();// only used for linked
 
 			foreach($data as $zeile)
 			{
@@ -864,8 +885,26 @@ EOT;
 				$groups[$name."_".$stack]["name"] = $name;
 				$groups[$name."_".$stack]["stack"] = $stack;
 				$groups[$name."_".$stack]["data"][$category] += $partValue;
-			}
 
+				if(isset($prefs["FHCGroupingType"]) && $prefs["FHCGroupingType"] == "link")
+				{
+					if(!isset($mainGroups[$name]))
+					{
+						if(!isset($colors[$colorCount]))
+							$colorCount = 0;
+
+						$mainGroups[$name] = $colors[$colorCount];
+						$colorCount ++;
+						$groups[$name."_".$stack]["id"] = $name;
+						$groups[$name."_".$stack]["color"] = $mainGroups[$name];
+					}
+					else if(!isset($groups[$name."_".$stack]["id"]))
+					{
+						$groups[$name."_".$stack]["linkedTo"] = $name;
+						$groups[$name."_".$stack]["color"] = $mainGroups[$name];
+					}
+				}
+			}
 			$series = $groups;
 
 
@@ -962,23 +1001,9 @@ EOT;
 			$phantomData["drilldown"]["series"] = $drilldown;
 		}
 
-		if(isset($this->preferences) && $this->preferences != "" && $this->preferences != null)
+		if(isset($prefs) && $prefs && is_array($prefs))
 		{
-			$json = $this->removeCommentsFromJson($this->preferences);
-
-			if($json != '')		//wenn nicht nur kommentare in den preferences standen
-			{
-				//in einen array umwandeln
-				$prefs = json_decode($json, true);
-				if(!$prefs)
-				{
-					$this->errormsg = "Chart".$this->chart_id . ": Preferences sind keine wohlgeformten JSON-Daten:<br>'". $json."'";
-					return false;
-				}
-				//und über die phantom daten mergen
-				$erg = array_replace_recursive($phantomData, $prefs);
-				$phantomData = $erg;
-			}
+			$phantomData = array_replace_recursive($phantomData, $prefs);
 		}
 
 		//series und yAxis in normale arrays zurückwandeln, da highcharts keine assoziativen entgegen nimmt!
