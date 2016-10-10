@@ -122,7 +122,7 @@
 
 			function checkForOldReports()
 			{
-				if(!debug)
+				if(typeof debug != "undefined" && !debug)
 					return;
 
 				var req = $.ajax
