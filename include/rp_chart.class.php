@@ -633,14 +633,6 @@ EOT;
 					if(hcData.FHCChartType == "groupedstacked")
 					{
 						hcData.tooltip = {formatter: function() {return '<b>'+ this.series.options.stack + '</b><br/>'+ this.series.name +': '+ this.y;}};
-
-						for(var i = 0; i < hcData.yAxis.length; i++)
-						{
-							if(hcData.yAxis[i].stackLabels && hcData.yAxis[i].stackLabels.enabled)
-							{
-								hcData.yAxis[i].stackLabels.formatter = function(){return this.stack;};
-							}
-						}
 					}
 
 					$("#hcChart"+<?php echo $this->chart_id ?>).highcharts(hcData);
@@ -779,6 +771,7 @@ EOT;
 		$hctype=substr($this->type,2);
 		$data = $this->statistik->getArray();
 		$stacking = "";
+		$customCategories = false;
 		$prefs = array();
 
 		/* Get the preferences */
@@ -797,6 +790,9 @@ EOT;
 				}
 			}
 		}
+
+		if(isset($prefs["xAxis"]) && isset($prefs["xAxis"]["FHCCustomCategories"]))
+			$customCategories = $prefs["xAxis"]["FHCCustomCategories"];
 
 		if ($hctype=='drill')
 		{
@@ -954,6 +950,15 @@ EOT;
 				'title' => array('text' => '',),
 				'labels' => array('rotation' => -45),
 			);
+		}
+
+		// add custom categories
+		if($customCategories)
+		{
+			foreach($xAxis["categories"] as $k => $v)
+			{
+				$xAxis["categories"][$k] = str_replace("€this", $xAxis["categories"][$k], $customCategories);
+			}
 		}
 
 		$phantomData = array
