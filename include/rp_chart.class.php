@@ -631,7 +631,17 @@ EOT;
 				<script>
 					var hcData = <?php echo $hcData; ?>;
 					if(hcData.FHCChartType == "groupedstacked")
+					{
 						hcData.tooltip = {formatter: function() {return '<b>'+ this.series.options.stack + '</b><br/>'+ this.series.name +': '+ this.y;}};
+
+						for(var i = 0; i < hcData.yAxis.length; i++)
+						{
+							if(hcData.yAxis[i].stackLabels && hcData.yAxis[i].stackLabels.enabled)
+							{
+								hcData.yAxis[i].stackLabels.formatter = function(){return this.stack;};
+							}
+						}
+					}
 
 					$("#hcChart"+<?php echo $this->chart_id ?>).highcharts(hcData);
 				</script>
@@ -1010,9 +1020,9 @@ EOT;
 		$phantomData["series"] = array_values($phantomData["series"]);
 
 		//die info yAxis muss existieren, darum wird hier abgefragt, ob welche in den preferences definiert wurden, wenn nicht wird eine leere angelegt
-		if(isset($phantomData["yAxis"]))
+		if(isset($phantomData["yAxis"]))		//convert assoc arrays to sequential
 			$phantomData["yAxis"] = array_values($phantomData["yAxis"]);
-		else
+		else		// add the default yAxis preferences, if none are set
 			$phantomData["yAxis"] = array('title' => array('text' => ' ',));
 
 		//gleiches spiel mit den drilldown infos
@@ -1020,7 +1030,6 @@ EOT;
 		{
 			$phantomData["drilldown"]["series"] = array_values($phantomData["drilldown"]["series"]);
 		}
-
 
 		//nur für boxplot charts!
 		if($phantomData["chart"]["type"] == "boxplot")
@@ -1063,7 +1072,6 @@ EOT;
 			$phantomData["series"][0]["data"] = $boxplotData;
 			$phantomData["xAxis"]["categories"] = $bpCategories;
 		}
-
 		$data = json_encode($phantomData);
 		return $data;
 	}
@@ -1199,3 +1207,4 @@ EOT;
 		}
 	}
 }
+
