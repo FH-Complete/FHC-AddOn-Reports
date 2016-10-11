@@ -880,6 +880,17 @@ EOT;
 				}
 			}
 
+			//sort the categories(also the index)
+			asort($xAxis["categories"]);
+			$newCategories = array();
+			foreach($xAxis["categories"] as $k => $v)
+			{
+				$newCategories[] = $v;
+			}
+			$xAxis["categories"] = $newCategories;
+
+
+
 			//loop everything again and add the data to the correct group/category
 			foreach($data as $zeile)
 			{
@@ -917,6 +928,7 @@ EOT;
 			//convert all data from associative arrays to normal arrays
 			foreach($series as $key => $value)
 			{
+				ksort($series[$key]["data"]);	// IMPORTANT: keeps the categories and the series synchronously -> the categories has been sorted before!
 				$series[$key]["data"] = array_values($series[$key]["data"]);
 			}
 		}
@@ -960,6 +972,8 @@ EOT;
 				$xAxis["categories"][$k] = str_replace("€this", $xAxis["categories"][$k], $customCategories);
 			}
 		}
+
+
 
 		$phantomData = array
 		(
