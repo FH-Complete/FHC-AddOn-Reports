@@ -638,6 +638,8 @@ EOT;
 					$("#hcChart"+<?php echo $this->chart_id ?>).highcharts(hcData);
 				</script>
 			<?php break;
+			default:
+				die("No Chart-Type specified");
 		}
 
 		if(!$this->inDashboard)
