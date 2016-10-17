@@ -127,7 +127,18 @@
 
 	//create the folder in temp, which will be removed afterwards
 	if (!file_exists($reportsTmpDir))
+	{
 		mkdir($reportsTmpDir, 0777, true);
+
+		/*
+		 * create the timestamp file
+		 * it will be used for cleanup
+		*/
+		$timestampFile = fopen($reportsTmpDir . "/timestamp", "w");
+		$now = new DateTime();
+		fwrite($timestampFile, $now->getTimestamp());
+		fclose($timestampFile);
+	}
 
 	// ***** Define Filenames ******************
 	$tmpFilename=$reportsTmpDir.'/Report'.$report->report_id.date('Y-m-d_H:i:s').'.tmp';

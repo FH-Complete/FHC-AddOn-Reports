@@ -56,38 +56,47 @@ else
 
 
 
-
-
-
-
-
-
-	function getAllReportFolders()
+function getAllReportFolders()
+{
+	$ffs = scandir(sys_get_temp_dir());
+	$list = array();
+	foreach ( $ffs as $ff )
 	{
-		$ffs = scandir(sys_get_temp_dir());
-		$list = array();
-		foreach ( $ffs as $ff )
+		$timestampPath = sys_get_temp_dir() . "/" . $ff . "/timestamp";
+
+		if($ff != '.'
+		&& $ff != '..'
+		&& strlen($ff) == 21	// report folders are always createt with "reports_[UNIQID]"(=21 chars)
+		&& substr($ff, 0, 8) == "reports_"
+		)
 		{
-			if($ff != '.'
-			&& $ff != '..'
-			&& strlen($ff) == 21	// report folders are always createt with "reports_[UNIQID]"(=21 chars)
-			&& substr($ff, 0, 8) == "reports_"
-			)
+			/* if there is no timestamp file, or it is empty (old versions) */
+			if(!file_exists($timestampPath) || filesize($timestampPath) < 1)
 			{
 				$list[] = $ff;
 			}
+			else
+			{
+				$now = new DateTime();
+				$timestampFile = fopen($timestampPath, "r");
+				$timestamp = fread($timestampFile, filesize($timestampPath));
+				fclose($timestampFile);
+				if($now->getTimestamp() - $timestamp > 120 * 60)	/* older than 2 hours */
+					$list[] = $ff;// is to delete
+			}
 		}
-		return $list;
 	}
+	return $list;
+}
 
-	function recurseRmdir($dir)
+function recurseRmdir($dir)
+{
+	$files = array_diff(scandir($dir), array('.','..'));
+	foreach ($files as $file)
 	{
-		$files = array_diff(scandir($dir), array('.','..'));
-		foreach ($files as $file)
-		{
-			(is_dir("$dir/$file")) ? recurseRmdir("$dir/$file") : unlink("$dir/$file");
-		}
-		return rmdir($dir);
+		(is_dir("$dir/$file")) ? recurseRmdir("$dir/$file") : unlink("$dir/$file");
 	}
+	return rmdir($dir);
+}
 
 ?>
