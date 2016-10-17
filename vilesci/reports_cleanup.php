@@ -81,7 +81,7 @@ function getAllReportFolders()
 				$timestampFile = fopen($timestampPath, "r");
 				$timestamp = fread($timestampFile, filesize($timestampPath));
 				fclose($timestampFile);
-				if($now->getTimestamp() - $timestamp > 120 * 60)	/* older than 2 hours */
+				if($now->getTimestamp() - $timestamp > 60 * 60 * 2) /* older than 2 hours */
 					$list[] = $ff;// is to delete
 			}
 		}
