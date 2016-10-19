@@ -182,8 +182,13 @@
 \floatname{dbequation}{{\scshape \dbequationname }}
 
 % Redefinition of tableofcontent, to have it in separate pages
+\renewcommand{\contentsname}{Inhalt}
+
+
+\definecolor{black}{RGB}{0,0,0}
+
 \let\stdtoc=\tableofcontents
-\def\tableofcontents{ \newpage \stdtoc{} \newpage}
+\def\tableofcontents{ \newpage \hypersetup{linkcolor=black} \stdtoc{} \newpage}
 }{
 
 \floatstyle{ruled}
@@ -335,7 +340,6 @@
 \includegraphics[width=\paperwidth,height=0.86\paperheight,keepaspectratio]{/PATH/TO/FHC/addons/reports/include/images/fhtw_leiste.png}%
 \vfill
 }}}
-\usepackage{xcolor}
 \definecolor{fhtwblue}{RGB}{0,100,156}
 \usepackage{sectsty}
 \allsectionsfont{\textcolor{fhtwblue}}
