@@ -933,8 +933,17 @@ EOT;
 				ksort($series[$key]["data"]);	// IMPORTANT: keeps the categories and the series in sync -> the categories have been sorted before!
 				$series[$key]["data"] = array_values($series[$key]["data"]);
 			}
-			if(isset($prefs["FHCStackReverse"]) && $prefs["FHCStackReverse"] == true)
-				usort($series, "stackSort");
+			if(isset($prefs["FHCGroupingType"]) && $prefs["FHCGroupingType"] == "link")
+			{
+				if(isset($prefs["FHCStackReverse"]) && $prefs["FHCStackReverse"] == "true")
+				{
+					usort($series, "stackSortRev");
+				}
+				else
+				{
+					usort($series, "stackSort");
+				}
+			}
 		}
 		else
 		{
@@ -1234,6 +1243,17 @@ EOT;
 
 
 function stackSort($a, $b)
+{
+	/* 1st level: sort by stack */
+	$ret = strcmp($a["stack"], $b["stack"]);
+
+	/* 2nd level: sort by name */
+	if($ret == 0)
+		return strcmp($a["name"], $b["name"]);
+	return $ret;
+}
+
+function stackSortrev($a, $b)
 {
 	/* 1st level: sort by stack */
 	$ret = strcmp($b["stack"], $a["stack"]);
