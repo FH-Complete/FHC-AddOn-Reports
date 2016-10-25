@@ -78,7 +78,7 @@ if($statistik->publish !== true)
 
 if(isset($statistik->berechtigung_kurzbz))
 	if(!$rechte->isBerechtigt($statistik->berechtigung_kurzbz))
-		die("Sie haben keine Berechtigung fuer diese Statistik");
+		die($rechte->errormsg);
 
 
 $putlog = false;
