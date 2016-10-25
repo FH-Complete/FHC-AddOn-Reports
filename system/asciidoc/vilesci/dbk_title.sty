@@ -1,0 +1,50 @@
+% ################################################
+% ### FHTW Title Style
+% ### Replaces /usr/share/texmf/tex/latex/dblatex/style/dbk_title.sty
+% ### OR /usr/share/texlive/texmf-dist/tex/latex/dblatex/dbk_title.sty
+% ################################################
+\AddToShipoutPicture*{\BackgroundPic}
+\newlength{\oldbaselineskip}
+
+\def\DBKcover{
+\ifthenelse{\equal{\DBKedition}{}}{\def\edhead{}}{\def\edhead{Ed. \DBKedition}}
+
+
+% interligne double
+\setlength{\oldbaselineskip}{\baselineskip}
+\setlength{\baselineskip}{2\oldbaselineskip}
+\textsf{
+\vfill
+%\vspace{2.5cm}
+%\begin{center}
+  \textcolor{fhtwblue}{\Huge{\textbf{\DBKtitle}}}\\ %
+  \ifx\DBKsubtitle\relax\else%
+    \underline{\ \ \ \ \ \ \ \ \ \ \ }\\ %
+    \ \\ %
+    \textcolor{fhtwblue}{\huge{\textbf{\DBKsubtitle}}}\\ %
+    %\huge{\textbf{\DBKsubtitle}}\\ %
+  \fi
+%\end{center}
+\vfill
+\setlength{\baselineskip}{\oldbaselineskip}
+\hspace{1cm}
+\vspace{1cm}
+\begin{center}
+\begin{tabular}{p{7cm} p{7cm}}
+\Large{\DBKreference{} \edhead} & \\
+\end{tabular}
+\end{center}
+\vspace{2cm}
+\lfoot[]{}
+\includegraphics[width=0.28\textwidth]{/var/www/vilesci/htdocs/addons/reports/include/images/fhtw_logo.png}\\
+}
+
+% Format for the other pages
+\newpage
+\setlength{\baselineskip}{\oldbaselineskip}
+\chead[]{\DBKcheadfront}
+\lfoot[]{}
+}
+
+
+
