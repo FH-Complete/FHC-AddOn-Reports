@@ -279,7 +279,7 @@
 
 	/* PDF creation */
 	$out = array();	/* empty the out array, to remove the old entries */
-	$cmd = 'a2x -a docinfo -f pdf --dblatex-opts="--param=latex.encoding=utf8 -P latex.unicode.use=1 -f docbook -p ../system/asciidoc/asciidoc-dblatex.xsl" ' . $filename;
+	$cmd = 'a2x -a docinfo -f pdf --dblatex-opts="--param=latex.encoding=utf8 -P latex.unicode.use=1 -f docbook -p ../system/asciidoc/asciidoc-dblatex.xsl" --no-xmllint ' . $filename;
 	exec($cmd.' 2>&1', $out, $ret);
 
 	if($ret != 0)
