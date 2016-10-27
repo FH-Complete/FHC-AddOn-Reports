@@ -251,5 +251,6 @@ function runFilter(type, putlog)
 
 	loadData(statistik_kurzbz, report_id, chart_id, get_params);
 
-	checkForOldReports();
+	if(typeof checkForOldReports == "function")
+		checkForOldReports();
 }
