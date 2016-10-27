@@ -147,6 +147,11 @@ function addZurodnungen($entity,$rechte)
 		<script src="../include/js/offcanvas.js"></script>
 		<script type="text/javascript" src="reporting.js"></script>
 		<style>
+			.FHCClickable
+			{
+				cursor: pointer;
+			}
+
 			.ddEntry
 			{
 				cursor: pointer;
@@ -275,7 +280,7 @@ function addZurodnungen($entity,$rechte)
 														<?php usort($l2->statistiken, "bezeichnungSort");?>
 															<?php foreach($l2->statistiken as $st): ?>
 																<div class="report_<?php echo $l2->reportgruppe_id ?>_data reports_sidebar_entry" style="display: none;">
-																	<li><a href="#" onclick='loadStatistik("<?php echo urlencode($st->statistik_kurzbz)?>", true)' class="list-group-item"><?php echo $st->bezeichnung?></a></li>
+																	<li><a class="list-group-item FHCClickable" onclick='loadStatistik("<?php echo urlencode($st->statistik_kurzbz)?>", true)'><?php echo $st->bezeichnung?></a></li>
 																</div>
 															<?php endforeach; ?>
 														<?php endif;?>
@@ -283,7 +288,7 @@ function addZurodnungen($entity,$rechte)
 														<?php usort($l2->charts, "titleSort");?>
 															<?php foreach($l2->charts as $ch):?>
 																<div class="report_<?php echo $l2->reportgruppe_id ;?>_charts reports_sidebar_entry" style="display: none;">
-																	<li><a href="#" onclick='loadChart(<?php echo urlencode($ch->chart_id)?>, "<?php echo urlencode($ch->statistik_kurzbz)?>", true)' class="list-group-item"><?php echo $ch->title?></a></li>
+																	<li><a class="list-group-item FHCClickable" onclick='loadChart(<?php echo urlencode($ch->chart_id)?>, "<?php echo urlencode($ch->statistik_kurzbz)?>", true)'><?php echo $ch->title?></a></li>
 																</div>
 															<?php endforeach; ?>
 														<?php endif;?>
@@ -291,14 +296,14 @@ function addZurodnungen($entity,$rechte)
 														<?php usort($l2->reports, "titleSort");?>
 															<?php foreach($l2->reports as $re): ?>
 																<div class="report_<?php echo $l2->reportgruppe_id ?>_reports reports_sidebar_entry" style="display: none;">
-																	<li><a class="list-group-item" href="#" onclick='loadReport(<?php echo urlencode($re->report_id)?>, true)'><?php echo $re->title?></a></li>
+																	<li><a class="list-group-item FHCClickable" onclick='loadReport(<?php echo urlencode($re->report_id)?>, true)'><?php echo $re->title?></a></li>
 																</div>
 															<?php endforeach; ?>
 														<?php endif;?>
 											<?php endforeach;?>
 										<?php endif;?>
 							<?php endforeach;?>
-							<li class="hide-button" onclick="hideSidebar()"><a href="#"><span class="glyphicon glyphicon-chevron-up"></span></a></li>
+							<li class="hide-button FHCClickable" onclick="hideSidebar()"><span class="glyphicon glyphicon-chevron-up"></span></li>
 						</ul>
 					</div>
 				</div>
