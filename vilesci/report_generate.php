@@ -34,6 +34,7 @@
 	$pthreadsEnabled = extension_loaded('pthreads');
 	$workers = array();
 	$errstr = '';
+	$a2xAddonString = "";
 
 	if($pthreadsEnabled)
 	{
@@ -79,6 +80,12 @@
 			die('dbLatex ist auf diesem System nicht installiert');
 		else
 			die("Der Report konnte nicht erstellt werden!");
+	}
+
+	if(!`which xmllint`)
+	{
+		$a2xAddonString .= "--no-xmllint ";
+		addOutput($errstr, 0, "ACHTUNG: xmllint ist nicht installiert und wird deaktiviert!");
 	}
 
 	// *************** Asciidoc Version Prüfen *******************
@@ -279,7 +286,7 @@
 
 	/* PDF creation */
 	$out = array();	/* empty the out array, to remove the old entries */
-	$cmd = 'a2x -a docinfo -f pdf --dblatex-opts="--param=latex.encoding=utf8 -P latex.unicode.use=1 -f docbook -p ../system/asciidoc/asciidoc-dblatex.xsl" --no-xmllint ' . $filename;
+	$cmd = 'a2x -a docinfo -f pdf --dblatex-opts="--param=latex.encoding=utf8 -P latex.unicode.use=1 -f docbook -p ../system/asciidoc/asciidoc-dblatex.xsl" ' . $a2xAddonString . ' ' . $filename;
 	exec($cmd.' 2>&1', $out, $ret);
 
 	if($ret != 0)
