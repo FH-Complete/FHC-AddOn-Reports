@@ -54,15 +54,15 @@ function getHtmlMenue($data, $rechte)
 
 			if(isset($d->charts) && count($d->charts)>0)
 			{
-				$htmlstr.='<li class="ddReport"><a href="#" onclick="showSidebar('.$d->reportgruppe_id.', \'charts\')"><span style="float:left;">&emsp;Charts</span><span class="badge" style="display:inline; float:right;">'.count($d->charts).'</span></a></li>';
+				$htmlstr.='<li class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'charts\')">&emsp;Charts<span class="badge" style="float:right; margin-right:10px;">'.count($d->charts).'</span></li>';
 			}
 			if(isset($d->statistiken) && count($d->statistiken)>0)
 			{
-				$htmlstr.='<li><a href="#" onclick="showSidebar('.$d->reportgruppe_id.', \'data\')"><span style="float:left;">&emsp;Pivots</span><span class="badge" style="float:right;">'.count($d->statistiken).'</span></a></li>';
+				$htmlstr.='<li class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'data\')">&emsp;Pivots<span class="badge" style="float:right; margin-right:10px;">'.count($d->statistiken).'</span></li>';
 			}
 			if(isset($d->reports) && count($d->reports)>0)
 			{
-				$htmlstr.='<li><a href="#" onclick="showSidebar('.$d->reportgruppe_id.', \'reports\')"><span style="float:left;">&emsp;Reports</span><span class="badge" style="float:right;">'.count($d->reports).'</span></a></li>';
+				$htmlstr.='<li class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'reports\')">&emsp;Reports<span class="badge" style="float:right; margin-right:10px;">'.count($d->reports).'</span></li>';
 			}
 		}
 	}
@@ -146,7 +146,21 @@ function addZurodnungen($entity,$rechte)
 		<script src="../include/js/bootstrap.min.js"></script>
 		<script src="../include/js/offcanvas.js"></script>
 		<script type="text/javascript" src="reporting.js"></script>
+		<style>
+			.ddEntry
+			{
+				cursor: pointer;
+				padding-top: 3px;
+				padding-bottom: 6px;
+			}
 
+			.ddEntry:hover
+			{
+				background-color: #333;
+				color: #DDD;
+				border-radius: 5px;
+			}
+		</style>
 	</head>
 
 	<body>
