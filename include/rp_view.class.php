@@ -306,7 +306,8 @@ class view extends basis_db
 		//Neuen Datensatz einfuegen
 		$qry="CREATE OR REPLACE VIEW reports.".
 			$this->view_kurzbz." AS ".
-			$this->sql;
+			$this->sql . ";
+			GRANT SELECT ON reports.".$this->view_kurzbz." TO web;";
 
 		if(!$this->db_query($qry))
 		{
