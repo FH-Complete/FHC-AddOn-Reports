@@ -185,7 +185,7 @@
 			}
 		}
 
-		$description = "";
+		$description = " ";
 		$textile = $reportsTmpDir.'/Chart'.$chart->chart_id.'.textile';
 		if(isset($chart->description))
 		{
