@@ -845,7 +845,7 @@ EOT;
 				'labels' => array('rotation' => -45),
 				'categories' => array(),
 			);
-			$colors = array('#FFF', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#2b908f', '#44F', '#91e8e1', '#BBBBBB', '#992222', '#226622', '#222266', '#EEAAAA', '#FFFFBB', '#FFBBFF');
+			$colors = array('#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#2b908f', '#44F', '#91e8e1', '#BBBBBB', '#992222', '#226622', '#222266', '#EEAAAA', '#FFFFBB', '#FFBBFF');
 			$colorCount = 0;
 
 			$categories = array();
