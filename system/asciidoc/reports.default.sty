@@ -3,9 +3,9 @@
 
 
 % headercolor
-\definecolor{fhtwblue}{RGB}{0,100,156}
+\definecolor{headercolor}{RGB}{0,100,156}
 \usepackage{sectsty}
-\allsectionsfont{\textcolor{fhtwblue}}
+\allsectionsfont{\textcolor{headercolor}}
 
 % toc title
 \renewcommand{\contentsname}{Inhalt}
@@ -31,11 +31,11 @@
 	\setlength{\baselineskip}{2\oldbaselineskip}
 	\textsf{
 		\vfill
-		\textcolor{fhtwblue}{\Huge{\textbf{\DBKtitle}}}\\
+		\textcolor{headercolor}{\Huge{\textbf{\DBKtitle}}}\\
 			\ifx\DBKsubtitle\relax\else
 				\underline{\ \ \ \ \ \ \ \ \ \ \ }\\
 				\ \\
-			 \textcolor{fhtwblue}{\huge{\textbf{\DBKsubtitle}}}\\
+			 \textcolor{headercolor}{\huge{\textbf{\DBKsubtitle}}}\\
 			\fi
 		\vfill
 		\setlength{\baselineskip}{\oldbaselineskip}
