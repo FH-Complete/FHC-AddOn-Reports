@@ -1,0 +1,73 @@
+\RequirePackageWithOptions{docbook}
+
+
+
+% headercolor
+\definecolor{fhtwblue}{RGB}{0,100,156}
+\usepackage{sectsty}
+\allsectionsfont{\textcolor{fhtwblue}}
+
+% toc title
+\renewcommand{\contentsname}{Inhalt}
+
+% toc linkcolor
+\definecolor{linkcolor}{RGB}{0,0,0}
+\def\tableofcontents{ \newpage \hypersetup{linkcolor=linkcolor} \stdtoc{} \newpage}
+
+% left footer
+\lfoot[]{}
+
+
+
+
+
+
+
+% cover
+\def\DBKcover{
+	\ifthenelse{\equal{\DBKedition}{}}{\def\edhead{}}{\def\edhead{Ed. \DBKedition}}
+
+	\setlength{\oldbaselineskip}{\baselineskip}
+	\setlength{\baselineskip}{2\oldbaselineskip}
+	\textsf{
+		\vfill
+		\textcolor{fhtwblue}{\Huge{\textbf{\DBKtitle}}}\\
+			\ifx\DBKsubtitle\relax\else
+				\underline{\ \ \ \ \ \ \ \ \ \ \ }\\
+				\ \\
+			 \textcolor{fhtwblue}{\huge{\textbf{\DBKsubtitle}}}\\
+			\fi
+		\vfill
+		\setlength{\baselineskip}{\oldbaselineskip}
+		\hspace{1cm}
+		\vspace{1cm}
+		\begin{center}
+		\begin{tabular}{p{7cm} p{7cm}}
+		\Large{\DBKreference{} \edhead} & \\
+		\end{tabular}
+		\end{center}
+		\vspace{2cm}
+		\lfoot[]{}
+		\includegraphics[width=0.28\textwidth]{/ABSOLUTE/PATH/TO/LOGO/logo_250x130.png}\\
+	}
+
+	% format for the other pages
+	\newpage
+	\setlength{\baselineskip}{\oldbaselineskip}
+	\lfoot[]{}
+}
+
+
+
+
+
+% cover bar
+\AddToShipoutPicture*{\BackgroundPic}
+\newcommand\BackgroundPic{
+\put(316,-68){
+\parbox[b][\paperheight]{\paperwidth}{
+\vfill
+\centering
+\includegraphics[width=\paperwidth,height=0.86\paperheight,keepaspectratio]{/ABSOLUTE/PATH/TO/SIDEBAR.png}
+\vfill
+}}}

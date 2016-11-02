@@ -34,7 +34,6 @@
 	$pthreadsEnabled = extension_loaded('pthreads');
 	$workers = array();
 	$errstr = '';
-	$a2xAddonString = "";
 
 	if($pthreadsEnabled)
 	{
@@ -80,12 +79,6 @@
 			die('dbLatex ist auf diesem System nicht installiert');
 		else
 			die("Der Report konnte nicht erstellt werden!");
-	}
-
-	if(!`which xmllint`)
-	{
-		$a2xAddonString .= "--no-xmllint ";
-		addOutput($errstr, 0, "ACHTUNG: xmllint ist nicht installiert und wird deaktiviert!");
 	}
 
 	// *************** Asciidoc Version Prüfen *******************
@@ -148,7 +141,6 @@
 	}
 
 	// ***** Define Filenames ******************
-	$tmpFilename=$reportsTmpDir.'/Report'.$report->report_id.date('Y-m-d_H:i:s').'.tmp';
 	$filename=$reportsTmpDir.'/Report'.$report->report_id;
 	$docinfoFilename=$reportsTmpDir.'/Report'.$report->report_id.'-docinfo.xml';
 	$htmlFilename=$reportsTmpDir.'/Report'.$report->report_id.'.html';
@@ -263,6 +255,8 @@
 	addOutput($errstr, 1, "ASCIIDOC: '.$filename.' has been written!");
 
 
+
+
 	/* HTML creation */
 	$out = array();	/* empty the out array, to remove the old entries */
 	$cmd = 'asciidoc -o '.$htmlFilename.' -b '.$asciidocHtmlVersion.' -a theme=flask -a data-uri -a toc2 -a pygments -a icons -a iconsdir='.$iconsdir.' -a asciimath '.$filename;
@@ -284,14 +278,17 @@
 	}
 	addOutput($errstr, 1, "HTML: '.$htmlFilename.' has been written!");
 
-	/* PDF creation */
+
+
+
+	/* XML creation */
 	$out = array();	/* empty the out array, to remove the old entries */
-	$cmd = 'a2x -a docinfo -f pdf --dblatex-opts="--param=latex.encoding=utf8 -P latex.unicode.use=1 -f docbook -p ../system/asciidoc/asciidoc-dblatex.xsl" ' . $a2xAddonString . ' ' . $filename;
+	$cmd = 'asciidoc -a docinfo -b docbook -o '.$xmlFilename.' '.$filename;
 	exec($cmd.' 2>&1', $out, $ret);
 
 	if($ret != 0)
 	{
-		addOutput($errstr, 0, "a2x fehlgeschlagen:");
+		addOutput($errstr, 0, "asciidoc fehlgeschlagen:");
 		foreach($out as $o)
 			addOutput($errstr, 0, $o, 1);
 
@@ -299,9 +296,26 @@
 	}
 	if(count($out) > 0)
 	{
-		addOutput($errstr, 2, "a2x Warnungen:");
+		addOutput($errstr, 2, "asciidoc Warnungen:");
 		foreach($out as $o)
 			addOutput($errstr, 2, $o, 1);
+	}
+	addOutput($errstr, 1, "XML: '.$xmlFilename.' has been written!");
+
+
+
+	/* PDF creation */
+	$out = array();	/* empty the out array, to remove the old entries */
+	$cmd = 'dblatex -t docbook -t pdf -P latex.encoding=utf8 -P latex.unicode.use=1 --texstyle=../system/asciidoc/reports.sty -f docbook -p ../system/asciidoc/asciidoc-dblatex.xsl -o '.$pdfFilename.' '.$xmlFilename;
+	exec($cmd.' 2>&1', $out, $ret);
+
+	if($ret != 0)
+	{
+		addOutput($errstr, 0, "dblatex fehlgeschlagen:");
+		foreach($out as $o)
+			addOutput($errstr, 0, $o, 1);
+
+		cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
 	}
 	addOutput($errstr, 1, "PDF: '.$pdfFilename.' has been written!");
 
