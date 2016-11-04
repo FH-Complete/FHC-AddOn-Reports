@@ -990,6 +990,24 @@ EOT;
 
 		$phantomData = array
 		(
+			'lang' => array
+			(
+				'noData' => 'Es sind keine Daten vorhanden',
+				'resetZoom' => 'Zoom zurücksetzen',
+				'resetZoomTitle' => 'Zoom auf 1:1',
+				'decimalPoint' => ',',
+				'loading' => 'Lade...',
+				'contextButtonTitle' => 'Menü',
+				'thousandsSep' => '.',
+
+				'printChart' => 'Chart Drucken',
+
+				'downloadJPEG' => 'JPEG herunterladen',
+				'downloadPDF' => 'PDF herunterladen',
+				'downloadPNG' => 'PNG herunterladen',
+				'downloadSVG' => 'SVG herunterladen',
+
+			),
 			'FHCChartType' => $hctype,
 			'FHCBoxplotType' => 0,
 			'div_id' => 'hcChart' . $this->chart_id,
