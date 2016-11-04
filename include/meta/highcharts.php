@@ -30,7 +30,7 @@ echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/highcha
 echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/highcharts-3d.js"></script>';
 echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/modules/exporting.js"></script>';
 echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/modules/drilldown.js"></script>';
-
+echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/modules/no-data-to-display.js"></script>';
 
 //echo '<script src="'.$dr.'addons/reports/include/js/highcharts/highcharts-custom.js"></script>';
 //echo '<script src="'.$dr.'addons/reports/include/js/highcharts/highcharts-more.js"></script>';
