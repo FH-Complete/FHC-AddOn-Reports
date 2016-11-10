@@ -1060,8 +1060,6 @@ EOT;
 			}
 		}
 
-
-
 		$phantomData = array
 		(
 			'lang' => array
@@ -1202,7 +1200,11 @@ EOT;
 		 * only needed for yz type
 		 */
 		if($seriesType == "yz")
+		{
 			$phantomData["xAxis"]["categories"] = array_keys($phantomData["xAxis"]["categories"]);
+			$phantomData["xAxis"]["min"] = 0;
+			$phantomData["xAxis"]["max"] = count($categories)-1;
+		}
 
 		$data = json_encode($phantomData);
 		return $data;
