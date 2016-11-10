@@ -774,6 +774,7 @@ EOT;
 		$data = $this->statistik->getArray();
 		$stacking = "";
 		$customCategories = false;
+		$seriesType = "std";
 		$prefs = array();
 
 		/* Get the preferences */
@@ -795,6 +796,9 @@ EOT;
 
 		if(isset($prefs["xAxis"]) && isset($prefs["xAxis"]["FHCCustomCategories"]))
 			$customCategories = $prefs["xAxis"]["FHCCustomCategories"];
+
+		if(isset($prefs["FHCSeriesType"]))
+			$seriesType = $prefs["FHCSeriesType"];
 
 		if ($hctype=='drill')
 		{
@@ -947,34 +951,77 @@ EOT;
 		}
 		else
 		{
-			foreach($data as $key => $item)
+			if($seriesType == "yz")
 			{
-				$first = true;
-				foreach($item as $ik => $it)
-				{
-					if($first)
-					{
-						$header = $it;
-						$categories[] = $it;
-						$first = false;
-					}
-					else
-					{
-						$dt = floatval($it);
-						if($dt === false)
-						return false;
+				/* hcNorm/yz(bubble, o.ä.) */
+				$categories = array();
+				$series = array();
 
-						$series[$ik]["name"] = $ik;
-						$series[$ik]["data"][] = array($header, $dt);
+				foreach($data as $item)
+				{
+					if(!isset($item->xAxis))
+						die("no xAxis set!");
+					else if(!isset($item->Serie))
+						die("no Serie set!");
+					else if(!isset($item->y))
+						die("no y set!");
+					else if(!isset($item->z))
+						die("no z set!");
+
+					if(!isset($categories[$item->xAxis]))
+						$categories[$item->xAxis] = $item->xAxis;
+
+					if(!isset($series[$item->Serie]))
+						$series[$item->Serie] = array();
+
+
+					$dataChild = array("y" => floatval($item->y), "z" => floatval($item->z));
+
+					$series[$item->Serie]["name"] = $item->Serie;
+					$series[$item->Serie]["data"][] = $dataChild;
+
+					if(!isset($series[$item->Serie]["data"]))
+						$series[$item->Serie]["data"] = array();
+				}
+				$xAxis = array
+				(
+					'categories' => $categories,
+					'title' => array('text' => '',),
+					'labels' => array('rotation' => -45),
+				);
+			}
+			else/* std */
+			{
+				/* hcNorm/std */
+				foreach($data as $key => $item)
+				{
+					$first = true;
+					foreach($item as $ik => $it)
+					{
+						if($first)
+						{
+							$header = $it;
+							$categories[] = $it;
+							$first = false;
+						}
+						else
+						{
+							$dt = floatval($it);
+							if($dt === false)
+							return false;
+
+							$series[$ik]["name"] = $ik;
+							$series[$ik]["data"][] = array($header, $dt);
+						}
 					}
 				}
+				$xAxis = array
+				(
+					'categories' => $categories,
+					'title' => array('text' => '',),
+					'labels' => array('rotation' => -45),
+				);
 			}
-			$xAxis = array
-			(
-				'categories' => $categories,
-				'title' => array('text' => '',),
-				'labels' => array('rotation' => -45),
-			);
 		}
 
 		// add custom categories
@@ -1122,6 +1169,14 @@ EOT;
 			$phantomData["series"][0]["data"] = $boxplotData;
 			$phantomData["xAxis"]["categories"] = $bpCategories;
 		}
+
+		/*
+		 * convert the categories into normal arrays
+		 * only needed for yz type
+		 */
+		if($seriesType == "yz")
+			$phantomData["xAxis"]["categories"] = array_keys($phantomData["xAxis"]["categories"]);
+
 		$data = json_encode($phantomData);
 		return $data;
 	}
