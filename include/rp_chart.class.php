@@ -957,6 +957,7 @@ EOT;
 				$categories = array();
 				$series = array();
 
+				/* checks */
 				foreach($data as $item)
 				{
 					if(!isset($item->xAxis))
@@ -967,22 +968,48 @@ EOT;
 						die("no y set!");
 					else if(!isset($item->z))
 						die("no z set!");
+				}
 
+				/* set categories */
+				foreach($data as $item)
+				{
 					if(!isset($categories[$item->xAxis]))
 						$categories[$item->xAxis] = $item->xAxis;
+				}
 
+				/* build up series */
+				foreach($data as $item)
+				{
 					if(!isset($series[$item->Serie]))
 						$series[$item->Serie] = array();
-
-
-					$dataChild = array("y" => floatval($item->y), "z" => floatval($item->z));
-
 					$series[$item->Serie]["name"] = $item->Serie;
-					$series[$item->Serie]["data"][] = $dataChild;
-
-					if(!isset($series[$item->Serie]["data"]))
-						$series[$item->Serie]["data"] = array();
 				}
+
+				/* create the categories in the series */
+				foreach($data as $item)
+				{
+					foreach($categories as $c)
+					{
+						if(!isset($series[$item->Serie]["data"][$c]))
+						{
+							$series[$item->Serie]["data"][$c] = array("z" => 0.0);
+						}
+					}
+				}
+
+				/* fill the data into the series */
+				foreach($data as $item)
+				{
+
+					$series[$item->Serie]["data"][$item->xAxis]["y"] = floatval($item->y);
+					$series[$item->Serie]["data"][$item->xAxis]["z"] = floatval($item->z);
+				}
+
+				foreach($series as $k1 => $item)
+				{
+					$series[$k1]["data"] = array_values($series[$k1]["data"]);
+				}
+
 				$xAxis = array
 				(
 					'categories' => $categories,
