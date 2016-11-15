@@ -786,6 +786,7 @@ EOT;
 			{
 				//in einen array umwandeln
 				$prefs = json_decode($json, true);
+
 				if(!$prefs)
 				{
 					$this->errormsg = "Chart".$this->chart_id . ": Preferences sind keine wohlgeformten JSON-Daten:<br>'". $json."'";
@@ -1136,6 +1137,20 @@ EOT;
 		if(isset($prefs) && $prefs && is_array($prefs))
 		{
 			$phantomData = array_replace_recursive($phantomData, $prefs);
+
+			/*
+			 * This part is used for "yz" type
+			 * case: if a serie has no data(no entry from database), but the serie is modified from the json-preferences
+			 * result: the serie has no ["name"] value set -> highcharts will write "Series #"
+			 * solution: sets the ["name"] value with the array-key, if it is not set
+			 */
+			foreach($phantomData["series"] as $k => $i)
+			{
+				if(!isset($i["name"]))
+				{
+					$phantomData["series"][$k]["name"] = $k;
+				}
+			}
 		}
 
 		//series und yAxis in normale arrays zurückwandeln, da highcharts keine assoziativen entgegen nimmt!
