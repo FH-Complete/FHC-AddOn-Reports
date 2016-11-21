@@ -34,6 +34,7 @@
 	$pthreadsEnabled = extension_loaded('pthreads');
 	$workers = array();
 	$errstr = '';
+	$startTimeGlobal = microtime(true);
 
 	if($pthreadsEnabled)
 	{
@@ -162,6 +163,7 @@
 	{
 		if(isset($chart->statistik_kurzbz))
 		{
+			$startTime = microtime(true);
 			generateStatistik($chart->statistik_kurzbz, $reportsTmpDir, $errstr, $type);
 
 			if(!$pthreadsEnabled)
@@ -175,7 +177,7 @@
 				}
 				else
 				{
-					addOutput($errstr, 1, "PNG: '".$outputfilename."' has been written!");
+					addOutput($errstr, 1, "PNG: '".$outputfilename."' has been written! (". number_format((microtime(true) - $startTime), 2, ',', '') ."sec)");
 				}
 			}
 			else
@@ -318,6 +320,7 @@
 		cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
 	}
 	addOutput($errstr, 1, "PDF: '.$pdfFilename.' has been written!");
+	addOutput($errstr, 1, "REPORT: ". $report->report_id ." successfully created in ". number_format((microtime(true) - $startTimeGlobal), 2, ',', '') ."sec");
 
 
 	if($type == "pdf")
