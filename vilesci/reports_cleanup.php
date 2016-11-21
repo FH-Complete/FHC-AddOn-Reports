@@ -20,27 +20,16 @@
 
 $error = "";
 
-if(!isset($_REQUEST["action"]))
-	$error = "wrong parameters";
-else
+
+
+foreach(getAllReportFolders() as $report)
 {
-	switch($_REQUEST["action"])
-	{
-		case "cleanup":
-			foreach(getAllReportFolders() as $report)
-			{
-				if(!recurseRmdir(sys_get_temp_dir() .  "/" . $report))
-					$error = "remove Failed";
-			}
-			break;
-		case "hasOldReports":
-			if(count(getAllReportFolders()) < 1)
-				$error = "false";
-			break;
-		default:
-			$error = "wrong action";
-	}
+	if(!recurseRmdir(sys_get_temp_dir() .  "/" . $report))
+		$error = "remove Failed";
 }
+
+
+
 
 if($error == "")
 {

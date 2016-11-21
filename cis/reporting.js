@@ -251,6 +251,7 @@ function runFilter(type, putlog)
 
 	loadData(statistik_kurzbz, report_id, chart_id, get_params);
 
-	if(typeof checkForOldReports == "function")
-		checkForOldReports();
+	// if available, clean up tmp folder
+	if(typeof reportsCleanup == "function")
+		reportsCleanup();
 }

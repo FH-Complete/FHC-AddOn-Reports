@@ -80,10 +80,6 @@
 					<button style="display: inline;height:40px;" onclick="runFilter('pdf')" class="btn btn-default" id="filter-PdfLink" ><img src="../cis/pdfIcon.png" width="20" alt="pdf"/></button>
 					<button style="display: inline;height:40px;" onclick="runFilter('debug')" class="btn btn-warning" id="filter-debugLink">DEBUG</button>
 				</form>
-				<div id="cleanup" hidden style="margin-top: 10px;">
-					<span>Es wurden noch alte Reports gefunden:</span>
-					<input onclick='reportsCleanup()' style='margin-left:20px;' class="btn btn-warning" type='button' value='Aufr&auml;umen'/>
-				</div>
 			</div>
 		</div>
 
@@ -120,45 +116,15 @@
 				checkForOldReports();
 			});
 
-			function checkForOldReports()
-			{
-				if(typeof debug != "undefined" && !debug)
-					return;
-
-				var req = $.ajax
-				({
-					url: "../vilesci/reports_cleanup.php",
-					method: "POST",
-					data: {action: "hasOldReports"}
-				});
-
-				req.done(function(a)
-				{
-					if(a == "true")
-					{
-						$("#cleanup").show();
-					}
-				});
-			}
-
 			function reportsCleanup()
 			{
 				var req = $.ajax
 				({
 					url: "../vilesci/reports_cleanup.php",
-					method: "POST",
-					data: {action: "cleanup"}
+					method: "POST"
 				});
 
-				req.done(function(a)
-				{
-					if(a == "true")
-						location.reload(true);
-					else
-						alert("Fehlgeschlagen: " + a);
-				});
-
-				req.fail(function(){alert("Fehlgeschlagen");});
+				req.fail(function(){alert("Konnte alte Reports nicht löschen!");});
 			}
 		</script>
 	</body>
