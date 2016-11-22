@@ -226,6 +226,8 @@
 		$htmlstr .= "	<tr>\n";
 		$htmlstr .= "	<th>Chart</th>\n";
 		$htmlstr .= "	<th>Name</th>\n";
+		$htmlstr .= "	<th>Vorschau</th>\n";
+		$htmlstr .= "	<th>Details</th>\n";
 		$htmlstr .= "	<th></th>\n";
 		$htmlstr .= "	</tr>\n";
 		$htmlstr .= "	</thead>\n";
@@ -236,82 +238,130 @@
 		foreach($charts as $ch)
 		{
 			$htmlstr .= "	<tr>\n";
-			$htmlstr .= '	<td>'.$ch->chart_id.'<a href="../cis/vorschau.php?chart_id='.$ch->chart_id.'" target="_blank"><img title="'.$ch->title.' anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a></td>';
-			$htmlstr .= "	<td>".$ch->title."</td>\n";
-			$htmlstr .= '	<td><a href="report_details.php?action=deleteReportChart&reportchart_id='.$ch->reportchart_id.'&report_id='.$report->report_id.'" onclick="return confdel()">entfernen</a></td>';
+
+			// Chart
+			$htmlstr .= "		<td>$ch->chart_id</td>";
+
+			// Name
+			$htmlstr .= "		<td>".$ch->title."</td>\n";
+
+			// Vorschau
+			$htmlstr .= "		<td>\n";
+			$htmlstr .= '			<a href="../cis/vorschau.php?chart_id='.$ch->chart_id.'" target="_blank"><img title="'.$ch->title.' anzeigen" src="../include/images/Graphs_clip_art.svg" class="mini-icon" /></a>';
+			if(isset($ch->statistik_kurzbz))
+				$htmlstr .= '			<a href="../cis/vorschau.php?statistik_kurzbz='.$ch->statistik_kurzbz.'" target="_blank"><img title="'.$ch->statistik_kurzbz.' anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>';
+			$htmlstr .= "		</td>\n";
+
+			// Details
+			$htmlstr .= "		<td>\n";
+			$htmlstr .= '			<a href="chart_details.php?chart_id='.$ch->chart_id.'" target="_blank"><img title="Details zu '.$ch->title.' anzeigen" src="../include/images/Graphs_clip_art.svg" class="mini-icon" /></a>';
+			if(isset($ch->statistik_kurzbz))
+				$htmlstr .= '			<a href="../../../vilesci/stammdaten/statistik_details.php?statistik_kurzbz='.$ch->statistik_kurzbz.'" target="_blank"><img title="Details zu '.$ch->statistik_kurzbz.' anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>';
+			$htmlstr .= "		</td>\n";
+
+			// Entfernen
+			$htmlstr .= '		<td><a href="report_details.php?action=deleteReportChart&reportchart_id='.$ch->reportchart_id.'&report_id='.$report->report_id.'" onclick="return confdel()">entfernen</a></td>';
+
 			$htmlstr .= "	</tr>\n";
 		}
 		$htmlstr .= "	</tbody>\n";
+
+
+
+		// New entry row
 		$htmlstr .= "	<tr>\n";
 
-
-
-		$htmlstr .= "<form action='report_details.php' method='POST' name='report_chartform'>\n";
-		$htmlstr .= "	<input type='hidden' name='report_id' value='".$report->report_id."'>";
-		$htmlstr .= "	<td></td>\n";
-		$htmlstr .= "	<td>\n";
-		$htmlstr .= "	<select name='chart_id' style='max-width:150px;'>\n";
+		$htmlstr .= "		<form action='report_details.php' method='POST' name='report_chartform'>\n";
+		$htmlstr .= "			<input type='hidden' name='report_id' value='".$report->report_id."'>";
+		$htmlstr .= "			<td></td>\n";
+		$htmlstr .= "			<td>\n";
+		$htmlstr .= "				<select name='chart_id' style='max-width:150px;'>\n";
 
 		$allCharts = new chart();
 		$allCharts->getAll("title");
 
 		foreach($allCharts->result as $ch)
 		{
-			$htmlstr .= "	<option value=".$ch->chart_id.">".$ch->title." (".$ch->chart_id.")"."</option>\n";
+			$htmlstr .= "					<option value=".$ch->chart_id.">".$ch->title." (".$ch->chart_id.")"."</option>\n";
 		}
-		$htmlstr .= "	</select>\n";
-		$htmlstr .= "	</td>\n";
-		$htmlstr .= "	<input type='hidden' name='action' value='saveReportChart'>";
-		$htmlstr .= "	<td><input type='submit' value='Hinzuf&uuml;gen'></td>\n";
-		$htmlstr .= "</form>\n";
+		$htmlstr .= "				</select>\n";
+		$htmlstr .= "			</td>\n";
+		$htmlstr .= "			<td></td>\n";
+		$htmlstr .= "			<td></td>\n";
+		$htmlstr .= "			<input type='hidden' name='action' value='saveReportChart'>";
+		$htmlstr .= "			<td><input type='submit' value='Hinzuf&uuml;gen'></td>\n";
+		$htmlstr .= "		</form>\n";
 		$htmlstr .= "	</tr>\n";
-		$htmlstr .= "	</table>\n";
+		$htmlstr .= "</table>\n";
 
 		//statistiken
-		$htmlstr .= "	<table  class='tablesorter' id='t2' style='margin: 20px; float:left;width:45%'>";
+		$htmlstr .= "<table  class='tablesorter' id='t2' style='margin: 20px; float:left;width:45%'>";
 		$htmlstr .= "	<thead>\n";
-		$htmlstr .= "	<tr>\n";
-		$htmlstr .= "	<th>Statistik</th>\n";
-		$htmlstr .= "	<th>Name</th>\n";
-		$htmlstr .= "	<th></th>\n";
-		$htmlstr .= "	</tr>\n";
+		$htmlstr .= "		<tr>\n";
+		$htmlstr .= "			<th>Statistik</th>\n";
+		$htmlstr .= "			<th>Name</th>\n";
+		$htmlstr .= "			<th>Vorschau</th>\n";
+		$htmlstr .= "			<th>Details</th>\n";
+		$htmlstr .= "			<th></th>\n";
+		$htmlstr .= "		</tr>\n";
 		$htmlstr .= "	</thead>\n";
-		$htmlstr .= "	<tbody>\n";
 
+
+
+
+		$htmlstr .= "	<tbody>\n";
 
 		foreach($statistiken as $st)
 		{
-			$htmlstr .= "	<tr>\n";
+			$htmlstr .= "		<tr>\n";
 
+			// Statistik
+			$htmlstr .= '			<td>'.$st->statistik_kurzbz.'</td>';
 
-			$htmlstr .= '	<td>'.$st->statistik_kurzbz.'<a href="../cis/vorschau.php?statistik_kurzbz='.$st->statistik_kurzbz.'&debug=true" target="_blank"><img style="float:right;" title="'.$st->gruppe.' anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>
-</td>';
-			$htmlstr .= "	<td>".$st->bezeichnung."</td>\n";
-			$htmlstr .= "	<td><a href='report_details.php?action=deleteReportStatistik&reportstatistik_id=".$st->reportstatistik_id."&report_id=".$report->report_id."' onclick='return confdel()'>entfernen</a>";
-			$htmlstr .= "	</tr>\n";
+			// Name
+			$htmlstr .= "			<td>".$st->bezeichnung."</td>\n";
+
+			// Vorschau
+			$htmlstr .= "			<td>\n";
+			$htmlstr .= '				<a href="../cis/vorschau.php?statistik_kurzbz='.$st->statistik_kurzbz.'" target="_blank"><img title="'.$st->statistik_kurzbz.' anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>';
+			$htmlstr .= "			</td>\n";
+
+			// Details
+			$htmlstr .= "			<td>\n";
+			$htmlstr .= '				<a href="../../../vilesci/stammdaten/statistik_details.php?statistik_kurzbz='.$st->statistik_kurzbz.'" target="_blank"><img title="Details zu '.$st->statistik_kurzbz.' anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>';
+			$htmlstr .= "			</td>\n";
+
+			// Entfernen
+			$htmlstr .= "			<td>\n";
+			$htmlstr .= "				<a href='report_details.php?action=deleteReportStatistik&reportstatistik_id=".$st->reportstatistik_id."&report_id=".$report->report_id."' onclick='return confdel()'>entfernen</a>";
+			$htmlstr .= "			</td>\n";
+
+			$htmlstr .= "		</tr>\n";
 		}
 		$htmlstr .= "	</tbody>\n";
 		$htmlstr .= "	<tr>\n";
-		$htmlstr .= "<form action='report_details.php' method='POST' name='report_statistikform'>\n";
-		$htmlstr .= "	<input type='hidden' name='report_id' value='".$report->report_id."'>";
-		$htmlstr .= "	<td></td>\n";
-		$htmlstr .= "	<td>\n";
-		$htmlstr .= "	<select name='statistik_kurzbz' style='max-width:150px;'>\n";
+		$htmlstr .= "		<form action='report_details.php' method='POST' name='report_statistikform'>\n";
+		$htmlstr .= "			<input type='hidden' name='report_id' value='".$report->report_id."'>";
+		$htmlstr .= "			<td></td>\n";
+		$htmlstr .= "			<td>\n";
+		$htmlstr .= "				<select name='statistik_kurzbz' style='max-width:150px;'>\n";
 
 		$allStat = new Statistik();
 		$allStat->getAll("bezeichnung");
 
 		foreach($allStat->result as $st)
 		{
-			$htmlstr .= "	<option  style='max-width:30%;' value='".$st->statistik_kurzbz."'>".$st->bezeichnung."</option>\n";
+			$htmlstr .= "					<option  style='max-width:30%;' value='".$st->statistik_kurzbz."'>".$st->bezeichnung."</option>\n";
 		}
-		$htmlstr .= "	</select>\n";
-		$htmlstr .= "	</td>\n";
-		$htmlstr .= "	<input type='hidden' name='action' value='saveReportStatistik'>";
-		$htmlstr .= "	<td><input type='submit' value='Hinzuf&uuml;gen'></td>\n";
-		$htmlstr .= "</form>\n";
+		$htmlstr .= "				</select>\n";
+		$htmlstr .= "			</td>\n";
+		$htmlstr .= "			<input type='hidden' name='action' value='saveReportStatistik'>";
+		$htmlstr .= "			<td></td>\n";
+		$htmlstr .= "			<td></td>\n";
+		$htmlstr .= "			<td><input type='submit' value='Hinzuf&uuml;gen'></td>\n";
+		$htmlstr .= "		</form>\n";
 		$htmlstr .= "	</tr>\n";
-		$htmlstr .= "	</table>\n";
+		$htmlstr .= "</table>\n";
 		$htmlstr .= "<div style='clear:both;'></div>\n";
 	}
 	$htmlstr .= "<div class='inserterror'>".$errorstr."</div>"
