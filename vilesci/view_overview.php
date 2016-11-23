@@ -174,7 +174,7 @@ if (!$view->loadAll())
 							if($view->static)
 							{
 								echo '<a href="view_overview.php?action=generateTable&view_id='.$view->view_id.'">';
-								echo '<img title="Tabelle generieren" anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" />';
+								echo '<img title="Tabelle generieren" anzeigen" src="../include/images/View.svg" class="mini-icon" />';
 								echo '</a> ';
 
 								if(!isset($view->lastcopy))

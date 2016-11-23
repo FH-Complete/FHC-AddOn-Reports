@@ -105,7 +105,7 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 					<tr>
 						<td>
 							<?php echo $row->gruppe ;?>
-							<a href="../cis/vorschau.php?statistik_kurzbz=<?php echo $row->statistik_kurzbz ?>&debug=true" target="_blank"><img style="float:right;" title="<?php echo $row->gruppe ?> anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>
+							<a href="../cis/vorschau.php?statistik_kurzbz=<?php echo $row->statistik_kurzbz ?>&debug=true" target="_blank"><img style="float:right;" title="<?php echo $row->gruppe ?> anzeigen" src="../include/images/Statistik.svg" class="mini-icon" /></a>
 						</td>
 						<td>
 							<a href="../../../vilesci/stammdaten/statistik_details.php?action=update&statistik_kurzbz=<?php echo $row->statistik_kurzbz ?>" target="detail_statistik">

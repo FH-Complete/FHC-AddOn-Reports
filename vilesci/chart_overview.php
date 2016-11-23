@@ -276,7 +276,7 @@ if (!$chart->loadAll())
 								<?php echo $chart->chart_id ?>
 							</a>
 							<a href="../cis/vorschau.php?chart_id=<?php echo $chart->chart_id ?>" target="_blank">
-								<img title="<?php echo $chart->title ?> anzeigen" src="../include/images/Graphs_clip_art.svg" class="mini-icon" />
+								<img title="<?php echo $chart->title ?> anzeigen" src="../include/images/Chart.svg" class="mini-icon" />
 							</a>
 						</td>
 						<td>
@@ -290,7 +290,7 @@ if (!$chart->loadAll())
 						</td>
 						<td>
 							<?php if(isset($chart->statistik_kurzbz)): ?>
-								<a href="../../../vilesci/stammdaten/statistik_details.php?statistik_kurzbz=<?php echo $chart->statistik_kurzbz; ?>" target="frame_chart_details"><img title="Details zu <?php echo $chart->statistik_kurzbz; ?> anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>
+								<a href="../../../vilesci/stammdaten/statistik_details.php?statistik_kurzbz=<?php echo $chart->statistik_kurzbz; ?>" target="frame_chart_details"><img title="Details zu <?php echo $chart->statistik_kurzbz; ?> anzeigen" src="../include/images/Statistik.svg" class="mini-icon" /></a>
 							<?php endif; ?>
 						</td>
 						<td>

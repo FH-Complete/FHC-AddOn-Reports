@@ -247,16 +247,16 @@
 
 			// Vorschau
 			$htmlstr .= "		<td>\n";
-			$htmlstr .= '			<a href="../cis/vorschau.php?chart_id='.$ch->chart_id.'" target="_blank"><img title="'.$ch->title.' anzeigen" src="../include/images/Graphs_clip_art.svg" class="mini-icon" /></a>';
+			$htmlstr .= '			<a href="../cis/vorschau.php?chart_id='.$ch->chart_id.'" target="_blank"><img title="'.$ch->title.' anzeigen" src="../include/images/Chart.svg" class="mini-icon" /></a>';
 			if(isset($ch->statistik_kurzbz))
-				$htmlstr .= '			<a href="../cis/vorschau.php?statistik_kurzbz='.$ch->statistik_kurzbz.'" target="_blank"><img title="'.$ch->statistik_kurzbz.' anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>';
+				$htmlstr .= '			<a href="../cis/vorschau.php?statistik_kurzbz='.$ch->statistik_kurzbz.'" target="_blank"><img title="'.$ch->statistik_kurzbz.' anzeigen" src="../include/images/Statistik.svg" class="mini-icon" /></a>';
 			$htmlstr .= "		</td>\n";
 
 			// Details
 			$htmlstr .= "		<td>\n";
-			$htmlstr .= '			<a href="chart_details.php?chart_id='.$ch->chart_id.'" target="_blank"><img title="Details zu '.$ch->title.' anzeigen" src="../include/images/Graphs_clip_art.svg" class="mini-icon" /></a>';
+			$htmlstr .= '			<a href="chart_details.php?chart_id='.$ch->chart_id.'" target="_blank"><img title="Details zu '.$ch->title.' anzeigen" src="../include/images/Chart.svg" class="mini-icon" /></a>';
 			if(isset($ch->statistik_kurzbz))
-				$htmlstr .= '			<a href="../../../vilesci/stammdaten/statistik_details.php?statistik_kurzbz='.$ch->statistik_kurzbz.'" target="_blank"><img title="Details zu '.$ch->statistik_kurzbz.' anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>';
+				$htmlstr .= '			<a href="../../../vilesci/stammdaten/statistik_details.php?statistik_kurzbz='.$ch->statistik_kurzbz.'" target="_blank"><img title="Details zu '.$ch->statistik_kurzbz.' anzeigen" src="../include/images/Statistik.svg" class="mini-icon" /></a>';
 			$htmlstr .= "		</td>\n";
 
 			// Entfernen
@@ -323,12 +323,12 @@
 
 			// Vorschau
 			$htmlstr .= "			<td>\n";
-			$htmlstr .= '				<a href="../cis/vorschau.php?statistik_kurzbz='.$st->statistik_kurzbz.'" target="_blank"><img title="'.$st->statistik_kurzbz.' anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>';
+			$htmlstr .= '				<a href="../cis/vorschau.php?statistik_kurzbz='.$st->statistik_kurzbz.'" target="_blank"><img title="'.$st->statistik_kurzbz.' anzeigen" src="../include/images/Statistik.svg" class="mini-icon" /></a>';
 			$htmlstr .= "			</td>\n";
 
 			// Details
 			$htmlstr .= "			<td>\n";
-			$htmlstr .= '				<a href="../../../vilesci/stammdaten/statistik_details.php?statistik_kurzbz='.$st->statistik_kurzbz.'" target="_blank"><img title="Details zu '.$st->statistik_kurzbz.' anzeigen" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>';
+			$htmlstr .= '				<a href="../../../vilesci/stammdaten/statistik_details.php?statistik_kurzbz='.$st->statistik_kurzbz.'" target="_blank"><img title="Details zu '.$st->statistik_kurzbz.' anzeigen" src="../include/images/Statistik.svg" class="mini-icon" /></a>';
 			$htmlstr .= "			</td>\n";
 
 			// Entfernen

@@ -125,7 +125,7 @@ if (!$attribut->loadAll())
 							<a href="attribut_details.php?attribut_id=<?php echo $attribut->attribut_id ?>" style="float:left;" target="frame_attribut_details">
 								<?php echo $attribut->attribut_id ?>
 							</a>
-							<a href="attribut_vorschau.php?attribut_id=<?php echo $attribut->attribut_id ?>" target="frame_attribut_details"><img style="float:left;" title="Vorschau zu <?php echo $attribut->shorttitle["German"];?>" src="../include/images/Bar_Chart_Statistics_clip_art.svg" class="mini-icon" /></a>
+							<a href="attribut_vorschau.php?attribut_id=<?php echo $attribut->attribut_id ?>" target="frame_attribut_details"><img style="float:left;" title="Vorschau zu <?php echo $attribut->shorttitle["German"];?>" src="../include/images/Attribut.svg" class="mini-icon" /></a>
 						</td>
 						<td>
 							<a href="attribut_details.php?attribut_id=<?php echo $attribut->attribut_id ?>" target="frame_attribut_details">

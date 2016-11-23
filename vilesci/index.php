@@ -46,26 +46,26 @@ if(!$rechte->isBerechtigt('addon/reports'))
 	<body>
 		<div class="icons">
 			<strong>Reports</strong>
-			<a href="../../../vilesci/statistik/filter_frameset.html" target="rp_main">
-				<img src="../include/images/preferences-desktop.svg" alt="" />
+			<a title="Filter" href="../../../vilesci/statistik/filter_frameset.html" target="rp_main">
+				<img src="../include/images/Filter.svg" alt="" />
 			</a>
-			<a href="view_frameset.html" target="rp_main">
-				<img src="../include/images/preferences-system.svg" alt="" />
+			<a title="Views" href="view_frameset.html" target="rp_main">
+				<img src="../include/images/View.svg" alt="" />
 			</a>
-			<a href="attribut_frameset.html" target="rp_main">
-				<img src="../include/images/Document-properties.svg" alt="" />
+			<a title="Attribute" href="attribut_frameset.html" target="rp_main">
+				<img src="../include/images/Attribut.svg" alt="" />
 			</a>
-			<a href="data_frameset.html" target="rp_main">
-				<img src="../include/images/x-office-spreadsheet.svg" alt="" />
+			<a title="Statistiken" href="data_frameset.html" target="rp_main">
+				<img src="../include/images/Statistik.svg" alt="" />
 			</a>
-			<a href="chart_frameset.html" target="rp_main">
-				<img src="../include/images/Graphs_clip_art.svg" alt="" />
+			<a title="Charts" href="chart_frameset.html" target="rp_main">
+				<img src="../include/images/Chart.svg" alt="" />
 			</a>
-			<a href="report_frameset.html" target="rp_main">
-				<img src="../include/images/x-office-presentation.svg" alt="" />
+			<a title="Reports" href="report_frameset.html" target="rp_main">
+				<img src="../include/images/Report.svg" alt="" />
 			</a>
-			<a href="cis_menue.php" target="rp_main">
-				<img src="../include/images/applications-accessories.svg" alt="" />
+			<a title="Menü" href="cis_menue.php" target="rp_main">
+				<img src="../include/images/Menue.svg" alt="" />
 			</a>
 		</div>
 		<hr>
