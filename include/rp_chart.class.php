@@ -780,7 +780,7 @@ EOT;
 		/* Get the preferences */
 		if(isset($this->preferences) && $this->preferences != "" && $this->preferences != null)
 		{
-			$json = $this->removeCommentsFromJson($this->preferences);
+			$json =$this->preferences;
 
 			if($json != '')		//wenn nicht nur kommentare in den preferences standen
 			{
@@ -1226,67 +1226,6 @@ EOT;
 	}
 
 
-
-
-
-
-
-
-
-	public function removeCommentsFromJson($jsonString)
-	{
-		$Array = explode("\n", $jsonString);
-		$commentCount = 0;
-
-		foreach($Array as $key => $p)
-		{
-			// \r entfernen
-			$Array[$key] = str_replace("\r", "", $Array[$key]);
-
-			// mehrzeilige kommentare
-			$posMz = strpos($Array[$key], "/*");
-			if($posMz !== false)		//anfang eines Mehrzeiligen kommentars gefunden
-			{
-				$commentCount ++;
-				if($commentCount == 1)	//wenn noch kein kommentar im gange ist
-				{
-					$Array[$key] = substr($Array[$key], 0, $posMz);
-				}
-				else
-					$posMz = false;
-			}
-			$posMzE = strpos($Array[$key], "*/");
-			if($posMzE !== false)		//ende des Mehrzeiligen kommentars gefunden
-			{
-				$commentCount --;
-				if($commentCount == 0)	//wenn alle kommentare beendet wurden
-				{
-					$Array[$key] = substr($Array[$key], $posMzE+2, count($Array[$key]));
-				}
-				else
-					$posMzE = false;
-			}
-
-			if($posMz === false && $posMzE === false && $commentCount > 0)		//zeile komplett auskommentiert
-			{
-				unset($Array[$key]);
-				continue;		//doppelslashes werden somit umgangen wenn sie /* // */ eingekapselt sind
-			}
-
-
-
-			// doppelslash-kommentare
-			$posEz = strpos ( $p, "//");
-			if($posEz !== false)
-			{
-				$Array[$key] = substr($p, 0, $posEz);
-			}
-		}
-		//und wieder zusammenfügen
-		$json = join('', $Array);
-
-		return $json;
-	}
 
 
 

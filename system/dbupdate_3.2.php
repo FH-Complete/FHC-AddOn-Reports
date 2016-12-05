@@ -713,34 +713,24 @@ if(!$result = @$db->db_query("SELECT 1 FROM addon.tbl_rp_attribut_zuweisungen"))
  * Diese beiden gibt es, da der Drilldown noch einmal aufgesplittet werden kann, weshalb die Daten anders aussehen müssen.
  * Die typen werden nun nurnoch über die Preferences manipuliert
 */
-if($result = @$db->db_query("SELECT * FROM addon.tbl_rp_chart
-	WHERE
-		type='hcline' OR
-		type='hccolumn' OR
-		type='hcbar' OR
-		type='hcpie' OR
-		type='hcdrill'"))
+if($result = @$db->db_query("SELECT * FROM addon.tbl_rp_chart"))
 {
 	while($row = $db->db_fetch_object($result))
 	{
 		$c = new chart();
 
-		/* this is ugly:
-		 * because we still use the type 'hcdrill',
+		/*
 		 * we must be sure, that it was not converted before,
 		 * otherwise we would rewrite the json-preferences again!
 		 * if we are able to decode the json string, we assume, that the chart
-		 * has benn converted already
+		 * has been converted already
 		 */
-		if($row->type == "hcdrill")
+		if($row->preferences === NULL || json_decode(removeCommentsFromJson($row->preferences)) != NULL)
 		{
-			if(json_decode($row->preferences) == NULL)
-			{
-				continue;
-			}
+			continue;
 		}
 
-		$prefBuf = $c->removeCommentsFromJson($row->preferences);		//kommentare entfernen, damit es ein valides JSON ergibt
+		$prefBuf = removeCommentsFromJson($row->preferences);		//kommentare entfernen, damit es ein valides JSON ergibt
 		$prefsArray = json_decode($prefBuf);
 		$newChartType = "line";																			//standard, falls nirgendwo einer gesetzt wurde
 
@@ -761,7 +751,7 @@ if($result = @$db->db_query("SELECT * FROM addon.tbl_rp_chart
 			case "hcdrill":
 				$newChartType = "column";
 				break;
-			default:		// nur falls aus einem unersichtlichen grund kein zulässiger typ angegeben wurde(man weiß ja nie)
+			default:
 				ob_start();
 				$output = ob_get_clean();
 				echo "<span style='float:left;'>unknown type: </span><span style='float:left;'>" . $output . "</span><div style='clear:both'></div>";
@@ -840,6 +830,37 @@ if($result = $db->db_query("SELECT * FROM public.tbl_vorlage WHERE vorlage_kurzb
 }
 
 
+/************************************  12.16 highcharts preferences ************************************/
+/*
+ * Da der jsoneditor nicht damit umgehen kann, müssen die C-Kommentare aus den preferences der charts entfernt werden.
+ *
+*/
+if($result = @$db->db_query("SELECT * FROM addon.tbl_rp_chart"))
+{
+	while($row = $db->db_fetch_object($result))
+	{
+		if($row->preferences === NULL || json_decode($row->preferences) != NULL)
+		{
+			continue;
+		}
+
+		$chart = new chart();
+		if($chart->load($row->chart_id))
+		{
+			$chart->preferences = removeCommentsFromJson($chart->preferences);
+			if($chart->save())
+				echo ' addon.tbl_rp_chart: Chart '.$chart->chart_id.': Kommentare entfernt<br>';
+			else
+				echo '<strong>addon.tbl_rp_chart: Chart '.$chart->chart_id.': konnte chart nicht speichern: ' . $chart->errormsg . '</strong><br>';
+		}
+		else
+		{
+			echo '<strong>addon.tbl_rp_chart: Chart '.$chart->chart_id.': konnte chart nicht laden: ' . $chart->errormsg . '</strong><br>';
+		}
+	}
+}
+
+
 echo '<br>Aktualisierung abgeschlossen<br><br>';
 echo '<h2>'.$addon_name.' Gegenprüfung</h2>';
 
@@ -873,4 +894,79 @@ foreach ($tabellen AS $attribute)
 	$i++;
 }
 echo '<br>Aktualisierung abgeschlossen<br><br>';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* FUNCTIONS */
+function removeCommentsFromJson($jsonString)
+{
+	$Array = explode("\n", $jsonString);
+	$commentCount = 0;
+
+	foreach($Array as $key => $p)
+	{
+		// \r entfernen
+		$Array[$key] = str_replace("\r", "", $Array[$key]);
+
+		// mehrzeilige kommentare
+		$posMz = strpos($Array[$key], "/*");
+		if($posMz !== false)		//anfang eines Mehrzeiligen kommentars gefunden
+		{
+			$commentCount ++;
+			if($commentCount == 1)	//wenn noch kein kommentar im gange ist
+			{
+				$Array[$key] = substr($Array[$key], 0, $posMz);
+			}
+			else
+				$posMz = false;
+		}
+		$posMzE = strpos($Array[$key], "*/");
+		if($posMzE !== false)		//ende des Mehrzeiligen kommentars gefunden
+		{
+			$commentCount --;
+			if($commentCount == 0)	//wenn alle kommentare beendet wurden
+			{
+				$Array[$key] = substr($Array[$key], $posMzE+2, count($Array[$key]));
+			}
+			else
+				$posMzE = false;
+		}
+
+		if($posMz === false && $posMzE === false && $commentCount > 0)		//zeile komplett auskommentiert
+		{
+			unset($Array[$key]);
+			continue;		//doppelslashes werden somit umgangen wenn sie /* // */ eingekapselt sind
+		}
+
+
+
+		// doppelslash-kommentare
+		$posEz = strpos ( $p, "//");
+		if($posEz !== false)
+		{
+			$Array[$key] = substr($p, 0, $posEz);
+		}
+	}
+	//und wieder zusammenfügen
+	$json = join('', $Array);
+
+	return $json;
+}
+
+
+
 ?>

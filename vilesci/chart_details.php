@@ -134,7 +134,8 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 			};
 
 			var editor = false;
-			var chartJson = <?php echo (isset($chart->preferences) && $chart->preferences ? $chart->removeCommentsFromJson($chart->preferences) : "{chart:{}}");?>;
+			var chartJson = <?php echo (isset($chart->preferences) && $chart->preferences ? $chart->preferences : "{chart:{}}");?>;
+
 			$(function()
 			{
 				var options =
