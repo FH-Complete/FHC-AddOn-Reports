@@ -940,7 +940,7 @@ EOT;
 			}
 			if(isset($prefs["FHCGroupingType"]) && $prefs["FHCGroupingType"] == "link")
 			{
-				if(isset($prefs["FHCStackReverse"]) && $prefs["FHCStackReverse"] == "true")
+				if(isset($prefs["FHCStackReverse"]) && $prefs["FHCStackReverse"] == true)
 				{
 					usort($series, "stackSortRev");
 				}

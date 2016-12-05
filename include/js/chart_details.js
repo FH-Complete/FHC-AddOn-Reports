@@ -29,7 +29,8 @@ function checkDashboard() {
 	}
 }
 
-$(function() {
+$(function()
+{
 
 	$('#chart_type').on('change', function() {
 
@@ -73,7 +74,9 @@ $(function() {
 function unchanged()
 {
 		document.chartform.reset();
-		document.chartform.schick.disabled = true;
+		document.chartform.action.disabled = true;
+		editor.set(chartJson);
+		document.chartform.disabled = true;
 		document.getElementById("submsg").style.visibility="hidden";
 		checkrequired(document.chartform.chart_id);
 }
@@ -98,12 +101,21 @@ function submitable()
 
 	if(!required1)
 	{
-		document.chartform.schick.disabled = true;
-		document.getElementById("submsg").style.visibility="hidden";
+		document.chartform.action.disabled = true;
 	}
 	else
 	{
-		document.chartform.schick.disabled = false;
-		document.getElementById("submsg").style.visibility="visible";
+		document.chartform.action.disabled = false;
 	}
+}
+
+function appendChartData()
+{
+	var prefs = JSON.stringify(editor.get());
+
+	var hiddenField = document.createElement("input");
+	hiddenField.setAttribute("type", "hidden");
+	hiddenField.setAttribute("name", "preferences");
+	hiddenField.setAttribute("value", prefs);
+	document.chartform.appendChild(hiddenField);
 }

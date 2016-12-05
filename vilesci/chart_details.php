@@ -27,6 +27,18 @@ require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../../../include/statistik.class.php');
 require_once('../include/rp_chart.class.php');
 
+$submsg = new stdClass();
+$submsg->active = false;
+$submsg->msg = "";
+$submsg->color = "green";
+
+?>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+
+<?php
 if (!$db = new basis_db())
 	die('Es konnte keine Verbindung zum Server aufgebaut werden.');
 
@@ -87,7 +99,13 @@ if(isset($_REQUEST["action"]) && isset($_REQUEST["chart_id"]))
 
 		if(!$chart->save())
 		{
-			$errorstr .= $chart->errormsg;
+			$submsg->msg = $chart->errormsg;
+			$submsg->active = true;
+		}
+		else
+		{
+			$submsg->msg = "Datensatz ge&auml;ndert!&nbsp;&nbsp";
+			$submsg->active = true;
 		}
 
 		$reload = true;
@@ -102,20 +120,39 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 		die($chart->errormsg);
 }
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html>
-	<head>
 		<title>DI-Quelle - Details</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<?php require_once("../../../include/meta/jquery.php"); ?>
 		<link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">
 		<script src="../../../include/js/mailcheck.js"></script>
 		<script src="../../../include/js/datecheck.js"></script>
+		<?php require_once("../../../include/meta/jsoneditor.php"); ?>
 		<script type="text/javascript">
 			var charts = {
 				types: <?php echo json_encode(chart::getPlugins()) ?>,
 				default_preferences: <?php echo json_encode(chart::getDefaultPreferences()) ?>
 			};
+
+			var editor = false;
+			var chartJson = <?php echo (isset($chart->preferences) && $chart->preferences ? $chart->removeCommentsFromJson($chart->preferences) : "{chart:{}}");?>;
+			$(function()
+			{
+				var options =
+				{
+					mode: 'tree',
+					modes: ['code', 'form', 'text', 'tree', 'view'], // allowed modes
+					onError: function (err)
+					{
+						console.log(err.toString());
+					},
+					onChange: submitable,
+				};
+
+				document.chartform.action.disabled = true;
+				var container = document.getElementById('jsoneditor');
+				editor = new JSONEditor(container, options);
+				editor.set(chartJson);
+			});
 		</script>
 	</head>
 	<body style="background-color:#eeeeee;">
@@ -123,8 +160,8 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 			<br><div class="kopf">Chart <b><?php echo $chart->chart_id ?></b></div>
 		<?php else: ?>
 			<br><div class="kopf">Neuer Chart</div>
-		<?php endif; ?>
-		<form action="chart_details.php" method="POST" name="chartform">
+		<?php endif;?>
+		<form action="chart_details.php" method="POST" name="chartform" onsubmit="appendChartData()">
 			<table class="detail">
 					<tr>
 						<td>
@@ -205,7 +242,13 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 						<td valign="top">Description</td>
 						<td colspan="2"><textarea name="description" cols="70" rows="6" onchange="submitable()"><?php echo $chart->description ?></textarea></td>
 						<td valign="top">Preferences</td>
-						<td colspan="2"><textarea name="preferences" id="preferences" cols="70" rows="6" onchange="submitable()"><?php echo $chart->preferences ?></textarea></td>
+						<td colspan="2">
+							<div id="jsoneditor"></div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+						</td>
 					</tr>
 					<tr>
 						<td valign="top"></td>
@@ -245,14 +288,14 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 			</table>
 			<br>
 			<div align="right" id="sub">
-				<span id="submsg" style="color:red; visibility:hidden;">Datensatz ge&auml;ndert!&nbsp;&nbsp;</span>
+				<span id="submsg" style="color:<?php echo $submsg->color; ?>; visibility:<?php echo ($submsg->active ? 'visible': 'hidden'); ?>"><?php echo $submsg->msg; ?></span>
 				<input type="hidden" name="chart_id" value="<?php echo $chart->chart_id ?>">
 				<input type="submit" value="save" name="action">
 				<input type="button" value="Reset" onclick="unchanged()">
 			</div>
 		</form>
-		<div class='inserterror'><?php echo $errorstr ?></div>
-
+		<script>
+		</script>
 		<?php if($reload): ?>
 			<script type='text/javascript'>
 				parent.frame_chart_overview.location.href='chart_overview.php';
