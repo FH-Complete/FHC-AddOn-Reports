@@ -30,7 +30,7 @@ require_once('../../../config/vilesci.config.inc.php');
 	<link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">
 	<style>
 		.publish {
-			background: url("../../../skin/images/ampel_gruen.png") no-repeat center center;
+			background: url("../include/images/Publish.svg") no-repeat center center;
 			background-size: 10px 10px;
 			padding-left: 5px;
 			padding-right: 5px;
@@ -38,7 +38,7 @@ require_once('../../../config/vilesci.config.inc.php');
 			margin-right: 2px;
 		}
 		.not_publish {
-			background: url("../../../skin/images/ampel_rot.png") no-repeat center center;
+			background: url("../include/images/NotPublish.svg") no-repeat center center;
 			background-size: 10px 10px;
 			padding-left: 5px;
 			padding-right: 5px;
