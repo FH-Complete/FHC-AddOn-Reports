@@ -94,7 +94,7 @@ require_once('../../../config/vilesci.config.inc.php');
 				}
 				else
 				{
-					alert(res.message);
+					alert(res.message + ": " + res.toSource());
 					rebuildMenue();
 					rebuildAllRCS();
 				}
@@ -314,15 +314,6 @@ require_once('../../../config/vilesci.config.inc.php');
 				data[1].state = folderStates["Charts"];
 				data[2].state = folderStates["Statistiken"];
 				$('#entityTree').tree({data: data});
-			});
-		}
-
-		function saveNewEntry(entry)
-		{
-			alert("spinner show ");
-
-			AJAXCall("action=alleDaten", function(data){
-				alert("hackerl show ");
 			});
 		}
 

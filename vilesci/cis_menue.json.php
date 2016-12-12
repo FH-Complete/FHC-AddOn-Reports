@@ -410,11 +410,15 @@ function addZurodnungen($entity)
 
 function returnAJAX($success, $obj)
 {
+	$err = error_get_last();
 	//if there is an error
-	if(error_get_last())
+	if($err != NULL)
+	{
 		$ret = array(
 		"erfolg" => false,
+		"message" => "Error " . $err["type"] . ": " . $err["message"],
 		);
+	}
 	else if(!$success)
 	{
 		$ret = array(
@@ -427,6 +431,7 @@ function returnAJAX($success, $obj)
 	{
 		$ret = array(
 		"erfolg" => false,
+		"message" => "Kein gueltiger Benutzer",
 		);
 	}
 	//if everything worked fine
