@@ -31,15 +31,23 @@ function checkDashboard() {
 
 $(function()
 {
+	var type = $("#chart_type").val(),
+	pref = JSON.parse(charts.default_preferences[type]);
+
+	if(type)
+	{
+		editor.setSchema((pref));
+	}
+	editor.expandAll();
 
 	$('#chart_type').on('change', function() {
 
 		var type = $(this).val(),
-			pref = charts.default_preferences[type];
+		pref = JSON.parse(charts.default_preferences[type]);
 
 		if(type)
 		{
-			$('#preferences').val(pref);
+			editor.setSchema((pref));
 		}
 	});
 

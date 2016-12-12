@@ -381,62 +381,74 @@ class chart extends basis_db
 	{
 
 		$hc_grstacked = <<<EOT
-/*
-{
- "chart":{
-  "zoomType":"none",//Möglichkeiten: "x", "y" ("xy" ist standard)
-  "type":"pie"
- }
-}
-*/
+		{
+			"title": "hc_default Schema",
+			"type": "object",
+			"properties": {
+				"chart":{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": ["column", "line", "spline", "pie", "area", "bar", "bubble", "columnrange", "errorbar", "funnel", "gauge", "polygon", "pyramid", "scatter", "solidgauge", "treemap", "waterfall" , "arearange", "areaspline", "areasplinerange", "boxplot"]
+						}
+					},
+					"required": ["type"]
+				},
+				"FHCGroupingType":{
+					"type": "string",
+					"enum": ["link", "normal"]
+				}
+			},
+			"required": ["chart"]
+		}
 EOT;
 		$hc_drill = <<<EOT
-/*
-{
- "chart":{
-  "zoomType":"none",//Möglichkeiten: "x", "y" ("xy" ist standard)
-  "type":"pie"
- }
-}
-*/
+		{
+			"title": "hc_default Schema",
+			"type": "object",
+			"properties": {
+				"chart":{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": ["column", "line", "spline", "pie", "area", "bar", "bubble", "columnrange", "errorbar", "funnel", "gauge", "polygon", "pyramid", "scatter", "solidgauge", "treemap", "waterfall" , "arearange", "areaspline", "areasplinerange", "boxplot"]
+						}
+					},
+					"required": ["type"]
+				},
+				"FHCGroupingType":{
+					"type": "string",
+					"enum": ["link", "normal"]
+				}
+			},
+			"required": ["chart"]
+		}
 EOT;
 
 		$hc_default = <<<EOT
-{
- "chart":{"type":"column"}
-
- /*,"xAxis":{
-  "labels":{
-   "rotation":90  // Der Winkel der X-Achsenbeschriftung
-  }
- },
- "yAxis":[
-  {
-   "title":{"text":"Test Achse(rechts)"},
-   "labels":{
-    "format":"{value} Personen",
-    "style":{"color":"#FF0000"}
-   },
-   "opposite":true
-  },
-  {"title":{"text":"Test Achse(links)"}}
- ],
- "series":{
-  "Ausland":{
-    "zIndex": -1,
-    "type":"column",
-    "yAxis":1
-  },
-  "Ausland 2Stg":{
-    "zIndex": -1,
-    "type":"column",
-    "yAxis":1
-  },
-  "Inland":{
-    "type":"pie","center":["10%","10%"],"size":["20%","20%"]
-  }
- }*/
-}
+		{
+			"title": "hc_default Schema",
+			"type": "object",
+			"properties": {
+				"chart":{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": ["column", "line", "spline", "pie", "area", "bar", "bubble", "columnrange", "errorbar", "funnel", "gauge", "polygon", "pyramid", "scatter", "solidgauge", "treemap", "waterfall" , "arearange", "areaspline", "areasplinerange", "boxplot"]
+						}
+					},
+					"required": ["type"]
+				},
+				"FHCGroupingType":{
+					"type": "string",
+					"enum": ["link", "normal"]
+				}
+			},
+			"required": ["chart"]
+		}
 
 EOT;
 

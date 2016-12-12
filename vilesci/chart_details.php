@@ -155,6 +155,13 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 				editor.set(chartJson);
 			});
 		</script>
+		<style>
+			#jsoneditor
+			{
+				width:  100%;
+				height: 400px;
+			}
+		</style>
 	</head>
 	<body style="background-color:#eeeeee;">
 		<?php if($chart->chart_id > 0): ?>
@@ -184,12 +191,6 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 								<?php endforeach; ?>
 							</select>
 						</td>
-						<td>
-							SourceType
-						</td>
-						<td>
-							<input class='detail' type='text' name='sourcetype' size='8' maxlength='16' value='<?php echo $chart->sourcetype ?>' onchange='submitable()'>
-						</td>
 					</tr>
 
 
@@ -199,6 +200,12 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 						</td>
 						<td>
 							<input class="detail" type="text" name="longtitle" size="22" maxlength="128" value="<?php echo $chart->longtitle ?>" onchange="submitable()">
+						</td>
+						<td>
+							SourceType
+						</td>
+						<td>
+							<input class='detail' type='text' name='sourcetype' size='8' maxlength='16' value='<?php echo $chart->sourcetype ?>' onchange='submitable()'>
 						</td>
 					</tr>
 
@@ -210,8 +217,8 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 
 					<tr>
 						<td>Datasource Type</td>
-						<td colspan="5">
-							<select name="datasource_type" id="datasource_type">
+						<td colspan="1">
+							<select name="datasource_type" id="datasource_type" style='max-width:150px;'>
 								<?php foreach(chart::getDataSourceTypes() as $abk => $datasource_type): ?>
 									<option value="<?php echo $abk ?>"<?php echo ($chart->datasource_type === $abk ? ' selected' : '') ?>>
 										<?php echo $datasource_type ?>
@@ -221,11 +228,11 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 						</td>
 					</tr>
 					<tr>
-						<td valign="top" class="statistik_kurzbz">Statistik</td>
-						<td valign="top" class="statistik_kurzbz" colspan="5">
+						<td valign="top">Statistik</td>
+						<td valign="top">
 							<?php $statistik = new statistik; ?>
 							<?php $statistik->getAll('bezeichnung'); ?>
-							<select name="statistik_kurzbz" id="statistik_kurzbz">
+							<select name="statistik_kurzbz" id="statistik_kurzbz" style='max-width:150px;'>
 								<option>Keine Auswahl</option>
 								<?php foreach($statistik->result as $stat): ?>
 									<option value="<?php echo $stat->statistik_kurzbz ?>"<?php echo ($chart->statistik_kurzbz === $stat->statistik_kurzbz ? ' selected' : '') ?>><?php echo $stat->bezeichnung ?></option>
@@ -235,15 +242,17 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 					</tr>
 					<tr>
 						<td valign="top" class="datasource">DataSource</td>
-						<td valign="top" class="datasource" colspan="5">
+						<td valign="top" class="datasource" colspan="1">
 						<input id="datasource" class="detail" style="width: 100%;" type="text" name="datasource" size="55" maxlength="256" value="<?php echo $chart->datasource ?>" onchange="submitable()">
+						</td>
+						<td>
+							Preferences
 						</td>
 					</tr>
 					<tr>
 						<td valign="top">Description</td>
-						<td colspan="2"><textarea name="description" cols="70" rows="6" onchange="submitable()"><?php echo $chart->description ?></textarea></td>
-						<td valign="top">Preferences</td>
-						<td colspan="2">
+						<td><textarea name="description" cols="70" rows="6" onchange="submitable()"><?php echo $chart->description ?></textarea></td>
+						<td colspan="2" valign="top" style="width:50%;">
 							<div id="jsoneditor"></div>
 						</td>
 					</tr>
@@ -252,24 +261,25 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 						</td>
 					</tr>
 					<tr>
-						<td valign="top"></td>
-						<td colspan="2"></td>
-						<td valign="top">Publish</td>
-						<td colspan="2">
+						<td valign="top">
+						</td>
+						<td></td>
+						<td valign="top">
+							Publish
 							<input type="hidden" name="publish" value="0" />
 							<input type="checkbox" name="publish" value="1"<?php echo $chart->publish ? ' checked' : '' ?> />
 						</td>
 					</tr>
 					<tr>
 						<td valign="top">Dashboard</td>
-						<td colspan="2">
+						<td>
 							<input type="hidden" name="dashboard" value="0" />
 							<input type="checkbox" name="dashboard" id="dashboard" value="1"<?php echo $chart->dashboard ? ' checked' : '' ?> />
 						</td>
 					</tr>
 					<tr class="dashboard-details">
 						<td valign="top">Layout</td>
-						<td colspan="2">
+						<td>
 							<select name="dashboard_layout" id="layout">
 								<option value=""></option>
 								<?php foreach(chart::getDashboardLayouts() as $layout_id => $layout_bez): ?>
@@ -282,7 +292,7 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 					</tr>
 					<tr class="dashboard-details">
 						<td valign="top">Dashboard Position</td>
-						<td colspan="2">
+						<td>
 							<input type="number" name="dashboard_pos" value="<?php echo $chart->dashboard_pos ?>" />
 						</td>
 					</tr>
