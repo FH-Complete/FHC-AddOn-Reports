@@ -15,8 +15,8 @@
    viewBox="0 0 100 100"
    version="1.1"
    id="svg4517"
-   inkscape:version="0.92pre2 r"
-   sodipodi:docname="View.svg">
+   inkscape:version="0.92pre3 r"
+   sodipodi:docname="View2.svg">
   <defs
      id="defs4511">
     <linearGradient
@@ -48,9 +48,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.9899495"
-     inkscape:cx="-275.62084"
-     inkscape:cy="61.372392"
+     inkscape:zoom="22.4"
+     inkscape:cx="305.74656"
+     inkscape:cy="31.297519"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -159,21 +159,16 @@
          id="rect858-3-6-5-9"
          style="opacity:1;fill:#474747;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.18079102;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
-    <g
-       aria-label="P"
-       transform="matrix(0.26458333,0,0,0.26458333,-57.178566,202.75284)"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:25px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       id="flowRoot5418">
-      <g
-         aria-label="V"
-         style="font-style:normal;font-weight:normal;font-size:40px;line-height:25px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         id="text4505">
-        <path
-           d="m 415.5128,192.53609 46.464,132.864 h 19.776 l 46.464,-132.864 h -17.664 l -38.592,115.968 -38.784,-115.968 z"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:192px;font-family:cantarell;-inkscape-font-specification:cantarell;fill:#000000;fill-opacity:1"
-           id="path855"
-           inkscape:connector-curvature="0" />
-      </g>
-    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:6.61458349px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="52.875137"
+       y="290.20572"
+       id="text4505"><tspan
+         sodipodi:role="line"
+         id="tspan4503"
+         x="52.875137"
+         y="290.20572"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:50.79999924px;font-family:cantarell;-inkscape-font-specification:cantarell;fill:#000000;fill-opacity:1;stroke-width:0.26458332px">V</tspan></text>
   </g>
 </svg>
