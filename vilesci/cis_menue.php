@@ -46,7 +46,7 @@ require_once('../../../config/vilesci.config.inc.php');
 			margin-right: 2px;
 		}
 		.locked {
-			background: url("../../../skin/images/lock.png") no-repeat center center;
+			background: url("../include/images/Authorization.svg") no-repeat center center;
 			background-size: 10px 10px;
 			padding-left: 5px;
 			padding-right: 5px;
