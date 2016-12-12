@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="75mm"
+   height="100mm"
+   viewBox="0 0 75 100"
+   version="1.1"
+   id="svg4517"
+   inkscape:version="0.92pre3 r"
+   sodipodi:docname="Pdf.svg">
+  <defs
+     id="defs4511">
+    <marker
+       style="overflow:visible"
+       id="DistanceStart"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="DistanceStart"
+       inkscape:isstock="true">
+      <g
+         id="g2300"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-opacity:1">
+        <path
+           style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.14999998;stroke-linecap:square;stroke-opacity:1"
+           d="M 0,0 H 2"
+           id="path2306"
+           inkscape:connector-curvature="0" />
+        <path
+           style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-opacity:1"
+           d="M 0,0 13,4 9,0 13,-4 Z"
+           id="path2302"
+           inkscape:connector-curvature="0" />
+        <path
+           style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:square;stroke-opacity:1"
+           d="M 0,-4 V 40"
+           id="path2304"
+           inkscape:connector-curvature="0" />
+      </g>
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lstart"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path4490"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="matrix(0.8,0,0,0.8,10,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient5414">
+      <stop
+         style="stop-color:#ff4c4c;stop-opacity:1"
+         offset="0"
+         id="stop5410" />
+      <stop
+         style="stop-color:#ffc180;stop-opacity:1"
+         offset="1"
+         id="stop5412" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5414"
+       id="linearGradient5416"
+       x1="15.893733"
+       y1="291.10629"
+       x2="84.106262"
+       y2="202.89375"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.0846271,0,0,1.122121,-16.731355,-30.16392)" />
+    <filter
+       style="color-interpolation-filters:sRGB"
+       inkscape:label="Roughen"
+       id="filter5304">
+      <feTurbulence
+         type="fractalNoise"
+         numOctaves="1"
+         seed="36"
+         baseFrequency="5.5619 5.5352"
+         result="turbulence"
+         id="feTurbulence5300" />
+      <feDisplacementMap
+         in="SourceGraphic"
+         in2="turbulence"
+         scale="8.5"
+         yChannelSelector="G"
+         xChannelSelector="R"
+         id="feDisplacementMap5302" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Roughen"
+       id="filter4597">
+      <feTurbulence
+         type="fractalNoise"
+         numOctaves="1"
+         seed="35"
+         baseFrequency="3 3"
+         result="turbulence"
+         id="feTurbulence4593" />
+      <feDisplacementMap
+         in="SourceGraphic"
+         in2="turbulence"
+         scale="5"
+         yChannelSelector="G"
+         xChannelSelector="R"
+         id="feDisplacementMap4595" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.0861146"
+     inkscape:cx="26.073392"
+     inkscape:cy="85.415203"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="2497"
+     inkscape:window-height="1016"
+     inkscape:window-x="63"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     showguides="false" />
+  <metadata
+     id="metadata4514">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-197)">
+    <rect
+       style="fill:url(#linearGradient5416);fill-opacity:1;fill-rule:nonzero;stroke:#474747;stroke-width:1.01483846;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.97254902"
+       id="rect5081"
+       width="73.985161"
+       height="98.985161"
+       x="0.50741923"
+       y="197.50742" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke;filter:url(#filter4597)"
+       d="m 45.480251,292.72433 c 6.74338,14.69682 -32.249201,-25.50431 -18.360222,-51.39872 14.89164,0 -22.3431137,55.57447 -24.4270505,44.76125 2.1224853,-23.49803 39.1004795,-5.08933 42.7872725,6.63747 z"
+       id="path4488"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       transform="matrix(1.3017695,0,0,1.2727603,2.7556699,-93.476607)" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:8.25334835px;line-height:5.15834522px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#3d3d3d;fill-opacity:1;stroke:none;stroke-width:0.20633376px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="4.0850282"
+       y="225.71132"
+       id="text4505"
+       transform="scale(0.913811,1.0943182)"><tspan
+         sodipodi:role="line"
+         id="tspan4503"
+         x="4.0850282"
+         y="225.71132"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:39.61608505px;font-family:cantarell;-inkscape-font-specification:'cantarell Bold';fill:#3d3d3d;fill-opacity:1;stroke-width:0.20633376px">PDF</tspan></text>
+  </g>
+</svg>

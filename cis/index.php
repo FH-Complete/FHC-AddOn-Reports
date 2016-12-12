@@ -259,7 +259,7 @@ function addZurodnungen($entity,$rechte)
 							<form class="form-inline" onsubmit="return false">
 								<span id="filter-input"></span>
 								<button style="display: inline;height:40px;" onclick="runFilter('html', true)" class="btn btn-default" type="submit">Ausf&uuml;hren</button>
-								<button style="display: inline;height:40px;" onclick="runFilter('pdf', true)" id="filter-PdfLink" ><img src="../cis/pdfIcon.png" width="20" alt="pdf"/></button>
+								<button style="display: inline;height:40px;" onclick="runFilter('pdf', true)" id="filter-PdfLink" ><img src="../include/images/Pdf.svg" width="20" alt="pdf"/></button>
 								<button style="display: inline;height:40px;color:red;" onclick="runFilter('debug', true)" id="filter-debugLink">DEBUG</button>
 							</form>
 						</div>
