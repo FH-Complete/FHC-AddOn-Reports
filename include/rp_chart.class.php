@@ -801,7 +801,7 @@ EOT;
 
 				if(!$prefs)
 				{
-					$this->errormsg = "Chart".$this->chart_id . ": Preferences sind keine wohlgeformten JSON-Daten:<br>'". $json."'";
+					$this->errormsg = "Chart".$this->chart_id . ": Preferences sind keine wohlgeformten JSON-Daten!<br>Sollten sich noch C-Kommentare im JSON-Code befinden, muss checksystem aufgerufen werden.<br><br>'". $json."'";
 					return false;
 				}
 			}
