@@ -48,7 +48,7 @@ function getHtmlMenue($data, $rechte)
 
 	foreach($data as $d)
 	{
-		if(addZurodnungen($d, $rechte))
+		if(addZuordnungen($d, $rechte))
 		{
 			$htmlstr.='<li><a style="font-weight: bold;"> '.$d->bezeichnung.'</a></li>';
 
@@ -71,7 +71,7 @@ function getHtmlMenue($data, $rechte)
 }
 
 
-function addZurodnungen($entity,$rechte)
+function addZuordnungen($entity,$rechte)
 {
 	$inhalt = false;
 	$rg = new rp_gruppe();

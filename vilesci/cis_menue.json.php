@@ -300,7 +300,7 @@ function processMenueLevel($data)
 		if(isset($d->children) && count($d->children) > 0)
 			$d->children = processMenueLevel($d->children);
 
-		addZurodnungen($d);
+		addZuordnungen($d);
 
 		if(isset($d->children) && count($d->children) > 0)
 			$ent["children"] = $d->children;
@@ -315,7 +315,7 @@ function processMenueLevel($data)
 	return $gefiltert;
 }
 
-function addZurodnungen($entity)
+function addZuordnungen($entity)
 {
 	$rg = new rp_gruppe();
 	$rg->getGruppenzuordnung($entity->reportgruppe_id);
