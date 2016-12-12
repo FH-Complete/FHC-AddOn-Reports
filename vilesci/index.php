@@ -42,30 +42,37 @@ if(!$rechte->isBerechtigt('addon/reports'))
 		<link rel="stylesheet" href="../../../skin/fhcomplete.css" type="text/css">
 		<link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">
 		<title>FHC AddOn Reports</title>
+		<style>
+			.vilesci_menue_entry
+			{
+				margin-left:  5px;
+				margin-right: 5px;
+			}
+		</style>
 	</head>
 	<body>
 		<div class="icons">
 			<strong>Reports</strong>
 			<a title="Filter" href="../../../vilesci/statistik/filter_frameset.html" target="rp_main">
-				<img src="../include/images/Filter.svg" alt="" />
+				<img src="../include/images/Filter.svg" alt="" class="vilesci_menue_entry" />
 			</a>
 			<a title="Views" href="view_frameset.html" target="rp_main">
-				<img src="../include/images/View.svg" alt="" />
+				<img src="../include/images/View.svg" alt="" class="vilesci_menue_entry" />
 			</a>
 			<a title="Attribute" href="attribut_frameset.html" target="rp_main">
-				<img src="../include/images/Attribut.svg" alt="" />
+				<img src="../include/images/Attribut.svg" alt="" class="vilesci_menue_entry" />
 			</a>
 			<a title="Statistiken" href="data_frameset.html" target="rp_main">
-				<img src="../include/images/Statistik.svg" alt="" />
+				<img src="../include/images/Statistik.svg" alt="" class="vilesci_menue_entry" />
 			</a>
 			<a title="Charts" href="chart_frameset.html" target="rp_main">
-				<img src="../include/images/Chart.svg" alt="" />
+				<img src="../include/images/Chart.svg" alt="" class="vilesci_menue_entry" />
 			</a>
 			<a title="Reports" href="report_frameset.html" target="rp_main">
-				<img src="../include/images/Report.svg" alt="" />
+				<img src="../include/images/Report.svg" alt="" class="vilesci_menue_entry" />
 			</a>
 			<a title="Menü" href="cis_menue.php" target="rp_main">
-				<img src="../include/images/Menue.svg" alt="" />
+				<img src="../include/images/Menue.svg" alt="" class="vilesci_menue_entry" />
 			</a>
 		</div>
 		<hr>
