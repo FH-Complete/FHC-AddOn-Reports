@@ -68,7 +68,7 @@ $chart->insertvon		= $user;
 $chart->updatevon		= $user;
 $chart->publish			= false;
 
-if(isset($_REQUEST["action"]) && isset($_REQUEST["chart_id"]))
+if(isset($_REQUEST["save"]) && isset($_REQUEST["chart_id"]))
 {
 	if(!$rechte->isBerechtigt('addon/reports', null, 'suid'))
 		die('Sie haben keine Berechtigung fuer diese Aktion');
@@ -77,7 +77,7 @@ if(isset($_REQUEST["action"]) && isset($_REQUEST["chart_id"]))
 	// Wenn id > 0 ist -> Neuer Datensatz; ansonsten load und update
 	if ( ((int)$_REQUEST["chart_id"]) > 0)
 		$chart->load((int)$_REQUEST["chart_id"]);
-	if ($_REQUEST["action"]=='save')
+	if ($_REQUEST["save"])
 	{
 		$chart->title = $_POST["title"];
 		$chart->longtitle = $_POST["longtitle"];
@@ -299,7 +299,7 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 			<div align="right" id="sub">
 				<span id="submsg" style="color:<?php echo $submsg->color; ?>; visibility:<?php echo ($submsg->active ? 'visible': 'hidden'); ?>"><?php echo $submsg->msg; ?></span>
 				<input type="hidden" name="chart_id" value="<?php echo $chart->chart_id ?>">
-				<input type="submit" value="save" name="action">
+				<input type="submit" value="Speichern" name="save">
 			</div>
 		</form>
 		<script>
