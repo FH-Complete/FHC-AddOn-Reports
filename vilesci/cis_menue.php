@@ -94,7 +94,7 @@ require_once('../../../config/vilesci.config.inc.php');
 				}
 				else
 				{
-					alert(res.message + ": " + res.toSource());
+					alert(res.message);
 					rebuildMenue();
 					rebuildAllRCS();
 				}
