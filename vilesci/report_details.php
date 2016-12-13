@@ -64,7 +64,7 @@
 	$report->insertvon		= $user;
 	$report->updatevon		= $user;
 
-	if(isset($_REQUEST["action"]) && isset($_REQUEST["report_id"]))
+	if(isset($_REQUEST["save"]) && isset($_REQUEST["report_id"]))
 	{
 		if(!$rechte->isBerechtigt('addon/reports', null, 'suid'))
 			die('Sie haben keine Berechtigung fuer diese Aktion');
@@ -76,7 +76,7 @@
 			$report->load((int)$_REQUEST["report_id"]);
 		}
 
-		if ($_REQUEST["action"]=='save')
+		if ($_REQUEST["save"]=='Speichern')
 		{
 			$report->title = $_POST["title"];
 			$report->description = $_POST["description"];
@@ -99,7 +99,7 @@
 			$reloadstr .= "</script>\n";
 		}
 
-		if ($_REQUEST["action"]=='saveReportStatistik')
+		if ($_REQUEST["save"]=='saveReportStatistik')
 		{
 			$rp_report_statistik->report_id = $_POST["report_id"];
 			$rp_report_statistik->statistik_kurzbz = $_POST["statistik_kurzbz"];
@@ -112,7 +112,7 @@
 			}
 		}
 
-		if ($_REQUEST["action"]=='saveReportChart')
+		if ($_REQUEST["save"]=='saveReportChart')
 		{
 			$rp_report_chart->report_id = $_REQUEST["report_id"];
 			$rp_report_chart->chart_id = $_REQUEST["chart_id"];
@@ -126,13 +126,13 @@
 		}
 
 
-		if($_REQUEST['action']=='deleteReportStatistik')
+		if($_REQUEST['save']=='deleteReportStatistik')
 		{
 			if(!$rp_report_statistik->delete($_REQUEST['reportstatistik_id']))
 				$errorstr .= $rp_report_statistik->errormsg;
 		}
 
-		if($_REQUEST['action']=='deleteReportChart')
+		if($_REQUEST['save']=='deleteReportChart')
 		{
 			if(!$rp_report_chart->delete($_REQUEST['reportchart_id']))
 				$errorstr .= $rp_report_chart->errormsg;
@@ -213,7 +213,7 @@
 	$htmlstr .= "<div align='right' id='sub'>\n";
 	$htmlstr .= "	<span id='submsg' style='color:red; visibility:hidden;'>Datensatz ge&auml;ndert!&nbsp;&nbsp;</span>\n";
 	$htmlstr .= "	<input type='hidden' name='report_id' value='".$report->report_id."'>";
-	$htmlstr .= "	<input type='submit' value='save' name='action'>\n";
+	$htmlstr .= "	<input type='submit' value='Speichern' name='save'>\n";
 	$htmlstr .= "</div>";
 	$htmlstr .= "</form>";
 
@@ -259,7 +259,7 @@
 			$htmlstr .= "		</td>\n";
 
 			// Entfernen
-			$htmlstr .= '		<td><a href="report_details.php?action=deleteReportChart&reportchart_id='.$ch->reportchart_id.'&report_id='.$report->report_id.'" onclick="return confdel()">entfernen</a></td>';
+			$htmlstr .= '		<td><a href="report_details.php?save=deleteReportChart&reportchart_id='.$ch->reportchart_id.'&report_id='.$report->report_id.'" onclick="return confdel()">entfernen</a></td>';
 
 			$htmlstr .= "	</tr>\n";
 		}
@@ -287,7 +287,7 @@
 		$htmlstr .= "			</td>\n";
 		$htmlstr .= "			<td></td>\n";
 		$htmlstr .= "			<td></td>\n";
-		$htmlstr .= "			<input type='hidden' name='action' value='saveReportChart'>";
+		$htmlstr .= "			<input type='hidden' name='save' value='saveReportChart'>";
 		$htmlstr .= "			<td><input type='submit' value='Hinzuf&uuml;gen'></td>\n";
 		$htmlstr .= "		</form>\n";
 		$htmlstr .= "	</tr>\n";
@@ -332,7 +332,7 @@
 
 			// Entfernen
 			$htmlstr .= "			<td>\n";
-			$htmlstr .= "				<a href='report_details.php?action=deleteReportStatistik&reportstatistik_id=".$st->reportstatistik_id."&report_id=".$report->report_id."' onclick='return confdel()'>entfernen</a>";
+			$htmlstr .= "				<a href='report_details.php?save=deleteReportStatistik&reportstatistik_id=".$st->reportstatistik_id."&report_id=".$report->report_id."' onclick='return confdel()'>entfernen</a>";
 			$htmlstr .= "			</td>\n";
 
 			$htmlstr .= "		</tr>\n";
@@ -354,7 +354,7 @@
 		}
 		$htmlstr .= "				</select>\n";
 		$htmlstr .= "			</td>\n";
-		$htmlstr .= "			<input type='hidden' name='action' value='saveReportStatistik'>";
+		$htmlstr .= "			<input type='hidden' name='save' value='saveReportStatistik'>";
 		$htmlstr .= "			<td></td>\n";
 		$htmlstr .= "			<td></td>\n";
 		$htmlstr .= "			<td><input type='submit' value='Hinzuf&uuml;gen'></td>\n";
