@@ -111,10 +111,6 @@
 				echo "loadChart('".$cid."','".$c->statistik_kurzbz."');";
 			}
 			?>
-			$(function()
-			{
-				checkForOldReports();
-			});
 
 			function reportsCleanup()
 			{
