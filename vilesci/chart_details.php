@@ -146,10 +146,8 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 					{
 						console.log(err.toString());
 					},
-					onChange: submitable,
 				};
 
-				document.chartform.action.disabled = true;
 				var container = document.getElementById('jsoneditor');
 				editor = new JSONEditor(container, options);
 				editor.set(chartJson);
@@ -176,7 +174,7 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 							Title
 						</td>
 						<td>
-							<input class="detail" type="text" name="title" size="22" maxlength="64" value="<?php echo $chart->title ?>" onchange="submitable()">
+							<input class="detail" type="text" name="title" size="22" maxlength="64" value="<?php echo $chart->title ?>">
 						</td>
 						<td>
 							Type
@@ -199,13 +197,13 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 							Long Title
 						</td>
 						<td>
-							<input class="detail" type="text" name="longtitle" size="22" maxlength="128" value="<?php echo $chart->longtitle ?>" onchange="submitable()">
+							<input class="detail" type="text" name="longtitle" size="22" maxlength="128" value="<?php echo $chart->longtitle ?>">
 						</td>
 						<td>
 							SourceType
 						</td>
 						<td>
-							<input class='detail' type='text' name='sourcetype' size='8' maxlength='16' value='<?php echo $chart->sourcetype ?>' onchange='submitable()'>
+							<input class='detail' type='text' name='sourcetype' size='8' maxlength='16' value='<?php echo $chart->sourcetype ?>'>
 						</td>
 					</tr>
 
@@ -243,7 +241,7 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 					<tr>
 						<td valign="top" class="datasource">DataSource</td>
 						<td valign="top" class="datasource" colspan="1">
-						<input id="datasource" class="detail" style="width: 100%;" type="text" name="datasource" size="55" maxlength="256" value="<?php echo $chart->datasource ?>" onchange="submitable()">
+						<input id="datasource" class="detail" style="width: 100%;" type="text" name="datasource" size="55" maxlength="256" value="<?php echo $chart->datasource ?>">
 						</td>
 						<td>
 							Preferences
@@ -251,7 +249,7 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 					</tr>
 					<tr>
 						<td valign="top">Description</td>
-						<td><textarea name="description" cols="70" rows="6" onchange="submitable()"><?php echo $chart->description ?></textarea></td>
+						<td><textarea name="description" cols="70" rows="6"><?php echo $chart->description ?></textarea></td>
 						<td colspan="2" valign="top" style="width:50%;">
 							<div id="jsoneditor"></div>
 						</td>
