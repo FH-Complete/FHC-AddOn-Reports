@@ -82,9 +82,7 @@ $(function()
 function unchanged()
 {
 		document.chartform.reset();
-		document.chartform.action.disabled = true;
 		editor.set(chartJson);
-		document.chartform.disabled = true;
 		document.getElementById("submsg").style.visibility="hidden";
 		checkrequired(document.chartform.chart_id);
 }
@@ -103,19 +101,6 @@ function checkrequired(feld)
 	}
 }
 
-function submitable()
-{
-	required1 = checkrequired(document.chartform.chart_id);
-
-	if(!required1)
-	{
-		document.chartform.action.disabled = true;
-	}
-	else
-	{
-		document.chartform.action.disabled = false;
-	}
-}
 
 function appendChartData()
 {

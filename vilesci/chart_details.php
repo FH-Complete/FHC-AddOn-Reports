@@ -249,7 +249,7 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 					</tr>
 					<tr>
 						<td valign="top">Description</td>
-						<td><textarea name="description" cols="70" rows="6"><?php echo $chart->description ?></textarea></td>
+						<td valign="top"><textarea name="description" cols="70" rows="6"><?php echo $chart->description ?></textarea></td>
 						<td colspan="2" valign="top" style="width:50%;">
 							<div id="jsoneditor"></div>
 						</td>
