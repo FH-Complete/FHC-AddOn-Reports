@@ -214,7 +214,6 @@
 	$htmlstr .= "	<span id='submsg' style='color:red; visibility:hidden;'>Datensatz ge&auml;ndert!&nbsp;&nbsp;</span>\n";
 	$htmlstr .= "	<input type='hidden' name='report_id' value='".$report->report_id."'>";
 	$htmlstr .= "	<input type='submit' value='save' name='action'>\n";
-	$htmlstr .= "	<input type='button' value='Reset' onclick='unchanged()'>\n";
 	$htmlstr .= "</div>";
 	$htmlstr .= "</form>";
 
@@ -406,14 +405,6 @@ $(function() {
 		widgets: ["zebra"]
 	});
 });
-
-function unchanged()
-{
-		document.reportform.reset();
-		document.reportform.schick.disabled = true;
-		document.getElementById("submsg").style.visibility="hidden";
-		checkrequired(document.reportform.report_id);
-}
 
 function checkrequired(feld)
 {
