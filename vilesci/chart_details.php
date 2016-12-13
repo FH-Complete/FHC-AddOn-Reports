@@ -300,7 +300,6 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 				<span id="submsg" style="color:<?php echo $submsg->color; ?>; visibility:<?php echo ($submsg->active ? 'visible': 'hidden'); ?>"><?php echo $submsg->msg; ?></span>
 				<input type="hidden" name="chart_id" value="<?php echo $chart->chart_id ?>">
 				<input type="submit" value="save" name="action">
-				<input type="button" value="Reset" onclick="unchanged()">
 			</div>
 		</form>
 		<script>

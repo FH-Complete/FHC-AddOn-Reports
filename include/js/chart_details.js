@@ -79,14 +79,6 @@ $(function()
 	checkDashboard();
 });
 
-function unchanged()
-{
-		document.chartform.reset();
-		editor.set(chartJson);
-		document.getElementById("submsg").style.visibility="hidden";
-		checkrequired(document.chartform.chart_id);
-}
-
 function checkrequired(feld)
 {
 	if(feld.value == '')
