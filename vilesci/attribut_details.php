@@ -66,7 +66,7 @@
 			if ($attribut->errormsg!='')
 				die($attribut->errormsg);
 		}
-		if(isset($_REQUEST["action"]) && $_REQUEST["action"]=='save')
+		if(isset($_REQUEST["save"]))
 		{
 			$attribut->attribut_id = $_REQUEST["attribut_id"];
 
@@ -123,7 +123,7 @@
 	$htmlstr .= "	<span id='submsg' style='color:red; visibility:hidden;'>Datensatz ge&auml;ndert!&nbsp;&nbsp;</span>\n";
 	if($attribut->attribut_id == 0)
 		$htmlstr .= "	<input type='hidden' name='new' value='new'>";
-	$htmlstr .= "	<input type='submit' value='save' name='action'>\n";
+	$htmlstr .= "	<input type='submit' value='Speichern' name='save'>\n";
 	$htmlstr .= "</div>";
 	$htmlstr .= "</form>";
 	$htmlstr .= "<div class='inserterror'>".$errorstr."</div>\n";
