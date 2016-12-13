@@ -346,9 +346,11 @@ require_once('../../../config/vilesci.config.inc.php');
 	<h2>Reports Men&uuml;-Builder</h2>
 
 	<div id="builder" style="float:left;width:47%;">
-		<input id="menueAdd" placeholder="neuer Menuepunkt"></input>
-		<button onclick="add()">Hinzufügen</button>
-		<div class="easyui-panel" style="padding:5px;margin-top:10px;margin-bottom:10px;">
+		<div style="margin-bottom:10px;">
+			<input id="menueAdd" placeholder="neuer Menuepunkt"></input>
+			<input type="button" onclick="add()" value="Hinzufügen"/>
+		</div>
+		<div class="easyui-panel">
 			<ul id="menueTree" class="easyui-tree" data-options="animate:true,dnd:true"></ul>
 		</div>
 		<div>
