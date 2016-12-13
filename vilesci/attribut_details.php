@@ -124,7 +124,6 @@
 	if($attribut->attribut_id == 0)
 		$htmlstr .= "	<input type='hidden' name='new' value='new'>";
 	$htmlstr .= "	<input type='submit' value='save' name='action'>\n";
-	$htmlstr .= "	<input type='button' value='Reset' onclick='unchanged()'>\n";
 	$htmlstr .= "</div>";
 	$htmlstr .= "</form>";
 	$htmlstr .= "<div class='inserterror'>".$errorstr."</div>\n";
@@ -149,14 +148,6 @@
 </style>
 <script type="text/javascript">
 
-
-function unchanged()
-{
-	document.attributform.reset();
-	document.attributform.schick.disabled = true;
-	document.getElementById("submsg").style.visibility="hidden";
-	checkrequired(document.attributform.attribut_id);
-}
 
 function confdel()
 {
