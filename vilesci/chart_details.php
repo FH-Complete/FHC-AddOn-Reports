@@ -27,10 +27,17 @@ require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../../../include/statistik.class.php');
 require_once('../include/rp_chart.class.php');
 
-$submsg = new stdClass();
-$submsg->active = false;
-$submsg->msg = "";
-$submsg->color = "green";
+$messages = array();
+$error = false;
+
+function addMsg(&$errors, $msg, $color = "#070")
+{
+	$e = new stdClass();
+	$e->msg = $msg;
+	$e->color = $color;
+	$errors[] = $e;
+}
+
 
 ?>
 
@@ -51,7 +58,6 @@ if(!$rechte->isBerechtigt('addon/reports'))
 
 
 $reload = false;  // neuladen der liste im oberen frame
-$errorstr = ''; //fehler beim insert
 $sel = '';
 $chk = '';
 
@@ -79,36 +85,49 @@ if(isset($_REQUEST["save"]) && isset($_REQUEST["chart_id"]))
 		$chart->load((int)$_REQUEST["chart_id"]);
 	if ($_REQUEST["save"])
 	{
-		$chart->title = $_POST["title"];
-		$chart->longtitle = $_POST["longtitle"];
-		$chart->description = $_POST["description"];
-		$chart->type = $_POST["type"];
-		$chart->sourcetype = $_POST["sourcetype"];
-		$chart->preferences = $_POST["preferences"];
-		$chart->statistik_kurzbz = $_POST["statistik_kurzbz"];
-		$chart->datasource = $_POST["datasource"];
-		$chart->datasource_type = $_POST["datasource_type"];
-		$chart->publish = (bool) $_POST["publish"];
-		$chart->dashboard = (bool) $_POST["dashboard"];
-
-		if($chart->dashboard)
+		if(!isset($_POST["preferences"]))
 		{
-			$chart->dashboard_layout = $_POST["dashboard_layout"];
-			$chart->dashboard_pos = (int) $_POST["dashboard_pos"];
+			addMsg($messages, "Keine Preferences gesetzt!", "#700");
+			$error = true;
+		}
+		if(!isset($_POST["statistik_kurzbz"]) || $_POST["statistik_kurzbz"] == "false")
+		{
+			addMsg($messages, "Keine Statistik gesetzt!", "#700");
+			$error = true;
 		}
 
-		if(!$chart->save())
+		if(!$error)
 		{
-			$submsg->msg = $chart->errormsg;
-			$submsg->active = true;
-		}
-		else
-		{
-			$submsg->msg = "Datensatz ge&auml;ndert!&nbsp;&nbsp";
-			$submsg->active = true;
-		}
+			$chart->title = $_POST["title"];
+			$chart->longtitle = $_POST["longtitle"];
+			$chart->description = $_POST["description"];
+			$chart->type = $_POST["type"];
+			$chart->sourcetype = $_POST["sourcetype"];
+			$chart->preferences = $_POST["preferences"];
+			$chart->statistik_kurzbz = $_POST["statistik_kurzbz"];
+			$chart->datasource = $_POST["datasource"];
+			$chart->datasource_type = $_POST["datasource_type"];
+			$chart->publish = (bool) $_POST["publish"];
+			$chart->dashboard = (bool) $_POST["dashboard"];
 
-		$reload = true;
+			if($chart->dashboard)
+			{
+				$chart->dashboard_layout = $_POST["dashboard_layout"];
+				$chart->dashboard_pos = (int) $_POST["dashboard_pos"];
+			}
+
+			if(!$chart->save())
+			{
+				addMsg($messages, $chart->errormsg, "#700");
+				$error = true;
+			}
+			else
+			{
+				addMsg($messages, "Datensatz ge&auml;ndert!&nbsp;&nbsp");
+			}
+
+			$reload = true;
+		}
 	}
 }
 
@@ -159,6 +178,17 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 				width:  100%;
 				height: 400px;
 			}
+			.kopf_r
+			{
+				position:absolute;
+				top:10px;
+				right:10px;
+				border-color:#777777;
+				border-style:solid;
+				border-width:1px;
+				background-color:#eeeeee;
+				padding:2px;
+			}
 		</style>
 	</head>
 	<body style="background-color:#eeeeee;">
@@ -167,7 +197,12 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 		<?php else: ?>
 			<br><div class="kopf">Neuer Chart</div>
 		<?php endif;?>
-		<form action="chart_details.php" method="POST" name="chartform" onsubmit="appendChartData()">
+		<div class="kopf_r" style="visibility:<?php echo (!empty($messages) ? 'visible': 'hidden'); ?>">
+			<?php foreach($messages as $m): ?>
+			<div id="submsg" style="color:<?php echo $m->color; ?>;"><?php echo $m->msg; ?></div>
+			<?php endforeach; ?>
+		</div>
+		<form action="chart_details.php" method="POST" name="chartform" onsubmit="return appendChartData()">
 			<table class="detail">
 					<tr>
 						<td>
@@ -231,7 +266,7 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 							<?php $statistik = new statistik; ?>
 							<?php $statistik->getAll('bezeichnung'); ?>
 							<select name="statistik_kurzbz" id="statistik_kurzbz" style='max-width:150px;'>
-								<option>Keine Auswahl</option>
+								<option value="false">Keine Auswahl</option>
 								<?php foreach($statistik->result as $stat): ?>
 									<option value="<?php echo $stat->statistik_kurzbz ?>"<?php echo ($chart->statistik_kurzbz === $stat->statistik_kurzbz ? ' selected' : '') ?>><?php echo $stat->bezeichnung ?></option>
 								<?php endforeach; ?>
@@ -297,7 +332,6 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 			</table>
 			<br>
 			<div align="right" id="sub">
-				<span id="submsg" style="color:<?php echo $submsg->color; ?>; visibility:<?php echo ($submsg->active ? 'visible': 'hidden'); ?>"><?php echo $submsg->msg; ?></span>
 				<input type="hidden" name="chart_id" value="<?php echo $chart->chart_id ?>">
 				<input type="submit" value="Speichern" name="save">
 			</div>

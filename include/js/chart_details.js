@@ -96,11 +96,28 @@ function checkrequired(feld)
 
 function appendChartData()
 {
-	var prefs = JSON.stringify(editor.get());
+	var prefs = true;
+
+	try
+	{
+		prefs = JSON.stringify(editor.get());
+	}
+	catch(e)
+	{
+		prefs = false;
+	}
 
 	var hiddenField = document.createElement("input");
 	hiddenField.setAttribute("type", "hidden");
 	hiddenField.setAttribute("name", "preferences");
 	hiddenField.setAttribute("value", prefs);
 	document.chartform.appendChild(hiddenField);
+
+	if(prefs === false)
+	{
+		alert("Preferences sind nicht zulässig!");
+		return false;
+	}
+
+	return true;
 }
