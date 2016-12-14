@@ -265,7 +265,7 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 						<td valign="top">
 							<?php $statistik = new statistik; ?>
 							<?php $statistik->getAll('bezeichnung'); ?>
-							<select name="statistik_kurzbz" id="statistik_kurzbz" style='max-width:150px;'>
+							<select id="statistik_kurzbz" name="statistik_kurzbz" id="statistik_kurzbz" style='max-width:150px;'>
 								<option value="false">Keine Auswahl</option>
 								<?php foreach($statistik->result as $stat): ?>
 									<option value="<?php echo $stat->statistik_kurzbz ?>"<?php echo ($chart->statistik_kurzbz === $stat->statistik_kurzbz ? ' selected' : '') ?>><?php echo $stat->bezeichnung ?></option>

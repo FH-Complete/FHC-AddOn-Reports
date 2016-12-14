@@ -119,5 +119,13 @@ function appendChartData()
 		return false;
 	}
 
+	var statistik = document.getElementById("statistik_kurzbz");
+	var statistik_kurzbz = statistik.options[statistik.selectedIndex].value;
+	if(statistik_kurzbz == "false")
+	{
+		alert("Es wurde keine Statistik gewählt!");
+		return false;
+	}
+
 	return true;
 }
