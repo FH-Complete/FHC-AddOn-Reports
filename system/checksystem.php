@@ -47,7 +47,7 @@ $uid = get_uid();
 $rechte = new benutzerberechtigung();
 $rechte->getBerechtigungen($uid);
 
-if(!$rechte->isBerechtigt('basis/addon'))
+if(!$rechte->isBerechtigt('basis/addon', null, 'suid'))
 {
 	exit('Sie haben keine Berechtigung für die Verwaltung von Addons');
 }
