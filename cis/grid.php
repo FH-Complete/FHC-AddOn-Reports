@@ -19,11 +19,6 @@
  *			Andreas Moik <moik@technikum-wien.at>
  */
 
-// pChart library inclusions
-require_once("../include/pChart/class/pData.class.php");
-require_once("../include/pChart/class/pDraw.class.php");
-require_once("../include/pChart/class/pImage.class.php");
-
 require_once('../../../config/vilesci.config.inc.php');
 require_once('../../../include/functions.inc.php');
 require_once('../../../include/benutzerberechtigung.class.php');
