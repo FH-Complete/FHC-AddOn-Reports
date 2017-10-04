@@ -85,7 +85,16 @@ if (!$attribut->loadAll())
 				$("#t1").tablesorter(
 				{
 					sortList: [[0,1]],
-					widgets: ["zebra"]
+					widgets: ["saveSort", "zebra", "filter", "stickyHeaders"],
+					headers: {2: {sorter: false, filter: false}},
+					widgetOptions : {filter_saveFilters : true}
+				});
+
+				$('.resetsaved').click(function()
+				{
+					$("#t1").trigger("filterReset");
+					location.reload();
+					return false;
 				});
 			});
 
@@ -98,7 +107,8 @@ if (!$attribut->loadAll())
 	</head>
 
 	<body class="background_main">
-		<a href="attribut_details.php" target="frame_attribut_details">Neues Attribut</a>
+		<a href="attribut_details.php" target="frame_attribut_details">Neues Attribut</a><br>
+		<button type="button" class="resetsaved" title="Reset Filter">Reset Filter</button>
 
 		<form name="formular">
 			<input type="hidden" name="check" value="">

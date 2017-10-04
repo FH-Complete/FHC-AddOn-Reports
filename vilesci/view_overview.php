@@ -102,7 +102,16 @@ if (!$view->loadAll())
 				$("#t1").tablesorter(
 				{
 					sortList: [[0,1]],
-					widgets: ["zebra"]
+					widgets: ["saveSort", "zebra", "filter", "stickyHeaders"],
+					headers: {6: {sorter: false, filter: false}},
+					widgetOptions : {filter_saveFilters : true}
+				});
+
+				$('.resetsaved').click(function()
+				{
+					$("#t1").trigger("filterReset");
+					location.reload();
+					return false;
 				});
 			});
 
@@ -119,6 +128,7 @@ if (!$view->loadAll())
 		<form action='view_overview.php' method='POST' name='rebuildForm'>
 			<input type='submit' value='Statische Tabellen generieren' name='action'><?php echo $rp_generateAllViews_msg; ?>
 		</form>
+		<button type="button" class="resetsaved" title="Reset Filter">Reset Filter</button>
 
 		<form name="formular">
 			<input type="hidden" name="check" value="">

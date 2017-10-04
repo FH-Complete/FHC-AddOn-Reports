@@ -173,7 +173,16 @@ if (!$chart->loadAll())
 				$("#t1").tablesorter(
 				{
 					sortList: [[0,0]],
-					widgets: ["zebra"]
+					widgets: ["saveSort", "zebra", "filter", "stickyHeaders"],
+					headers: {8: {sorter: false, filter: false}},
+					widgetOptions : {filter_saveFilters : true}
+				});
+
+				$('.resetsaved').click(function()
+				{
+					$("#t1").trigger("filterReset");
+					location.reload();
+					return false;
 				});
 			});
 
@@ -223,7 +232,8 @@ if (!$chart->loadAll())
 	</head>
 
 	<body class="background_main">
-		<a href="chart_details.php" target="frame_chart_details">Neuer Chart</a>
+		<a href="chart_details.php" target="frame_chart_details">Neuer Chart</a><br/>
+		<button type="button" class="resetsaved" title="Reset Filter">Reset Filter</button>
 
 		<form name="formular">
 			<input type="hidden" name="check" value="">
@@ -252,9 +262,6 @@ if (!$chart->loadAll())
 					</th>
 					<th>
 						DataSourceType
-					</th>
-					<th>
-						Preferences
 					</th>
 					<th>
 						Description
@@ -297,16 +304,13 @@ if (!$chart->loadAll())
 							<?php echo $chart->sourcetype ?>
 						</td>
 						<td>
-							<?php echo $chart->datasource ?>
+							<?php echo $db->convert_html_chars($chart->datasource) ?>
 						</td>
 						<td>
 							<?php echo $chart->datasource_type ?>
 						</td>
-						<td title="<?php echo $chart->preferences ?>">
-							<?php echo substr($chart->preferences, 0, 16) ?>...
-						</td>
-						<td title="<?php echo $chart->description ?>">
-							<?php echo substr($chart->description, 0, 16) ?>...
+						<td title="<?php echo $db->convert_html_chars($chart->description) ?>">
+							<?php echo substr($db->convert_html_chars($chart->description), 0, 16) ?>...
 						</td>
 						<td>
 							<a href="chart_overview.php?action=delete&chart_id=<?php echo $chart->chart_id ?>" onclick="return confdel()">entfernen</a>

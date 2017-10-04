@@ -50,7 +50,16 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 				$("#myTable").tablesorter(
 				{
 					sortList: [[1,0]],
-					widgets: ['zebra']
+					widgets: ["saveSort", "zebra", "filter", "stickyHeaders"],
+					headers: {8: {sorter: false, filter: false}},
+					widgetOptions : {filter_saveFilters : true}
+				});
+
+				$('.resetsaved').click(function()
+				{
+					$("#t1").trigger("filterReset");
+					location.reload();
+					return false;
 				});
 			});
 
@@ -61,8 +70,9 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 		</script>
 	</head>
 	<body>
-		<div style="text-align:right">
-			<a href="../../../vilesci/stammdaten/statistik_details.php?action=new" target="detail_statistik">Neu</a>
+		<div style="text-align: left">
+			<a href="../../../vilesci/stammdaten/statistik_details.php?action=new" target="detail_statistik">Neu</a><br/>
+		<button type="button" class="resetsaved" title="Reset Filter">Reset Filter</button>
 		</div>
 
 		<?php

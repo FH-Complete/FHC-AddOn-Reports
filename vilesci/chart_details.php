@@ -159,7 +159,7 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 			{
 				var options =
 				{
-					mode: 'tree',
+					mode: 'code',
 					modes: ['code', 'form', 'text', 'tree', 'view'], // allowed modes
 					onError: function (err)
 					{
@@ -176,7 +176,7 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 			#jsoneditor
 			{
 				width:  100%;
-				height: 400px;
+				height: 95%;
 			}
 			.kopf_r
 			{
@@ -188,6 +188,7 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 				border-width:1px;
 				background-color:#eeeeee;
 				padding:2px;
+				height: 90%;
 			}
 		</style>
 	</head>
@@ -203,50 +204,28 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 			<?php endforeach; ?>
 		</div>
 		<form action="chart_details.php" method="POST" name="chartform" onsubmit="return appendChartData()">
-			<table class="detail">
+			<table style="height: 95%;" class="detail">
 					<tr>
 						<td>
 							Title
 						</td>
 						<td>
-							<input class="detail" type="text" name="title" size="22" maxlength="64" value="<?php echo $chart->title ?>">
+							<input class="detail" type="text" style="width: 100%;" name="title" size="22" maxlength="64" value="<?php echo $chart->title ?>">
 						</td>
-						<td>
-							Type
-						</td>
-						<td>
-							<select name="type" id="chart_type">
-								<option value=""></option>
-								<?php foreach(chart::getPlugins() as $abk => $plugin): ?>
-									<option value="<?php echo $abk ?>"<?php echo ($chart->type === $abk ? ' selected' : '') ?>>
-										<?php echo $plugin ?>
-									</option>
-								<?php endforeach; ?>
-							</select>
+						<td colspan="2" rowspan="14" valign="top" style="width: 50%; padding-left: 10px;">
+							Preferences
+							<div id="jsoneditor"></div>
 						</td>
 					</tr>
-
 
 					<tr>
 						<td>
 							Long Title
 						</td>
 						<td>
-							<input class="detail" type="text" name="longtitle" size="22" maxlength="128" value="<?php echo $chart->longtitle ?>">
-						</td>
-						<td>
-							SourceType
-						</td>
-						<td>
-							<input class='detail' type='text' name='sourcetype' size='8' maxlength='16' value='<?php echo $chart->sourcetype ?>'>
+							<input class="detail" type="text" style="width: 100%" name="longtitle" size="22" maxlength="128" value="<?php echo $chart->longtitle ?>">
 						</td>
 					</tr>
-
-
-
-
-
-
 
 					<tr>
 						<td>Datasource Type</td>
@@ -260,6 +239,7 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 							</select>
 						</td>
 					</tr>
+					
 					<tr>
 						<td valign="top">Statistik</td>
 						<td valign="top">
@@ -273,34 +253,57 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 							</select>
 						</td>
 					</tr>
+					
 					<tr>
 						<td valign="top" class="datasource">DataSource</td>
 						<td valign="top" class="datasource" colspan="1">
 						<input id="datasource" class="detail" style="width: 100%;" type="text" name="datasource" size="55" maxlength="256" value="<?php echo $chart->datasource ?>">
 						</td>
-						<td>
-							Preferences
-						</td>
 					</tr>
+					
 					<tr>
 						<td valign="top">Description</td>
 						<td valign="top"><textarea name="description" cols="70" rows="6"><?php echo $chart->description ?></textarea></td>
-						<td colspan="2" valign="top" style="width:50%;">
-							<div id="jsoneditor"></div>
+						
+					</tr>
+					
+					<tr>
+						<td>
+							Type
+						</td>
+						<td>
+							<select name="type" id="chart_type">
+								<option value=""></option>
+								<?php foreach(chart::getPlugins() as $abk => $plugin): ?>
+									<option value="<?php echo $abk ?>"<?php echo ($chart->type === $abk ? ' selected' : '') ?>>
+										<?php echo $plugin ?>
+									</option>
+								<?php endforeach; ?>
+							</select>
+						</td>
+					</tr>	
+					
+					<tr>
+						<td>
+							SourceType
+						</td>
+						<td>
+							<input class='detail' type='text' style="width: 100%" name='sourcetype' size='8' maxlength='16' value='<?php echo $chart->sourcetype ?>'>
 						</td>
 					</tr>
+					
 					<tr>
 						<td>
 						</td>
 					</tr>
+					
 					<tr>
-						<td valign="top">
-						</td>
-						<td></td>
 						<td valign="top">
 							Publish
 							<input type="hidden" name="publish" value="0" />
 							<input type="checkbox" name="publish" value="1"<?php echo $chart->publish ? ' checked' : '' ?> />
+						</td>
+						<td>
 						</td>
 					</tr>
 					<tr>
@@ -329,12 +332,18 @@ if ((isset($_REQUEST['chart_id'])) && ((!isset($_REQUEST['neu'])) || ($_REQUEST[
 							<input type="number" name="dashboard_pos" value="<?php echo $chart->dashboard_pos ?>" />
 						</td>
 					</tr>
+					<tr>
+						<td style="height: 100%"></td>
+						<td></td>
+					</tr>
+					<tr align="right">
+						<td colspan="4">
+							<input type="hidden" name="chart_id" value="<?php echo $chart->chart_id ?>">
+							<input type="submit" value="Speichern" name="save">
+						</td>
+					</tr>
 			</table>
 			<br>
-			<div align="right" id="sub">
-				<input type="hidden" name="chart_id" value="<?php echo $chart->chart_id ?>">
-				<input type="submit" value="Speichern" name="save">
-			</div>
 		</form>
 		<script>
 		</script>

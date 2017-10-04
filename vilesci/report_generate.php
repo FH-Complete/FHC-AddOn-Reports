@@ -28,6 +28,8 @@
 	require_once('../../../include/process.class.php');
 	require_once('../../../include/filter.class.php');
 	require_once('../../../include/webservicelog.class.php');
+	require_once('../../../include/studiengang.class.php');
+	require_once('../../../include/organisationsform.class.php');
 
 	$iconsdir='/etc/asciidoc/images/icons';
 	$reportsTmpDir = sys_get_temp_dir() . "/reports_" . uniqid();
@@ -226,9 +228,69 @@
 	$crlf=PHP_EOL;
 	$content = '';
 	$errorstr = ''; //fehler beim insert
+	$studiengang_typ = '';
 
+	//Filterparameter ermitteln und in Variablen schreiben
+	parse_str($filter->getVars(), $parsed_get_vars);
+	if (isset($parsed_get_vars['Studiengang']))
+	{
+		$studiengang_kz = $parsed_get_vars['Studiengang'];
+		$studiengang = new studiengang($studiengang_kz);
+		$studiengang_bezeichnung = $studiengang->bezeichnung;
+		switch ($studiengang->typ)
+		{
+			case 'b';
+				$studiengang_typ = 'Bachelor-';
+				break;
+			case 'm';
+				$studiengang_typ = 'Master-';
+				break;
+			case 'd';
+				$studiengang_typ = 'Diplom-';
+				break;
+		}
+	}	
+	else 
+		$studiengang_bezeichnung = '';
+	
+	if (isset($parsed_get_vars['Orgform']))
+	{
+		$orgform_kurzbz = $parsed_get_vars['Orgform'];
+		$orgform = new organisationsform($orgform_kurzbz);
+		$orgform_bezeichnung = $orgform->bezeichnung;
+	}
+	else
+		$orgform_bezeichnung = '';
+	
+	if (isset($parsed_get_vars['Studienjahr']))
+		$studienjahr = $parsed_get_vars['Studienjahr'];
+	else
+		$studienjahr = '';
+	
 	switch ($report->format)
 	{
+		/*case 'asciidoc':
+			$filename .= '.asciidoc';
+			$content .= '= Report - '.$report->title.$crlf;
+			$content .= $crlf.'[float]';
+			$content .= $crlf.'==== Studiengang '.$studiengang_bezeichnung;
+			$content .= $crlf.'==== Studiengang '.$studiengang_bezeichnung.$crlf.$crlf;
+			//$content .= $crlf.'Studiengang '.$studiengang_bezeichnung.$crlf.$crlf;
+
+			if ($orgform_bezeichnung != '')
+				$content .= $crlf.' + Organisationsform '.$orgform_bezeichnung.$crlf;
+			if ($studienjahr != '')
+				$content .= $crlf.' + Studienjahr '.$studienjahr.$crlf;
+			$content .= $crlf.'<<<'.$crlf.$crlf;
+			$content .= $report->header.$crlf.$report->printParam('attr',$crlf).":chartDir: ".$reportsTmpDir.$crlf;
+			$content .= $crlf.'<<<'.$crlf.$crlf;
+			$content .= $crlf.'== Einleitung'.$crlf.$report->description.$crlf;
+			$content .= $crlf.'<<<'.$crlf.$crlf;
+			$content .= $crlf.'== Report'.$crlf.$report->body.$crlf;
+			$content .= $crlf.'<<<'.$crlf.$crlf;
+			$content .= $crlf.'== Hinweise und Parameter'.$crlf.$report->footer.$crlf;
+			$content .= $crlf.'=== Parameter'.$crlf.'- Erstellung: *'.date("D, j M Y").'*'.$crlf.'- Datenstand: *'.date(DATE_RFC2822).'*'.$crlf.$report->printParam('param',$crlf).$crlf;
+			break;*/
 		case 'asciidoc':
 			$filename.='.asciidoc';
 			$content.='= Report - '.$report->title.$crlf;
@@ -238,14 +300,25 @@
 			$content.=$crlf.'<<<'.$crlf.$crlf;
 			$content.=$crlf.'== Report'.$crlf.$report->body.$crlf;
 			$content.=$crlf.'<<<'.$crlf.$crlf;
-			$content.=$crlf.'== Hinweise'.$crlf.$report->footer.$crlf;
+			$content.=$crlf.'== Hinweise und Parameter'.$crlf.$report->footer.$crlf;
 			$content.=$crlf.'=== Parameter'.$crlf.'- Erstellung: *'.date("D, j M Y").'*'.$crlf.'- Datenstand: *'.date(DATE_RFC2822).'*'.$crlf.$report->printParam('param',$crlf).$crlf;
 			break;
 	}
 
 	// **** Write DocInfo
+	$docinfo = $report->docinfo;
+	$docinfo .= '';
+	$docinfo .= '<subtitle>';
+	
+	$docinfo .= $studiengang_typ.'Studiengang '.$studiengang_bezeichnung.' + \ '.$crlf.$crlf;
+	
+	if ($orgform_bezeichnung != '')
+		$docinfo .= 'Organisationsform '.$orgform_bezeichnung.$crlf;
+	if ($studienjahr != '')
+		$docinfo .= 'Studienjahr '.$studienjahr.$crlf;
+	$docinfo .= '</subtitle>';
 	$fh=fopen($docinfoFilename,'w');
-	fwrite($fh,$report->docinfo);
+	fwrite($fh,$docinfo);
 	fclose($fh);
 	addOutput($errstr, 1, "DOCINFO: '.$docinfoFilename.' has been written!");
 
