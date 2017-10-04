@@ -135,6 +135,7 @@ function showFilter(statistik_kurzbz, report_id, chart_id, putlog)
 	$('#spinner').hide();
 	$('#welcome').hide();
 	$('#content').hide();
+	$('#glossar').hide();
 	$("#filter-PdfLink").hide();
 	$("#filter-debugLink").hide();
 
@@ -156,6 +157,25 @@ function showFilter(statistik_kurzbz, report_id, chart_id, putlog)
 			loadData(statistik_kurzbz, report_id, chart_id,{putlog:putlog});
 		}
 	});
+	
+	//charts
+	if(statistik_kurzbz !== undefined && chart_id !== undefined)
+	{
+		$('.list-group-item').removeClass('itemActive');
+		$('#list_item_chart_'+chart_id).addClass('itemActive');
+	}
+	//pivots
+	else if(statistik_kurzbz !== undefined  && chart_id == undefined)
+	{
+		$('.list-group-item').removeClass('itemActive');
+		$('#list_item_statistik_'+statistik_kurzbz).addClass('itemActive');
+	}
+	//reports
+	else if(report_id !== undefined)
+	{
+		$('.list-group-item').removeClass('itemActive');
+		$('#list_item_report_'+report_id).addClass('itemActive');
+	}
 
 	$('#filter-input').removeAttr('data-chart_id');
 	$('#filter-input').removeAttr('data-statistik_kurzbz');
@@ -196,13 +216,15 @@ function resizeContent()
 }
 
 
-function showSidebar(num, type)
+function showSidebar(num, type, reference_bezeichnung)
 {
 	resizeContent();
 	$('#sidebar').show();
+	$('#titel_div').html(reference_bezeichnung);
 	$('.reports_sidebar_entry').hide();
 	$('.report_'+num+"_"+type).show();
 	$('.hide-button').show();
+	
 
 	$('#sidebar').attr('data-menu', type);
 
@@ -216,9 +238,25 @@ $(function()
 
 	resizeContent();
 
-  $(window).resize(function() {
-  resizeContent();
-  }).resize();
+	$(window).resize(function() {
+	resizeContent();
+	}).resize();
+	
+	$( "#glossar_link" ).click(function() 
+	{
+		resizeContent();
+		$('.reports_sidebar_entry').hide();
+		$("#filter-PdfLink").hide();
+		$("#filter-debugLink").hide();
+		$('#spinner').hide();
+		$('#filter').hide();
+		$('#welcome').hide();
+		
+		$('#sidebar').hide();
+		$(window).trigger('resize');
+		$('#glossar').show();
+	});
+	
 });
 
 
@@ -227,6 +265,24 @@ function hideSidebar()
 	resizeContent();
 	// Sidebar ausblenden
 	$('#sidebar').hide();
+
+	$(window).trigger('resize');
+}
+function minimizeSidebar()
+{
+	resizeContent();
+	// Sidebar ausblenden
+	$('#sidebar').hide();
+	$('#maximize_sidebar_button').show();
+
+	$(window).trigger('resize');
+}
+function maximizeSidebar()
+{
+	resizeContent();
+	// Sidebar ausblenden
+	$('#sidebar').show();
+	$('#maximize_sidebar_button').hide();
 
 	$(window).trigger('resize');
 }

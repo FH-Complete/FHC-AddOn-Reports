@@ -1087,6 +1087,7 @@ EOT;
 
 				'printChart' => 'Chart Drucken',
 
+				'downloadCSV' => 'CSV-Rohdaten herunterladen',
 				'downloadJPEG' => 'JPEG herunterladen',
 				'downloadPDF' => 'PDF herunterladen',
 				'downloadPNG' => 'PNG herunterladen',

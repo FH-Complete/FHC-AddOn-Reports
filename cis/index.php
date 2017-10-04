@@ -27,6 +27,7 @@ require_once('../../../include/statistik.class.php');
 require_once('../include/rp_chart.class.php');
 require_once('../include/rp_report.class.php');
 require_once('../include/rp_gruppe.class.php');
+require_once('../include/rp_attribut.class.php');
 
 $user = get_uid();
 $rechte = new benutzerberechtigung();
@@ -36,7 +37,17 @@ $rechte->getBerechtigungen($user);
 $rp_gruppe = new rp_gruppe();
 $rp_gruppe->loadAll();
 $rp_gruppe->loadRecursive();
-$daten=$rp_gruppe->recursive;
+$daten = $rp_gruppe->recursive;
+
+$attribute = new rp_attribut();
+$attribute->loadAll();
+
+//Sortiert die Attribute alphabetisch
+function sortAttributes($a, $b)
+{
+	return strcmp(strtolower($a->longtitle['German']), strtolower($b->longtitle['German']));
+}
+usort($attribute->result, "sortAttributes");
 
 //Sortierfunktionen für das seitliche Menue
 function titleSort($a, $b) {return strcmp($a->title, $b->title);}
@@ -54,15 +65,15 @@ function getHtmlMenue($data, $rechte)
 
 			if(isset($d->charts) && count($d->charts)>0)
 			{
-				$htmlstr.='<li class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'charts\')">&emsp;Charts<span class="badge" style="float:right; margin-right:10px;">'.count($d->charts).'</span></li>';
+				$htmlstr.='<li class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'charts\', \''.$d->bezeichnung.'\')">&emsp;Charts<span class="badge" style="float:right; margin-right:10px;">'.count($d->charts).'</span></li>';
 			}
 			if(isset($d->statistiken) && count($d->statistiken)>0)
 			{
-				$htmlstr.='<li class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'data\')">&emsp;Pivots<span class="badge" style="float:right; margin-right:10px;">'.count($d->statistiken).'</span></li>';
+				$htmlstr.='<li class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'data\', \''.$d->bezeichnung.'\')">&emsp;Pivots<span class="badge" style="float:right; margin-right:10px;">'.count($d->statistiken).'</span></li>';
 			}
 			if(isset($d->reports) && count($d->reports)>0)
 			{
-				$htmlstr.='<li class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'reports\')">&emsp;Reports<span class="badge" style="float:right; margin-right:10px;">'.count($d->reports).'</span></li>';
+				$htmlstr.='<li class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'reports\', \''.$d->bezeichnung.'\')">&emsp;Reports<span class="badge" style="float:right; margin-right:10px;">'.count($d->reports).'</span></li>';
 			}
 		}
 	}
@@ -146,10 +157,36 @@ function addZuordnungen($entity,$rechte)
 		<script src="../include/js/bootstrap.min.js"></script>
 		<script src="../include/js/offcanvas.js"></script>
 		<script type="text/javascript" src="reporting.js"></script>
+		<script type="text/javascript">
+		$(function() 
+		{
+			$('.pagination a').on('click', function()
+			{
+				var letter = $(this).attr('name');
+				$('#attr_list div').hide();
+				$('.pagination li').removeClass('active');
+				if (letter == 'Alle')
+				{
+					$('#attr_list div').show();
+					$('.pagination li[name='+letter+']').addClass('active');
+				}
+				else
+				{
+					$('#attr_list div[name='+letter+']').show();
+					$('.pagination li[name='+letter+']').addClass('active');
+				}
+			});
+		});
+		</script>
 		<style>
 			.FHCClickable
 			{
 				cursor: pointer;
+			}
+			
+			.itemActive
+			{
+				background-color: #EEEEEE;
 			}
 
 			.ddEntry
@@ -165,6 +202,13 @@ function addZuordnungen($entity,$rechte)
 				color: #DDD;
 				border-radius: 5px;
 			}
+			.col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9
+			{
+				float: right;
+			}
+
+			a.list-group-item:hover { background-color: #EEEEEE;} 
+			a.list-group-item:active { background-color: #EEEEEE;}
 		</style>
 	</head>
 
@@ -214,6 +258,9 @@ function addZuordnungen($entity,$rechte)
 							</li>
 							<?php endif;?>
 						<?php endforeach;?>
+						<li>
+							<a href="#data" id="glossar_link">Glossar</a>
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -253,8 +300,19 @@ function addZuordnungen($entity,$rechte)
 							</div>
 						</div>
 					</div>
+					
+					<div class="sidebar-offcanvas" role="navigation" style="float: left">
+						<div class="list-group">
+							<ul class="nav">
+								<div id="maximize_sidebar_button" onclick="maximizeSidebar()" style="display: none;">
+									<li><span class="glyphicon glyphicon-chevron-down"></span></li>
+								</div>
+							</ul>
+							<!--<button id="maximize_sidebar_button"  style="box-sizing: border-box; position: relative; min-height: 1px; padding-right: 5px; padding-left: 5px; display: none;"><span class="glyphicon glyphicon-chevron-down"></span></button>-->
+						</div>
+					</div>
 
-					<div style="display: none;" id="filter">
+					<div id="filter" style="display: none;">
 						<div class="col-xs-12 col-sm-9">
 							<form class="form-inline" onsubmit="return false">
 								<span id="filter-input"></span>
@@ -266,50 +324,122 @@ function addZuordnungen($entity,$rechte)
 					</div>
 
 					<div id="content" style="display:none;"></div>
+					
+					<div id="glossar" style="display:none;">
+						<div class="page-header">
+							<h2>Glossar</h2>
+							<p>Begriffsdefinitionen</p>
+							<ul class="pagination">
+							<?php 
+								// Create an array with letters from A-Z
+								$alphabeth_arr = array();
+								$alphabeth_arr[] .= 'Alle';
+								foreach (range('A', 'Z') as $char) 
+									$alphabeth_arr[] = $char;
+								
+								// Add ÄÖÜ to array
+									$alphabeth_arr[] .= 'Ä';
+									$alphabeth_arr[] .= 'Ö';
+									$alphabeth_arr[] .= 'Ü';
+								
+								// Create an array with all occurring initial letters 
+								$letter_arr = array();
+								foreach($attribute->result as $att)
+								{
+									$letter_arr[] = mb_strtoupper(mb_substr($att->longtitle["German"], 0, 1));
+								}
+								$letter_arr = array_unique($letter_arr);
+	
+								$letter = '';
+								foreach ($alphabeth_arr AS $key => $value)
+								{
+									if (in_array($value, $letter_arr) || $value ==  'Alle')
+									{
+										if ($value == 'Alle')
+											echo '<li class="active" name="'.$value.'"><a href="#" name="'.$value.'">'.$value.'</a></li>';
+										elseif ($value == 'Ä')
+											echo '<li name="AE"><a href="#" name="AE">'.$value.'</a></li>';
+										elseif ($value == 'Ö')
+											echo '<li name="OE"><a href="#" name="OE">'.$value.'</a></li>';
+										elseif ($value == 'Ü')
+											echo '<li name="UE"><a href="#" name="UE">'.$value.'</a></li>';
+										else 
+											echo '<li name="'.$value.'"><a href="#" name="'.$value.'">'.$value.'</a></li>';
+									}
+									else 
+										echo '<li name="'.$value.'" class="disabled"><a href="#" name="'.$value.'">'.$value.'</a></li>';
+								}
+							?>
+	
+							</ul>
+						</div>
+						<div class="row" id="attr_list">
+						<?php 
+							$name = '';
+							foreach($attribute->result as $att)
+							{
+								if (mb_strtoupper(mb_substr($att->longtitle["German"], 0, 1)) == 'Ä')
+									$name = 'AE';
+								elseif (mb_strtoupper(mb_substr($att->longtitle["German"], 0, 1)) == 'Ö')
+									$name = 'OE';
+								elseif (mb_strtoupper(mb_substr($att->longtitle["German"], 0, 1)) == 'Ü')
+									$name = 'UE';
+								else
+									$name = mb_strtoupper(mb_substr($att->longtitle["German"], 0, 1));
+								echo '	<div class="col-12 col-sm-12 col-lg-12" name="'.$name.'">
+											<h3>'.$att->longtitle["German"].'</h3>
+											<p>'.$att->description["German"].'</p>
+ 											<p>Abkürzungen: '.$att->shorttitle["German"].', '.$att->middletitle["German"].'</p>
+										</div>';
+							}
+						?>
+						</div>
+					</div>
 
 				</div>
 
 
-				<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+				<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation" style="float: right">
 					<div class="list-group">
+					<h4 id="titel_div">Titel</h4>
 						<ul class="nav">
 							<?php foreach($daten as $l1):?>
-										<?php if(isset($l1->children)):?>
-											<?php foreach($l1->children as $l2):?>
-														<?php if(isset($l2->statistiken) && count($l2->statistiken) > 0):?>
-														<?php usort($l2->statistiken, "bezeichnungSort");?>
-															<?php foreach($l2->statistiken as $st): ?>
-																<div class="report_<?php echo $l2->reportgruppe_id ?>_data reports_sidebar_entry" style="display: none;">
-																	<li><a class="list-group-item FHCClickable" onclick='loadStatistik("<?php echo urlencode($st->statistik_kurzbz)?>", true)'><?php echo $st->bezeichnung?></a></li>
-																</div>
-															<?php endforeach; ?>
-														<?php endif;?>
-														<?php if(isset($l2->charts) && count($l2->charts) > 0):?>
-														<?php usort($l2->charts, "titleSort");?>
-															<?php foreach($l2->charts as $ch):?>
-																<div class="report_<?php echo $l2->reportgruppe_id ;?>_charts reports_sidebar_entry" style="display: none;">
-																	<li><a class="list-group-item FHCClickable" onclick='loadChart(<?php echo urlencode($ch->chart_id)?>, "<?php echo urlencode($ch->statistik_kurzbz)?>", true)'><?php echo $ch->title?></a></li>
-																</div>
-															<?php endforeach; ?>
-														<?php endif;?>
-														<?php if(isset($l2->reports) && count($l2->reports) > 0):?>
-														<?php usort($l2->reports, "titleSort");?>
-															<?php foreach($l2->reports as $re): ?>
-																<div class="report_<?php echo $l2->reportgruppe_id ?>_reports reports_sidebar_entry" style="display: none;">
-																	<li><a class="list-group-item FHCClickable" onclick='loadReport(<?php echo urlencode($re->report_id)?>, true)'><?php echo $re->title?></a></li>
-																</div>
-															<?php endforeach; ?>
-														<?php endif;?>
-											<?php endforeach;?>
+								<?php if(isset($l1->children)):?>
+									<?php foreach($l1->children as $l2):?>
+										<?php if(isset($l2->statistiken) && count($l2->statistiken) > 0):?>
+										<?php usort($l2->statistiken, "bezeichnungSort");?>
+											<?php foreach($l2->statistiken as $st): ?>
+												<div class="report_<?php echo $l2->reportgruppe_id ?>_data reports_sidebar_entry" style="display: none;">
+													<li><a id="list_item_statistik_<?php echo urlencode($st->statistik_kurzbz)?>" class="list-group-item FHCClickable" onclick='loadStatistik("<?php echo urlencode($st->statistik_kurzbz)?>", true)'><span class="glyphicon glyphicon-th"></span>&nbsp;&nbsp;&nbsp;<?php echo $st->bezeichnung?></a></li>
+												</div>
+											<?php endforeach; ?>
 										<?php endif;?>
+										<?php if(isset($l2->charts) && count($l2->charts) > 0):?>
+										<?php usort($l2->charts, "titleSort");?>
+											<?php foreach($l2->charts as $ch):?>
+												<div class="report_<?php echo $l2->reportgruppe_id ;?>_charts reports_sidebar_entry" style="display: none;">
+													<li><a id="list_item_chart_<?php echo urlencode($ch->chart_id)?>" class="list-group-item FHCClickable" onclick='loadChart(<?php echo urlencode($ch->chart_id)?>, "<?php echo urlencode($ch->statistik_kurzbz)?>", true)'><span class="glyphicon glyphicon-stats"></span>&nbsp;&nbsp;&nbsp;<?php echo $ch->title?></a></li>
+												</div>
+											<?php endforeach; ?>
+										<?php endif;?>
+										<?php if(isset($l2->reports) && count($l2->reports) > 0):?>
+										<?php usort($l2->reports, "titleSort");?>
+											<?php foreach($l2->reports as $re): ?>
+												<div class="report_<?php echo $l2->reportgruppe_id ?>_reports reports_sidebar_entry" style="display: none;">
+													<li><a id="list_item_report_<?php echo urlencode($re->report_id)?>" class="list-group-item FHCClickable" onclick='loadReport(<?php echo urlencode($re->report_id)?>, true)'><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;&nbsp;<?php echo $re->title?></a></li>
+												</div>
+											<?php endforeach; ?>
+										<?php endif;?>
+									<?php endforeach;?>
+								<?php endif;?>
 							<?php endforeach;?>
-							<li class="hide-button FHCClickable" onclick="hideSidebar()"><span class="glyphicon glyphicon-chevron-up"></span></li>
+							<li class="hide-button FHCClickable" onclick="minimizeSidebar()"><span class="glyphicon glyphicon-chevron-up"></span></li>
 						</ul>
 					</div>
 				</div>
 			</div>
-		<footer class="footer">
+		<!--<footer class="footer">
 			<p class="text-muted">&copy; FH Technikum Wien 2015</p>
-		</footer>
+		</footer>-->
 	</body>
 </html>
