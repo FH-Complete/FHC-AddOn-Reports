@@ -61,8 +61,16 @@ function getHtmlMenue($data, $rechte)
 	{
 		if(addZuordnungen($d, $rechte))
 		{
-			$htmlstr.='<li><a style="font-weight: bold;"> '.$d->bezeichnung.'</a></li>';
+			$anzahl=0;
+			if(isset($d->charts))
+				$anzahl += count($d->charts);
+			if(isset($d->statistiken))
+				$anzahl += count($d->statistiken);
+			if(isset($d->reports))
+				$anzahl += count($d->reports);
 
+			$htmlstr.='<li><a style="font-weight: bold;" class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'all\', \''.$d->bezeichnung.'\')"> '.$d->bezeichnung.'<span class="badge" style="margin-left:10px;">'.($anzahl).'</span></a></li>';
+/*
 			if(isset($d->charts) && count($d->charts)>0)
 			{
 				$htmlstr.='<li class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'charts\', \''.$d->bezeichnung.'\')">&emsp;Charts<span class="badge" style="float:right; margin-right:10px;">'.count($d->charts).'</span></li>';
@@ -74,7 +82,7 @@ function getHtmlMenue($data, $rechte)
 			if(isset($d->reports) && count($d->reports)>0)
 			{
 				$htmlstr.='<li class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'reports\', \''.$d->bezeichnung.'\')">&emsp;Reports<span class="badge" style="float:right; margin-right:10px;">'.count($d->reports).'</span></li>';
-			}
+			}*/
 		}
 	}
 
@@ -158,7 +166,7 @@ function addZuordnungen($entity,$rechte)
 		<script src="../include/js/offcanvas.js"></script>
 		<script type="text/javascript" src="reporting.js"></script>
 		<script type="text/javascript">
-		$(function() 
+		$(function()
 		{
 			$('.pagination a').on('click', function()
 			{
@@ -183,7 +191,7 @@ function addZuordnungen($entity,$rechte)
 			{
 				cursor: pointer;
 			}
-			
+
 			.itemActive
 			{
 				background-color: #EEEEEE;
@@ -207,8 +215,22 @@ function addZuordnungen($entity,$rechte)
 				float: right;
 			}
 
-			a.list-group-item:hover { background-color: #EEEEEE;} 
+			a.list-group-item:hover { background-color: #EEEEEE;}
 			a.list-group-item:active { background-color: #EEEEEE;}
+
+			a.ddEntry
+			{
+				cursor: pointer;
+				padding-top: 3px;
+				padding-bottom: 6px;
+			}
+
+			a.ddEntry:hover
+			{
+				background-color: #333;
+				color: #DDD;
+				border-radius: 5px;
+			}
 		</style>
 	</head>
 
@@ -300,7 +322,7 @@ function addZuordnungen($entity,$rechte)
 							</div>
 						</div>
 					</div>
-					
+
 					<div class="sidebar-offcanvas" role="navigation" style="float: left">
 						<div class="list-group">
 							<ul class="nav">
@@ -324,32 +346,32 @@ function addZuordnungen($entity,$rechte)
 					</div>
 
 					<div id="content" style="display:none;"></div>
-					
+
 					<div id="glossar" style="display:none;">
 						<div class="page-header">
 							<h2>Glossar</h2>
 							<p>Begriffsdefinitionen</p>
 							<ul class="pagination">
-							<?php 
+							<?php
 								// Create an array with letters from A-Z
 								$alphabeth_arr = array();
 								$alphabeth_arr[] .= 'Alle';
-								foreach (range('A', 'Z') as $char) 
+								foreach (range('A', 'Z') as $char)
 									$alphabeth_arr[] = $char;
-								
+
 								// Add ÄÖÜ to array
 									$alphabeth_arr[] .= 'Ä';
 									$alphabeth_arr[] .= 'Ö';
 									$alphabeth_arr[] .= 'Ü';
-								
-								// Create an array with all occurring initial letters 
+
+								// Create an array with all occurring initial letters
 								$letter_arr = array();
 								foreach($attribute->result as $att)
 								{
 									$letter_arr[] = mb_strtoupper(mb_substr($att->longtitle["German"], 0, 1));
 								}
 								$letter_arr = array_unique($letter_arr);
-	
+
 								$letter = '';
 								foreach ($alphabeth_arr AS $key => $value)
 								{
@@ -363,18 +385,18 @@ function addZuordnungen($entity,$rechte)
 											echo '<li name="OE"><a href="#" name="OE">'.$value.'</a></li>';
 										elseif ($value == 'Ü')
 											echo '<li name="UE"><a href="#" name="UE">'.$value.'</a></li>';
-										else 
+										else
 											echo '<li name="'.$value.'"><a href="#" name="'.$value.'">'.$value.'</a></li>';
 									}
-									else 
+									else
 										echo '<li name="'.$value.'" class="disabled"><a href="#" name="'.$value.'">'.$value.'</a></li>';
 								}
 							?>
-	
+
 							</ul>
 						</div>
 						<div class="row" id="attr_list">
-						<?php 
+						<?php
 							$name = '';
 							foreach($attribute->result as $att)
 							{

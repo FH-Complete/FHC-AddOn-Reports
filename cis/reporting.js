@@ -157,7 +157,7 @@ function showFilter(statistik_kurzbz, report_id, chart_id, putlog)
 			loadData(statistik_kurzbz, report_id, chart_id,{putlog:putlog});
 		}
 	});
-	
+
 	//charts
 	if(statistik_kurzbz !== undefined && chart_id !== undefined)
 	{
@@ -222,9 +222,16 @@ function showSidebar(num, type, reference_bezeichnung)
 	$('#sidebar').show();
 	$('#titel_div').html(reference_bezeichnung);
 	$('.reports_sidebar_entry').hide();
-	$('.report_'+num+"_"+type).show();
+	if(type=='all')
+	{
+		$('.report_'+num+"_charts").show();
+		$('.report_'+num+"_data").show();
+		$('.report_'+num+"_reports").show();
+	}
+	else
+		$('.report_'+num+"_"+type).show();
 	$('.hide-button').show();
-	
+
 
 	$('#sidebar').attr('data-menu', type);
 
@@ -241,8 +248,8 @@ $(function()
 	$(window).resize(function() {
 	resizeContent();
 	}).resize();
-	
-	$( "#glossar_link" ).click(function() 
+
+	$( "#glossar_link" ).click(function()
 	{
 		resizeContent();
 		$('.reports_sidebar_entry').hide();
@@ -251,12 +258,12 @@ $(function()
 		$('#spinner').hide();
 		$('#filter').hide();
 		$('#welcome').hide();
-		
+
 		$('#sidebar').hide();
 		$(window).trigger('resize');
 		$('#glossar').show();
 	});
-	
+
 });
 
 
