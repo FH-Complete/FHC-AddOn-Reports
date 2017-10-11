@@ -33,6 +33,8 @@ $user = get_uid();
 $rechte = new benutzerberechtigung();
 $rechte->getBerechtigungen($user);
 
+if (!$rechte->isBerechtigt('addon/reports', null, 's'))
+	die ($rechte->errormsg);
 
 $rp_gruppe = new rp_gruppe();
 $rp_gruppe->loadAll();
@@ -41,6 +43,18 @@ $daten = $rp_gruppe->recursive;
 
 $attribute = new rp_attribut();
 $attribute->loadAll();
+
+$portalbeschreibung = array(); // Array mit HTML-formatiertem String zur Beschreibung der Startseite des Portals
+
+//Das Attribut "_portalbeschreibung_" wird für die Startseite verwendet und wird deshalb rausgefiltert und in die Variable $portalbeschreibung geschrieben
+foreach ($attribute->result AS $key => $attr)
+{
+	if ($attr->shorttitle['German'] == '_portalbeschreibung_')
+	{
+		$portalbeschreibung['German'] = $attr->description['German'];
+		unset ($attribute->result[$key]);
+	}
+}
 
 //Sortiert die Attribute alphabetisch
 function sortAttributes($a, $b)
@@ -191,19 +205,16 @@ function addZuordnungen($entity,$rechte)
 			{
 				cursor: pointer;
 			}
-
 			.itemActive
 			{
 				background-color: #EEEEEE;
 			}
-
 			.ddEntry
 			{
 				cursor: pointer;
 				padding-top: 3px;
 				padding-bottom: 6px;
 			}
-
 			.ddEntry:hover
 			{
 				background-color: #333;
@@ -214,22 +225,31 @@ function addZuordnungen($entity,$rechte)
 			{
 				float: right;
 			}
-
 			a.list-group-item:hover { background-color: #EEEEEE;}
 			a.list-group-item:active { background-color: #EEEEEE;}
-
 			a.ddEntry
 			{
 				cursor: pointer;
 				padding-top: 3px;
 				padding-bottom: 6px;
 			}
-
 			a.ddEntry:hover
 			{
 				background-color: #333;
 				color: #DDD;
 				border-radius: 5px;
+			}
+			.glyphicon-th
+			{
+				color: #FFE79F;
+			}			
+			.glyphicon-stats
+			{
+				color: #9FB7FF;
+			}
+			.glyphicon-file
+			{
+				color: #FF768C;
 			}
 		</style>
 	</head>
@@ -303,26 +323,8 @@ function addZuordnungen($entity,$rechte)
 						<button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
 					</p>
 					<div id="welcome">
-						<div class="jumbotron">
-							<h2>FH Technikum Wien</h2>
-							<p>Sie befinden sich im Reporting-System der FH Technikum Wien. Das System ist in 3 Bereiche gegliedert.</p>
-						</div>
-						<div class="row">
-							<div class="col-6 col-sm-6 col-lg-4">
-								<h2>Data</h2>
-								<p>Auswertungen werden in einer Tabelle mittels Zahlen gezeigt. Klassische Features wie Sortierten und Gruppieren sind hier möglich.</p>
-							</div>
-							<div class="col-6 col-sm-6 col-lg-4">
-								<h2>Charts</h2>
-								<p>Um Daten schneller zu Überblicken sind Charts sehr behilflich. Diversen Ansichten wie Bar-Diagramme oder Spidergraphs sind hier in Verwendung.</p>
-							</div>
-							<div class="col-6 col-sm-6 col-lg-4">
-								<h2>Reports</h2>
-								<p>Speziell angefertigte Reports sind ein Kombination aus Daten, Charts und Texten. Teilweise sind diese auch in anderen Formaten wie zB. PDF verfügbar.</p>
-							</div>
-						</div>
+						<?php echo (isset ($portalbeschreibung['German'])?$portalbeschreibung['German']:''); //Welcome-text kommt aus Attribut "_portalbeschreibung_"?>
 					</div>
-
 					<div class="sidebar-offcanvas" role="navigation" style="float: left">
 						<div class="list-group">
 							<ul class="nav">
@@ -333,7 +335,6 @@ function addZuordnungen($entity,$rechte)
 							<!--<button id="maximize_sidebar_button"  style="box-sizing: border-box; position: relative; min-height: 1px; padding-right: 5px; padding-left: 5px; display: none;"><span class="glyphicon glyphicon-chevron-down"></span></button>-->
 						</div>
 					</div>
-
 					<div id="filter" style="display: none;">
 						<div class="col-xs-12 col-sm-9">
 							<form class="form-inline" onsubmit="return false">
@@ -423,7 +424,7 @@ function addZuordnungen($entity,$rechte)
 
 				<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation" style="float: right">
 					<div class="list-group">
-					<h4 id="titel_div">Titel</h4>
+					<h4 id="titel_div"></h4>
 						<ul class="nav">
 							<?php foreach($daten as $l1):?>
 								<?php if(isset($l1->children)):?>
@@ -432,7 +433,14 @@ function addZuordnungen($entity,$rechte)
 										<?php usort($l2->statistiken, "bezeichnungSort");?>
 											<?php foreach($l2->statistiken as $st): ?>
 												<div class="report_<?php echo $l2->reportgruppe_id ?>_data reports_sidebar_entry" style="display: none;">
-													<li><a id="list_item_statistik_<?php echo urlencode($st->statistik_kurzbz)?>" class="list-group-item FHCClickable" onclick='loadStatistik("<?php echo urlencode($st->statistik_kurzbz)?>", true)'><span class="glyphicon glyphicon-th"></span>&nbsp;&nbsp;&nbsp;<?php echo $st->bezeichnung?></a></li>
+													<li>
+														<a 	id="list_item_statistik_<?php echo urlencode($st->statistik_kurzbz)?>" 
+															class="list-group-item FHCClickable" 
+															onclick='loadStatistik("<?php echo urlencode($st->statistik_kurzbz)?>", true)'>
+															<span class="glyphicon glyphicon-th"></span>
+															&nbsp;&nbsp;&nbsp;<?php echo $st->bezeichnung?>
+														</a>
+													</li>
 												</div>
 											<?php endforeach; ?>
 										<?php endif;?>
@@ -440,7 +448,14 @@ function addZuordnungen($entity,$rechte)
 										<?php usort($l2->charts, "titleSort");?>
 											<?php foreach($l2->charts as $ch):?>
 												<div class="report_<?php echo $l2->reportgruppe_id ;?>_charts reports_sidebar_entry" style="display: none;">
-													<li><a id="list_item_chart_<?php echo urlencode($ch->chart_id)?>" class="list-group-item FHCClickable" onclick='loadChart(<?php echo urlencode($ch->chart_id)?>, "<?php echo urlencode($ch->statistik_kurzbz)?>", true)'><span class="glyphicon glyphicon-stats"></span>&nbsp;&nbsp;&nbsp;<?php echo $ch->title?></a></li>
+													<li>
+														<a 	id="list_item_chart_<?php echo urlencode($ch->chart_id)?>" 
+															class="list-group-item FHCClickable" 
+															onclick='loadChart(<?php echo urlencode($ch->chart_id)?>, "<?php echo urlencode($ch->statistik_kurzbz)?>", true)'>
+															<span class="glyphicon glyphicon-stats"></span>
+															&nbsp;&nbsp;&nbsp;<?php echo $ch->title?>
+														</a>
+													</li>
 												</div>
 											<?php endforeach; ?>
 										<?php endif;?>
@@ -448,7 +463,13 @@ function addZuordnungen($entity,$rechte)
 										<?php usort($l2->reports, "titleSort");?>
 											<?php foreach($l2->reports as $re): ?>
 												<div class="report_<?php echo $l2->reportgruppe_id ?>_reports reports_sidebar_entry" style="display: none;">
-													<li><a id="list_item_report_<?php echo urlencode($re->report_id)?>" class="list-group-item FHCClickable" onclick='loadReport(<?php echo urlencode($re->report_id)?>, true)'><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;&nbsp;<?php echo $re->title?></a></li>
+													<li>
+														<a 	id="list_item_report_<?php echo urlencode($re->report_id)?>" 
+															class="list-group-item FHCClickable" onclick='loadReport(<?php echo urlencode($re->report_id)?>, true)'>
+															<span class="glyphicon glyphicon-file"></span>
+															&nbsp;&nbsp;&nbsp;<?php echo $re->title?>
+														</a>
+													</li>
 												</div>
 											<?php endforeach; ?>
 										<?php endif;?>
