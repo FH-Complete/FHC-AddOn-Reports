@@ -30,12 +30,26 @@ if($result = $db->db_query("SELECT * FROM system.tbl_berechtigung WHERE berechti
 	if($db->db_num_rows($result)==0)
 	{
 		$qry = "INSERT INTO system.tbl_berechtigung(berechtigung_kurzbz, beschreibung)
-				VALUES('addon/reports','AddOn Reports');";
+				VALUES('addon/reports','AddOn Reports Basisrecht');";
 
 		if(!$db->db_query($qry))
 			echo '<strong>Berechtigung: '.$db->db_last_error().'</strong><br>';
 		else
 			echo 'Neue Berechtigung addon/reports hinzugefuegt!<br>';
+	}
+}
+//Berechtigung für das Verwalten von Reports hinzufügen
+if($result = $db->db_query("SELECT * FROM system.tbl_berechtigung WHERE berechtigung_kurzbz='addon/reports_verwaltung'"))
+{
+	if($db->db_num_rows($result)==0)
+	{
+		$qry = "INSERT INTO system.tbl_berechtigung(berechtigung_kurzbz, beschreibung)
+				VALUES('addon/reports_verwaltung','Reports im VileSci verwalten');";
+		
+		if(!$db->db_query($qry))
+			echo '<strong>Berechtigung: '.$db->db_last_error().'</strong><br>';
+			else
+				echo 'Neue Berechtigung addon/reports_verwaltung hinzugefuegt!<br>';
 	}
 }
 
