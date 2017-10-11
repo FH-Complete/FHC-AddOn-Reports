@@ -166,10 +166,11 @@ function addZuordnungen($entity,$rechte)
 		<link rel="stylesheet" type="text/css" href="reporting.css">
 		<link rel="stylesheet" type="text/css" href="../include/js/pivottable/pivot.css">
 		<link rel="stylesheet" href="../include/css/charts.css" type="text/css">
-		<link rel="stylesheet" href="../include/css/jquery-ui.1.11.2.min.css" type="text/css">
 
-		<script type="text/javascript" src="../include/js/jquery-1.11.2.min.js"></script>
-		<script type="text/javascript" src="../include/js/jquery-ui.1.11.2.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="../../../vendor/components/jqueryui/themes/base/jquery-ui.min.css">
+
+		<script type="text/javascript" src="../../../vendor/jquery/jqueryV1/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../../vendor/components/jqueryui/jquery-ui.min.js"></script>
 
 		<script type="text/javascript" src="../include/js/pivottable/pivot.js"></script>
 		<script type="text/javascript" src="../include/js/pivottable/gchart_renderers.js"></script>

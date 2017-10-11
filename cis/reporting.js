@@ -294,6 +294,33 @@ function maximizeSidebar()
 	$(window).trigger('resize');
 }
 
+/**
+ * CSV Export fuer Charts
+ */
+function exportChartCSV()
+{
+	var inputs = $('#filter-input > *'),
+		chart_id = $('#filter-input').attr('data-chart_id'),
+		statistik_kurzbz = $('#filter-input').attr('data-statistik_kurzbz'),
+		report_id = $('#filter-input').attr('data-report_id'),
+		get_params = {putlog:true},
+		url;
+
+	get_params.type = 'csv';
+
+	for(var i = 0; i < inputs.length; i++)
+	{
+		var input = $(inputs[i]);
+		if(input.attr("id") !== undefined)
+			get_params[input.attr('id')] = input.val();
+	}
+
+	var getStr = 'statistik_kurzbz='+encodeURIComponent(statistik_kurzbz);
+	for(var k in get_params)
+		getStr += "&"+k+"="+get_params[k];
+	window.open("chart_export.php?"+getStr);
+}
+
 function runFilter(type, putlog)
 {
 	var inputs = $('#filter-input > *'),

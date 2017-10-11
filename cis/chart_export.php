@@ -21,19 +21,28 @@ require_once('../include/rp_phantom.class.php');
 require_once('../../../config/cis.config.inc.php');
 require_once('../../../include/dokument_export.class.php');
 require_once('../../../include/functions.inc.php');
+require_once('../../../include/benutzerberechtigung.class.php');
+require_once('../../../include/filter.class.php');
+require_once('../../../include/webservicelog.class.php');
+require_once('../include/rp_chart.class.php');
 
 
-if(!isset($_POST['filename'])
-|| !isset($_POST['type'])
-|| !isset($_POST['width'])
-|| !isset($_POST['scale'])
-|| !isset($_POST['svg']))
-	die("Nicht gen&uuml;gend Parameter erhalten!");
+if(!isset($_GET['type']) || $_GET['type'] != 'csv')
+{
+	if(!isset($_POST['filename'])
+	|| !isset($_POST['type'])
+	|| !isset($_POST['width'])
+	|| !isset($_POST['scale'])
+	|| !isset($_POST['svg']))
+		die("Nicht gen&uuml;gend Parameter erhalten!");
+	$filename = $_POST['filename'];
+	$svg = $_POST['svg'];
+	$type = $_POST['type'];
+}
+else
+	$type = $_GET['type'];
 
 
-$filename = $_POST['filename'];
-$type = $_POST['type'];
-$svg = $_POST['svg'];
 
 if($type === "image/png" || $type === "image/jpeg")
 {
@@ -77,6 +86,52 @@ else if($type === "application/pdf")
 	$doc->output();
 	$doc->close();
 	unlink($pngPath);
+}
+else if($type === 'csv')
+{
+	$uid = get_uid();
+	$rechte = new benutzerberechtigung();
+	$rechte->getBerechtigungen($uid);
+
+	if(!isset($_GET['statistik_kurzbz']))
+	{
+		die('Statistik_kurzbz wurde nicht gesetzt');
+	}
+
+	$statistik_kurzbz = $_GET['statistik_kurzbz'];
+	$chart = new chart();
+	$chart->statistik = new statistik($statistik_kurzbz);
+
+	if(isset($chart->statistik->berechtigung_kurzbz))
+		if(!$rechte->isBerechtigt($chart->statistik->berechtigung_kurzbz))
+			die("Sie haben keine Berechtigung fuer diesen Chart");
+
+	$putlog = false;
+	if(isset($_REQUEST["putlog"]) && $_REQUEST["putlog"] === "true")
+	{
+		$putlog = true;
+	}
+
+	if($putlog === true)
+	{
+		$filter = new filter();
+		$filter->loadAll();
+
+		$log = new webservicelog();
+		$log->request_data = $filter->getVars();
+		$log->webservicetyp_kurzbz = 'reports';
+		$log->request_id = $statistik_kurzbz;
+		$log->beschreibung = 'csv';
+		$log->execute_user = $uid;
+		$log->save(true);
+	}
+	$filename = $statistik_kurzbz.'.csv';
+	header('Content-Disposition: attachment;filename="'.$filename.'"');
+	header('Content-Type: text/csv');
+	if($chart->statistik->loadData())
+	{
+		echo $chart->statistik->csv;
+	}
 }
 else
 	die("Dateityp \"".$type."\" wird nicht unterstützt!");

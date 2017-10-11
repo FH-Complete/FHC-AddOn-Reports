@@ -84,9 +84,7 @@ License: www.highcharts.com/license
 					}, {
 						textKey: "downloadCSV",
 						onclick: function () {
-							this.exportChart({
-								type: "csv"
-							})
+							exportChartCSV();
 						}
 					}, {
 						separator: !0

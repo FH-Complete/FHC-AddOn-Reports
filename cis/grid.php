@@ -106,10 +106,11 @@ $statistik->loadData();
 <?php if($htmlbody): ?>
 <html>
 	<head>
-		<link rel="stylesheet" href="../../../submodules/pivottable/dist/pivot.min.css" />
-		<script type="text/javascript" src="../include/js/jquery-1.11.2.min.js"></script>
-		<script type="text/javascript" src="../include/js/jquery-ui.1.11.2.min.js"></script>
-		<script type="text/javascript" src="../../../submodules/pivottable/dist/pivot.min.js"></script>
+		<link rel="stylesheet" href="../../../vendor/nicolaskruchten/pivottable/dist/pivot.min.css" />
+
+		<script type="text/javascript" src="../../../vendor/jquery/jqueryV1/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../../vendor/components/jqueryui/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="../../../vendor/nicolaskruchten/pivottable/dist/pivot.min.js"></script>
 	</head>
 	<body>
 <?php endif; ?>
