@@ -33,7 +33,7 @@ $user = get_uid();
 $rechte = new benutzerberechtigung();
 $rechte->getBerechtigungen($user);
 
-if($rechte->isBerechtigt('addon/reports', 'suid'))
+if(!$rechte->isBerechtigt('addon/reports_verwaltung', null, 'suid'))
 {
 	$write_admin=true;
 }

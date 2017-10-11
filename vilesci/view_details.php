@@ -33,8 +33,8 @@
 	$rechte = new benutzerberechtigung();
 	$rechte->getBerechtigungen($user);
 
-	if(!$rechte->isBerechtigt('addon/reports'))
-		die('Sie haben keine Berechtigung fuer dieses AddOn!');
+	if(!$rechte->isBerechtigt('addon/reports_verwaltung'))
+		die($rechte->errormsg);
 
 	$reload = false;
 	$htmlstr = '';
@@ -57,8 +57,8 @@
 
 	$attribut_zuweisungen = new rp_attribut_zuweisungen();
 
-	if(!$rechte->isBerechtigt('addon/reports', null, 'suid'))
-		die('Sie haben keine Berechtigung fuer diese Aktion');
+	if(!$rechte->isBerechtigt('addon/reports_verwaltung', null, 'suid'))
+		die($rechte->errormsg);
 
 	if(isset($_REQUEST["view_id"]))
 	{

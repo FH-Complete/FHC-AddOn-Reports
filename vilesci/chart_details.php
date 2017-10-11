@@ -53,8 +53,8 @@ $user = get_uid();
 $rechte = new benutzerberechtigung();
 $rechte->getBerechtigungen($user);
 
-if(!$rechte->isBerechtigt('addon/reports'))
-	die('Sie haben keine Berechtigung fuer dieses AddOn!');
+if(!$rechte->isBerechtigt('addon/reports_verwaltung'))
+	die($rechte->errormsg);
 
 
 $reload = false;  // neuladen der liste im oberen frame
@@ -76,8 +76,8 @@ $chart->publish			= false;
 
 if(isset($_REQUEST["save"]) && isset($_REQUEST["chart_id"]))
 {
-	if(!$rechte->isBerechtigt('addon/reports', null, 'suid'))
-		die('Sie haben keine Berechtigung fuer diese Aktion');
+	if(!$rechte->isBerechtigt('addon/reports_verwaltung', null, 'suid'))
+		die($rechte->errormsg);
 
 	// echo 'DI_ID: '.var_dump((int)$_POST["chart_id"]);
 	// Wenn id > 0 ist -> Neuer Datensatz; ansonsten load und update

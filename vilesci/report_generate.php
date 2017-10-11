@@ -125,7 +125,7 @@
 
 		if(isset($report->berechtigung_kurzbz))
 			if(!$rechte->isBerechtigt($report->berechtigung_kurzbz))
-				die('Sie haben keine Berechtigung fuer diesen Report!');
+				die($rechte->errormsg);
 	}
 
 	//create the folder in temp, which will be removed afterwards

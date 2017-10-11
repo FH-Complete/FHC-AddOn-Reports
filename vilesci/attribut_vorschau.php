@@ -29,8 +29,8 @@
 	$rechte = new benutzerberechtigung();
 	$rechte->getBerechtigungen($user);
 
-	if(!$rechte->isBerechtigt('addon/reports'))
-		die('Sie haben keine Berechtigung fuer dieses AddOn!');
+	if(!$rechte->isBerechtigt('addon/reports_verwaltung'))
+		die($rechte->errormsg);
 
 	if(!isset($_REQUEST["attribut_id"]))
 		die("keine attribut_id erhalten!");

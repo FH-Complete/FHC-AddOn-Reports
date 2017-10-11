@@ -34,7 +34,7 @@ $rechte->getBerechtigungen($user);
 //if(!$rechte->isBerechtigt('addon/datenimport'))
 //	die('Sie haben keine Rechte fuer dieses AddOn! Schleich Dich!');
 
-if($rechte->isBerechtigt('addon/reports', 'suid'))
+if($rechte->isBerechtigt('addon/reports_verwaltung', 'suid'))
 	$write_admin=true;
 
 $chart = new chart();

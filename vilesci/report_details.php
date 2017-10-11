@@ -36,8 +36,8 @@
 	$rechte = new benutzerberechtigung();
 	$rechte->getBerechtigungen($user);
 
-	if(!$rechte->isBerechtigt('addon/reports'))
-		die('Sie haben keine Berechtigung fuer dieses AddOn!');
+	if(!$rechte->isBerechtigt('addon/reports_verwaltung'))
+		die($rechte->errormsg);
 
 	$reloadstr = '';  // neuladen der liste im oberen frame
 	$htmlstr = '';
@@ -66,8 +66,8 @@
 
 	if(isset($_REQUEST["save"]) && isset($_REQUEST["report_id"]))
 	{
-		if(!$rechte->isBerechtigt('addon/reports', null, 'suid'))
-			die('Sie haben keine Berechtigung fuer diese Aktion');
+		if(!$rechte->isBerechtigt('addon/reports_verwaltung', null, 'suid'))
+			die($rechte->errormsg);
 
 		// echo 'DI_ID: '.var_dump((int)$_POST["report_id"]);
 		// Wenn id > 0 ist -> Neuer Datensatz; ansonsten load und update

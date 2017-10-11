@@ -29,9 +29,9 @@ $uid = get_uid();
 $rechte = new benutzerberechtigung();
 $rechte->getBerechtigungen($uid);
 
-if(!$rechte->isBerechtigt('addon/reports'))
+if(!$rechte->isBerechtigt('addon/reports_verwaltung'))
 {
-	die('Sie haben keine Berechtigung fuer dieses AddOn');
+	die($rechte->errormsg);
 }
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
