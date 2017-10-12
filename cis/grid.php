@@ -163,6 +163,7 @@ $statistik->loadData();
 			});
 
 		</script>
+		<a onclick="exportChartCSV()" style="cursor:pointer" target="_blank">CSV Rohdaten herunterladen</a>
 		<?php endif; ?>
 
 <?php if($htmlbody): ?>
