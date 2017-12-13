@@ -84,6 +84,7 @@
 				$view->table_kurzbz = $_POST["table_kurzbz"];
 				$view->sql = $_POST["sql"];
 				$view->static =isset($_POST["static"]);
+				$view->postcreation_sql = $_POST["postcreation_sql"];
 
 				if(!$view->save())
 				{
@@ -144,8 +145,12 @@
 	$htmlstr .= "			</tr>\n";
 	$htmlstr .= "			<tr>\n";
 	$htmlstr .= "				<td rowspan='2' valign='top'>SQL</td>\n";
-	$htmlstr .= " 			<td rowspan='2' colspan='3'>
+	$htmlstr .= " 			<td rowspan='2' colspan='2'>
 												<textarea name='sql' cols='70' rows='14' onchange='submitable()'>".$db->convert_html_chars($view->sql)."</textarea>
+											</td>\n";
+	$htmlstr .= " 		<td valign='top'>Index, etc.:</td>
+						<td rowspan='2' colspan='2' valign='top'>
+												<textarea name='postcreation_sql' cols='70' rows='7' onchange='submitable()'>".$db->convert_html_chars($view->postcreation_sql)."</textarea>
 											</td>\n";
 	$htmlstr .= "		</tr>\n";
 	$htmlstr .= "	</table>\n";

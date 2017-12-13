@@ -39,6 +39,8 @@ class view extends basis_db
 	public $updateamum;
 	public $updatevon;
 
+	public $postcreation_sql;
+
 	/**
 	 * Konstruktor
 	 * @param view_id ID des zu ladenden Datensatzes
@@ -90,6 +92,7 @@ class view extends basis_db
 			$this->updatevon     = $row->updatevon;
 			$this->insertamum    = $row->insertamum;
 			$this->insertvon     = $row->insertvon;
+			$this->postcreation_sql = $row->postcreation_sql;
 		}
 		$this->new=false;
 		return true;
@@ -124,6 +127,7 @@ class view extends basis_db
 			$obj->insertamum		= $row->insertamum;
 			$obj->insertvon			= $row->insertvon;
 			$obj->new						= false;
+			$obj->postcreation_sql = $row->postcreation_sql;
 
 			$this->result[] = $obj;
 		}
@@ -146,12 +150,13 @@ class view extends basis_db
 		{
 			//Neuen Datensatz einfuegen
 			$qry='BEGIN;INSERT INTO addon.tbl_rp_view (view_kurzbz, table_kurzbz, sql, static,
-				insertamum, insertvon) VALUES('.
+				insertamum, insertvon, postcreation_sql) VALUES('.
 				$this->db_add_param($this->view_kurzbz).', '.
 				$this->db_add_param($this->table_kurzbz).', '.
 				$this->db_add_param($this->sql).', '.
 				$this->db_add_param($this->static,FHC_BOOLEAN).', now(), '.
-				$this->db_add_param($this->insertvon).');';
+				$this->db_add_param($this->insertvon).','.
+				$this->db_add_param($this->postcreation_sql).');';
 		}
 		else
 		{
@@ -181,6 +186,7 @@ class view extends basis_db
 				' table_kurzbz='.$this->db_add_param($this->table_kurzbz).', '.
 				' sql='.$this->db_add_param($this->sql).', '.
 				' static='.$this->db_add_param($this->static, FHC_BOOLEAN).', '.
+				' postcreation_sql='.$this->db_add_param($this->postcreation_sql).', '.
 				' updateamum= now(), '.
 				' updatevon='.$this->db_add_param($this->updatevon).
 					' WHERE view_id='.$this->db_add_param($this->view_id).';';
@@ -433,13 +439,20 @@ class view extends basis_db
 			{
 				die('Fehler bei einer Datenbankabfrage');
 			}
+
+			if ($this->postcreation_sql != '')
+			{
+				// Index, etc anlegen
+				if(!$this->db_query($this->postcreation_sql))
+				{
+					die('Fehler bei einer Datenbankabfrage');
+				}
+			}
 			$this->setLastCopy('now()');
 		}
 		return true;
 	}
 }
-
-
 
 function rp_generateAllViews()
 {
@@ -450,8 +463,15 @@ function rp_generateAllViews()
 
 	foreach($view->result as $v)
 	{
-		if(!$v->generateTable())
-			$errors = true;
+		if($v->static)
+		{
+			$timestart = microtime(true);
+			echo "\nGenerate $v->view_kurzbz at ".date('Y-m-d H:i:s');
+			if(!$v->generateTable())
+				$errors = true;
+			$timeend = microtime(true);
+			echo ' Duration: '.number_format($timeend - $timestart,0).' Seconds';
+		}
 	}
 
 	if(!$errors)
