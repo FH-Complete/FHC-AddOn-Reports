@@ -83,14 +83,22 @@ if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
 	// Filter parsen
 	foreach($vars as $var)
 	{
+		$html .= '<div class="form-group">';
 		if($filter->isFilter($var))
 		{
-			$html .= $var . ': ' . $filter->getHtmlWidget($var);
+			$html .= '<span style="margin-left: 5px">';
+			$html .= $var;
+			$html .= ': </span>';
+			$html .= $filter->getHtmlWidget($var);
 		}
 		else
 		{
-			$html .= $var . ': <input type="text" id="' . $var . '" name="' . $var . '" value="">';
+			$html .= '<span style="margin-left: 5px">';
+			$html .= $var;
+			$html .= ': </span>';
+			$html .= ': <input type="text" id="' . $var . '" name="' . $var . '" value="">';
 		}
+		$html .= '</div>';
 	}
 
 	if($htmlbody)
@@ -148,7 +156,7 @@ else if(isset($report_id) && $report_id != 'undefined')
 	$vars = array();
 	foreach($statistiken as $s)
 	{
-		$vars= array_merge_recursive($vars, $s->parseVars($s->sql));
+		$vars = array_merge_recursive($vars, $s->parseVars($s->sql));
 	}
 	$vars = array_unique($vars, SORT_REGULAR);
 
