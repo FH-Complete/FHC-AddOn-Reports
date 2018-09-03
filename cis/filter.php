@@ -86,8 +86,9 @@ if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
 		$html .= '<div class="form-group">';
 		if($filter->isFilter($var))
 		{
+			$bezeichnung = $filter->getBezeichnungFromKurzbz($var);
 			$html .= '<span style="margin-left: 5px">';
-			$html .= $var;
+			$html .= empty($bezeichnung) ? $var : $bezeichnung;
 			$html .= ': </span>';
 			$html .= $filter->getHtmlWidget($var);
 		}
