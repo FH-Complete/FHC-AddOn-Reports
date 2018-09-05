@@ -84,7 +84,21 @@ table.pvtTable tbody tr td {
 
 /* Adding a Bootstrap-Filter-Icon if content is filtered */
 .pvtFilteredAttribute > .pvtAttr { padding-left: 20px !important; }
-.pvtFilteredAttribute:before {	
+.pvtFilteredAttribute > .pvtAttr:before {	
+	font-family: 'Glyphicons Halflings'; 
+	content:"\e138";
+	display: inline;
+	background-size: cover;
+	position: relative;
+	width: 16px;
+	height: 16px;
+	margin-left: -15px;
+	font-style: normal;
+	padding-right: 5px;
+	font-size: smaller;
+	
+}
+/* .pvtFilteredAttribute:before {	
 	font-family: 'Glyphicons Halflings'; 
 	content:"\e138";
 	display: inline;
@@ -94,7 +108,7 @@ table.pvtTable tbody tr td {
 	height: 16px;
 	margin-left: 5px;
 	font-style: normal;
-}
+} */
 
 .pvtFilterBox{
     z-index: 100;
