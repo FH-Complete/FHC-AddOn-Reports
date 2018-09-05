@@ -68,7 +68,21 @@ table.pvtTable tr td {
 .pvtHorizList li { display: inline; }
 .pvtVertList { vertical-align: top; }
 
-.pvtFilteredAttribute { font-style: italic }
+.pvtFilteredAttribute { font-style: italic;}
+
+/* Adding a Bootstrap-Filter-Icon if content is filtered */
+.pvtFilteredAttribute > .pvtAttr { padding-left: 20px !important; }
+.pvtFilteredAttribute:before {	
+	font-family: 'Glyphicons Halflings'; 
+	content:"\e138";
+	display: inline;
+	background-size: cover;
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	margin-left: 5px;
+	font-style: normal;
+}
 
 .pvtFilterBox{
     z-index: 100;
