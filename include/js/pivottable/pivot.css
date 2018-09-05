@@ -90,25 +90,11 @@ table.pvtTable tbody tr td {
 	display: inline;
 	background-size: cover;
 	position: relative;
-	width: 16px;
-	height: 16px;
 	margin-left: -15px;
 	font-style: normal;
 	padding-right: 5px;
 	font-size: smaller;
-	
 }
-/* .pvtFilteredAttribute:before {	
-	font-family: 'Glyphicons Halflings'; 
-	content:"\e138";
-	display: inline;
-	background-size: cover;
-	position: absolute;
-	width: 16px;
-	height: 16px;
-	margin-left: 5px;
-	font-style: normal;
-} */
 
 .pvtFilterBox{
     z-index: 100;
