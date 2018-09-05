@@ -45,7 +45,7 @@ if($result = $db->db_query("SELECT * FROM system.tbl_berechtigung WHERE berechti
 	{
 		$qry = "INSERT INTO system.tbl_berechtigung(berechtigung_kurzbz, beschreibung)
 				VALUES('addon/reports_verwaltung','Reports im VileSci verwalten');";
-		
+
 		if(!$db->db_query($qry))
 			echo '<strong>Berechtigung: '.$db->db_last_error().'</strong><br>';
 			else
@@ -874,6 +874,17 @@ if($result = @$db->db_query("SELECT * FROM addon.tbl_rp_chart"))
 	}
 }
 
+if(!$result = @$db->db_query("SELECT postcreation_sql FROM addon.tbl_rp_view"))
+{
+	$qry = "ALTER TABLE addon.tbl_rp_view ADD COLUMN postcreation_sql text;
+	COMMENT ON COLUMN addon.tbl_rp_view.postcreation_sql IS 'SQL that is executed after creation of static table'";
+
+	if(!$db->db_query($qry))
+		echo '<strong>addon.tbl_rp_view: '.$db->db_last_error().'</strong><br>';
+	else
+		echo ' addon.tbl_rp_view: Spalte addon.tbl_rp_view.postcreation_sql hinzugefuegt!<br>';
+}
+
 
 echo '<br>Aktualisierung abgeschlossen<br><br>';
 echo '<h2>'.$addon_name.' Gegenprüfung</h2>';
@@ -881,7 +892,7 @@ echo '<h2>'.$addon_name.' Gegenprüfung</h2>';
 // Liste der verwendeten Tabellen / Spalten des Addons
 $tabellen=array(
 	"addon.tbl_rp_chart"  => array("chart_id", "title", "longtitle", "description", "type", "preferences", "datasource", "datasource_type", "insertamum", "insertvon", "updateamum", "updatevon", "statistik_kurzbz")
-	,"addon.tbl_rp_view"  => array("view_kurzbz", "table_kurzbz", "sql", "static", "lastcopy", "insertamum","insertvon","updateamum","updatevon")
+	,"addon.tbl_rp_view"  => array("view_kurzbz", "table_kurzbz", "sql", "static", "lastcopy", "insertamum","insertvon","updateamum","updatevon","postcreation_sql")
 	,"addon.tbl_rp_report" => array("report_id", "title", "format", "description", "header", "footer", "body", "docinfo", "gruppe", "publish", "insertamum", "insertvon", "updateamum", "updatevon", "berechtigung_kurzbz")
 	,"addon.tbl_rp_report_chart" => array("reportchart_id","report_id","chart_id","insertamum","insertvon","updateamum","updatevon")
 	,"addon.tbl_rp_report_statistik" => array("reportstatistik_id","report_id","statistik_kurzbz","insertamum","insertvon","updateamum","updatevon")

@@ -337,7 +337,7 @@ function addZuordnungen($entity,$rechte)
 						</div>
 					</div>
 					<div id="filter" style="display: none;">
-						<div class="col-xs-12 col-sm-9">
+						<div class="col-xs-12 text-center">
 							<form class="form-inline" onsubmit="return false">
 								<span id="filter-input"></span>
 								<button style="display: inline;height:40px;" onclick="runFilter('html', true)" class="btn btn-default" type="submit">Ausf&uuml;hren</button>
