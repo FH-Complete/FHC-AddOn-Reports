@@ -128,43 +128,84 @@ $statistik->loadData();
 		<link rel="stylesheet" type="text/css" href="../include/js/pivot_renderers/c3_renderers.css">
 
 
-    <script type="text/javascript" src="../include/js/pivot_renderers/csv_renderer.js"></script>
+    <!--<script type="text/javascript" src="../include/js/pivot_renderers/csv_renderer.js"></script>-->
+    <script type="text/javascript" src="../include/js/pivot_renderers/export_renderers.js"></script>
 
 
 		<!-- Pivot Sprachen -->
 		<script type="text/javascript" src="../include/js/pivot.de.js"></script>
-    <script type="text/javascript" src="../include/js/pivot_renderers/de/c3.de.js"></script>
+	<script type="text/javascript" src="../include/js/pivot_renderers/de/c3.de.js"></script>
 
-		<script type="text/javascript">
-			$(function()
-			{
+	<script type="text/javascript">
+	$(function()
+	{
 
-				var lang = "de";
-				var derivers = $.pivotUtilities.derivers;
-				var renderers =
-				$.extend
-				(
-					$.pivotUtilities.locales[lang].renderers,
-					$.pivotUtilities.locales[lang].c3_renderers,
-					$.pivotUtilities.export_renderers
-				);
+		var lang = "de";
+		var derivers = $.pivotUtilities.derivers;
+		var renderers =
+		$.extend
+		(
+			$.pivotUtilities.locales[lang].renderers,
+			$.pivotUtilities.locales[lang].c3_renderers,
+			$.pivotUtilities.export_renderers
+		);
 
-				var options =        <?php echo $statistik->preferences ? : '{}' ?>;
-				options.renderers = renderers;
-				var dateFormat =     $.pivotUtilities.derivers.dateFormat;
-				var sortAs =         $.pivotUtilities.sortAs;
-				var tpl =            $.pivotUtilities.aggregatorTemplates;
-				var numberFormat =   $.pivotUtilities.numberFormat;
+		var options =		<?php echo $statistik->preferences ? : '{}' ?>;
+		options.renderers = renderers;
+		var dateFormat =	 $.pivotUtilities.derivers.dateFormat;
+		var sortAs =		 $.pivotUtilities.sortAs;
+		var tpl =			$.pivotUtilities.aggregatorTemplates;
+		var numberFormat =   $.pivotUtilities.numberFormat;
 
-				var deFormat =       numberFormat({thousandsSep:".", decimalSep:","});
-				var deFormatInt =       numberFormat({digitsAfterDecimal: 0,thousandsSep:".", decimalSep:","});
+		var deFormat =	   numberFormat({thousandsSep:".", decimalSep:","});
+		var deFormatInt =	   numberFormat({digitsAfterDecimal: 0,thousandsSep:".", decimalSep:","});
 
-				$("#pivot").pivotUI(<?php echo $statistik->db_getResultJSON($statistik->data) ?>,options,false,lang);
+		$("#pivot").pivotUI(<?php echo $statistik->db_getResultJSON($statistik->data) ?>,options,false,lang);
 
-			});
+		// Check if Browser is IE -> Then hide ExcelExportButton
+		var ua = window.navigator.userAgent;
+		var msie = ua.indexOf("MSIE ");
+
+		if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))  // If Internet Explorer, return version number
+		{
+			$("#excelExportButton").hide();
+		}
+	});
+			
 
 		</script>
-		<a onclick="exportChartCSV()" style="cursor:pointer" target="_blank">CSV Rohdaten herunterladen</a>
+		<script type="text/javascript">
+		var tableToExcel = (function() {			
+			var uri = 'data:application/vnd.ms-excel;base64,'
+				, template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">'
+						+ 	'	<head>'
+						+ '			<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name>'
+						+ '			<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->'
+						+ '			<meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">'
+						+ '		</head>'
+						+ '		<body>'
+						+ '			<table>{table}</table>'
+						+'		</body>'
+						+	'</html>'
+				, base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+				, format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+			return function(table, name, filename) {
+				if (!table.nodeType) table = document.getElementById(table)
+				var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+				this.download = filename;
+					document.getElementById("dlink").href = uri + base64(format(template, ctx));
+					document.getElementById("dlink").download = filename;
+					document.getElementById("dlink").click();
+			}
+			})();
+			
+		</script>
+		<br>
+		<!--<a onclick="exportChartCSV()" style="cursor:pointer" target="_blank">CSV Rohdaten herunterladen</a><br>-->
+		<button style="display: inline; height:30px;" onclick="exportChartCSV()" class="btn btn-default" type="button">CSV Rohdaten herunterladen</button><br>
+		<button id="excelExportButton" style="display: inline; height:30px;" onclick="tableToExcel('pvtTableID', 'Statistik', '<?php echo $statistik_kurzbz; ?>.xls')" class="btn btn-default" type="button">Excel-Export</button>
+		<a id="dlink" href="#pvtTableID" style="display:none;"></a>
+		
 		<?php endif; ?>
 
 		<?php
