@@ -310,12 +310,12 @@
 	$docinfo .= '';
 	$docinfo .= '<subtitle>';
 	
-	$docinfo .= $studiengang_typ.'Studiengang '.$studiengang_bezeichnung.' + \ '.$crlf.$crlf;
+	$docinfo .= $studiengang_typ.'Studiengang '.$studiengang_bezeichnung;
 	
 	if ($orgform_bezeichnung != '')
-		$docinfo .= 'Organisationsform '.$orgform_bezeichnung.$crlf;
+		$docinfo .= ', Organisationsform '.$orgform_bezeichnung.$crlf;
 	if ($studienjahr != '')
-		$docinfo .= 'Studienjahr '.$studienjahr.$crlf;
+		$docinfo .= ', Studienjahr '.$studienjahr.$crlf;
 	$docinfo .= '</subtitle>';
 	$fh=fopen($docinfoFilename,'w');
 	fwrite($fh,$docinfo);
