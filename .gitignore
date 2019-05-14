@@ -2,3 +2,4 @@ data/*
 vendor/*
 !vendor/FHC-vendor
 reports.config.inc.php
+.idea
