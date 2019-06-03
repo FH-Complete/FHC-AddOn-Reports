@@ -658,7 +658,7 @@ EOT;
 		if(!$this->inDashboard)
 		{
 			$parser = new \Netcarver\Textile\Parser();
-			$textile = $parser->textileThis($this->description);
+			$textile = $parser->parse($this->description);
 
 			echo '<div>'.$textile.'</div>';
 		}
