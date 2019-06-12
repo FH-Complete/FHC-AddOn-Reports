@@ -149,7 +149,6 @@
 	$htmlFilename=$reportsTmpDir.'/Report'.$report->report_id.'.html';
 	$xmlFilename=$reportsTmpDir.'/Report'.$report->report_id.'.xml';
 	$pdfFilename=$reportsTmpDir.'/Report'.$report->report_id.'.pdf';
-
 	if($putlog === true)
 	{
 		$log = new webservicelog();
@@ -215,7 +214,6 @@
 		}
 	}
 
-
 	$report_statistik = new rp_report_statistik();
 	$report_statistik->getReportStatistiken($report->report_id);
 
@@ -236,7 +234,7 @@
 	{
 		$studiengang_kz = $parsed_get_vars['Studiengang'];
 		$studiengang = new studiengang($studiengang_kz);
-		$studiengang_bezeichnung = $studiengang->bezeichnung;
+		$studiengang_bezeichnung = convertProblemChars($studiengang->bezeichnung);
 		switch ($studiengang->typ)
 		{
 			case 'b';
@@ -309,9 +307,7 @@
 	$docinfo = $report->docinfo;
 	$docinfo .= '';
 	$docinfo .= '<subtitle>';
-	
 	$docinfo .= $studiengang_typ.'Studiengang '.$studiengang_bezeichnung;
-	
 	if ($orgform_bezeichnung != '')
 		$docinfo .= ', Organisationsform '.$orgform_bezeichnung.$crlf;
 	if ($studienjahr != '')
