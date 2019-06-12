@@ -11,6 +11,7 @@ div.third {
 
 td.pvtRendererArea {
 	overflow: auto;
-	width: 800px;
+	/*width: 800px;*/
+	width: 100%;
 	display: inline-block;
 }
