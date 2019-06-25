@@ -1239,14 +1239,23 @@ EOT;
 		return $data;
 	}
 
+	public function getHighChartDataForCheck()
+	{
+		$data = $this->getHighChartData();
+		if ($data)
+		{
+			$json = $data;
+		}
+		else
+		{
+			if (isset($this->errormsg))
+				$json = json_encode($this->errormsg);
+			else
+				$json = json_encode(false);
+		}
 
-
-
-
-
-
-
-
+		return $json;
+	}
 
 	/**
 	 * Loescht einen Eintrag
