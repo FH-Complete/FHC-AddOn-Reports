@@ -11,7 +11,9 @@ class problemcheck extends basis_db
 	const REPORTING_SCHEMA = 'reports';
 	//const VIEW_PREFIX = 'vw_';
 	const TABLE_PREFIX = 'tbl_';
-	const OUTLIER_MAGNITUDE = 1;
+	const OUTLIER_MAGNITUDE = 3;
+	const FILTER_TYPE_SELECT = 'select';
+	const FILTER_TYPE_DATE = 'datepicker';
 
 	private $repobjecttypes = array('view', 'statistik');
 	private $issuetexts = array();
@@ -32,7 +34,7 @@ class problemcheck extends basis_db
 		$this->issuetexts[$this->repobjecttypes[0]] =
 			array(
 				'notDefined' => "View nicht definiert - kein SQL",
-				'noDependencies' => "View hat keine abhängigen Objekte",
+				'noDependencies' => "View in keiner Statistik verwendet",
 				'staticTblReference' => "Verweis auf statische Tabelle in View",
 				'longExec' => "Ungewöhnlich lange Ausführungszeit"
 			);
@@ -152,6 +154,8 @@ class problemcheck extends basis_db
 						$this->setWarning($objecttype, $index, $issuetexts['urlOnly']);
 				}
 			}
+			//Filterparameter aus REQUEST variable entfernen zur Vermeidung von Konflikten
+			$this->unsetFilterParams($index);
 		}
 
 		$outliers = $this->findOutliers($analysiscostsums);
@@ -199,8 +203,8 @@ class problemcheck extends basis_db
 			{
 				$allchart_kurzbz_array = $chart->statistik_kurzbz;
 			}
-
 			$this->getStatistikData($allchart_kurzbz_array);
+
 			foreach ($allcharts as $chart)
 			{
 				$index = $chart->title.'_'.$chart->chart_id;
@@ -284,18 +288,25 @@ class problemcheck extends basis_db
 			{
 				if ($filter->kurzbz == $var)
 				{
-					if (@$this->db_query($filter->sql))
+					if ($filter->type == self::FILTER_TYPE_SELECT)
 					{
-						while ($row = $this->db_fetch_assoc())
+						if (@$this->db_query($filter->sql))
 						{
-							$_REQUEST[$filter->kurzbz] = $row['value'];
-							break;
+							while ($row = $this->db_fetch_assoc())
+							{
+								$_REQUEST[$filter->kurzbz] = $row['value'];
+								break;
+							}
+						}
+						else
+						{
+							$this->setError($this->repobjecttypes[1], $statistik_kurzbz, sprintf($statistikissuetexts['filterError'], $var));
+							$errcount++;
 						}
 					}
-					else
+					elseif ($filter->type == self::FILTER_TYPE_DATE)
 					{
-						$this->setError($this->repobjecttypes[1], $statistik_kurzbz, sprintf($statistikissuetexts['filterError'], $var));
-						$errcount++;
+						$_REQUEST[$filter->kurzbz] = date('Y-m-d');
 					}
 					$found = true;
 					break;
@@ -303,7 +314,7 @@ class problemcheck extends basis_db
 			}
 			if (!$found)
 			{
-				$this->setError($this->repobjecttypes[1], $statistik_kurzbz, sprintf($statistikissuetexts['filterMissing'], $var));
+				$this->setWarning($this->repobjecttypes[1], $statistik_kurzbz, sprintf($statistikissuetexts['filterMissing'], $var));
 				$errcount++;
 			}
 		}
@@ -311,6 +322,28 @@ class problemcheck extends basis_db
 		if ($errcount > 0)
 			return false;
 		return true;
+	}
+
+	private function unsetFilterParams($statistik_kurzbz)
+	{
+		$statistik = new statistik($statistik_kurzbz);
+		$allfilters = new filter();
+		$allfilters->loadAll();
+
+		// parse sql for param names
+		$vars = $statistik->parseVars($statistik->sql);
+
+		foreach ($vars as $var)
+		{
+			foreach ($allfilters->result as $filter)
+			{
+				if ($filter->kurzbz == $var)
+				{
+					unset($_REQUEST[$filter->kurzbz]);
+					break;
+				}
+			}
+		}
 	}
 
 	private function explainQuery($objecttype, $objectname, $query)
