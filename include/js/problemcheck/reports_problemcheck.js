@@ -121,7 +121,13 @@ var Problemcheck =
 						text: ""
 					};
 
-					issue.text = (typeof err == 'string' && err.length > 0) ? err : "JS Fehler beim Erstellen des Charts";
+					if (typeof err == 'string' && err.length > 0)
+						issue.text = "JS Fehler: " + err;
+					else if (typeof err.message == 'string' && err.message.length > 0)
+						issue.text = "JS Fehler: " + err.message;
+					else
+						issue.text = "JS Fehler beim Erstellen des Charts";
+
 					Problemcheck.problemData[index].issues.push(issue);
 					row += Problemcheck.createIssueText(issue);
 				}
