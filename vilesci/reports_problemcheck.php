@@ -29,7 +29,7 @@ if (!$rechte->isBerechtigt('addon/reports_verwaltung'))
 		<?php require_once("../../../include/meta/jquery.php"); ?>
 		<script type="text/javascript" src="../../../vendor/BlackrockDigital/startbootstrap-sb-admin-2/vendor/metisMenu/metisMenu.min.js"></script>
 		<script type="text/javascript" src="../../../vendor/BlackrockDigital/startbootstrap-sb-admin-2/dist/js/sb-admin-2.min.js"></script>
-<?php require_once("../include/meta/highcharts.php"); ?>
+		<?php require_once("../include/meta/highcharts.php"); ?>
 		<script type="text/javascript" src="../include/js/problemcheck/reports_problemcheck.js"></script>
 	</head>
 
@@ -77,10 +77,10 @@ if (!$rechte->isBerechtigt('addon/reports_verwaltung'))
 							<tr>
 								<th>Objekt</th>
 								<th>Status</th>
+								<th>Zuletzt ausgeführt</th>
 							</tr>
 						</thead>
 						<tbody id="checktable">
-
 						</tbody>
 					</table>
 				</div>

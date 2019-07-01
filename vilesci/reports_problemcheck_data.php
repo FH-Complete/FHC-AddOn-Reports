@@ -24,13 +24,13 @@ if (isset($_GET['action']))
 	switch($_GET['action'])
 	{
 		case 'checkViews':
-			echo $problemcheck->getViewData();
+			echo $problemcheck->getViewIssues();
 			break;
 		case 'checkStatistics':
-			echo $problemcheck->getStatistikData();
+			echo $problemcheck->getStatistikIssues();
 			break;
 		case 'checkCharts':
-			echo $problemcheck->getChartData();
+			echo $problemcheck->getChartIssues();
 			break;
 	}
 }

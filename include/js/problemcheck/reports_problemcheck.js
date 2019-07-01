@@ -122,11 +122,14 @@ var Problemcheck =
 					};
 
 					issue.text = (typeof err == 'string' && err.length > 0) ? err : "JS Fehler beim Erstellen des Charts";
+					Problemcheck.problemData[index].issues.push(issue);
 					row += Problemcheck.createIssueText(issue);
 				}
 
 			}
-			row += "</td></tr>";
+			row += "</td>";
+			row += "<td>"+Problemcheck.createLastExecuted(item.lastExecuted)+"</td>";
+			row += "</tr>";
 			$("#checktable").append(
 				row
 			);
@@ -155,7 +158,9 @@ var Problemcheck =
 			{
 				row += Problemcheck.createSuccessText();
 			}
-			row += "</td></tr>";
+			row += "</td>";
+			row += "<td>"+Problemcheck.createLastExecuted(item.lastExecuted)+"</td>";
+			row +=	"</tr>";
 
 			$("#checktable").append(
 				row
@@ -166,6 +171,16 @@ var Problemcheck =
 	},
 	checkTblRowDisplay: function()
 	{
+		var backgroundcolor = "";
+		$("#checktable tr").each(function ()
+			{
+				if ($(this).css('background-color') !== 'rgba(0, 0, 0, 0)')
+				{
+					backgroundcolor = $(this).css('background-color')
+				}
+			}
+		);
+
 		var showerrors = $("#showerrors").prop("checked");
 		var showwarnings = $("#showwarnings").prop("checked");
 		var showpassed = $("#showpassed").prop("checked");
@@ -216,7 +231,14 @@ var Problemcheck =
 				}
 			}
 		}
-		$("#checktableparent").removeClass("table-striped");
+
+		$("#checktable tr:visible").each(function (index)
+			{
+				$(this).css("background-color", "inherit");
+				if (index % 2 == 0)
+					$(this).css("background-color", backgroundcolor);
+			}
+		);
 	},
 	createFirstCell: function(objectid, index, params, connectedObj)
 	{
@@ -279,6 +301,15 @@ var Problemcheck =
 	createSuccessText: function()
 	{
 		return "<span class='text-success'><i class='fa fa-check'></i> OK</span>";
+	},
+	createLastExecuted: function(lastExecutedObj)
+	{
+		if (lastExecutedObj.critical)
+		{
+			return "<span class='text-warning'> "+lastExecutedObj.elapsed+"</span>"
+		}
+		else
+			return "<span class='text-success'> "+lastExecutedObj.elapsed+"</span>";
 	},
 	showVeil: function()
 	{
