@@ -45,6 +45,7 @@ class problemcheck extends basis_db
 			array(
 				'notDefined' => "Statistik nicht definiert - kein SQL und keine URL",
 				'urlOnly' => "Keine Prüfung möglich - nur URL, kein SQL",
+				'noBezeichnung' => "Statistik hat keine Bezeichnung",
 				'filterError' => "Filter %s hat Fehler im SQL",
 				'filterMissing' => "Filter %s existiert nicht",
 				'longExec' => "Ungewöhnlich lange Ausführungszeit"
@@ -53,7 +54,8 @@ class problemcheck extends basis_db
 		// chartissues
 		$this->issuetexts[$this->repobjecttypes[2]] =
 			array(
-				'noStatistik' => "Chart mit keiner Statistik verbunden"
+				'noStatistik' => "Chart mit keiner Statistik verbunden",
+				'noTitle' => "Chart hat keinen title"
 			);
 	}
 
@@ -153,6 +155,9 @@ class problemcheck extends basis_db
 		{
 			$index = $statistik->statistik_kurzbz;
 
+			if (!isset($statistik->bezeichnung) || empty($statistik->bezeichnung))
+				$this->setError($objecttype, $index, $issuetexts['noBezeichnung']);
+
 			if ($this->setFilterParams($index))
 			{
 				if (!empty($statistik->sql))
@@ -240,6 +245,9 @@ class problemcheck extends basis_db
 
 				$highchartdata = null;
 				$connectedobjects = array();
+
+				if (!isset($chart->title) || empty($chart->title))
+					$this->setError($objecttype, $chart->chart_id, $issuetexts['noTitle']);
 
 				if (!isset($chart->statistik_kurzbz) || empty($chart->statistik_kurzbz))
 					$this->setError($objecttype, $chart->chart_id, $issuetexts['noStatistik']);
