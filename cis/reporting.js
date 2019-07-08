@@ -106,7 +106,6 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 					if(url === "grid.php" || url === "chart.php")
 					{
 						$('#content').html(data);
-						initialize();
 					}
 					else
 					{
@@ -213,8 +212,6 @@ function resizeContent()
 
   $('#content').css("overflow-y", "visible");
   $('#content').css("overflow-x", "auto");
-
-	initialize();
 }
 
 
@@ -266,24 +263,6 @@ $(function()
 		$('#glossar').show();
 	});
 });
-
-function initialize()
-{
-	const $table = $('#pvtTableID');
-	// $('table.pvtTable').floatThead({
-	// 	// position: 'fixed'
-	// 	scrollContainer: true
-	// });
-
-	$table.floatThead({
-		// position: 'fixed'
-		scrollContainer: function(){
-			return $(this).parent();
-		}
-	});
-
-	console.log( "Initialized by function" );
-}
 
 function hideSidebar()
 {
