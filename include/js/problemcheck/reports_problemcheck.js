@@ -47,19 +47,19 @@ var Problemcheck =
 
 		switch(action)
 		{
-			case 'checkViews':
+			case 'getViewIssues':
 				callback = function(data)
 				{
 					Problemcheck.afterObjectsCheck(data, Problemcheck.viewparams);
 				};
 				break;
-			case 'checkStatistics':
+			case 'getStatistikIssues':
 				callback = function(data)
 				{
 					Problemcheck.afterObjectsCheck(data, Problemcheck.statistikparams);
 				};
 				break;
-			case 'checkCharts':
+			case 'getChartIssues':
 				callback = function(data)
 				{
 					callback = Problemcheck.afterChartsCheck(data, Problemcheck.chartparams);
@@ -73,7 +73,7 @@ var Problemcheck =
 	{
 		$.ajax({
 			type: "GET",
-			url: "reports_problemcheck_data.php",
+			url: "reports_problemcheck_router.php",
 			dataType: "json",
 			data: {action: actionparam},
 			success: callback

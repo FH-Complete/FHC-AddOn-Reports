@@ -18,19 +18,22 @@ $rechte->getBerechtigungen($user);
 if(!$rechte->isBerechtigt('addon/reports_verwaltung'))
 	die($rechte->errormsg);
 
-if (isset($_GET['action']))
+if (isset($_REQUEST['action']))
 {
 	$problemcheck = new problemcheck();
-	switch($_GET['action'])
+	switch($_REQUEST['action'])
 	{
-		case 'checkViews':
-			echo $problemcheck->getViewIssues();
+		case 'getViewIssues':
+			$view_ids = isset($_REQUEST['view_ids']) ? $_REQUEST['view_ids'] : null;
+			echo $problemcheck->getViewIssues($view_ids);
 			break;
-		case 'checkStatistics':
-			echo $problemcheck->getStatistikIssues();
+		case 'getStatistikIssues':
+			$statistik_ids = isset($_REQUEST['statistik_ids']) ? $_REQUEST['statistik_ids'] : null;
+			echo $problemcheck->getStatistikIssues($statistik_ids);
 			break;
-		case 'checkCharts':
-			echo $problemcheck->getChartIssues();
+		case 'getChartIssues':
+			$chart_ids = isset($_REQUEST['chart_ids']) ? $_REQUEST['chart_ids'] : null;
+			echo $problemcheck->getChartIssues($chart_ids);
 			break;
 	}
 }

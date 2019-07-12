@@ -46,9 +46,9 @@ if (!$rechte->isBerechtigt('addon/reports_verwaltung'))
 				<div class="col-xs-6 col-xs-offset-3">
 					<select id="objecttype" class="form-control">
 						<option value="null" selected="selected">Objekttyp auswählen...</option>
-						<option value="checkViews">View</option>
-						<option value="checkStatistics">Statistik</option>
-						<option value="checkCharts">Chart</option>
+						<option value="getViewIssues">View</option>
+						<option value="getStatistikIssues">Statistik</option>
+						<option value="getChartIssues">Chart</option>
 					</select>
 				</div>
 			</div>
@@ -77,7 +77,12 @@ if (!$rechte->isBerechtigt('addon/reports_verwaltung'))
 							<tr>
 								<th>Objekt</th>
 								<th>Status</th>
-								<th>Zuletzt ausgeführt</th>
+								<th>Zuletzt ausgeführt <i class="fa fa-info-circle text-info" data-toggle="tooltip"
+														  title="Zuletzt von Nutzern über das Frontend (cis/index.php) ausgeführt.
+Views gelten bei Aufruf einer abhängigen Statistik/eines von einer abhängigen Statistik abhängigen Charts als ausgeführt.
+Bei Aufruf eines Charts gilt die dazugehörige Statistik auch als ausgeführt.">
+									</i>
+								</th>
 							</tr>
 						</thead>
 						<tbody id="checktable">

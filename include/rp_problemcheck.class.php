@@ -1,15 +1,15 @@
 <?php
 
 require_once(dirname(__FILE__).'/../../../include/basis_db.class.php');
-require_once('rp_view.class.php');
-require_once(dirname(__FILE__).'/../../../include/statistik.class.php');
 require_once(dirname(__FILE__).'/../../../include/filter.class.php');
 require_once('rp_chart.class.php');
 require_once('rp_problemcheck_helper.class.php');
+require_once('dependency_overview.class.php');
 
 class problemcheck extends basis_db
 {
-	private $helper = null;
+	private $problemcheck_helper = null;
+	private $dependency_helper = null;
 
 	const REPORTING_SCHEMA = 'reports';
 	const FILTER_TYPE_SELECT = 'select';
@@ -26,7 +26,8 @@ class problemcheck extends basis_db
 	{
 		parent::__construct();
 		$this->setIssueTexts();
-		$this->helper = new problemcheck_helper();
+		$this->problemcheck_helper = new problemcheck_helper();
+		$this->dependency_helper= new dependency_overview();
 	}
 
 	private function setIssueTexts()
@@ -84,14 +85,14 @@ class problemcheck extends basis_db
 			}
 			else
 			{
-				$viewdependencies = $this->helper->getViewDependencies($view->view_id);
+				$viewdependencies = $this->dependency_helper->getStatistikenFromView($view->view_id);
 				if (empty($viewdependencies))
 					$this->setWarning($objecttype, $view->view_id, $issuetexts['noDependencies']);
 
-				if ($this->helper->checkViewForStaticTables($view->sql))
+				if ($this->problemcheck_helper->checkViewForStaticTables($view->sql))
 					$this->setError($objecttype, $view->view_id, $issuetexts['staticTblReference']);
 
-				$explainplan = $this->helper->explainQuery($view->sql);
+				$explainplan = $this->problemcheck_helper->explainQuery($view->sql);
 
 				if (isset($explainplan))
 				{
@@ -106,7 +107,7 @@ class problemcheck extends basis_db
 			}
 		}
 
-		$outliers = $this->helper->findOutliers($analysiscostsums);
+		$outliers = $this->problemcheck_helper->findOutliers($analysiscostsums);
 
 		$requiredviews = array();
 
@@ -162,8 +163,8 @@ class problemcheck extends basis_db
 			{
 				if (!empty($statistik->sql))
 				{
-					$sql = $this->helper->replaceFilterVars($statistik->sql);
-					$explainplan = $this->helper->explainQuery($sql);
+					$sql = $this->problemcheck_helper->replaceFilterVars($statistik->sql);
+					$explainplan = $this->problemcheck_helper->explainQuery($sql);
 					if (isset($explainplan))
 					{
 						$explainplans[$index] = $explainplan;
@@ -187,7 +188,7 @@ class problemcheck extends basis_db
 			$this->unsetFilterParams($index);
 		}
 
-		$outliers = $this->helper->findOutliers($analysiscostsums);
+		$outliers = $this->problemcheck_helper->findOutliers($analysiscostsums);
 
 		$requiredstatistics = array();
 
@@ -218,7 +219,7 @@ class problemcheck extends basis_db
 		return json_encode($response);
 	}
 
-	public function getChartIssues()
+	public function getChartIssues($chart_id_arr = null)
 	{
 		$response = array();
 		$chart = new chart();
@@ -226,52 +227,65 @@ class problemcheck extends basis_db
 		$statistiktype = $this->repobjecttypes[1];
 		$issuetexts = $this->issuetexts[$objecttype];
 
-		if ($chart->loadAll())
+		$allcharts = array();
+
+		if (is_array($chart_id_arr))
 		{
-			$allcharts = $chart->result;
-
-			$allchart_statistik_kurzbz = array();
-			foreach ($allcharts as $chart)
+			foreach ($chart_id_arr as $chart_id)
 			{
-				$allchart_statistik_kurzbz[] = $chart->statistik_kurzbz;
-			}
-			//Statistik check ausführen - Probleme in Statistik sind auch Probleme im Chart
-			$this->getStatistikIssues($allchart_statistik_kurzbz);
-
-			foreach ($allcharts as $chart)
-			{
-				$index = $chart->title.'_'.$chart->chart_id;
-				$singlechart = new chart($chart->chart_id);
-
-				$highchartdata = null;
-				$connectedobjects = array();
-
-				if (!isset($chart->title) || empty($chart->title))
-					$this->setError($objecttype, $chart->chart_id, $issuetexts['noTitle']);
-
-				if (!isset($chart->statistik_kurzbz) || empty($chart->statistik_kurzbz))
-					$this->setError($objecttype, $chart->chart_id, $issuetexts['noStatistik']);
-				else
-				{
-					//Wenn es keine Fehler in Statistik gibt, JSON Daten für Chart holen
-					if (empty($this->getIssues($statistiktype, $chart->statistik_kurzbz)))
-					{
-						if ($this->setFilterParams($chart->statistik_kurzbz))
-							$highchartdata = $singlechart->getHighChartDataForCheck();
-						$this->unsetFilterParams($chart->statistik_kurzbz);
-					}
-				$connectedobjects[$statistiktype] = $chart->statistik_kurzbz;
-				}
-
-				$responseObj = $this->getResponseObj(
-					$objecttype,
-					$chart->chart_id,
-					$connectedobjects,
-					$highchartdata
-				);
-				$response[$index] = $responseObj;
+				$allcharts[] = new chart($chart_id);
 			}
 		}
+		else
+		{
+			if ($chart->loadAll())
+			{
+				$allcharts = $chart->result;
+			}
+		}
+
+		$allchart_statistik_kurzbz = array();
+		foreach ($allcharts as $chart)
+		{
+			$allchart_statistik_kurzbz[] = $chart->statistik_kurzbz;
+		}
+		//Statistik check ausführen - Probleme in Statistik sind auch Probleme im Chart
+		$this->getStatistikIssues($allchart_statistik_kurzbz);
+
+		foreach ($allcharts as $chart)
+		{
+			$index = $chart->title.'_'.$chart->chart_id;
+			$singlechart = new chart($chart->chart_id);
+
+			$highchartdata = null;
+			$connectedobjects = array();
+
+			if (!isset($chart->title) || empty($chart->title))
+				$this->setError($objecttype, $chart->chart_id, $issuetexts['noTitle']);
+
+			if (!isset($chart->statistik_kurzbz) || empty($chart->statistik_kurzbz))
+				$this->setError($objecttype, $chart->chart_id, $issuetexts['noStatistik']);
+			else
+			{
+				//Wenn es keine Fehler in Statistik gibt, JSON Daten für Chart holen
+				if (empty($this->getIssues($statistiktype, $chart->statistik_kurzbz)))
+				{
+					if ($this->setFilterParams($chart->statistik_kurzbz))
+						$highchartdata = $singlechart->getHighChartDataForCheck();
+					$this->unsetFilterParams($chart->statistik_kurzbz);
+				}
+			$connectedobjects[$statistiktype] = $chart->statistik_kurzbz;
+			}
+
+			$responseObj = $this->getResponseObj(
+				$objecttype,
+				$chart->chart_id,
+				$connectedobjects,
+				$highchartdata
+			);
+			$response[$index] = $responseObj;
+		}
+
 		return json_encode($response);
 	}
 
@@ -405,7 +419,7 @@ class problemcheck extends basis_db
 		$responseObj->objectid = $objectid;
 		$responseObj->issues = $issues;
 		$responseObj->data = isset($data) ? $data : array();
-		$responseObj->lastExecuted = $this->helper->getLastExecutedObj($objecttype, $objectid);
+		$responseObj->lastExecuted = $this->problemcheck_helper->getLastExecutedObj($objecttype, $objectid);
 
 		if (isset($connectedObj))
 			$responseObj->connectedObj = $connectedObj;

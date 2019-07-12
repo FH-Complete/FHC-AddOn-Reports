@@ -1,4 +1,5 @@
 <?php
+require_once('dependency_overview.class.php');
 require_once(dirname(__FILE__).'/../../../include/webservicelog.class.php');
 
 
@@ -12,18 +13,21 @@ class problemcheck_helper extends basis_db
 	const OUTLIER_MAGNITUDE = 3;
 
 	private $date_now = null;
+	private $dependencyhelper = null;
 
 	public function __construct()
 	{
 		parent::__construct();
 		$this->date_now = new Datetime();
+		$this->dependencyhelper = new dependency_overview();
 	}
 
 	public function replaceFilterVars($sql)
 	{
 		foreach($_REQUEST as $name=>$value)
 		{
-			$regex = '/\$'.$name.'(?![a-zA-Z0-9])/';
+			//$regex = '/\$'.$name.'(?![a-zA-Z0-9_-])/';
+			$regex = '/\$'.$name.'\b/';
 			if (is_array($value))
 			{
 				$in = $this->db_implode4SQL($value);
@@ -73,33 +77,6 @@ class problemcheck_helper extends basis_db
 		$lastexecuted->critical = $critical;
 
 		return $lastexecuted;
-	}
-
-	public function getViewDependencies($view_id)
-	{
-		$dependencies = array();
-
-		$view = new view($view_id);
-		$view_kurzbz = $view->view_kurzbz;
-		$static_tbl_kurzbz = $view->table_kurzbz;
-
-		$allstatistics = new statistik();
-		if ($allstatistics->getAll())
-		{
-			//words between word boundaries \b
-			$regex_vw = '\b'.self::REPORTING_SCHEMA.'.'.$view_kurzbz.'\b';
-			$regex_tbl = '\b'.self::REPORTING_SCHEMA.'.'.$static_tbl_kurzbz.'\b';
-
-			foreach ($allstatistics->result as $statistik)
-			{
-				if (preg_match('/'.$regex_vw.'/', $statistik->sql) === 1 ||
-					preg_match('/'.$regex_tbl.'/', $statistik->sql) === 1
-				)
-					$dependencies[] = $statistik->statistik_kurzbz;
-			}
-		}
-
-		return $dependencies;
 	}
 
 	public function checkViewForStaticTables($sql)
@@ -154,7 +131,7 @@ class problemcheck_helper extends basis_db
 		if ($objecttype == 'view')
 		{
 			$chart_ids = array();
-			$statistik_kurzbz_arr = $this->getViewDependencies($objectid);
+			$statistik_kurzbz_arr = $this->dependencyhelper->getStatistikenFromView($objectid);
 
 			if (empty($statistik_kurzbz_arr))
 				return null;
@@ -162,7 +139,7 @@ class problemcheck_helper extends basis_db
 			{
 				foreach ($statistik_kurzbz_arr as $statistik_kurzbz)
 				{
-					$charts = $this->getChartsFromStatistik($statistik_kurzbz);
+					$charts = $this->dependencyhelper->getChartsFromStatistik($statistik_kurzbz);
 					$chart_ids = array_merge($chart_ids, $charts);
 				}
 
@@ -187,7 +164,7 @@ class problemcheck_helper extends basis_db
 				(beschreibung = ".$this->db_add_param($objecttype).
 				" AND request_id = ".$this->db_add_param($objectid).")";
 
-			$chart_ids = $this->getChartsFromStatistik($objectid);
+			$chart_ids = $this->dependencyhelper->getChartsFromStatistik($objectid);
 
 			if (!empty($chart_ids))
 			{
@@ -220,23 +197,5 @@ class problemcheck_helper extends basis_db
 			$elapsed = $this->date_now->diff($lastexecutiontime);
 		}
 		return $elapsed;
-	}
-
-	private function getChartsFromStatistik($statistik_kurzbz)
-	{
-		$qry = "SELECT chart_id FROM addon.tbl_rp_chart
-						 WHERE statistik_kurzbz=".$this->db_add_param($statistik_kurzbz);
-
-		$chart_ids = array();
-
-		if ($this->db_query($qry))
-		{
-			while ($row = $this->db_fetch_object())
-			{
-				$chart_ids[] = $row->chart_id;
-			}
-		}
-
-		return $chart_ids;
 	}
 }
