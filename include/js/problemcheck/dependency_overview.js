@@ -73,7 +73,7 @@ var DependencyOverview = {
 	{
 		$.ajax({
 			type: "GET",
-			url: "dependency_overview_router.php",
+			url: "reports_dependency_overview_router.php",
 			dataType: "json",
 			data: data,
 			success: callback
