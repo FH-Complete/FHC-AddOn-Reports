@@ -1,5 +1,5 @@
 <?php
-require_once('dependency_overview.class.php');
+require_once('rp_dependency_overview.class.php');
 require_once(dirname(__FILE__).'/../../../include/webservicelog.class.php');
 
 
@@ -11,6 +11,7 @@ class problemcheck_helper extends basis_db
 	const REPORTING_SCHEMA = 'reports';
 	const TABLE_PREFIX = 'tbl_';
 	const OUTLIER_MAGNITUDE = 3;
+	const LAST_EXECUTED_CRITICAL_THRESHOLD = 365; // in days
 
 	private $date_now = null;
 	private $dependencyhelper = null;
@@ -64,7 +65,7 @@ class problemcheck_helper extends basis_db
 			$elapsed .= $interval->y.' Jahr'.($interval->y != 1 ? 'e' : '').' ';
 			$elapsed .= $interval->m.' Monat'.($interval->m != 1 ? 'e' : '').' ';
 			$elapsed .= $interval->d.' Tag'.($interval->d != 1 ? 'e' : '');
-			$critical = $interval->y >= 1;
+			$critical = $interval->days >= self::LAST_EXECUTED_CRITICAL_THRESHOLD;
 		}
 		else
 		{

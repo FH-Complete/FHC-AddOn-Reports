@@ -1,39 +1,74 @@
 $(function() {
-/*	var view_id = $("selectview").val();
-	var view_kurzbz = $("selectview").find("option:selected").text();
-	DependencyOverview.drawSingleViewGraph(view_id, view_kurzbz);*/
 
-	$("#selectview").change(
+	DependencyOverview.showreports = false;
+	DependencyOverview.showanimations = true;
+	$("#showreports").prop("checked", DependencyOverview.showreports);
+	$("#showanimations").prop("checked", DependencyOverview.showanimations);
+
+	$("#selectmenugroup, #selectstatistikgroup, #selectview").val("null");
+
+	$("#selectmenugroup, #selectstatistikgroup, #selectview").change(
 		function ()
 		{
-			$("#selectgroup").val("null");
-			var view_id = $(this).val();
+			var selectedDropdownData = DependencyOverview.dropdowns[$(this).prop("id")];
 
-			if (view_id === "null")
-				return;
+			DependencyOverview.selectedDropdown.object = $(this);
+			DependencyOverview.selectedDropdown.action = selectedDropdownData.action;
+			DependencyOverview.selectedDropdown.titleprefix = selectedDropdownData.titleprefix;
 
-			var view_kurzbz = $(this).find("option:selected").text();
-
-			DependencyOverview.initDependencyOverview({"action": "getViewDependencies", "view_id": view_id}, view_kurzbz);
+			DependencyOverview.initDependencyOverview();
 		}
 	);
 
-	$("#selectgroup").change(
+	$("#showreports").change(
 		function ()
 		{
-			$("#selectview").val("null");
-			var groupname = $(this).val();
+			DependencyOverview.showreports = $(this).prop("checked");
+			DependencyOverview.initDependencyOverview();
+		}
+	);
 
-			if (groupname === "null")
-				return;
-
-			DependencyOverview.initDependencyOverview({"action": "getGroupDependencies", "groupname": groupname}, "Gruppe " + groupname);
+	$("#showanimations").change(
+		function ()
+		{
+			DependencyOverview.showanimations = $(this).prop("checked");
+			DependencyOverview.initDependencyOverview();
 		}
 	);
 });
 
 var DependencyOverview = {
 	all_issues: null,
+	settings:
+	{
+		showreports: false,
+		showanimations: true
+	},
+	dropdowns:
+	{
+		"selectmenugroup":
+		{
+			"action": "getMenuGroupDependencies",
+			"titleprefix": "Menügruppe"
+		},
+		"selectstatistikgroup":
+		{
+			"action": "getStatistikGroupDependencies",
+			"titleprefix": "Statistikgruppe"
+		},
+		"selectview":
+		{
+			"action": "getViewDependencies",
+			"titleprefix": "View"
+		}
+	},
+	selectedDropdown:
+	{
+		"object": null,
+		"action": "",
+		"titleprefix": ""
+	},
+	currentObjectTitle: "",
 	callDependencyOverview: function(data, callback)
 	{
 		$.ajax({
@@ -54,7 +89,28 @@ var DependencyOverview = {
 			success: callback
 		});
 	},
-	initDependencyOverview: function(callparams, objectname)
+	initDependencyOverview: function()
+	{
+		DependencyOverview.lockInput();
+
+		var selectedDropdown = DependencyOverview.selectedDropdown;
+		var selectedDropdownObject = selectedDropdown.object;
+		DependencyOverview.toggleDropDownSelection(selectedDropdownObject.prop("id"));
+
+		var object_id = selectedDropdownObject.val();
+
+		if (object_id === "null")
+			return;
+
+		var object_name = selectedDropdownObject.find("option:selected").text();
+
+		DependencyOverview.currentObjectTitle = selectedDropdown.titleprefix + " " + object_name.trim();
+
+		DependencyOverview.initDependencyOverviewCall(
+			{"action": selectedDropdown.action, "object_id": object_id}
+		);
+	},
+	initDependencyOverviewCall: function(callparams)
 	{
 		DependencyOverview.callDependencyOverview(
 			callparams,
@@ -78,7 +134,6 @@ var DependencyOverview = {
 
 						for (var k = 0; k < viewdependencies.statistiken[j].charts.length; k++)
 						{
-							console.log(viewdependencies.statistiken[j].charts);
 							chart_ids.push(viewdependencies.statistiken[j].charts[k].chart_id)
 						}
 					}
@@ -92,7 +147,6 @@ var DependencyOverview = {
 							{"action": "getViewIssues", "view_ids": view_ids},
 							function (viewissues)
 							{
-								//console.log(viewissues);
 								for (var viewname in viewissues)
 								{
 									all_issues.push({
@@ -112,7 +166,6 @@ var DependencyOverview = {
 							{"action": "getStatistikIssues", "statistik_ids": statistik_kurzbzarr},
 							function (statistikissues)
 							{
-								//console.log(statistikissues);
 								for (var statistikname in statistikissues)
 								{
 									all_issues.push({
@@ -132,7 +185,6 @@ var DependencyOverview = {
 							{"action": "getChartIssues", "chart_ids": chart_ids},
 							function (chartissues)
 							{
-								//console.log(chartissues);
 								for (var chartname in chartissues)
 								{
 									all_issues.push({
@@ -147,7 +199,7 @@ var DependencyOverview = {
 
 				var drawGraphCall = function()
 				{
-					return DependencyOverview.getGraphData(data, objectname);
+					return DependencyOverview.getGraphData(data);
 				};
 
 				$.when(
@@ -158,8 +210,6 @@ var DependencyOverview = {
 				).done(
 					function(viewCall, statistikCall, /*chartCall, */drawGraphCall)
 					{
-						console.log("finished now...");
-						console.log(all_issues);
 						DependencyOverview.all_issues = all_issues;
 						DependencyOverview.drawIssues(all_issues, drawGraphCall);
 					}
@@ -167,19 +217,8 @@ var DependencyOverview = {
 			}
 		)
 	},
-/*	drawSingleViewGraph: function(view_id, view_kurzbz)
+	getGraphData: function(data)
 	{
-		DependencyOverview.callDependencyOverview(
-			{"action": "getViewDependencies", "view_id": view_id},
-			function(data)
-			{
-				DependencyOverview.getGraphData(data, view_kurzbz);
-			}
-		)
-	},*/
-	getGraphData: function(data, titleobject)
-	{
-		//console.log(all_issues);
 		var nodes = [];
 		var renderdata = [];
 
@@ -188,9 +227,8 @@ var DependencyOverview = {
 			var viewdependencies = data[i];
 			var statistiken = viewdependencies.statistiken;
 
-			if ($.isNumeric(viewdependencies.view_id))
+			if ($.isNumeric(viewdependencies.view_id) && viewdependencies.view_kurzbz !== null)
 			{
-
 				var viewbez = viewdependencies.view_kurzbz + "_" + viewdependencies.view_id;
 
 				nodes.push(
@@ -217,10 +255,11 @@ var DependencyOverview = {
 				var statistik = statistiken[j];
 				var statistik_kurzbz = statistik.statistik_kurzbz;
 
+				if (statistik_kurzbz == null)
+					continue;
+
 				if ($.isNumeric(viewdependencies.view_id))
 				{
-					//statistikdependency.push(viewbez);
-					//statistikdependency.push(statistik_kurzbz);
 					renderdata.push({from: viewbez, to: statistik_kurzbz});
 				}
 
@@ -258,7 +297,6 @@ var DependencyOverview = {
 							events: {
 								click: function ()
 								{
-
 									var id = this.name.substring(this.name.lastIndexOf('_') + 1, this.name.length);
 									window.open("../cis/vorschau.php?chart_id=" + id);
 									window.open("../vilesci/chart_details.php?chart_id=" + id);
@@ -266,15 +304,63 @@ var DependencyOverview = {
 							}
 						}
 					);
+					if (DependencyOverview.showreports)
+					{
+						var reports = statistik.charts[k].reports;
+
+						for (var r = 0; r < reports.length; r++)
+						{
+							var reportbez = reports[r].title + "_" + reports[r].report_id;
+							renderdata.push({from: reportbez, to: chartbez});
+
+							var node = DependencyOverview.getReportNode(reportbez);
+
+							nodes.push(node);
+						}
+					}
+				}
+
+				if (DependencyOverview.showreports)
+				{
+					var statistikresports = statistik.reports;
+					for (var rst = 0; rst < statistikresports.length; rst++)
+					{
+						var reportstbez = statistikresports[rst].title + "_" + statistikresports[rst].report_id;
+						renderdata.push({from: reportstbez, to: statistik_kurzbz});
+
+						var noderpst = DependencyOverview.getReportNode(reportstbez);
+
+						nodes.push(noderpst);
+					}
 				}
 			}
 		}
-		return DependencyOverview.drawGraph(nodes, renderdata, titleobject);
+
+		DependencyOverview.unlockInput();
+
+		return DependencyOverview.drawGraph(nodes, renderdata);
+	},
+	getReportNode: function(reportbez)
+	{
+		return {
+			id: reportbez,
+			marker: {
+				symbol: "url(../include/images/Report.svg)",
+				height: 40,
+				width: 30
+			},
+			events: {
+				click: function ()
+				{
+					var id = this.name.substring(this.name.lastIndexOf('_') + 1, this.name.length);
+					window.open("../cis/vorschau.php?report_id=" + id);
+					window.open("../vilesci/report_details.php?report_id=" + id);
+				}
+			}
+		}
 	},
 	drawIssues: function(all_issues, chart)
 	{
-		//console.log(all_issues.view_issues);
-
 		if ($.isArray(all_issues))
 		{
 			for (var v = 0; v < all_issues.length; v++)
@@ -311,28 +397,15 @@ var DependencyOverview = {
 							}
 							chart.series[0].nodes[n].options.dataLabels = dataLabels;
 						}
-
 					}
 				}
 			}
 
 			chart.redraw();
-/*
-			console.log(chart.series[0].nodes);
-			chart.series[0].update(
-				{
-					nodes: chart.series[0].nodes
-				}
-			);*/
 		}
-
-
-
 	},
-	drawGraph: function(nodes, renderdata, titleobject)
+	drawGraph: function(nodes, renderdata)
 	{
-		//console.log(nodes);
-
 		$("#netgraph").addClass("panel panel-default");
 		$("#netgraph").css("margin-top", "15px");
 
@@ -341,13 +414,10 @@ var DependencyOverview = {
 				type: 'networkgraph',
 				height: '80%',
 				spacingRight: 40,
-				spacingLeft: 40/*,
-				events: {
-					render: eventcallback
-				}*/
+				spacingLeft: 40
 			},
 			title: {
-				text: 'Abhängigkeiten '+titleobject
+				text: 'Abhängigkeiten ' + DependencyOverview.currentObjectTitle
 			},
 			/*subtitle: {
 				text: 'A Force-Directed Network Graph in Highcharts'
@@ -361,11 +431,8 @@ var DependencyOverview = {
 					{
 						for (var i = 0; i < DependencyOverview.all_issues.length; i++)
 						{
-/*							console.log(DependencyOverview.all_issues[i].objectname);
-							console.log(this.key);*/
 							if (DependencyOverview.all_issues[i].objectname === this.key)
 							{
-								//issuetext = DependencyOverview.all_issues[i].issues.join("<br>");
 								var issues = DependencyOverview.all_issues[i].issues;
 
 								for (var j = 0; j < issues.length; j++)
@@ -392,7 +459,7 @@ var DependencyOverview = {
 					keys: ['from', 'to'],
 					layoutAlgorithm: {
 						linkLength: 35,
-						enableSimulation: true,
+						enableSimulation: DependencyOverview.showanimations,
 						friction: -0.9
 					}
 				}
@@ -407,5 +474,25 @@ var DependencyOverview = {
 				data: renderdata
 			}]
 		});
+	},
+	toggleDropDownSelection: function(selectedDropdownId)
+	{
+		var selects = $("select.form-control");
+
+		selects.each(
+			function()
+			{
+				if ($(this).prop("id") !== selectedDropdownId)
+					$(this).val("null");
+			}
+		);
+	},
+	lockInput: function()
+	{
+		$("select, input").prop("disabled", true);
+	},
+	unlockInput: function()
+	{
+		$("select, input").prop("disabled", false);
 	}
 };

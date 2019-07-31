@@ -20,6 +20,7 @@
 require_once('../../../config/vilesci.config.inc.php');
 require_once('../include/rp_view.class.php');
 require_once('../../../include/statistik.class.php');
+require_once('../include/rp_gruppe.class.php');
 require_once('../../../include/benutzerberechtigung.class.php');
 
 if (!$db = new basis_db())
@@ -50,6 +51,37 @@ if (!$statistik->getAnzahlGruppe())
 {
 	die($statistik->errormsg);
 }
+
+$menugruppe = new rp_gruppe();
+
+if (!$menugruppe->loadAll())
+{
+	die($menugruppe->errormsg);
+}
+elseif (!$menugruppe->loadRecursive())
+{
+	die($menugruppe->errormsg);
+}
+
+function drawMenuGruppenRec($gruppen, $level = 0)
+{
+	foreach ($gruppen as $gruppe)
+	{
+		echo "<option value=".$gruppe->reportgruppe_id.">";
+		for ($i = 0; $i < $level; $i++)
+		{
+			echo "&emsp;";
+		}
+		echo $gruppe->bezeichnung."</option>";
+		if (!empty($gruppe->children))
+		{
+			$level++;
+			drawMenuGruppenRec($gruppe->children, $level);
+			$level--;
+		}
+	}
+}
+
 ?>
 <html>
 	<head>
@@ -77,32 +109,61 @@ if (!$statistik->getAnzahlGruppe())
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-xs-6">
+					<div class="col-xs-4">
+						<div class="form-group">
+							<label>Menügruppe</label>
+							<select id="selectmenugroup" class="form-control">
+								<option value="null">Menügruppe auswählen...</option>
+								<option value="getAllDependencies">Alle</option>
+								<?php drawMenuGruppenRec($menugruppe->recursive); ?>
+							</select>
+						</div>
+					</div>
+					<div class="col-xs-4">
+						<div class="form-group">
+							<label>Statistikgruppe</label>
+							<select id="selectstatistikgroup" class="form-control">
+								<option value="null">Statistikgruppe auswählen...</option>
+								<option value=""> (Ohne Gruppe)</option>
+								<?php foreach ($statistik->result as $statistik):
+									if (empty($statistik->gruppe))
+										continue;?>
+									<option value="<?php echo $statistik->gruppe ?>"><?php echo $statistik->gruppe ?></option>
+								<?php endforeach; ?>
+							</select>
+						</div>
+					</div>
+					<div class="col-xs-4">
 						<div class="form-group">
 							<label>View</label>
 							<select id="selectview" class="form-control">
 								<option value="null">View auswählen...</option>
+								<option value="getAllDependencies">Alle</option>
 								<?php foreach ($view->result as $view): ?>
 									<option value="<?php echo $view->view_id ?>"><?php echo $view->view_kurzbz ?></option>
 								<?php endforeach; ?>
 							</select>
 						</div>
 					</div>
-					<div class="col-xs-6">
-						<div class="form-group">
-							<label>Gruppe</label>
-							<select id="selectgroup" class="form-control">
-								<option value="null">Gruppe auswählen...</option>
-								<?php foreach ($statistik->result as $statistik): ?>
-									<option value="<?php echo $statistik->gruppe ?>"><?php echo $statistik->gruppe ?></option>
-								<?php endforeach; ?>
-							</select>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 text-center">
+						<div class="form-group checkbox">
+							<label>
+							<input type="checkbox" id="showreports">
+								Reports anzeigen
+							</label>
+							 |
+							<label>
+							<input type="checkbox" id="showanimations">
+								Animationen
+							</label>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12">
-						<div id="netgraph"</div>
+						<div id="netgraph"></div>
 					</div>
 				</div>
 			</div>

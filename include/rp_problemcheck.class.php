@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../../../include/basis_db.class.php');
 require_once(dirname(__FILE__).'/../../../include/filter.class.php');
 require_once('rp_chart.class.php');
 require_once('rp_problemcheck_helper.class.php');
-require_once('dependency_overview.class.php');
+require_once('rp_dependency_overview.class.php');
 
 class problemcheck extends basis_db
 {
