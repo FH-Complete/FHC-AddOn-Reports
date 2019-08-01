@@ -92,6 +92,7 @@ function drawMenuGruppenRec($gruppen, $level = 0)
 		<link rel="stylesheet" href="../../../vendor/components/font-awesome/css/font-awesome.min.css" type="text/css">
 		<link rel="stylesheet" href="../../../vendor/BlackrockDigital/startbootstrap-sb-admin-2/dist/css/sb-admin-2.min.css" type="text/css">
 		<link rel="stylesheet" href="../../../public/css/sbadmin2/admintemplate_contentonly.css" type="text/css">
+		<link rel="stylesheet" href="../include/css/problemcheck/dependency_overview.css" type="text/css">
 		<?php require_once("../../../include/meta/jquery.php"); ?>
 		<script type="text/javascript" src="../../../vendor/BlackrockDigital/startbootstrap-sb-admin-2/vendor/metisMenu/metisMenu.min.js"></script>
 		<script type="text/javascript" src="../../../vendor/BlackrockDigital/startbootstrap-sb-admin-2/dist/js/sb-admin-2.min.js"></script>
@@ -147,8 +148,17 @@ function drawMenuGruppenRec($gruppen, $level = 0)
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-xs-12 text-center">
-						<div class="form-group checkbox">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label>Ansicht</label>
+							<select id="selectansicht" class="form-control">
+								<option value="null">Ansicht auswählen...</option>
+								<option value="getLongerNotUsedDependencies">Länger nicht ausgeführte Statistiken</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-xs-6 text-right">
+						<div class="form-group checkbox" id="optionscheckboxes">
 							<label>
 							<input type="checkbox" id="showreports">
 								Reports anzeigen

@@ -24,6 +24,7 @@ if (isset($_REQUEST['action']) && isset($_REQUEST['object_id']))
 	$object_id = $_REQUEST['object_id'];
 
 	$dependency_helper = new dependency_overview();
+	$dependencies = array();
 
 	switch($action)
 	{
@@ -44,6 +45,10 @@ if (isset($_REQUEST['action']) && isset($_REQUEST['object_id']))
 				$dependencies = $dependency_helper->getAllMenuGroupDependencies();
 			else
 				$dependencies = $dependency_helper->getMenuGroupDependencies($object_id);
+			break;
+		case 'getAnsichtDependencies':
+			if ($object_id == "getLongerNotUsedDependencies")
+				$dependencies = $dependency_helper->getLongerNotUsedDependencies();
 			break;
 	}
 

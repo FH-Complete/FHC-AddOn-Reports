@@ -132,6 +132,7 @@ class problemcheck_helper extends basis_db
 		if ($objecttype == 'view')
 		{
 			$chart_ids = array();
+			$report_ids = array();
 			$statistik_kurzbz_arr = $this->dependencyhelper->getStatistikenFromView($objectid);
 
 			if (empty($statistik_kurzbz_arr))
@@ -142,6 +143,7 @@ class problemcheck_helper extends basis_db
 				{
 					$charts = $this->dependencyhelper->getChartsFromStatistik($statistik_kurzbz);
 					$chart_ids = array_merge($chart_ids, $charts);
+					$reports = $this->dependencyhelper->getReportsFromStatistik($objectid);
 				}
 
 				$qry .=
@@ -154,6 +156,23 @@ class problemcheck_helper extends basis_db
 					$qry .=
 						" OR (beschreibung = 'chart'".
 						" AND request_id IN (".$this->implode4SQL($chart_ids)."))";
+
+					foreach ($chart_ids as $chart_id)
+					{
+						$reports = array_merge($reports, $this->dependencyhelper->getReportsFromChart($chart_id));
+					}
+				}
+
+				foreach ($reports as $report)
+				{
+					$report_ids[] = $report->report_id;
+				}
+
+				if (!empty($report_ids))
+				{
+					$qry .=
+						" OR (beschreibung = 'report'".
+						" AND request_id IN (".$this->implode4SQL($report_ids)."))";
 				}
 
 				$qry .= ")";
@@ -166,12 +185,31 @@ class problemcheck_helper extends basis_db
 				" AND request_id = ".$this->db_add_param($objectid).")";
 
 			$chart_ids = $this->dependencyhelper->getChartsFromStatistik($objectid);
+			$reports = $this->dependencyhelper->getReportsFromStatistik($objectid);
+			$report_ids = array();
 
 			if (!empty($chart_ids))
 			{
 				$qry .=
 					" OR (beschreibung = 'chart'".
 					" AND request_id IN (".$this->implode4SQL($chart_ids)."))";
+
+				foreach ($chart_ids as $chart_id)
+				{
+					$reports = array_merge($reports, $this->dependencyhelper->getReportsFromChart($chart_id));
+				}
+			}
+
+			foreach ($reports as $report)
+			{
+				$report_ids[] = $report->report_id;
+			}
+
+			if (!empty($report_ids))
+			{
+				$qry .=
+					" OR (beschreibung = 'report'".
+					" AND request_id IN (".$this->implode4SQL($report_ids)."))";
 			}
 
 			$qry .= ")";

@@ -5,9 +5,9 @@ $(function() {
 	$("#showreports").prop("checked", DependencyOverview.showreports);
 	$("#showanimations").prop("checked", DependencyOverview.showanimations);
 
-	$("#selectmenugroup, #selectstatistikgroup, #selectview").val("null");
+	$("#selectmenugroup, #selectstatistikgroup, #selectview, #selectansicht").val("null");
 
-	$("#selectmenugroup, #selectstatistikgroup, #selectview").change(
+	$("#selectmenugroup, #selectstatistikgroup, #selectview, #selectansicht").change(
 		function ()
 		{
 			var selectedDropdownData = DependencyOverview.dropdowns[$(this).prop("id")];
@@ -60,6 +60,11 @@ var DependencyOverview = {
 		{
 			"action": "getViewDependencies",
 			"titleprefix": "View"
+		},
+		"selectansicht":
+		{
+			"action": "getAnsichtDependencies",
+			"titleprefix": ""
 		}
 	},
 	selectedDropdown:
@@ -91,9 +96,13 @@ var DependencyOverview = {
 	},
 	initDependencyOverview: function()
 	{
+		var selectedDropdown = DependencyOverview.selectedDropdown;
+
+		if (selectedDropdown.object == null || selectedDropdown.object.val() === "null")
+			return;
+
 		DependencyOverview.lockInput();
 
-		var selectedDropdown = DependencyOverview.selectedDropdown;
 		var selectedDropdownObject = selectedDropdown.object;
 		DependencyOverview.toggleDropDownSelection(selectedDropdownObject.prop("id"));
 
@@ -125,16 +134,20 @@ var DependencyOverview = {
 				for (var i = 0; i < data.length; i++)
 				{
 					var viewdependencies = data[i];
-					//console.log(viewdependencies);
-					if ($.isNumeric(viewdependencies.view_id))
+					if ($.isNumeric(viewdependencies.view_id) && ($.inArray(viewdependencies.view_id, view_ids) < 0))
 						view_ids.push(viewdependencies.view_id);
+
 					for (var j = 0; j < viewdependencies.statistiken.length; j++)
 					{
-						statistik_kurzbzarr.push(viewdependencies.statistiken[j].statistik_kurzbz);
+						var statistik_kurzbz = viewdependencies.statistiken[j].statistik_kurzbz;
+						if ($.inArray(statistik_kurzbz, statistik_kurzbzarr) < 0)
+							statistik_kurzbzarr.push(statistik_kurzbz);
 
 						for (var k = 0; k < viewdependencies.statistiken[j].charts.length; k++)
 						{
-							chart_ids.push(viewdependencies.statistiken[j].charts[k].chart_id)
+							var chart_id = viewdependencies.statistiken[j].charts[k].chart_id;
+							if ($.inArray(chart_id, chart_ids) < 0)
+								chart_ids.push(chart_id)
 						}
 					}
 				}
@@ -359,55 +372,9 @@ var DependencyOverview = {
 			}
 		}
 	},
-	drawIssues: function(all_issues, chart)
-	{
-		if ($.isArray(all_issues))
-		{
-			for (var v = 0; v < all_issues.length; v++)
-			{
-				var viewissues = all_issues[v];
-				var hasError = false;
-
-				if (chart.series)
-				{
-					for (var n = 0; n < chart.series[0].nodes.length; n++)
-					{
-						if (viewissues.objectname === chart.series[0].nodes[n].id)
-						{
-							var dataLabels = {};
-							for (var i = 0; i < viewissues.issues.length; i++)
-							{
-								var viewissue = viewissues.issues[i];
-								if (viewissue.type === "error")
-								{
-									dataLabels.color = "#a94442";
-									dataLabels.formatter =  function () { return "! " + this.key };
-									//dataLabels.borderRadius = 2;
-									//dataLabels.shape = 'callout';
-									hasError = false;
-								}
-								else if (viewissue.type === "warning")
-								{
-									if (!hasError)
-									{
-										dataLabels.color = "#8a6d3b";
-										dataLabels.formatter =  function () { return "! " + this.key };
-									}
-								}
-							}
-							chart.series[0].nodes[n].options.dataLabels = dataLabels;
-						}
-					}
-				}
-			}
-
-			chart.redraw();
-		}
-	},
 	drawGraph: function(nodes, renderdata)
 	{
 		$("#netgraph").addClass("panel panel-default");
-		$("#netgraph").css("margin-top", "15px");
 
 		return Highcharts.chart('netgraph', {
 			chart: {
@@ -460,7 +427,9 @@ var DependencyOverview = {
 					layoutAlgorithm: {
 						linkLength: 35,
 						enableSimulation: DependencyOverview.showanimations,
-						friction: -0.9
+						friction: -0.9,
+						integration: 'euler',
+						approximation: 'barnes-hut'
 					}
 				}
 			},
@@ -474,6 +443,51 @@ var DependencyOverview = {
 				data: renderdata
 			}]
 		});
+	},
+	drawIssues: function(all_issues, chart)
+	{
+		if ($.isArray(all_issues))
+		{
+			for (var v = 0; v < all_issues.length; v++)
+			{
+				var viewissues = all_issues[v];
+				var hasError = false;
+
+				if (chart.series)
+				{
+					for (var n = 0; n < chart.series[0].nodes.length; n++)
+					{
+						if (viewissues.objectname === chart.series[0].nodes[n].id)
+						{
+							var dataLabels = {};
+							for (var i = 0; i < viewissues.issues.length; i++)
+							{
+								var viewissue = viewissues.issues[i];
+								if (viewissue.type === "error")
+								{
+									dataLabels.color = "#a94442";
+									dataLabels.formatter =  function () { return "! " + this.key };
+									//dataLabels.borderRadius = 2;
+									//dataLabels.shape = 'callout';
+									hasError = false;
+								}
+								else if (viewissue.type === "warning")
+								{
+									if (!hasError)
+									{
+										dataLabels.color = "#8a6d3b";
+										dataLabels.formatter =  function () { return "! " + this.key };
+									}
+								}
+							}
+							chart.series[0].nodes[n].options.dataLabels = dataLabels;
+						}
+					}
+				}
+			}
+
+			chart.redraw();
+		}
 	},
 	toggleDropDownSelection: function(selectedDropdownId)
 	{

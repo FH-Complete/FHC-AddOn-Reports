@@ -5,6 +5,7 @@ require_once(dirname(__FILE__).'/../../../include/statistik.class.php');
 require_once('rp_chart.class.php');
 require_once('rp_gruppe.class.php');
 require_once('rp_gruppenzuordnung.class.php');
+require_once('rp_problemcheck_helper.class.php');
 
 /**
  */
@@ -186,6 +187,28 @@ class dependency_overview extends basis_db
 		return $this->getStatistikDependencies($statistiken_kurzbz_arr);
 	}
 
+	public function getLongerNotUsedDependencies()
+	{
+		$statistiken_kurzbz_arr = array();
+
+		$statistik = new statistik();
+		$problemcheck_helper = new problemcheck_helper();
+
+
+		if ($statistik->getAll())
+		{
+			foreach ($statistik->result as $stat)
+			{
+				$lastexec = $problemcheck_helper->getLastExecutedObj('statistik', $stat->statistik_kurzbz);
+
+				if ($lastexec->critical)
+					$statistiken_kurzbz_arr[] = $stat->statistik_kurzbz;
+			}
+		}
+
+		return $this->getStatistikDependencies($statistiken_kurzbz_arr);
+	}
+
 	public function getStatistikenFromView($view_id)
 	{
 		$statistiken = array();
@@ -269,9 +292,10 @@ class dependency_overview extends basis_db
 
 	public function getReportsFromStatistik($statistik_kurzbz)
 	{
-		$qry = "SELECT tbl_rp_report.report_id, tbl_rp_report.title FROM addon.tbl_rp_report_statistik
-						JOIN addon.tbl_rp_report USING (report_id)
-						 WHERE statistik_kurzbz =".$this->db_add_param($statistik_kurzbz);
+		$qry = "SELECT tbl_rp_report.report_id, tbl_rp_report.title
+				FROM addon.tbl_rp_report_statistik
+				JOIN addon.tbl_rp_report USING (report_id)
+				WHERE statistik_kurzbz =".$this->db_add_param($statistik_kurzbz);
 
 		$reports = array();
 
