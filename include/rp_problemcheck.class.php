@@ -45,6 +45,7 @@ class problemcheck extends basis_db
 		$this->issuetexts[$this->repobjecttypes[1]] =
 			array(
 				'notDefined' => "Statistik nicht definiert - kein SQL und keine URL",
+				'noStatistikGruppe' => "Statistik ist keiner Gruppe zugeordnet",
 				'urlOnly' => "Keine Prüfung möglich - nur URL, kein SQL",
 				'noBezeichnung' => "Statistik hat keine Bezeichnung",
 				'filterError' => "Filter %s hat Fehler im SQL",
@@ -158,6 +159,9 @@ class problemcheck extends basis_db
 
 			if (!isset($statistik->bezeichnung) || empty($statistik->bezeichnung))
 				$this->setError($objecttype, $index, $issuetexts['noBezeichnung']);
+
+			if (!isset($statistik->gruppe) || strlen($statistik->gruppe) < 1)
+				$this->setWarning($objecttype, $index, $issuetexts['noStatistikGruppe']);
 
 			if ($this->setFilterParams($index))
 			{
