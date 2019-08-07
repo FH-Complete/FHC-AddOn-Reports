@@ -2,8 +2,9 @@
 require_once('rp_dependency_overview.class.php');
 require_once(dirname(__FILE__).'/../../../include/webservicelog.class.php');
 
-
 /**
+ * Class problemcheck_helper
+ * Bereitstellung von Funktionalität zum Check von Problemen, also issues, im Reporting.
  */
 class problemcheck_helper extends basis_db
 {
@@ -23,6 +24,11 @@ class problemcheck_helper extends basis_db
 		$this->dependencyhelper = new dependency_overview();
 	}
 
+	/**
+	 * Ersetzt Filter Parameter (beginnend mit $) in Statistik SQL mit Requestparameterwerten.
+	 * @param $sql Statistik SQL
+	 * @return string
+	 */
 	public function replaceFilterVars($sql)
 	{
 		foreach($_REQUEST as $name=>$value)
@@ -40,6 +46,12 @@ class problemcheck_helper extends basis_db
 		return $sql;
 	}
 
+	/**
+	 * Findet Ausreißer in einer Datenmenge. Mittelwert und Standardabweichung werden herangezogen.
+	 * Wenn Wert > MW + x * STDABW, dann gilt der Wert als Außreißer
+	 * @param $dataset
+	 * @return array
+	 */
 	public function findOutliers($dataset)
 	{
 		$count = count($dataset);
@@ -55,6 +67,13 @@ class problemcheck_helper extends basis_db
 		); // Return filtered array of values that lie over $mean + $deviation.
 	}
 
+	/**
+	 * Holt Zeit, die seit letzter Ausführung eines Reportingobjekts vergangen ist.
+	 * Checkt ob es zu lange her war (critical).
+	 * @param $objecttype z.B. statistik, chart
+	 * @param $objectid z.B. statistik_kurzbz, chart_id
+	 * @return stdClass
+	 */
 	public function getLastExecutedObj($objecttype, $objectid)
 	{
 		$interval = $this->getLastExecuted($objecttype, $objectid);
@@ -80,11 +99,21 @@ class problemcheck_helper extends basis_db
 		return $lastexecuted;
 	}
 
+	/**
+	 * Prüft, ob View eine statische Tabelle enthält.
+	 * @param $sql SQL der view
+	 * @return string Name der statischen Tabelle oder false
+	 */
 	public function checkViewForStaticTables($sql)
 	{
 		return strstr($sql, self::REPORTING_SCHEMA.'.'.self::TABLE_PREFIX);
 	}
 
+	/**
+	 * Führt explain einer SQL-Query durch. Liefert Ausführungsplan (samt benötigten Zeiten) im JSON-Format zurück.
+	 * @param $query
+	 * @return array|null
+	 */
 	public function explainQuery($query)
 	{
 		$statistikresult = @$this->db_query('EXPLAIN (FORMAT JSON) '.$query);
@@ -97,7 +126,7 @@ class problemcheck_helper extends basis_db
 			{
 				$jsondata = json_decode($row['QUERY PLAN']);
 				$explainplan[] = $jsondata[0]->Plan;
-				$costssum += $this->getTotalExplainplanCost($explainplan);
+				$this->getTotalExplainplanCost($jsondata[0]->Plan, $costssum);
 			}
 			$explainplan['costsum'] = $costssum;
 			return $explainplan;
@@ -108,19 +137,41 @@ class problemcheck_helper extends basis_db
 		}
 	}
 
+	/**
+	 * Berechnet Quadrat der Mittelwertabweichung eines Wertes für Außreissercheck.
+	 * @param $x
+	 * @param $mean
+	 * @return float|int
+	 */
 	private function sdSquare($x, $mean)
 	{
 		return pow($x - $mean, 2);
 	}
 
-	private function getTotalExplainplanCost($explainplan)
+	/**
+	 * Summiert Ausführungszeit eines als Result einer EXPLAIN-Query erhaltenen Ausführungsplans.
+	 * @param $explainplan
+	 * @return mixed
+	 */
+	private function getTotalExplainplanCost($explainplan, &$sum)
 	{
-		if (isset($explainplan[0]->Plans) && !empty($explainplan[0]->Plans))
-			return $explainplan[0]->{'Total Cost'} + $this->getTotalExplainplanCost($explainplan[0]->Plans);
-		else
-			return $explainplan[0]->{'Total Cost'};
+		$sum += $explainplan->{'Total Cost'};
+		if (!isset($explainplan->Plans) || empty($explainplan->Plans))
+		{
+			return $sum;
+		}
+		foreach ($explainplan->Plans as $plan)
+		{
+			$this->getTotalExplainplanCost($plan, $sum);
+		}
 	}
 
+	/**
+	 * Liefert Zeitinterval seit letzter Ausführung eines Reportingobjekts zurück.
+	 * @param $objecttype z.B. statistik, chart
+	 * @param $objectid z.B. statistik_kurzbz, chart_id
+	 * @return DateInterval|null
+	 */
 	private function getLastExecuted($objecttype, $objectid)
 	{
 		$lastexecutiontime = null;

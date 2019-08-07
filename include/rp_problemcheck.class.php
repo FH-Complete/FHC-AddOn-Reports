@@ -6,12 +6,15 @@ require_once('rp_chart.class.php');
 require_once('rp_problemcheck_helper.class.php');
 require_once('rp_dependency_overview.class.php');
 
+/**
+ * Class problemcheck
+ * Durchführung des Checks von Problemen, also issues, im Reporting.
+ */
 class problemcheck extends basis_db
 {
 	private $problemcheck_helper = null;
 	private $dependency_helper = null;
 
-	const REPORTING_SCHEMA = 'reports';
 	const FILTER_TYPE_SELECT = 'select';
 	const FILTER_TYPE_DATE = 'datepicker';
 
@@ -30,6 +33,10 @@ class problemcheck extends basis_db
 		$this->dependency_helper= new dependency_overview();
 	}
 
+	/**
+	 * Setzt issue Texte für alle Reportingobjekte (Views, Statistiken...).
+	 * Ein issue kann error oder warning sein.
+	 */
 	private function setIssueTexts()
 	{
 		// viewissues
@@ -61,6 +68,11 @@ class problemcheck extends basis_db
 			);
 	}
 
+	/**
+	 * Issues von Views holen. Views werden auf verschiedene warnings/errors geprüft.
+	 * @param null $view_id_arr Views, die geprüft werden sollen. Prüft alle wenn nicht gesetzt.
+	 * @return JSON mit geprüften Views und dessen issues.
+	 */
 	public function getViewIssues($view_id_arr = null)
 	{
 		$response = array();
@@ -138,6 +150,11 @@ class problemcheck extends basis_db
 		return json_encode($response);
 	}
 
+	/**
+	 * Issues von Statistiken holen. Statistiken werden auf verschiedene warnings/errors geprüft.
+	 * @param null $statistik_kurzbz_arr Statistiken, die geprüft werden sollen. Prüft alle wenn nicht gesetzt.
+	 * @return JSON mit geprüften Statistiken und dessen issues.
+	 */
 	public function getStatistikIssues($statistik_kurzbz_arr = null)
 	{
 		$response = array();
@@ -223,6 +240,11 @@ class problemcheck extends basis_db
 		return json_encode($response);
 	}
 
+	/**
+	 * Issues von Charts holen. Charts werden auf verschiedene warnings/errors geprüft.
+	 * @param null $chart_id_arr Charts, die geprüft werden sollen. Prüft alle wenn nicht gesetzt.
+	 * @return JSON mit geprüften Charts und dessen issues.
+	 */
 	public function getChartIssues($chart_id_arr = null)
 	{
 		$response = array();
@@ -278,7 +300,7 @@ class problemcheck extends basis_db
 						$highchartdata = $singlechart->getHighChartDataForCheck();
 					$this->unsetFilterParams($chart->statistik_kurzbz);
 				}
-			$connectedobjects[$statistiktype] = $chart->statistik_kurzbz;
+				$connectedobjects[$statistiktype] = $chart->statistik_kurzbz;
 			}
 
 			$responseObj = $this->getResponseObj(
@@ -293,6 +315,13 @@ class problemcheck extends basis_db
 		return json_encode($response);
 	}
 
+	/**
+	 * Liefert issues eines Reportingobjektes zurück.
+	 * Leerer Array, wenn vorher kein issuecheck durchlaufen wurde oder es keine issues gibt.
+	 * @param $objecttype z.B. statistik, chart
+	 * @param $objectid z.B. statistik_kurzbz, chart_id
+	 * @return array mit issues des Reportingobjektes
+	 */
 	public function getIssues($objecttype, $objectid)
 	{
 		if (isset($this->issues[$objecttype][$objectid]))
@@ -301,6 +330,11 @@ class problemcheck extends basis_db
 			return array();
 	}
 
+	/**
+	 * Setzt Filter Requestparameter sodass Statistik-SQL mit Filtern ($Filtername in SQL) ausgeführt werden kann.
+	 * @param $statistik_kurzbz Statistik, für die Filter Variablen gesetzt werden sollen.
+	 * @return bool true wenn ok, false bei Fehlern
+	 */
 	private function setFilterParams($statistik_kurzbz)
 	{
 		$statistik = new statistik($statistik_kurzbz);
@@ -357,6 +391,10 @@ class problemcheck extends basis_db
 		return true;
 	}
 
+	/**
+	 * Entfernt Filter Requestparameter.
+	 * @param $statistik_kurzbz Statistik, für die Filter Variablen entfernt werden sollen.
+	 */
 	private function unsetFilterParams($statistik_kurzbz)
 	{
 		$statistik = new statistik($statistik_kurzbz);
@@ -379,6 +417,13 @@ class problemcheck extends basis_db
 		}
 	}
 
+	/**
+	 * Speichert issue für ein Reportingobjekt.
+	 * @param $objecttype z.B. statistik, chart
+	 * @param $objectid z.B. statistik_kurzbz, chart_id
+	 * @param $issuetype z.B. warning, error
+	 * @param $issuetext Beschreibung des issues
+	 */
 	private function setIssue($objecttype, $objectid, $issuetype, $issuetext)
 	{
 		if (!isset($this->issues[$objecttype]))
@@ -396,16 +441,37 @@ class problemcheck extends basis_db
 		$this->issues[$objecttype][$objectid][] =  $issue;
 	}
 
+	/**
+	 * Speichert ein issue vom Typ warning.
+	 * @param $objecttype z.B. statistik, chart
+	 * @param $objectid z.B. statistik_kurzbz, chart_id
+	 * @param $issuetext Beschreibung des issues
+	 */
 	private function setWarning($objecttype, $objectid, $issuetext)
 	{
 		$this->setIssue($objecttype, $objectid, 'warning', $issuetext);
 	}
 
+	/**
+	 * Speichert ein issue vom Typ error.
+	 * @param $objecttype z.B. statistik, chart
+	 * @param $objectid z.B. statistik_kurzbz, chart_id
+	 * @param $issuetext Beschreibung des issues
+	 */
 	private function setError($objecttype, $objectid, $issuetext)
 	{
 		$this->setIssue($objecttype, $objectid, 'error', $issuetext);
 	}
 
+	/**
+	 * Liefert Reportingobjekt mit issues und weiteren Infos zurück.
+	 * @param $objecttype z.B. statistik, chart
+	 * @param $objectid z.B. statistik_kurzbz, chart_id
+	 * @param null $connectedobjects abhängige Objekte (arrays mit objecttyp als key, objectids als values),
+	 * für die issues auch zurückgegeben werden sollen (z.B. issues von Statistiken sind auch issues von Charts).
+	 * @param null $data zusätzliche Daten, z.B. JSON-Objekt zum Zeichnen von Charts.
+	 * @return stdClass
+	 */
 	private function getResponseObj($objecttype, $objectid, $connectedobjects = null, $data = null)
 	{
 		$issues = $this->getIssues($objecttype, $objectid);
