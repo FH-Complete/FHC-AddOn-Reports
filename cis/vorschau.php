@@ -38,7 +38,8 @@
 		<link rel="stylesheet" type="text/css" href="../include/css/offcanvas.css">
 		<link rel="stylesheet" type="text/css" href="../include/css/multilevel_dropdown.css">
 		<link rel="stylesheet" type="text/css" href="../cis/reporting.css">
-		<link rel="stylesheet" type="text/css" href="../include/js/pivottable/pivot.css">
+		<link rel="stylesheet" type="text/css" href="../../../vendor/nicolaskruchten/pivottable/dist/pivot.min.css">
+		<link rel="stylesheet" type="text/css" href="../include/css/custompivot.css">
 		<link rel="stylesheet" href="../include/css/charts.css" type="text/css">
 
 		<link rel="stylesheet" type="text/css" href="../../../vendor/components/jqueryui/themes/base/jquery-ui.min.css">
@@ -46,8 +47,8 @@
 		<script type="text/javascript" src="../../../vendor/jquery/jqueryV1/jquery-1.12.4.min.js"></script>
 		<script type="text/javascript" src="../../../vendor/components/jqueryui/jquery-ui.min.js"></script>
 
-		<script type="text/javascript" src="../include/js/pivottable/pivot.js"></script>
-		<script type="text/javascript" src="../include/js/pivottable/gchart_renderers.js"></script>
+		<script type="text/javascript" src="../../../vendor/nicolaskruchten/pivottable/dist/pivot.min.js"></script>
+		<script type="text/javascript" src="../../../vendor/nicolaskruchten/pivottable/dist/gchart_renderers.min.js"></script>
 
 		<?php require_once("../include/meta/highcharts.php"); ?>
 		<script type="text/javascript" src="../include/js/pivottable/jquery.ui.touch-punch.min.js"></script>

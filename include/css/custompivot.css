@@ -1,0 +1,13 @@
+/* Adding a Bootstrap-Filter-Icon if content is filtered */
+.pvtFilteredAttribute > .pvtAttr { padding-left: 20px !important; }
+.pvtFilteredAttribute > .pvtAttr:before {
+    font-family: 'Glyphicons Halflings';
+    content:"\e138";
+    display: inline;
+    background-size: cover;
+    position: relative;
+    margin-left: -15px;
+    font-style: normal;
+    padding-right: 5px;
+    font-size: smaller;
+}

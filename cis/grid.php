@@ -171,11 +171,11 @@ $statistik->loadData();
 			$("#excelExportButton").hide();
 		}
 	});
-			
+
 
 		</script>
 		<script type="text/javascript">
-		var tableToExcel = (function() {			
+		var tableToExcel = (function() {
 			var uri = 'data:application/vnd.ms-excel;base64,'
 				, template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">'
 						+ 	'	<head>'
@@ -188,24 +188,27 @@ $statistik->loadData();
 						+'		</body>'
 						+	'</html>'
 				, base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
-				, format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
-			return function(table, name, filename) {
-				if (!table.nodeType) table = document.getElementById(table)
-				var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
-				this.download = filename;
-					document.getElementById("dlink").href = uri + base64(format(template, ctx));
-					document.getElementById("dlink").download = filename;
-					document.getElementById("dlink").click();
+				, format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) };
+
+			return function(name, filename) {
+				var table = $("#pivot .pvtUi .pvtTable");
+				var ctx = {worksheet: name || 'Worksheet', table: table.html()};
+
+				$(this).prop("download", filename);
+				var dlink = $("#dlink");
+				dlink.prop("href", uri + base64(format(template, ctx)));
+				dlink.prop("download", filename);
+				dlink[0].click();
 			}
 			})();
-			
+
 		</script>
 		<br>
 		<!--<a onclick="exportChartCSV()" style="cursor:pointer" target="_blank">CSV Rohdaten herunterladen</a><br>-->
 		<button style="display: inline; height:30px;" onclick="exportChartCSV()" class="btn btn-default" type="button">CSV Rohdaten herunterladen</button><br>
-		<button id="excelExportButton" style="display: inline; height:30px;" onclick="tableToExcel('pvtTableID', 'Statistik', '<?php echo $statistik_kurzbz; ?>.xls')" class="btn btn-default" type="button">Excel-Export</button>
+		<button id="excelExportButton" style="display: inline; height:30px;" onclick="tableToExcel('Statistik', '<?php echo $statistik_kurzbz; ?>.xls')" class="btn btn-default" type="button">Excel-Export</button>
 		<a id="dlink" href="#pvtTableID" style="display:none;"></a>
-		
+
 		<?php endif; ?>
 
 		<?php
@@ -220,7 +223,7 @@ $statistik->loadData();
 			';
 		}
 		?>
-		
+
 <?php if($htmlbody): ?>
 	</body>
 </html>
