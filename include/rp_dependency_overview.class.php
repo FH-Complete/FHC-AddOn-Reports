@@ -8,11 +8,17 @@ require_once('rp_gruppenzuordnung.class.php');
 require_once('rp_problemcheck_helper.class.php');
 
 /**
+ * Class dependency_overview
+ * Liefern von Daten für Reporting Abhängigkeitsübersicht
  */
 class dependency_overview extends basis_db
 {
 	const REPORTING_SCHEMA = 'reports';
 
+	/**
+	 * Liefert Abhängigkeiten für alle Views in der Datenbank.
+	 * @return array
+	 */
 	public function getAllViewDependencies()
 	{
 		$dependencies = array();
@@ -29,6 +35,11 @@ class dependency_overview extends basis_db
 		return $dependencies;
 	}
 
+	/**
+	 * Liefert Abhängigkeiten, also abhängende Statistiken or Charts, für eine View.
+	 * @param $view_id
+	 * @return stdClass Objekt das Viewdaten und Abhängigkeiten beinhaltet
+	 */
 	public function getViewDependencies($view_id)
 	{
 		$dependencies = new stdClass();
@@ -48,6 +59,11 @@ class dependency_overview extends basis_db
 		return $dependencies;
 	}
 
+	/**
+	 * Liefert alle Abhängigkeiten (Charts, von Statistiken verwendete Views) für bestimmte Statistiken.
+	 * @param $statistik_kurzbz_arr
+	 * @return array
+	 */
 	public function getStatistikDependencies($statistik_kurzbz_arr)
 	{
 		$statistik_dependencies = array();
@@ -58,6 +74,7 @@ class dependency_overview extends basis_db
 
 			$views = $this->getViewsFromStatistik($statistik_kurzbz);
 
+			// wenn keine view Abhängigkeiten, nur statistik
 			if (empty($views))
 			{
 				$dependency = new stdClass();
@@ -98,6 +115,11 @@ class dependency_overview extends basis_db
 		return $statistik_dependencies;
 	}
 
+	/**
+	 * Liefert alle Statistikabhängigkeiten für eine Statistikgruppe.
+	 * @param $groupname
+	 * @return array
+	 */
 	public function getStatistikGroupDependencies($groupname)
 	{
 		$statistik_kurzbz_arr = array();
@@ -114,17 +136,22 @@ class dependency_overview extends basis_db
 		else
 		{
 			$statistik = new statistik();
-			$statistik->getGruppe($groupname);
-
-			foreach ($statistik->result as $singlestatistik)
+			if ($statistik->getGruppe($groupname))
 			{
-				$statistik_kurzbz_arr[] = $singlestatistik->statistik_kurzbz;
+				foreach ($statistik->result as $singlestatistik)
+				{
+					$statistik_kurzbz_arr[] = $singlestatistik->statistik_kurzbz;
+				}
 			}
 		}
 
 		return $this->getStatistikDependencies($statistik_kurzbz_arr);
 	}
 
+	/**
+	 * Liefert alle Statistikabhängigkeiten für alle Menügruppen.
+	 * @return array
+	 */
 	public function getAllMenuGroupDependencies()
 	{
 		$dependencies = array();
@@ -142,6 +169,11 @@ class dependency_overview extends basis_db
 		return $dependencies;
 	}
 
+	/**
+	 * Liefert alle Statistikabhängigkeiten für eine reportgruppe_id, also für eine Menügruppe.
+	 * @param $reportgruppe_id
+	 * @return array
+	 */
 	public function getMenuGroupDependencies($reportgruppe_id)
 	{
 		$statistiken_kurzbz_arr = array();
@@ -187,13 +219,16 @@ class dependency_overview extends basis_db
 		return $this->getStatistikDependencies($statistiken_kurzbz_arr);
 	}
 
+	/**
+	 * Liefert alle Statistikabhänigkeiten die länger nicht ausgeführt wurden (wie durch Problemcheck definiert).
+	 * @return array
+	 */
 	public function getLongerNotUsedDependencies()
 	{
 		$statistiken_kurzbz_arr = array();
 
 		$statistik = new statistik();
 		$problemcheck_helper = new problemcheck_helper();
-
 
 		if ($statistik->getAll())
 		{
@@ -209,6 +244,11 @@ class dependency_overview extends basis_db
 		return $this->getStatistikDependencies($statistiken_kurzbz_arr);
 	}
 
+	/**
+	 * Liefert alle Statistiken, die eine View verwenden.
+	 * @param $view_id
+	 * @return array
+	 */
 	public function getStatistikenFromView($view_id)
 	{
 		$statistiken = array();
@@ -220,8 +260,7 @@ class dependency_overview extends basis_db
 		{
 			foreach ($allstatistiken->result as $statistik)
 			{
-				if ($this->checkViewUsageInStatistik($statistik->sql, $view)
-				)
+				if ($this->checkViewUsageInStatistik($statistik->sql, $view))
 					$statistiken[] = $statistik->statistik_kurzbz;
 			}
 		}
@@ -229,6 +268,11 @@ class dependency_overview extends basis_db
 		return $statistiken;
 	}
 
+	/**
+	 * Liefert alle in einem Report verwendete Statistiken (direkt oder über einen Chart).
+	 * @param $report_id
+	 * @return array
+	 */
 	public function getStatistikenFromReport($report_id)
 	{
 		$qry = "SELECT tbl_rp_report_statistik.statistik_kurzbz
@@ -254,6 +298,11 @@ class dependency_overview extends basis_db
 		return $statistik_kurzbz_arr;
 	}
 
+	/**
+	 * Liefert in einer Statistik verwendeten Views.
+	 * @param $statistik_kurzbz
+	 * @return array
+	 */
 	public function getViewsFromStatistik($statistik_kurzbz)
 	{
 		$statistik = new statistik($statistik_kurzbz);
@@ -272,10 +321,15 @@ class dependency_overview extends basis_db
 		return $usedviews;
 	}
 
+	/**
+	 * Liefert alle auf einer Statistik basierenden Charts.
+	 * @param $statistik_kurzbz
+	 * @return array
+	 */
 	public function getChartsFromStatistik($statistik_kurzbz)
 	{
 		$qry = "SELECT chart_id FROM addon.tbl_rp_chart
-						 WHERE statistik_kurzbz=".$this->db_add_param($statistik_kurzbz);
+				WHERE statistik_kurzbz=".$this->db_add_param($statistik_kurzbz);
 
 		$chart_ids = array();
 
@@ -290,6 +344,11 @@ class dependency_overview extends basis_db
 		return $chart_ids;
 	}
 
+	/**
+	 * Liefert alle Reports, die angegebene Statistik beinhalten.
+	 * @param $statistik_kurzbz
+	 * @return array
+	 */
 	public function getReportsFromStatistik($statistik_kurzbz)
 	{
 		$qry = "SELECT tbl_rp_report.report_id, tbl_rp_report.title
@@ -313,6 +372,11 @@ class dependency_overview extends basis_db
 		return $reports;
 	}
 
+	/**
+	 * Liefert alle Reports, die angegebenen Chart beinhalten.
+	 * @param $chart_id
+	 * @return array
+	 */
 	public function getReportsFromChart($chart_id)
 	{
 		$qry = "SELECT tbl_rp_report.report_id, tbl_rp_report.title
@@ -338,7 +402,8 @@ class dependency_overview extends basis_db
 
 	/**
 	 * Laedt alle Statistiken ohne Gruppe, Parameter publish zum Filtern.
-	 * @return Statistiken wenn ok, sonst null
+	 * @param $publish
+	 * @return array|null
 	 */
 	public function getStatistikenNoGroup($publish=null)
 	{
@@ -383,6 +448,11 @@ class dependency_overview extends basis_db
 		}
 	}
 
+	/**
+	 * Liefert Statistik und alle auf ihr basierende Charts.
+	 * @param $statistik_kurzbz
+	 * @return stdClass
+	 */
 	private function getStatistikWithCharts($statistik_kurzbz)
 	{
 		$statistik = new stdClass();
@@ -406,12 +476,19 @@ class dependency_overview extends basis_db
 		return $statistik;
 	}
 
+	/**
+	 * Prüft, ob View in einer Statistik verwendet wird,
+	 * also ob der Name der View oder die aus der View generierte statische Tabelle im Statistik-SQL vorkommen.
+	 * @param $statistik_sql
+	 * @param $view
+	 * @return bool
+	 */
 	private function checkViewUsageInStatistik($statistik_sql, $view)
 	{
 		$view_kurzbz = $view->view_kurzbz;
 		$static_tbl_kurzbz = $view->table_kurzbz;
 
-		//words between word boundaries \b. word characters are numbers, letters or underscore
+		//Wörter zwischen word boundaries \b. Word characters sind Zahlen, Buchstaben oder Unterstrich, alle anderen Zeichen sind word boundaries.
 		$regex_vw = '\b'.self::REPORTING_SCHEMA.'.'.$view_kurzbz.'\b';
 		$regex_tbl = '\b'.self::REPORTING_SCHEMA.'.'.$static_tbl_kurzbz.'\b';
 

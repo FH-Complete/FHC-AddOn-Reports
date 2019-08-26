@@ -34,6 +34,7 @@ class problemcheck_helper extends basis_db
 		foreach($_REQUEST as $name=>$value)
 		{
 			//$regex = '/\$'.$name.'(?![a-zA-Z0-9_-])/';
+			//\b - word boundary
 			$regex = '/\$'.$name.'\b/';
 			if (is_array($value))
 			{
@@ -176,6 +177,7 @@ class problemcheck_helper extends basis_db
 	{
 		$lastexecutiontime = null;
 		$elapsed = null;
+		$reports = array();
 
 		$qry = "SELECT execute_time FROM system.tbl_webservicelog WHERE 
 			webservicetyp_kurzbz = ".$this->db_add_param(self::WEBSERVICETYP);
@@ -183,7 +185,6 @@ class problemcheck_helper extends basis_db
 		if ($objecttype == 'view')
 		{
 			$chart_ids = array();
-			$report_ids = array();
 			$statistik_kurzbz_arr = $this->dependencyhelper->getStatistikenFromView($objectid);
 
 			if (empty($statistik_kurzbz_arr))
@@ -202,31 +203,7 @@ class problemcheck_helper extends basis_db
 					(beschreibung = 'statistik'".
 					" AND request_id IN (".$this->implode4SQL($statistik_kurzbz_arr)."))";
 
-				if (!empty($chart_ids))
-				{
-					$qry .=
-						" OR (beschreibung = 'chart'".
-						" AND request_id IN (".$this->implode4SQL($chart_ids)."))";
-
-					foreach ($chart_ids as $chart_id)
-					{
-						$reports = array_merge($reports, $this->dependencyhelper->getReportsFromChart($chart_id));
-					}
-				}
-
-				foreach ($reports as $report)
-				{
-					$report_ids[] = $report->report_id;
-				}
-
-				if (!empty($report_ids))
-				{
-					$qry .=
-						" OR (beschreibung = 'report'".
-						" AND request_id IN (".$this->implode4SQL($report_ids)."))";
-				}
-
-				$qry .= ")";
+				$qry .= $this->generateChartsReportsWhereQuery($chart_ids, $reports);
 			}
 		}
 		elseif ($objecttype == 'statistik')
@@ -237,33 +214,8 @@ class problemcheck_helper extends basis_db
 
 			$chart_ids = $this->dependencyhelper->getChartsFromStatistik($objectid);
 			$reports = $this->dependencyhelper->getReportsFromStatistik($objectid);
-			$report_ids = array();
 
-			if (!empty($chart_ids))
-			{
-				$qry .=
-					" OR (beschreibung = 'chart'".
-					" AND request_id IN (".$this->implode4SQL($chart_ids)."))";
-
-				foreach ($chart_ids as $chart_id)
-				{
-					$reports = array_merge($reports, $this->dependencyhelper->getReportsFromChart($chart_id));
-				}
-			}
-
-			foreach ($reports as $report)
-			{
-				$report_ids[] = $report->report_id;
-			}
-
-			if (!empty($report_ids))
-			{
-				$qry .=
-					" OR (beschreibung = 'report'".
-					" AND request_id IN (".$this->implode4SQL($report_ids)."))";
-			}
-
-			$qry .= ")";
+			$qry .= $this->generateChartsReportsWhereQuery($chart_ids, $reports);
 		}
 		else
 		{
@@ -287,5 +239,44 @@ class problemcheck_helper extends basis_db
 			$elapsed = $this->date_now->diff($lastexecutiontime);
 		}
 		return $elapsed;
+	}
+
+	/**
+	 * Generiert SQL string für filtern der Webserivelogeinträge nach Ausführung bestimmter Charts und Reports.
+	 * @param $chart_ids
+	 * @param $reports
+	 * @return string querystring
+	 */
+	private function generateChartsReportsWhereQuery($chart_ids, $reports)
+	{
+		$report_ids = array();
+		$qry = "";
+
+		if (!empty($chart_ids))
+		{
+			$qry .=
+				" OR (beschreibung = 'chart'".
+				" AND request_id IN (".$this->implode4SQL($chart_ids)."))";
+
+			foreach ($chart_ids as $chart_id)
+			{
+				$reports = array_merge($reports, $this->dependencyhelper->getReportsFromChart($chart_id));
+			}
+		}
+
+		foreach ($reports as $report)
+		{
+			$report_ids[] = $report->report_id;
+		}
+
+		if (!empty($report_ids))
+		{
+			$qry .=
+				" OR (beschreibung = 'report'".
+				" AND request_id IN (".$this->implode4SQL($report_ids)."))";
+		}
+
+		$qry .= ")";
+		return $qry;
 	}
 }

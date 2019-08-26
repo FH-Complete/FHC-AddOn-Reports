@@ -6,6 +6,7 @@ require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../include/rp_problemcheck.class.php');
 
 /**
+ * Liefert korrekte Problemchek Issues je nach angefragtem Objekt (z.B. Viewissues, Statistikissues...)
  */
 
 if (!$db = new basis_db())

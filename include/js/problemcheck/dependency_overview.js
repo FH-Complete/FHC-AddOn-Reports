@@ -1,13 +1,17 @@
 $(function() {
 
+	// Initialwerte
 	DependencyOverview.showreports = false;
 	DependencyOverview.showanimations = true;
 	$("#showreports").prop("checked", DependencyOverview.showreports);
 	$("#showanimations").prop("checked", DependencyOverview.showanimations);
 
-	$("#selectmenugroup, #selectstatistikgroup, #selectview, #selectansicht").val("null");
+	var allDropdowns = $("#selectmenugroup, #selectstatistikgroup, #selectview, #selectansicht");
 
-	$("#selectmenugroup, #selectstatistikgroup, #selectview, #selectansicht").change(
+	allDropdowns.val("null");
+
+	// Dropdown Events hinzufügen
+	allDropdowns.change(
 		function ()
 		{
 			var selectedDropdownData = DependencyOverview.dropdowns[$(this).prop("id")];
@@ -38,11 +42,12 @@ $(function() {
 });
 
 var DependencyOverview = {
-	all_issues: null,
+	all_issues: null,//Zwischenspeichern der Issues
 	settings:
 	{
-		showreports: false,
-		showanimations: true
+		showreports: false,//Reports anzeigen?
+		showanimations: true//Bewegung der Reporting Objekte aktivieren? - wenn false, wird gleich das Endresultat angezeigt,
+							//aber es wird keine Aktivität angezeigt während längerer Ladazeiten.
 	},
 	dropdowns:
 	{
@@ -94,6 +99,7 @@ var DependencyOverview = {
 			success: callback
 		});
 	},
+	//initiiert das Laden der Abhängigkeiten
 	initDependencyOverview: function()
 	{
 		var selectedDropdown = DependencyOverview.selectedDropdown;
@@ -191,6 +197,7 @@ var DependencyOverview = {
 					}
 				};
 
+				//nicht verwendet aufgrund zu langer Ladezeit
 				var chartIssuesCall = function(){
 					if (chart_ids.length > 0)
 					{
@@ -215,6 +222,7 @@ var DependencyOverview = {
 					return DependencyOverview.getGraphData(data);
 				};
 
+				// Holen der Issues parallel gleichzeitig mit Zeichnen des Graphen.
 				$.when(
 					viewIssuesCall(),
 					statistikIssuesCall(),
@@ -232,8 +240,8 @@ var DependencyOverview = {
 	},
 	getGraphData: function(data)
 	{
-		var nodes = [];
-		var renderdata = [];
+		var nodes = [];//angezeigte Knoten
+		var renderdata = [];//Knotenverbindungen
 
 		for (var i = 0; i < data.length; i ++)
 		{
@@ -386,10 +394,8 @@ var DependencyOverview = {
 			title: {
 				text: 'Abhängigkeiten ' + DependencyOverview.currentObjectTitle
 			},
-			/*subtitle: {
-				text: 'A Force-Directed Network Graph in Highcharts'
-			},*/
 			tooltip: {
+				//farbliche Anzeige der Warnings/Errors
 				useHTML: true,
 				formatter: function() {
 					var issuetext = "";
@@ -437,7 +443,7 @@ var DependencyOverview = {
 				dataLabels: {
 					enabled: true,
 					linkFormat: '',
-					allowOverlap: true
+					allowOverlap: true//Knotenlabels auch bei Überschneidungen angezeigt
 				},
 				nodes: nodes,
 				data: renderdata
@@ -448,27 +454,26 @@ var DependencyOverview = {
 	{
 		if ($.isArray(all_issues))
 		{
-			for (var v = 0; v < all_issues.length; v++)
+			for (var a = 0; a < all_issues.length; a++)
 			{
-				var viewissues = all_issues[v];
+				var issues = all_issues[a];
 				var hasError = false;
 
 				if (chart.series)
 				{
 					for (var n = 0; n < chart.series[0].nodes.length; n++)
 					{
-						if (viewissues.objectname === chart.series[0].nodes[n].id)
+						if (issues.objectname === chart.series[0].nodes[n].id)
 						{
 							var dataLabels = {};
-							for (var i = 0; i < viewissues.issues.length; i++)
+							for (var i = 0; i < issues.issues.length; i++)
 							{
-								var viewissue = viewissues.issues[i];
+								var viewissue = issues.issues[i];
+								//farbliche Anzeige der Warnings/Errors
 								if (viewissue.type === "error")
 								{
 									dataLabels.color = "#a94442";
 									dataLabels.formatter =  function () { return "! " + this.key };
-									//dataLabels.borderRadius = 2;
-									//dataLabels.shape = 'callout';
 									hasError = true;
 								}
 								else if (viewissue.type === "warning" && !hasError)

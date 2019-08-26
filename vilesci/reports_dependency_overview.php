@@ -61,6 +61,11 @@ elseif (!$menugruppe->loadRecursive())
 	die($menugruppe->errormsg);
 }
 
+/**
+ * Löst Menügruppen rekursiv auf und schreibt sie als Dropdown optionen.
+ * @param $gruppen
+ * @param int $level
+ */
 function drawMenuGruppenRec($gruppen, $level = 0)
 {
 	foreach ($gruppen as $gruppe)

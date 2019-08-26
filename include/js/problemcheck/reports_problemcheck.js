@@ -10,7 +10,12 @@ $(function() {
 			Problemcheck.initProblemcheck(action);
 		}
 	);
-	$("#showerrors,#showpassed,#showwarnings").change(
+
+	var options = $("#showerrors,#showpassed,#showwarnings");
+
+	options.prop("checked", "checked");
+
+	options.change(
 		function()
 		{
 			Problemcheck.checkTblRowDisplay();
@@ -20,6 +25,7 @@ $(function() {
 
 var Problemcheck =
 {
+	// Parameter pro Objekttyp für Anzeige der issues
 	viewparams: {
 		"objectidname": "view_id",
 		"detailslink": "../vilesci/view_details.php"
@@ -47,6 +53,7 @@ var Problemcheck =
 
 		switch(action)
 		{
+			// je nach ausgewähltem Typ (View, Statistik, ...) korrekten Problemcheck ausführen
 			case 'getViewIssues':
 				callback = function(data)
 				{
@@ -62,7 +69,7 @@ var Problemcheck =
 			case 'getChartIssues':
 				callback = function(data)
 				{
-					callback = Problemcheck.afterChartsCheck(data, Problemcheck.chartparams);
+					Problemcheck.afterChartsCheck(data, Problemcheck.chartparams);
 				};
 				break;
 		}
@@ -104,6 +111,7 @@ var Problemcheck =
 			}
 			else
 			{
+				// Ausführen des Charts, Fehler mit try/catch finden
 				try
 				{
 					var dataitem = JSON.parse(item.data);
@@ -175,6 +183,7 @@ var Problemcheck =
 		Problemcheck.checkTblRowDisplay();
 		Problemcheck.hideVeil();
 	},
+	// aufgrund Einstellungen (Anzeigen von Fehlern, Warnungen) Tabellenzeilen verstecken/anzeigen
 	checkTblRowDisplay: function()
 	{
 		var backgroundcolor = "";
@@ -246,6 +255,7 @@ var Problemcheck =
 			}
 		);
 	},
+	// HTML der Zelle der ersten Spalte mit Symbol und Verlinkungen auf Vorschau- und Detailseiten generieren
 	createFirstCell: function(objectid, index, params, connectedObj)
 	{
 		var cell = "<td>";
