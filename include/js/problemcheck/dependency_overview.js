@@ -469,15 +469,12 @@ var DependencyOverview = {
 									dataLabels.formatter =  function () { return "! " + this.key };
 									//dataLabels.borderRadius = 2;
 									//dataLabels.shape = 'callout';
-									hasError = false;
+									hasError = true;
 								}
-								else if (viewissue.type === "warning")
+								else if (viewissue.type === "warning" && !hasError)
 								{
-									if (!hasError)
-									{
-										dataLabels.color = "#8a6d3b";
-										dataLabels.formatter =  function () { return "! " + this.key };
-									}
+									dataLabels.color = "#8a6d3b";
+									dataLabels.formatter =  function () { return "! " + this.key };
 								}
 							}
 							chart.series[0].nodes[n].options.dataLabels = dataLabels;
