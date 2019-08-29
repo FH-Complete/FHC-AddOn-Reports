@@ -1,30 +1,31 @@
 $(function() {
-
-	var action = $("#objecttype").val();
-	Problemcheck.initProblemcheck(action);
+	Problemcheck.initProblemcheck();
 
 	$("#objecttype").change(
 		function ()
 		{
-			var action = $(this).val();
-			Problemcheck.initProblemcheck(action);
+			Problemcheck.initProblemcheck();
 		}
 	);
 
-	var options = $("#showerrors,#showpassed,#showwarnings");
+	var options = $("#showerrors, #showpassed, #showwarnings");
 
 	options.prop("checked", "checked");
-
 	options.change(
 		function()
 		{
-			Problemcheck.checkTblRowDisplay();
+			Problemcheck.drawProblemcheck(Problemcheck.allProblemData, $("#objecttype").val())
 		}
 	);
 });
 
 var Problemcheck =
 {
+	actions: {
+		"view": "getViewIssues",
+		"statistik": "getStatistikIssues",
+		"chart": "getChartIssues"
+	},
 	// Parameter pro Objekttyp für Anzeige der issues
 	viewparams: {
 		"objectidname": "view_id",
@@ -40,41 +41,32 @@ var Problemcheck =
 		"detailslink": "../vilesci/chart_details.php",
 		"objecticon": "Chart.svg"
 	},
-	problemData : null,
-	initProblemcheck: function (action)
+	allProblemData : null,
+	filteredProblemData : null,//filtered by checkboxes, e.g. only errors
+	settings: {
+		"showerrors": true,
+		"showpassed": true,
+		"showwarnings": true
+	},
+	// initialisiert Ajax call zum Holen der Problemcheckdaten
+	initProblemcheck: function ()
 	{
-		var callback = {};
+		var action = $("#objecttype").val();
 
-		$("#checktable").empty();
 		if (action == "null")
 			return;
 
 		Problemcheck.showVeil();
+		Tablesort.addTablesorter("checktableparent", [[0, 0], [1,0], [2, 0]], ["zebra", "filter"]);
 
-		switch(action)
-		{
-			// je nach ausgewähltem Typ (View, Statistik, ...) korrekten Problemcheck ausführen
-			case 'getViewIssues':
-				callback = function(data)
-				{
-					Problemcheck.afterObjectsCheck(data, Problemcheck.viewparams);
-				};
-				break;
-			case 'getStatistikIssues':
-				callback = function(data)
-				{
-					Problemcheck.afterObjectsCheck(data, Problemcheck.statistikparams);
-				};
-				break;
-			case 'getChartIssues':
-				callback = function(data)
-				{
-					Problemcheck.afterChartsCheck(data, Problemcheck.chartparams);
-				};
-				break;
-		}
-
-		Problemcheck.callProblemcheck(action, callback);
+		Problemcheck.callProblemcheck(action, function (data)
+			{
+				// wenn Charts - zusätzlich issues die bei Ausführen der Grafik in JavaScript auftreten hinzufügen
+				if (action == Problemcheck.actions.chart)
+					data = Problemcheck.checkChartsExecution(data);
+				Problemcheck.drawProblemcheck(data, action);
+			}
+		);
 	},
 	callProblemcheck: function(actionparam, callback)
 	{
@@ -86,79 +78,107 @@ var Problemcheck =
 			success: callback
 		});
 	},
-	afterChartsCheck: function (data, params)
+	checkChartsExecution: function(data)
 	{
-		Problemcheck.problemData = data;
 		for (var index in data)
 		{
 			var item = data[index];
+
+			// Ausführen des Charts, Fehler mit try/catch finden
+			try
+			{
+				var dataitem = JSON.parse(item.data);
+				$("#charttest").highcharts(dataitem);
+			}
+			catch (err)
+			{
+				var issue = {
+					type: "error",
+					text: ""
+				};
+
+				if (typeof err == 'string' && err.length > 0)
+					issue.text = "JS Fehler: " + err;
+				else if (typeof err.message == 'string' && err.message.length > 0)
+					issue.text = "JS Fehler: " + err.message;
+				else
+					issue.text = "JS Fehler beim Erstellen des Charts";
+
+				data[index].issues.push(issue);
+			}
+			return data;
+		}
+	},
+	drawProblemcheck: function(data, action)
+	{
+		Problemcheck.allProblemData = data;
+		Problemcheck.setFilteredProblemdata();
+		$("#checktable").empty();
+		var params = null;
+
+		switch(action)
+		{
+			// je nach ausgewähltem Typ (View, Statistik, ...) Probleme anzeigen
+			case Problemcheck.actions.view:
+				params = Problemcheck.viewparams;
+				break;
+			case Problemcheck.actions.statistik:
+				params = Problemcheck.statistikparams;
+				break;
+			case Problemcheck.actions.chart:
+				params = Problemcheck.chartparams;
+				break;
+		}
+
+		Problemcheck.drawObjectProblems(params);
+		Problemcheck.finishDrawProblemcheck();
+	},
+	// bei Auswahl eines Filters (z.B. errors, warnings, passed anzeigen/verstecken) Daten filtern
+	setFilteredProblemdata: function()
+	{
+		Problemcheck.settings.showerrors = $("#showerrors").prop("checked");
+		Problemcheck.settings.showwarnings = $("#showwarnings").prop("checked");
+		Problemcheck.settings.showpassed = $("#showpassed").prop("checked");
+
+		var filteredProblemData = [];
+		var settings = Problemcheck.settings;
+		for (var index in Problemcheck.allProblemData)
+		{
+			var item = Problemcheck.allProblemData[index];
 			var issues = item.issues;
-
-			var row = "<tr id='"+index+"'>" + Problemcheck.createFirstCell(item.objectid, index, params, item.connectedObj);
-
-			row += "<td>";
 
 			if ($.isArray(issues) && issues.length > 0)
 			{
-				var first = true;
+				var hasErrors, hasWarnings;
+				hasErrors = hasWarnings = false;
 				for (var i = 0; i < issues.length; i++)
 				{
-					if (!first)
-						row += " ";
-					row += Problemcheck.createIssueText(issues[i]);
-					first = false;
-				}
-			}
-			else
-			{
-				// Ausführen des Charts, Fehler mit try/catch finden
-				try
-				{
-					var dataitem = JSON.parse(item.data);
-					var res = $("#charttest").highcharts(dataitem);
-
-					if (res)
+					var issue = issues[i];
+					if (issue.type === 'error')
 					{
-						row += Problemcheck.createSuccessText();
+						hasErrors = true;
+					}
+					else if (issue.type === 'warning')
+					{
+						hasWarnings = true;
 					}
 				}
-				catch (err)
-				{
-					var issue = {
-						type: "error",
-						text: ""
-					};
-
-					if (typeof err == 'string' && err.length > 0)
-						issue.text = "JS Fehler: " + err;
-					else if (typeof err.message == 'string' && err.message.length > 0)
-						issue.text = "JS Fehler: " + err.message;
-					else
-						issue.text = "JS Fehler beim Erstellen des Charts";
-
-					Problemcheck.problemData[index].issues.push(issue);
-					row += Problemcheck.createIssueText(issue);
-				}
-
+				if ((hasErrors && settings.showerrors) || (hasWarnings && settings.showwarnings))
+					filteredProblemData[index] = item;
 			}
-			row += "</td>";
-			row += "<td>"+Problemcheck.createLastExecuted(item.lastExecuted)+"</td>";
-			row += "</tr>";
-			$("#checktable").append(
-				row
-			);
+			else if (settings.showpassed)
+				filteredProblemData[index] = item;
 		}
-		Problemcheck.checkTblRowDisplay();
-		Problemcheck.hideVeil();
-	},
-	afterObjectsCheck: function (data, params)
-	{
-		Problemcheck.problemData = data;
-		for (var index in data)
-		{
-			var item = data[index];
 
-			var row = "<tr id='"+index+"'>" + Problemcheck.createFirstCell(item.objectid, index, params);
+		Problemcheck.filteredProblemData = filteredProblemData;
+	},
+	drawObjectProblems: function (params)
+	{
+		for (var index in Problemcheck.filteredProblemData)
+		{
+			var item = Problemcheck.filteredProblemData[index];
+
+			var row = "<tr id='"+index+"'>" + Problemcheck.createFirstCell(item.objectid, index, params, item.connectedObj);
 			row += "<td>";
 			if ($.isArray(item.issues) && item.issues.length > 0)
 			{
@@ -180,80 +200,13 @@ var Problemcheck =
 				row
 			);
 		}
-		Problemcheck.checkTblRowDisplay();
-		Problemcheck.hideVeil();
 	},
-	// aufgrund Einstellungen (Anzeigen von Fehlern, Warnungen) Tabellenzeilen verstecken/anzeigen
-	checkTblRowDisplay: function()
+	// Aktionen nach Zeichnen der Tabelle
+	finishDrawProblemcheck: function()
 	{
-		var backgroundcolor = "";
-		$("#checktable tr").each(function ()
-			{
-				if ($(this).css('background-color') !== 'rgba(0, 0, 0, 0)')
-				{
-					backgroundcolor = $(this).css('background-color')
-				}
-			}
-		);
-
-		var showerrors = $("#showerrors").prop("checked");
-		var showwarnings = $("#showwarnings").prop("checked");
-		var showpassed = $("#showpassed").prop("checked");
-
-		for (var index in Problemcheck.problemData)
-		{
-			var item = Problemcheck.problemData[index];
-			var selector = "tr[id='"+index+"']";
-
-			if ($.isArray(item.issues) && item.issues.length > 0)
-			{
-				var hasErrors, hasWarnings;
-				hasErrors = hasWarnings= false;
-
-				for (var i = 0; i < item.issues.length; i++)
-				{
-					var issue = item.issues[i];
-
-					if (issue.type === 'error')
-					{
-						hasErrors = true;
-					}
-					else if (issue.type === 'warning')
-					{
-						hasWarnings = true;
-					}
-				}
-
-				if ((showerrors && hasErrors) ||
-					(showwarnings && hasWarnings))
-				{
-					$(selector).show();
-				}
-				else
-				{
-					$(selector).hide();
-				}
-			}
-			else
-			{
-				if (showpassed)
-				{
-					$(selector).show();
-				}
-				else
-				{
-					$(selector).hide();
-				}
-			}
-		}
-
-		$("#checktable tr:visible").each(function (index)
-			{
-				$(this).css("background-color", "inherit");
-				if (index % 2 == 0)
-					$(this).css("background-color", backgroundcolor);
-			}
-		);
+		// tablesorter update
+		$("#checktableparent").trigger("update").trigger("applyWidgets");
+		Problemcheck.hideVeil();
 	},
 	// HTML der Zelle der ersten Spalte mit Symbol und Verlinkungen auf Vorschau- und Detailseiten generieren
 	createFirstCell: function(objectid, index, params, connectedObj)

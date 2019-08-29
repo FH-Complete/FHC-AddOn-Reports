@@ -24,6 +24,8 @@ if (!$rechte->isBerechtigt('addon/reports_verwaltung'))
 		<link rel="stylesheet" href="../../../vendor/components/font-awesome/css/font-awesome.min.css" type="text/css">
 		<link rel="stylesheet" href="../../../vendor/BlackrockDigital/startbootstrap-sb-admin-2/dist/css/sb-admin-2.min.css" type="text/css">
 		<link rel="stylesheet" href="../../../public/css/sbadmin2/admintemplate_contentonly.css" type="text/css">
+		<link rel="stylesheet" href="../../../vendor/mottie/tablesorter/dist/css/theme.default.min.css" type="text/css">
+		<link rel="stylesheet" href="../../../public/css/sbadmin2/tablesort_bootstrap.css" type="text/css">
 		<link rel="stylesheet" href="../../../public/css/AjaxLib.css" type="text/css">
 
 		<?php require_once("../../../include/meta/jquery.php"); ?>
@@ -31,6 +33,9 @@ if (!$rechte->isBerechtigt('addon/reports_verwaltung'))
 		<script type="text/javascript" src="../../../vendor/BlackrockDigital/startbootstrap-sb-admin-2/dist/js/sb-admin-2.min.js"></script>
 		<?php require_once("../include/meta/highcharts.php"); ?>
 		<script type="text/javascript" src="../include/js/problemcheck/reports_problemcheck.js"></script>
+		<script type="text/javascript" src="../../../vendor/mottie/tablesorter/dist/js/jquery.tablesorter.min.js"></script>
+		<script type="text/javascript" src="../../../vendor/mottie/tablesorter/dist/js/jquery.tablesorter.widgets.min.js"></script>
+		<script type="text/javascript" src="../../../public/js/tablesort/tablesort.js"></script>
 	</head>
 
 <body>
@@ -72,7 +77,7 @@ if (!$rechte->isBerechtigt('addon/reports_verwaltung'))
 			</div>
 			<div class="row">
 				<div class="col-xs-12">
-					<table class="table table-striped table-condensed" id="checktableparent">
+					<table class="table table-condensed table-bordered" id="checktableparent">
 						<thead>
 							<tr>
 								<th>Objekt</th>
