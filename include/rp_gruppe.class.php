@@ -346,6 +346,87 @@ class rp_gruppe extends basis_db
 		$this->errormsg = 'Fehler beim Laden der Daten';
 		return false;
 	}
-}
 
+	/**
+	 * Gibt die Kind-Reportgruppen eine Reportgruppe zurück
+	 *
+	 * @param $reportgruppe_id
+	 * @return Childs
+	 */
+	public function loadGroupChildren($reportgruppe_id)
+	{
+
+		//reportgruppe_id auf gueltigkeit pruefen
+		if(!is_numeric($reportgruppe_id) || $reportgruppe_id == '')
+		{
+			$this->errormsg = 'reportgruppe_id must be a number!';
+			return false;
+		}
+
+		if (!$this->loadRecursive())
+		{
+			$this->errormsg = 'Fehler beim Laden der Daten';
+			return false;
+		}
+		else
+		{
+			$gruppechildren = array();
+			$gruppe = array();
+
+			$gruppe[] = $this->getChildrenTree($this->recursive, $reportgruppe_id);
+
+			$this->getChildrenList($gruppe, $gruppechildren);
+			$this->result = $gruppechildren;
+			return true;
+		}
+	}
+
+	/**
+	 * Gibt die Kind-Reportgruppen in From einer Liste (nicht verschachtelt) zurück
+	 * @param $gruppen
+	 * @param $childrenlist Liste wo Kinder gespeichert werden
+	 */
+	private function getChildrenList($gruppen, &$childrenlist)
+	{
+		foreach ($gruppen as $gruppe)
+		{
+			$childrenlist[] = $gruppe;
+
+			if (!empty($gruppe->children))
+			{
+				$this->getChildrenList($gruppe->children, $childrenlist);
+			}
+		}
+	}
+
+	/**
+	 * Gibt die Kind-Reportgruppen einer parent-Reportgruppe in verschachtelter Form zurück
+	 * @param $gruppen alle Gruppen in verschachtelter Form
+	 * @param $reportgruppe_id id der parent-Reportgruppe
+	 */
+	private function getChildrenTree($gruppen, $reportgruppe_id)
+	{
+		if(!is_numeric($reportgruppe_id) || $reportgruppe_id == '')
+		{
+			$this->errormsg = 'reportgruppe_id must be a number!';
+			return false;
+		}
+
+		foreach ($gruppen as $gruppe)
+		{
+			if ($gruppe->reportgruppe_id === $reportgruppe_id)
+			{
+				return $gruppe;
+			}
+			elseif (!empty($gruppe->children))
+			{
+				$childrenkey = $this->getChildrenTree($gruppe->children, $reportgruppe_id);
+				if ($childrenkey)
+					return $childrenkey;
+			}
+		}
+
+		return false;
+	}
+}
 

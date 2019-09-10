@@ -1,0 +1,18 @@
+{
+  "repositories": [
+    {
+      "type": "package",
+      "package": {
+        "name": "highcharts",
+        "version": "7.1.2",
+        "dist": {
+          "url": "https://github.com/highcharts/highcharts-dist/archive/v7.1.2.zip",
+          "type": "zip"
+        }
+      }
+    }
+  ],
+  "require": {
+    "highcharts": "^7.1.2"
+  }
+}

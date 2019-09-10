@@ -1,0 +1,30 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "92b04dfc826cf81d8c834cf10f3b6868",
+    "content-hash": "c6e8491ad3d372037983c7713775b88e",
+    "packages": [
+        {
+            "name": "highcharts",
+            "version": "7.1.2",
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/highcharts/highcharts-dist/archive/v7.1.2.zip",
+                "reference": null,
+                "shasum": null
+            },
+            "type": "library"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

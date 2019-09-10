@@ -141,9 +141,9 @@ class report extends basis_db
 	public function getGruppe($gruppe,$publish=null)
 	{
 		$qry = "SELECT tbl_rp_report.* FROM addon.tbl_rp_report WHERE gruppe=".$this->db_add_param($gruppe);
-		if ($publish==true)
+		if ($publish===true)
 			$qry.=' AND tbl_rp_report.publish ';
-		elseif ($publish==false)
+		elseif ($publish===false)
 			$qry.=' AND NOT tbl_rp_report.publish ';
 		$qry.=' ORDER BY title;';
 
