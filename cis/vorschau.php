@@ -34,7 +34,7 @@
 
 		<title>Reports</title>
 
-		<link rel="stylesheet" type="text/css" href="../include/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="../../../vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="../include/css/offcanvas.css">
 		<link rel="stylesheet" type="text/css" href="../include/css/multilevel_dropdown.css">
 		<link rel="stylesheet" type="text/css" href="../cis/reporting.css">
@@ -44,14 +44,14 @@
 
 		<link rel="stylesheet" type="text/css" href="../../../vendor/components/jqueryui/themes/base/jquery-ui.min.css">
 
-		<script type="text/javascript" src="../../../vendor/jquery/jqueryV1/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../../vendor/components/jquery/jquery.min.js"></script>
 		<script type="text/javascript" src="../../../vendor/components/jqueryui/jquery-ui.min.js"></script>
 
 		<script type="text/javascript" src="../../../vendor/nicolaskruchten/pivottable/dist/pivot.min.js"></script>
 		<script type="text/javascript" src="../../../vendor/nicolaskruchten/pivottable/dist/gchart_renderers.min.js"></script>
 
 		<?php require_once("../include/meta/highcharts.php"); ?>
-		<script type="text/javascript" src="../include/js/pivottable/jquery.ui.touch-punch.min.js"></script>
+		<script type="text/javascript" src="../vendor/furf/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
 
 	</head>
 	<body>
@@ -86,7 +86,7 @@
 		</div>
 
 		<div id="content" style="display:none;"></div>
-		<script src="../include/js/bootstrap.min.js"></script>
+		<script src="../../../vendor/twbs/bootstrap/dist/js/bootstrap.min.js"></script>
 		<script src="../include/js/offcanvas.js"></script>
 		<script type="text/javascript" src="../cis/reporting.js"></script>
 		<script>

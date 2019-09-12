@@ -577,7 +577,7 @@ EOT;
 		ob_start(); ?>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-		<script type="text/javascript" src="../../../vendor/jquery/jqueryV1/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../../vendor/components/jquery/jquery.min.js"></script>
 
 		<link rel="stylesheet" href="../include/css/charts.css" type="text/css">
 		<?php require_once("../include/meta/highcharts.php"); ?>

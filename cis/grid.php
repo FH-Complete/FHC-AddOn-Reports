@@ -108,7 +108,7 @@ $statistik->loadData();
 	<head>
 		<link rel="stylesheet" href="../../../vendor/nicolaskruchten/pivottable/dist/pivot.min.css" />
 
-		<script type="text/javascript" src="../../../vendor/jquery/jqueryV1/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../../vendor/components/jquery/jquery.min.js"></script>
 		<script type="text/javascript" src="../../../vendor/components/jqueryui/jquery-ui.min.js"></script>
 		<script type="text/javascript" src="../../../vendor/nicolaskruchten/pivottable/dist/pivot.min.js"></script>
 	</head>
@@ -121,19 +121,16 @@ $statistik->loadData();
 
 
 		<!-- Pivot Renderers -->
-    <script type="text/javascript" src="../include/js/pivot_renderers/c3_renderers.js.map"></script>
-    <script type="text/javascript" src="../include/js/d3.min.js"></script>
+	<script type="text/javascript" src="../vendor/c3js/c3/c3.min.js"></script>
+  	<script type="text/javascript" src="../vendor/d3/d3/d3.min.js"></script>
+    <script type="text/javascript" src="../../../vendor/nicolaskruchten/pivottable/dist/c3_renderers.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="../include/js/pivot_renderers/c3_renderers.css">
 
-    <script type="text/javascript" src="../include/js/pivot_renderers/c3_renderers.js"></script>
-		<link rel="stylesheet" type="text/css" href="../include/js/pivot_renderers/c3_renderers.css">
+   <!-- <script type="text/javascript" src="../include/js/pivot_renderers/csv_renderer.js"></script>-->
+    <script type="text/javascript" src="../../../vendor/nicolaskruchten/pivottable/dist/export_renderers.min.js"></script>
 
-
-    <!--<script type="text/javascript" src="../include/js/pivot_renderers/csv_renderer.js"></script>-->
-    <script type="text/javascript" src="../include/js/pivot_renderers/export_renderers.js"></script>
-
-
-		<!-- Pivot Sprachen -->
-		<script type="text/javascript" src="../include/js/pivot.de.js"></script>
+	<!-- Pivot Sprachen -->
+	<script type="text/javascript" src="../../../public/js/pivottable/pivot.de.js"></script>
 	<script type="text/javascript" src="../include/js/pivot_renderers/de/c3.de.js"></script>
 
 	<script type="text/javascript">

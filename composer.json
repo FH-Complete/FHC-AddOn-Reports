@@ -3,7 +3,41 @@
     {
       "type": "package",
       "package": {
-        "name": "highcharts",
+        "name": "c3js/c3",
+        "version": "0.7.8",
+        "dist": {
+          "url": "https://github.com/c3js/c3/archive/v0.7.8.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "d3/d3",
+        "version": "5.12.0",
+        "dist": {
+          "url": "https://github.com/d3/d3/releases/download/v5.12.0/d3.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "furf/jquery-ui-touch-punch",
+        "version": "0.2.3",
+        "source": {
+          "url": "https://github.com/furf/jquery-ui-touch-punch.git",
+          "type": "git",
+          "reference": "54d86184dd9e31a743abd5053def6e01b4c6b355"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "highcharts/highcharts-dist",
         "version": "7.1.2",
         "dist": {
           "url": "https://github.com/highcharts/highcharts-dist/archive/v7.1.2.zip",
@@ -13,6 +47,9 @@
     }
   ],
   "require": {
-    "highcharts": "^7.1.2"
+    "c3js/c3": "^0.7.8",
+    "d3/d3": "^5.12.0",
+    "furf/jquery-ui-touch-punch": "^0.2.3",
+    "highcharts/highcharts-dist": "^7.1.2"
   }
 }

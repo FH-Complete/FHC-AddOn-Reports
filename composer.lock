@@ -4,11 +4,42 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "92b04dfc826cf81d8c834cf10f3b6868",
-    "content-hash": "c6e8491ad3d372037983c7713775b88e",
+    "content-hash": "372af496bb15fffaa4ce95a2e35b491f",
     "packages": [
         {
-            "name": "highcharts",
+            "name": "c3js/c3",
+            "version": "0.7.8",
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/c3js/c3/archive/v0.7.8.zip",
+                "reference": null,
+                "shasum": null
+            },
+            "type": "library"
+        },
+        {
+            "name": "d3/d3",
+            "version": "5.12.0",
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/d3/d3/releases/download/v5.12.0/d3.zip",
+                "reference": null,
+                "shasum": null
+            },
+            "type": "library"
+        },
+        {
+            "name": "furf/jquery-ui-touch-punch",
+            "version": "0.2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/furf/jquery-ui-touch-punch.git",
+                "reference": "54d86184dd9e31a743abd5053def6e01b4c6b355"
+            },
+            "type": "library"
+        },
+        {
+            "name": "highcharts/highcharts-dist",
             "version": "7.1.2",
             "dist": {
                 "type": "zip",
