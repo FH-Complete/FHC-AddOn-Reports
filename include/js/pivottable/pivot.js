@@ -951,7 +951,6 @@
 			}
 			result = document.createElement("table");
 			result.className = "pvtTable";
-			result.id = "pvtTableID";
 			spanSize = function(arr, i, j) {
 				var l, len, n, noDraw, ref, ref1, stop, x;
 				if (i !== 0) {

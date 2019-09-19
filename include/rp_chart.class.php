@@ -210,9 +210,9 @@ class chart extends basis_db
 	public function getGruppe($gruppe,$publish=null)
 	{
 		$qry = "SELECT tbl_rp_chart.* FROM public.tbl_statistik JOIN addon.tbl_rp_chart USING (statistik_kurzbz) WHERE gruppe='$gruppe'";
-		if ($publish==true)
+		if ($publish===true)
 			$qry.=' AND tbl_rp_chart.publish ';
-		elseif ($publish==false)
+		elseif ($publish===false)
 			$qry.=' AND NOT tbl_rp_chart.publish ';
 		$qry.=' ORDER BY bezeichnung;';
 
@@ -577,7 +577,7 @@ EOT;
 		ob_start(); ?>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-		<script type="text/javascript" src="../../../vendor/jquery/jqueryV1/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../../vendor/components/jquery/jquery.min.js"></script>
 
 		<link rel="stylesheet" href="../include/css/charts.css" type="text/css">
 		<?php require_once("../include/meta/highcharts.php"); ?>
@@ -1239,14 +1239,23 @@ EOT;
 		return $data;
 	}
 
+	public function getHighChartDataForCheck()
+	{
+		$data = $this->getHighChartData();
+		if ($data)
+		{
+			$json = $data;
+		}
+		else
+		{
+			if (isset($this->errormsg))
+				$json = json_encode($this->errormsg);
+			else
+				$json = json_encode(false);
+		}
 
-
-
-
-
-
-
-
+		return $json;
+	}
 
 	/**
 	 * Loescht einen Eintrag

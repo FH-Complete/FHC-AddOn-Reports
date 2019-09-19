@@ -38,6 +38,8 @@ class rp_gruppenzuordnung extends basis_db
 	public $updateamum;
 	public $updatevon;
 
+	public $result = array();
+
 	/**
 	 * Konstruktor
 	 * @param $gruppenzuordnung_id ID der Zuordnung, welche geladen werden soll (Default=null)
@@ -89,6 +91,41 @@ class rp_gruppenzuordnung extends basis_db
 		}
 
 		$this->new=false;
+		return true;
+	}
+
+	/**
+	 * Lädt alle Gruppenzuordnungen einer Reportgruppe
+	 * @param $reportgruppe_id
+	 * @return true wenn ok, false im Fehlerfall
+	 */
+	public function loadByGruppe($reportgruppe_id)
+	{
+		$this->errormsg = '';
+
+		if(!is_numeric($reportgruppe_id))
+		{
+			$this->errormsg = 'reportgruppe_id ist ungueltig';
+			return false;
+		}
+		//Lesen der Daten aus der Datenbank
+		$qry = "
+			SELECT *
+			FROM addon.tbl_rp_gruppenzuordnung
+			WHERE reportgruppe_id=".$this->db_add_param($reportgruppe_id, FHC_INTEGER);
+
+
+		if(!$this->db_query($qry))
+		{
+			$this->errormsg = 'Fehler beim Laden der Daten';
+			return false;
+		}
+
+		while($row = $this->db_fetch_object())
+		{
+			$this->result[] = $row;
+		}
+
 		return true;
 	}
 

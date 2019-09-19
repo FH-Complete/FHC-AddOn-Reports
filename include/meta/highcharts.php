@@ -25,15 +25,13 @@ if($dr=='')
 	$dr='/';
 
 //Originaldateien des Herstellers
-echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/highcharts.js"></script>';
-echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/highcharts-more.js"></script>';
-echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/highcharts-3d.js"></script>';
-echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/modules/exporting.js"></script>';
-echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/modules/drilldown.js"></script>';
-echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/modules/no-data-to-display.js"></script>';
-
-//echo '<script src="'.$dr.'addons/reports/include/js/highcharts/highcharts-custom.js"></script>';
-//echo '<script src="'.$dr.'addons/reports/include/js/highcharts/highcharts-more.js"></script>';
+echo '<script src="'.$dr.'addons/reports/vendor/highcharts/highcharts-dist/highcharts.js"></script>';
+echo '<script src="'.$dr.'addons/reports/vendor/highcharts/highcharts-dist/highcharts-more.js"></script>';
+echo '<script src="'.$dr.'addons/reports/vendor/highcharts/highcharts-dist/highcharts-3d.js"></script>';
+echo '<script src="'.$dr.'addons/reports/vendor/highcharts/highcharts-dist/modules/exporting.js"></script>';
+echo '<script src="'.$dr.'addons/reports/vendor/highcharts/highcharts-dist/modules/drilldown.js"></script>';
+echo '<script src="'.$dr.'addons/reports/vendor/highcharts/highcharts-dist/modules/no-data-to-display.js"></script>';
+echo '<script src="'.$dr.'addons/reports/vendor/highcharts/highcharts-dist/modules/networkgraph.js"></script>';
 
 
 //Anpassungen

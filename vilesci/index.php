@@ -42,11 +42,17 @@ if(!$rechte->isBerechtigt('addon/reports_verwaltung'))
 		<link rel="stylesheet" href="../../../skin/fhcomplete.css" type="text/css">
 		<link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">
 		<title>FHC AddOn Reports</title>
-		<style>
+		<style type="text/css">
 			.vilesci_menue_entry
 			{
 				margin-left:  5px;
 				margin-right: 5px;
+			}
+
+			.overviewlinks
+			{
+				float: right;
+				text-align: right;
 			}
 		</style>
 	</head>
@@ -74,6 +80,13 @@ if(!$rechte->isBerechtigt('addon/reports_verwaltung'))
 			<a title="Menü" href="cis_menue.php" target="rp_main">
 				<img src="../include/images/Menue.svg" alt="" class="vilesci_menue_entry" />
 			</a>
+			<span class="overviewlinks">
+				<p>
+					<a title="Problemcheck" href="reports_problemcheck.php" target="_blank">Problemcheck</a>
+					<br />
+					<a title="Abhängigkeitsübersicht" href="reports_dependency_overview.php" target="_blank">Abhängigkeitsübersicht</a>
+				</p>
+			</span>
 		</div>
 		<hr>
 		<iframe id="rp_main" name="rp_main">
