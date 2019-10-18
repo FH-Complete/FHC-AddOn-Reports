@@ -572,7 +572,7 @@ EOT;
 		return ob_get_clean();
 	}
 
-	public static function getAllHtmlHead()
+	public static function getAllHtmlHead($highchartsversion=null)
 	{
 		ob_start(); ?>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -580,7 +580,16 @@ EOT;
 		<script type="text/javascript" src="../../../vendor/components/jquery/jquery.min.js"></script>
 
 		<link rel="stylesheet" href="../include/css/charts.css" type="text/css">
-		<?php require_once("../include/meta/highcharts.php"); ?>
+		<?php
+		if(is_null($highchartsversion))
+		{
+			require_once("../include/meta/highcharts.php");
+		}
+		else
+		{
+			require_once("../include/meta/highcharts_".$highchartsversion.".php");
+		}
+		?>
 		<script>
 			$(function() {
 				if(typeof $.datepicker !== 'undefined') {

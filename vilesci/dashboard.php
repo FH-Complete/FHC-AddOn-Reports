@@ -34,7 +34,7 @@ $chart->getDashboard();
 
 if(count($chart->result)>0)
 {
-	echo $chart->getAllHtmlHead();
+	echo $chart->getAllHtmlHead('seamonkey');
 
 	$params = array(
 		'Studiensemester' => 'WS2014',
