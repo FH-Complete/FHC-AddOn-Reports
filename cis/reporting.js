@@ -35,19 +35,17 @@ function loadReport(report_id, putlog)
 	showFilter(undefined, report_id, undefined, putlog);
 }
 
-function loadStatistik(statistik_kurzbz, putlog)
+function loadStatistik(statistik_kurzbz, putlog, systemfilter_id)
 {
-	showFilter(statistik_kurzbz, undefined, undefined, putlog);
+	showFilter(statistik_kurzbz, undefined, undefined, putlog, systemfilter_id);
 }
-
 
 function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 {
-
 	var url = undefined;
 
 	//charts
-	if(chart_id !== undefined && chart_id !== undefined)
+	if(chart_id !== undefined)
 	{
 		get_params.chart_id = chart_id;
 		url = 'chart.php';
@@ -106,6 +104,7 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 					if(url === "grid.php" || url === "chart.php")
 					{
 						$('#content').html(data);
+						setSysFilterEvents(get_params);
 					}
 					else
 					{
@@ -116,7 +115,6 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 						ifrm.document.open();
 						ifrm.document.write(data);
 						ifrm.document.close();
-
 					}
 				}
 			});
@@ -126,8 +124,193 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 		alert("Es wurden keine korrekten Daten angegeben!")
 }
 
+//set events for systemfilters (Ansichten) block
+function setSysFilterEvents(get_params)
+{
+	$("#systemfilter").change(
+		function()
+		{
+			get_params.systemfilter_id = $("#systemfilter").val();
+			initStatistikLoad(get_params);
+		}
+	);
 
-function showFilter(statistik_kurzbz, report_id, chart_id, putlog)
+	if ($("#standardsysfilter").length)
+	{
+		$("#standardsysfilter").change(
+			function () {
+				var checked = $(this).prop("checked");
+				var systemfilter_id = $("#systemfilter").val();
+
+				setDefaultSysFilter(systemfilter_id, checked, function () {
+					alert("Fehler beim Setzten der Standardansicht!");
+				});
+			}
+		);
+	}
+
+	$("#saveprivatesysfilterbtn").click(
+		function() {
+			saveSysFilter(get_params, function () {
+				alert("Fehler beim Speichern der Ansicht!");
+			});
+		}
+	);
+
+	$("#deleteprivatesysfilterbtn").click(
+		function()
+		{
+			get_params.systemfilter_id = $("#systemfilter").val();
+			deleteSysFilter(get_params, function(){
+				alert("Fehler beim Löschen der Ansicht!")
+			});
+		}
+	);
+}
+
+/*--------------------------------------------- Systemfilters AJAX calls ---------------------------------------------*/
+
+function saveSysFilter(get_params, errorcallback)
+{
+	var data = getSysFilterSaveData(get_params.statistik_kurzbz);
+
+	$.ajax(
+		{
+			url: './systemfilter.php',
+			type: 'POST',
+			datatype: 'json',
+			data: data,
+			success: function(data) {
+				var systemfilter_id = JSON.parse(data);
+				console.log(systemfilter_id);
+				if ($.isNumeric(systemfilter_id))
+				{
+					get_params.systemfilter_id = systemfilter_id;
+					initStatistikLoad(get_params);
+				}
+				else
+					errorcallback();
+			},
+			error: errorcallback
+		}
+	);
+}
+
+function setDefaultSysFilter(systemfilter_id, checked, errorcallback)
+{
+	$.ajax(
+		{
+			url: './systemfilter.php',
+			type: 'POST',
+			datatype: 'json',
+			data: {
+				"action": "setDefault",
+				"systemfilter_id": systemfilter_id,
+				"default_filter": checked
+			},
+			success: function (data) {
+				if (data === 'true')
+				{
+					if (checked)
+					{
+						$("#standardsysfilterlabel").css("font-weight", 700);
+					}
+					else
+					{
+						$("#standardsysfilterlabel").css("font-weight", "normal");
+					}
+
+				} else
+					errorcallback();
+			},
+			error:
+				errorcallback
+		}
+	);
+}
+
+function deleteSysFilter(get_params, errorcallback)
+{
+	$.ajax(
+		{
+			url: './systemfilter.php',
+			type: 'POST',
+			datatype: 'json',
+			data: {
+				"action": "deletePrivate",
+				"systemfilter_id": get_params.systemfilter_id
+			},
+			success: function (data) {
+				console.log(data);
+				if (data === 'true')
+				{
+					get_params.systemfilter_id = 'undefined';
+					initStatistikLoad(get_params);
+				} else
+					errorcallback();
+			},
+			error: errorcallback
+		}
+	);
+}
+
+/*--------------------------------------------- Systemfilters AJAX calls Ende---------------------------------------------*/
+
+//Get data for saving a systemfilter (Ansicht)
+function getSysFilterSaveData(statistik_kurzbz)
+{
+	if (typeof(Storage) == "undefined")
+	{
+		alert("No web storage support!");
+		return null;
+	}
+
+	var filtername = $("#privatesysfiltername").val();
+	var preferences = localStorage.FHC_reporting_preferences;
+
+	var filter = JSON.stringify({"name" : filtername, "preferences": JSON.parse(preferences)});
+
+	var data = {
+		"action": "savePrivate",
+		"filter": filter,
+		"statistik_kurzbz": statistik_kurzbz
+	};
+
+	var filter_id = $("#systemfilter").val();
+
+	//kein Filtername - überschreiben des gewählten filters.
+	if (filtername.length < 1 && $.isNumeric(filter_id))
+	{
+		data.systemfilter_id = filter_id;
+	}
+
+	return data;
+}
+
+//Initialises load of a statistik depending on params. Either statistikfilter is loaded or statistik directly.
+function initStatistikLoad(get_params)
+{
+	if (get_params.systemfilter_id === 'defaultoption')
+	{
+		$("#standardsysfilterlabel").hide();
+		$("#deleteprivatesysfilterbtn").hide();
+		return;
+	}
+
+	//wenn keine filter existieren
+	if(!$.trim($('#filter-input').html()) && get_params.report_id === undefined)
+	{
+		$('#filter').hide();
+		//laden wir direkt die daten
+		loadStatistik(get_params.statistik_kurzbz, get_params.putlog, get_params.systemfilter_id);
+	}
+	else
+	{
+		runFilter('html', get_params.putlog, get_params.systemfilter_id);
+	}
+}
+
+function showFilter(statistik_kurzbz, report_id, chart_id, putlog, systemfilter_id)
 {
 	$('#filter').show();
 	$(window).trigger('resize');
@@ -139,7 +322,7 @@ function showFilter(statistik_kurzbz, report_id, chart_id, putlog)
 	$("#filter-PdfLink").hide();
 	$("#filter-debugLink").hide();
 
-	$('#filter-input').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz + '&report_id=' + report_id + "&putlog=" + putlog, function()
+	$('#filter-input').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz + '&report_id=' + report_id + "&putlog=" + putlog + "&systemfilter_id=" + systemfilter_id, function()
 	{
 		if(typeof debug !== "undefined")
 			$("#filter-debugLink").show();
@@ -154,7 +337,7 @@ function showFilter(statistik_kurzbz, report_id, chart_id, putlog)
 		{
 			$('#filter').hide();
 			//laden wir direkt die daten
-			loadData(statistik_kurzbz, report_id, chart_id,{putlog:putlog});
+			loadData(statistik_kurzbz, report_id, chart_id,{putlog:putlog, systemfilter_id: systemfilter_id});
 		}
 	});
 
@@ -213,7 +396,6 @@ function resizeContent()
   $('#content').css("overflow-y", "visible");
   $('#content').css("overflow-x", "auto");
 }
-
 
 function showSidebar(num, type, reference_bezeichnung)
 {
@@ -318,13 +500,13 @@ function exportChartCSV()
 	window.open("chart_export.php?"+getStr);
 }
 
-function runFilter(type, putlog)
+function runFilter(type, putlog, systemfilter_id)
 {
 	var inputs = $('#filter-input *'),
 		chart_id = $('#filter-input').attr('data-chart_id'),
 		statistik_kurzbz = $('#filter-input').attr('data-statistik_kurzbz'),
 		report_id = $('#filter-input').attr('data-report_id'),
-		get_params = {putlog:putlog},
+		get_params = {putlog:putlog, systemfilter_id: systemfilter_id},
 		url;
 
 	get_params.type = type;

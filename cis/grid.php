@@ -22,10 +22,11 @@
 require_once('../../../config/vilesci.config.inc.php');
 require_once('../../../include/functions.inc.php');
 require_once('../../../include/benutzerberechtigung.class.php');
+require_once('../../../include/person.class.php');
 require_once('../../../include/filter.class.php');
 require_once('../../../include/statistik.class.php');
 require_once('../../../include/webservicelog.class.php');
-require_once('../../../include/filter.class.php');
+require_once('../include/rp_system_filter.class.php');
 
 ini_set('memory_limit', '1024M');
 $uid = get_uid();
@@ -36,6 +37,7 @@ $rechte->getBerechtigungen($uid);
 $statistik = new statistik();
 
 $statistik_kurzbz = filter_input(INPUT_GET, 'statistik_kurzbz');
+$systemfilter_id = filter_input(INPUT_GET, 'systemfilter_id');
 $htmlbody = filter_input(INPUT_GET, 'htmlbody', FILTER_VALIDATE_BOOLEAN);
 
 if(!isset($statistik_kurzbz))
@@ -75,6 +77,33 @@ if(isset($statistik->berechtigung_kurzbz))
 	if(!$rechte->isBerechtigt($statistik->berechtigung_kurzbz))
 		die($rechte->errormsg);
 
+$allstatistikfilter = new rp_system_filter();
+
+// alle Systemfilter holen für Dropdownauswahl
+$allstatistikfilter->loadAll($statistik_kurzbz);
+
+$initialPreferences = $statistik->preferences;
+
+$systemfilter = new rp_system_filter();
+$isdefault = $isprivate = false;
+$person_id = null;
+$person = new person();
+if ($person->getPersonFromBenutzer($uid))
+{
+	$person_id = $person->person_id;
+}
+
+// preferences je nach angewendeten systemfilter ändern
+if ($systemfilter->load($statistik_kurzbz, $person_id, $systemfilter_id))
+{
+	if (isset($systemfilter->filter_id) && is_numeric($systemfilter->filter_id))
+	{
+		$statistik->preferences = $systemfilter->getPreferencesString();
+		if ($systemfilter->default_filter === true)
+			$isdefault = true;
+		$isprivate = isset($systemfilter->filter_id) && isset($systemfilter->person_id) && is_numeric($systemfilter->person_id);
+	}
+}
 
 $putlog = false;
 if(isset($_REQUEST["putlog"]) && $_REQUEST["putlog"] === "true")
@@ -99,10 +128,6 @@ if($putlog === true)
 $statistik->loadData();
 ?>
 
-
-
-
-
 <?php if($htmlbody): ?>
 <html>
 	<head>
@@ -114,7 +139,41 @@ $statistik->loadData();
 	</head>
 	<body>
 <?php endif; ?>
-		<br><br>
+		<div class="form-inline">
+		<?php if (is_array($allstatistikfilter->result) && count($allstatistikfilter->result) > 0): ?>
+			<br><br>
+			<select class="form-control" id ="systemfilter">
+				<option value="defaultoption">Ansicht wählen...</option>";
+				<?php
+				if (isset($allstatistikfilter->result))
+				{
+					foreach ($allstatistikfilter->result as $sysf)
+					{
+						$selected = $systemfilter->filter_id === $sysf->filter_id ? " selected='selected'" : "";
+						echo "<option value = '".$sysf->filter_id."' $selected>".$sysf->getFilterName()."</option>";
+					}
+				}
+				?>
+			</select>
+			<?php if ($isprivate): ?>
+				<<?php echo ($isdefault ? "label" : "span");?> id="standardsysfilterlabel">
+				<input type="checkbox" name="standardsysfilter" id="standardsysfilter"<?php echo ($isdefault ? " checked='checked'" : "");?>>
+				Standard
+				<?php echo ($isdefault ? "</label>" : "</span>");?>
+			<?php endif; ?>
+		<?php endif; ?>
+			<br><br>
+			<div class="input-group">
+					<input type="text" class="form-control" id="privatesysfiltername">
+				<span class="input-group-btn">
+					<button class="btn btn-default" id="saveprivatesysfilterbtn">Ansicht Speichern</button>
+				</span>
+			</div>
+			<?php if ($isprivate): ?>
+				<button class="btn btn-default" id="deleteprivatesysfilterbtn">Ansicht Löschen</button>
+			<?php endif; ?>
+		</div>
+		<hr>
 		<div id="pivot">
 		</div>
 		<?php if($statistik->data): ?>
@@ -149,6 +208,41 @@ $statistik->loadData();
 
 		var options =		<?php echo $statistik->preferences ? : '{}' ?>;
 		options.renderers = renderers;
+
+		//aggregators and sorters stay as in initial filter preferences
+		var initialOptions = <?php echo $initialPreferences ? : '{}'; ?>;
+		if (initialOptions.aggregators)
+			options.aggregators = initialOptions.aggregators;
+
+		if (initialOptions.sorters)
+			options.sorters = initialOptions.sorters;
+
+		//save options in local storage for retrieval in reporting.js
+		var optionstosave = JSON.parse(JSON.stringify(options));
+
+		if (typeof(Storage) !== "undefined")
+		{
+			localStorage.setItem("FHC_reporting_preferences", JSON.stringify(optionstosave));
+		}
+
+		//executed for each user action, new options are saved in local storage
+		options.onRefresh = function(config) {
+			if (typeof(Storage) !== "undefined")
+			{
+				var config_copy = JSON.parse(JSON.stringify(config));
+
+				//delete some values which are functions
+				delete config_copy["aggregators"];
+				delete config_copy["renderers"];
+
+				//delete some bulky default values
+				delete config_copy["rendererOptions"];
+				delete config_copy["localeStrings"];
+
+				localStorage.setItem("FHC_reporting_preferences", JSON.stringify(config_copy));
+			}
+		};
+
 		var dateFormat =	 $.pivotUtilities.derivers.dateFormat;
 		var sortAs =		 $.pivotUtilities.sortAs;
 		var tpl =			$.pivotUtilities.aggregatorTemplates;
