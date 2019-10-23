@@ -38,8 +38,8 @@ switch($action)
 				$systemfilter->statistik_kurzbz = $_POST["statistik_kurzbz"];
 				$systemfilter->filter = $_POST["filter"];
 
-				//update wenn kein Filtername und systemfilter_id gesetzt
-				if (empty($systemfilter->getFilterName()) && isset($_POST["systemfilter_id"]))
+				//update wenn systemfilter_id gesetzt
+				if (isset($_POST["systemfilter_id"]))
 				{
 					$systemfilter_id = $_POST["systemfilter_id"];
 					$systemfilterupdate = new rp_system_filter();

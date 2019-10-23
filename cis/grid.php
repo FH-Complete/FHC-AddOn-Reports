@@ -150,7 +150,8 @@ $statistik->loadData();
 					foreach ($allstatistikfilter->result as $sysf)
 					{
 						$selected = $systemfilter->filter_id === $sysf->filter_id ? " selected='selected'" : "";
-						echo "<option value = '".$sysf->filter_id."' $selected>".$sysf->getFilterName()."</option>";
+						$private = isset($sysf->person_id) ? " (p)" : "";
+						echo "<option value = '".$sysf->filter_id."' $selected>".$sysf->getFilterName().$private."</option>";
 					}
 				}
 				?>
@@ -161,17 +162,18 @@ $statistik->loadData();
 				Standard
 				<?php echo ($isdefault ? "</label>" : "</span>");?>
 			<?php endif; ?>
-		<?php endif; ?>
 			<br><br>
+			<?php if ($isprivate): ?>
+				<button class="btn btn-default" id="updateprivatesysfilterbtn">Ansicht überschreiben</button>
+				<button class="btn btn-default" id="deleteprivatesysfilterbtn">Ansicht löschen</button>
+			<?php endif; ?>
 			<div class="input-group">
-					<input type="text" class="form-control" id="privatesysfiltername">
+				<input type="text" placeholder="Ansichtname" class="form-control" id="privatesysfiltername">
 				<span class="input-group-btn">
-					<button class="btn btn-default" id="saveprivatesysfilterbtn">Ansicht Speichern</button>
+					<button class="btn btn-default" id="addprivatesysfilterbtn">Ansicht anlegen</button>
 				</span>
 			</div>
-			<?php if ($isprivate): ?>
-				<button class="btn btn-default" id="deleteprivatesysfilterbtn">Ansicht Löschen</button>
-			<?php endif; ?>
+		<?php endif; ?>
 		</div>
 		<hr>
 		<div id="pivot">

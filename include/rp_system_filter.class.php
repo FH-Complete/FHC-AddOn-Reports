@@ -1,8 +1,9 @@
 <?php
 /**
- * Systemfiltersclass für system.tbl_filters. Dies sind Filter zum Speichern von Useroptionen (preferences) die nach Anzeige der Statistik angewandt werden.
- * Nicht zu verwechseln mit Statistikfiltern (public.tbl_filter) welche vor der ersten Anzeige der Statistik angewandt werden!
- * Systemfilter für Statistiken sind durch Vorhandensein einer statistikkurzbz sowie bestimmten app und dataset_name gekennzeichnet.
+ * Systemfiltersclass für system.tbl_filters.
+ * Dies sind Filter zum Speichern von Useroptionen (preferences) die nach Anzeige der Statistik angewandt werden.
+ * Nicht zu verwechseln mit Reportingfiltern (public.tbl_filter) welche vor der initialen Anzeige der Statistik angewandt werden!
+ * Systemfilter für Statistiken sind durch Vorhandensein einer statistikkurzbz sowie bestimmter app und dataset_name gekennzeichnet.
  */
 
 class rp_system_filter extends basis_db
@@ -238,7 +239,6 @@ class rp_system_filter extends basis_db
 
 	/**
 	 * Loescht einen privaten Filter eines Users.
-	 *
 	 * @param $filter_id
 	 * @param $person_id
 	 * @return true wenn ok, sonst false
@@ -271,6 +271,7 @@ class rp_system_filter extends basis_db
 	 * Speichert den aktuellen Datensatz in die Datenbank
 	 * Wenn $new auf true gesetzt ist wird ein neuer Datensatz angelegt
 	 * andernfalls wird der Datensatz mit der ID in $attribut_id aktualisiert
+	 * Aktualisiert nur private Filter mit person_id!
 	 * @return true wenn ok, false im Fehlerfall
 	 */
 	public function save()
@@ -295,6 +296,9 @@ class rp_system_filter extends basis_db
 		}
 		else
 		{
+			if (!isset($this->person_id))
+				return false;
+
 			$qry = 'UPDATE system.tbl_filters SET
 					filter='.$this->db_add_param($this->filter).
 					' WHERE app='.$this->db_add_param(self::APP).'

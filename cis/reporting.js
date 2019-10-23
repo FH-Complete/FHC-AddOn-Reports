@@ -128,8 +128,7 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 function setSysFilterEvents(get_params)
 {
 	$("#systemfilter").change(
-		function()
-		{
+		function() {
 			get_params.systemfilter_id = $("#systemfilter").val();
 			initStatistikLoad(get_params);
 		}
@@ -138,7 +137,7 @@ function setSysFilterEvents(get_params)
 	if ($("#standardsysfilter").length)
 	{
 		$("#standardsysfilter").change(
-			function () {
+			function() {
 				var checked = $(this).prop("checked");
 				var systemfilter_id = $("#systemfilter").val();
 
@@ -149,17 +148,24 @@ function setSysFilterEvents(get_params)
 		);
 	}
 
-	$("#saveprivatesysfilterbtn").click(
+	$("#addprivatesysfilterbtn").click(
 		function() {
 			saveSysFilter(get_params, function () {
 				alert("Fehler beim Speichern der Ansicht!");
-			});
+			}, false);
+		}
+	);
+
+	$("#updateprivatesysfilterbtn").click(
+		function() {
+			saveSysFilter(get_params, function () {
+				alert("Fehler beim Speichern der Ansicht!");
+			}, true);
 		}
 	);
 
 	$("#deleteprivatesysfilterbtn").click(
-		function()
-		{
+		function() {
 			get_params.systemfilter_id = $("#systemfilter").val();
 			deleteSysFilter(get_params, function(){
 				alert("Fehler beim Löschen der Ansicht!")
@@ -170,9 +176,9 @@ function setSysFilterEvents(get_params)
 
 /*--------------------------------------------- Systemfilters AJAX calls ---------------------------------------------*/
 
-function saveSysFilter(get_params, errorcallback)
+function saveSysFilter(get_params, errorcallback, update)
 {
-	var data = getSysFilterSaveData(get_params.statistik_kurzbz);
+	var data = getSysFilterSaveData(get_params.statistik_kurzbz, update);
 
 	$.ajax(
 		{
@@ -257,7 +263,7 @@ function deleteSysFilter(get_params, errorcallback)
 /*--------------------------------------------- Systemfilters AJAX calls Ende---------------------------------------------*/
 
 //Get data for saving a systemfilter (Ansicht)
-function getSysFilterSaveData(statistik_kurzbz)
+function getSysFilterSaveData(statistik_kurzbz, update)
 {
 	if (typeof(Storage) == "undefined")
 	{
@@ -279,7 +285,7 @@ function getSysFilterSaveData(statistik_kurzbz)
 	var filter_id = $("#systemfilter").val();
 
 	//kein Filtername - überschreiben des gewählten filters.
-	if (filtername.length < 1 && $.isNumeric(filter_id))
+	if (update === true && $.isNumeric(filter_id))
 	{
 		data.systemfilter_id = filter_id;
 	}
@@ -292,8 +298,7 @@ function initStatistikLoad(get_params)
 {
 	if (get_params.systemfilter_id === 'defaultoption')
 	{
-		$("#standardsysfilterlabel").hide();
-		$("#deleteprivatesysfilterbtn").hide();
+		$("#standardsysfilterlabel, #deleteprivatesysfilterbtn, #updateprivatesysfilterbtn").hide();
 		return;
 	}
 
