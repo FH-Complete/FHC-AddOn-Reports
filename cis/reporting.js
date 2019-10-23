@@ -150,9 +150,17 @@ function setSysFilterEvents(get_params)
 
 	$("#addprivatesysfilterbtn").click(
 		function() {
-			saveSysFilter(get_params, function () {
-				alert("Fehler beim Speichern der Ansicht!");
-			}, false);
+			if (validateFilterName())
+			{
+				saveSysFilter(get_params, function () {
+					alert("Fehler beim Speichern der Ansicht!");
+				}, false);
+			}
+			else
+			{
+				$("#addprvfiltergroup").addClass("has-error");
+				alert("Ansichtname muss alphanumerisch, unverwendet und mind. 1 Zeichen sein!");
+			}
 		}
 	);
 
@@ -291,6 +299,24 @@ function getSysFilterSaveData(statistik_kurzbz, update)
 	}
 
 	return data;
+}
+
+//filtername should not be empty, only alphanumeric and not already used!
+function validateFilterName()
+{
+	var filtername = $("#privatesysfiltername").val();
+	var filtername_priv = filtername + " (p)";
+	var filternamefound = false;
+	var regex = new RegExp(/^[a-z0-9]+$/i);
+
+	$("#systemfilter").children("option").each(
+		function () {
+			if ($(this).text() === filtername_priv)
+				filternamefound = true;
+		}
+	);
+
+	return regex.test(filtername) && !filternamefound;
 }
 
 //Initialises load of a statistik depending on params. Either statistikfilter is loaded or statistik directly.

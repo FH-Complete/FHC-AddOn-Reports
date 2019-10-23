@@ -276,6 +276,9 @@ class rp_system_filter extends basis_db
 	 */
 	public function save()
 	{
+		if (!$this->_validateFiltername($this->getFilterName()))
+			return false;
+
 		if($this->new)
 		{
 			$description = str_replace('%desc%', $this->getFilterName(), '{"%desc%", "%desc%", "%desc%", "%desc%"}');
@@ -341,5 +344,31 @@ class rp_system_filter extends basis_db
 			return false;
 		}
 		return $this->filter_id;
+	}
+
+	/**
+	 * Prüft ob Filtername zulässig ist.
+	 * Filtername muss alphanumerisch, unverwendet und darf nicht leer sein.
+	 * @param $filtername
+	 * @return bool true wenn zulässig, sonst false
+	 */
+	private function _validateFiltername($filtername)
+	{
+		$regex = '/^[a-z0-9]+$/i';
+
+		if (preg_match($regex, $filtername) !== 1)
+			return false;
+
+		$this->loadAll($this->statistik_kurzbz);
+
+		foreach ($this->result as $filter)
+		{
+			if ($filter->getFilterName() === $filtername)
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

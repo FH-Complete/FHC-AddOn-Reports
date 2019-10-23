@@ -139,9 +139,11 @@ $statistik->loadData();
 	</head>
 	<body>
 <?php endif; ?>
-		<div class="form-inline">
-		<?php if (is_array($allstatistikfilter->result) && count($allstatistikfilter->result) > 0): ?>
-			<br><br>
+	<div class="form-inline">
+	<?php if (is_array($allstatistikfilter->result) && count($allstatistikfilter->result) > 0): ?>
+		<div class="row">
+		<br><br>
+			<div class="col-xs-12">
 			<select class="form-control" id ="systemfilter">
 				<option value="defaultoption">Ansicht wählen...</option>";
 				<?php
@@ -157,28 +159,38 @@ $statistik->loadData();
 				?>
 			</select>
 			<?php if ($isprivate): ?>
-				<<?php echo ($isdefault ? "label" : "span");?> id="standardsysfilterlabel">
+			<<?php echo ($isdefault ? "label" : "span");?> id="standardsysfilterlabel">
 				<input type="checkbox" name="standardsysfilter" id="standardsysfilter"<?php echo ($isdefault ? " checked='checked'" : "");?>>
 				Standard
-				<?php echo ($isdefault ? "</label>" : "</span>");?>
+			<?php echo ($isdefault ? "</label>" : "</span>");?>
 			<?php endif; ?>
-			<br><br>
-			<?php if ($isprivate): ?>
-				<button class="btn btn-default" id="updateprivatesysfilterbtn">Ansicht überschreiben</button>
-				<button class="btn btn-default" id="deleteprivatesysfilterbtn">Ansicht löschen</button>
-			<?php endif; ?>
-			<div class="input-group">
-				<input type="text" placeholder="Ansichtname" class="form-control" id="privatesysfiltername">
-				<span class="input-group-btn">
-					<button class="btn btn-default" id="addprivatesysfilterbtn">Ansicht anlegen</button>
-				</span>
 			</div>
-		<?php endif; ?>
 		</div>
-		<hr>
-		<div id="pivot">
+	<?php endif; ?>
+		<br>
+		<div class="row">
+			<div class="col-xs-8">
+				<?php if ($isprivate): ?>
+					<button class="btn btn-default" id="updateprivatesysfilterbtn">Ansicht überschreiben</button>
+				<?php endif; ?>
+				<div class="input-group" id="addprvfiltergroup">
+					<input type="text" placeholder="Ansichtname" class="form-control" id="privatesysfiltername">
+					<span class="input-group-btn">
+						<button class="btn btn-default" id="addprivatesysfilterbtn">Ansicht anlegen</button>
+					</span>
+				</div>
+			</div>
+			<?php if ($isprivate): ?>
+			<div class="col-xs-1">
+				<button class="btn btn-default" id="deleteprivatesysfilterbtn">Ansicht löschen</button>
+			</div>
+			<?php endif; ?>
 		</div>
-		<?php if($statistik->data): ?>
+	</div>
+	<hr>
+	<div id="pivot">
+	</div>
+	<?php if($statistik->data): ?>
 
 
 		<!-- Pivot Renderers -->
