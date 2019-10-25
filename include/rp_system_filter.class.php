@@ -287,11 +287,12 @@ class rp_system_filter extends basis_db
 	 */
 	public function save()
 	{
-		if (!$this->_validateFiltername($this->getFilterName()))
-			return false;
 
 		if($this->new)
 		{
+			if (!$this->_validateFiltername($this->getFilterName()))
+				return false;
+
 			$description = str_replace('%desc%', $this->getFilterName(), '{"%desc%", "%desc%", "%desc%", "%desc%"}');
 
 			$qry='INSERT INTO system.tbl_filters (app, dataset_name, filter_kurzbz, person_id, description, sort, default_filter, filter, oe_kurzbz, statistik_kurzbz)
