@@ -203,14 +203,25 @@ class rp_system_filter extends basis_db
 	/**
 	 * Laedt alle Systemfilter einer Statistik aus DB.
 	 * @param $statistik_kurzbz
+	 * @param null $person_id for getting private filters of a user
 	 * @return true wenn ok, false im Fehlerfall
 	 */
-	public function loadAll($statistik_kurzbz)
+	public function loadAll($statistik_kurzbz, $person_id = null)
 	{
 		//Lesen der Daten aus der Datenbank
 		$qry = "SELECT * FROM system.tbl_filters
-				WHERE statistik_kurzbz=".$this->db_add_param($statistik_kurzbz)."
-				ORDER BY person_id NULLS FIRST, filter->'name', filter_id DESC;";
+				WHERE statistik_kurzbz=".$this->db_add_param($statistik_kurzbz);
+
+		if (isset($person_id))
+		{
+			$qry .= " AND (person_id=".$this->db_add_param($person_id, FHC_INTEGER)." OR person_id IS NULL)";
+		}
+		else
+		{
+			$qry .= " AND person_id IS NULL";
+		}
+
+		$qry .= " ORDER BY person_id NULLS FIRST, filter->'name', filter_id DESC;";
 
 		if(!$this->db_query($qry))
 		{
@@ -359,7 +370,7 @@ class rp_system_filter extends basis_db
 		if (preg_match($regex, $filtername) !== 1)
 			return false;
 
-		$this->loadAll($this->statistik_kurzbz);
+		$this->loadAll($this->statistik_kurzbz, $this->person_id);
 
 		foreach ($this->result as $filter)
 		{

@@ -77,21 +77,22 @@ if(isset($statistik->berechtigung_kurzbz))
 	if(!$rechte->isBerechtigt($statistik->berechtigung_kurzbz))
 		die($rechte->errormsg);
 
-$allstatistikfilter = new rp_system_filter();
-
-// alle Systemfilter holen für Dropdownauswahl
-$allstatistikfilter->loadAll($statistik_kurzbz);
-
-$initialPreferences = $statistik->preferences;
-
-$systemfilter = new rp_system_filter();
-$isdefault = $isprivate = false;
 $person_id = null;
 $person = new person();
 if ($person->getPersonFromBenutzer($uid))
 {
 	$person_id = $person->person_id;
 }
+
+$allstatistikfilter = new rp_system_filter();
+
+// alle Systemfilter holen für Dropdownauswahl
+$allstatistikfilter->loadAll($statistik_kurzbz, $person_id);
+
+$initialPreferences = $statistik->preferences;
+
+$systemfilter = new rp_system_filter();
+$isdefault = $isprivate = false;
 
 // preferences je nach angewendeten systemfilter ändern
 if ($systemfilter->load($statistik_kurzbz, $person_id, $systemfilter_id))
