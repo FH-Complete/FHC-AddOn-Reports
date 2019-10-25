@@ -93,7 +93,8 @@
 			<?php
 			if(isset($_GET["statistik_kurzbz"]))
 			{
-				echo "loadStatistik('".$_GET['statistik_kurzbz']."');";
+				$systemfilter_id = isset($_GET['systemfilter_id']) ? $_GET['systemfilter_id'] : null;
+				echo "loadStatistik('".$_GET['statistik_kurzbz']."', false, ".$systemfilter_id.");";
 			}
 
 			else if(isset($_GET["report_id"]))

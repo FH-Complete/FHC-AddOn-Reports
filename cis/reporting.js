@@ -101,6 +101,33 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 					$('#content').show();
 					$(window).trigger('resize');
 
+					if (url === "grid.php")
+					{
+						//add systemfilter_id to url
+						var sysfilterurl = window.location.toString();
+						if (sysfilterurl.indexOf("vorschau.php") > -1)
+						{
+							if (get_params.systemfilter_id === 'undefined')
+							{
+								sysfilterurl = sysfilterurl.replace(new RegExp(/(\?|&)systemfilter_id=[a-z0-9]+/i), "");
+							}
+							else
+							{
+								var regex = new RegExp(/systemfilter_id=[a-z0-9]+/i);
+								if (regex.test(sysfilterurl))
+								{
+									sysfilterurl = sysfilterurl.replace(regex, "systemfilter_id=" + get_params.systemfilter_id);
+								}
+								else
+								{
+									var separator = sysfilterurl.indexOf("?") > -1 ? "&" : "?";
+									sysfilterurl += separator + "systemfilter_id=" + get_params.systemfilter_id
+								}
+							}
+							window.history.pushState({systemfilter_id: get_params.systemfilter_id}, "", sysfilterurl);
+						}
+					}
+
 					if(url === "grid.php" || url === "chart.php")
 					{
 						$('#content').html(data);
@@ -196,7 +223,6 @@ function saveSysFilter(get_params, errorcallback, update)
 			data: data,
 			success: function(data) {
 				var systemfilter_id = JSON.parse(data);
-				console.log(systemfilter_id);
 				if ($.isNumeric(systemfilter_id))
 				{
 					get_params.systemfilter_id = systemfilter_id;
@@ -255,7 +281,6 @@ function deleteSysFilter(get_params, errorcallback)
 				"systemfilter_id": get_params.systemfilter_id
 			},
 			success: function (data) {
-				console.log(data);
 				if (data === 'true')
 				{
 					get_params.systemfilter_id = 'undefined';
