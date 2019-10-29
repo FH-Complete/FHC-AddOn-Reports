@@ -296,7 +296,7 @@ function maximizeSidebar()
  */
 function exportChartCSV()
 {
-	var inputs = $('#filter-input > *'),
+	var inputs = $('#filter-input *'),
 		chart_id = $('#filter-input').attr('data-chart_id'),
 		statistik_kurzbz = $('#filter-input').attr('data-statistik_kurzbz'),
 		report_id = $('#filter-input').attr('data-report_id'),
