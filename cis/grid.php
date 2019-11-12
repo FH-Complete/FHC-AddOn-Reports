@@ -84,15 +84,9 @@ if ($person->getPersonFromBenutzer($uid))
 	$person_id = $person->person_id;
 }
 
-$allstatistikfilter = new rp_system_filter();
-
-// alle Systemfilter holen für Dropdownauswahl
-$allstatistikfilter->loadAll($statistik_kurzbz, $person_id);
-
 $initialPreferences = $statistik->preferences;
 
 $systemfilter = new rp_system_filter();
-$isdefault = $isprivate = false;
 
 // preferences je nach angewendeten systemfilter ändern
 if ($systemfilter->load($statistik_kurzbz, $person_id, $systemfilter_id))
@@ -100,9 +94,6 @@ if ($systemfilter->load($statistik_kurzbz, $person_id, $systemfilter_id))
 	if (isset($systemfilter->filter_id) && is_numeric($systemfilter->filter_id))
 	{
 		$statistik->preferences = $systemfilter->getPreferencesString();
-		if ($systemfilter->default_filter === true)
-			$isdefault = true;
-		$isprivate = isset($systemfilter->filter_id) && isset($systemfilter->person_id) && is_numeric($systemfilter->person_id);
 	}
 }
 
@@ -140,55 +131,9 @@ $statistik->loadData();
 	</head>
 	<body>
 <?php endif; ?>
-	<div class="form-inline">
-	<?php if (is_array($allstatistikfilter->result) && count($allstatistikfilter->result) > 0): ?>
-		<div class="row">
-		<br><br>
-			<div class="col-xs-12">
-			<select class="form-control" id ="systemfilter">
-				<option value="defaultoption">Ansicht wählen...</option>";
-				<?php
-				if (isset($allstatistikfilter->result))
-				{
-					foreach ($allstatistikfilter->result as $sysf)
-					{
-						$selected = $systemfilter->filter_id === $sysf->filter_id ? " selected='selected'" : "";
-						$private = isset($sysf->person_id) ? " (p)" : "";
-						echo "<option value = '".$sysf->filter_id."' $selected>".$sysf->getFilterName().$private."</option>";
-					}
-				}
-				?>
-			</select>
-			<?php if ($isprivate): ?>
-			<<?php echo ($isdefault ? "label" : "span");?> id="standardsysfilterlabel">
-				<input type="checkbox" name="standardsysfilter" id="standardsysfilter"<?php echo ($isdefault ? " checked='checked'" : "");?>>
-				Standard
-			<?php echo ($isdefault ? "</label>" : "</span>");?>
-			<?php endif; ?>
-			</div>
-		</div>
-	<?php endif; ?>
-		<br>
-		<div class="row">
-			<div class="col-xs-8">
-				<?php if ($isprivate): ?>
-					<button class="btn btn-default" id="updateprivatesysfilterbtn">Ansicht überschreiben</button>
-				<?php endif; ?>
-				<div class="input-group" id="addprvfiltergroup">
-					<input type="text" placeholder="Ansichtname" class="form-control" id="privatesysfiltername">
-					<span class="input-group-btn">
-						<button class="btn btn-default" id="addprivatesysfilterbtn">Ansicht anlegen</button>
-					</span>
-				</div>
-			</div>
-			<?php if ($isprivate): ?>
-			<div class="col-xs-1">
-				<button class="btn btn-default" id="deleteprivatesysfilterbtn">Ansicht löschen</button>
-			</div>
-			<?php endif; ?>
-		</div>
+	<div id="sysfilterblock">
+		<?php include('./systemfilter_block_view.php'); ?>
 	</div>
-	<hr>
 	<div id="pivot">
 	</div>
 	<?php if($statistik->data): ?>
@@ -206,44 +151,46 @@ $statistik->loadData();
 	<!-- Pivot Sprachen -->
 	<script type="text/javascript" src="../../../public/js/pivottable/pivot.de.js"></script>
 	<script type="text/javascript" src="../include/js/pivot_renderers/de/c3.de.js"></script>
-
+	<script type="text/javascript" src="./systemfilter.js"></script>
 	<script type="text/javascript">
-	$(function()
-	{
+		var GLOBAL_OPTIONS_STORAGE = null;//options for pivot are stored here and retrieved in systemfilter.js
 
-		var lang = "de";
-		var derivers = $.pivotUtilities.derivers;
-		var renderers =
-		$.extend
-		(
-			$.pivotUtilities.locales[lang].renderers,
-			$.pivotUtilities.locales[lang].c3_renderers,
-			$.pivotUtilities.export_renderers
-		);
+		function drawPivotUI(options){
 
-		var options =		<?php echo $statistik->preferences ? : '{}' ?>;
-		options.renderers = renderers;
+			var lang = "de";
+			var derivers = $.pivotUtilities.derivers;
+			var renderers =
+				$.extend
+				(
+					$.pivotUtilities.locales[lang].renderers,
+					$.pivotUtilities.locales[lang].c3_renderers,
+					$.pivotUtilities.export_renderers
+				);
 
-		//aggregators and sorters stay as in initial filter preferences
-		var initialOptions = <?php echo $initialPreferences ? : '{}'; ?>;
-		if (initialOptions.aggregators)
-			options.aggregators = initialOptions.aggregators;
+			var dateFormat =	 $.pivotUtilities.derivers.dateFormat;
+			var sortAs =		 $.pivotUtilities.sortAs;
+			var tpl =			$.pivotUtilities.aggregatorTemplates;
+			var numberFormat =   $.pivotUtilities.numberFormat;
 
-		if (initialOptions.sorters)
-			options.sorters = initialOptions.sorters;
+			var deFormat =	   numberFormat({thousandsSep:".", decimalSep:","});
+			var deFormatInt =	   numberFormat({digitsAfterDecimal: 0,thousandsSep:".", decimalSep:","});
 
-		//save options in local storage for retrieval in reporting.js
-		var optionstosave = JSON.parse(JSON.stringify(options));
+			var dataset = <?php echo $statistik->db_getResultJSON($statistik->data); ?>;
+			var initialOptions = <?php echo $initialPreferences ? : '{}' ?>;
+			options = options ? options : <?php echo $statistik->preferences ? : '{}' ?>;
 
-		if (typeof(Storage) !== "undefined")
-		{
-			localStorage.setItem("FHC_reporting_preferences", JSON.stringify(optionstosave));
-		}
+			options.renderers = renderers;
 
-		//executed for each user action, new options are saved in local storage
-		options.onRefresh = function(config) {
-			if (typeof(Storage) !== "undefined")
-			{
+			if (initialOptions.aggregators)
+				options.aggregators = initialOptions.aggregators;
+
+			if (initialOptions.sorters)
+				options.sorters = initialOptions.sorters;
+
+			GLOBAL_OPTIONS_STORAGE = options;
+
+			//executed for each user action, new options are saved globally
+			options.onRefresh = function(config) {
 				var config_copy = JSON.parse(JSON.stringify(config));
 
 				//delete some values which are functions
@@ -254,81 +201,75 @@ $statistik->loadData();
 				delete config_copy["rendererOptions"];
 				delete config_copy["localeStrings"];
 
-				localStorage.setItem("FHC_reporting_preferences", JSON.stringify(config_copy));
+				GLOBAL_OPTIONS_STORAGE = config_copy;
+			};
+
+			$("#pivot").pivotUI(dataset,options,true,lang);// true - rerender on repeat call
+
+			// Check if Browser is IE -> Then hide ExcelExportButton
+			var ua = window.navigator.userAgent;
+			var msie = ua.indexOf("MSIE ");
+
+			if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))  // If Internet Explorer, return version number
+			{
+				$("#excelExportButton").hide();
 			}
-		};
-
-		var dateFormat =	 $.pivotUtilities.derivers.dateFormat;
-		var sortAs =		 $.pivotUtilities.sortAs;
-		var tpl =			$.pivotUtilities.aggregatorTemplates;
-		var numberFormat =   $.pivotUtilities.numberFormat;
-
-		var deFormat =	   numberFormat({thousandsSep:".", decimalSep:","});
-		var deFormatInt =	   numberFormat({digitsAfterDecimal: 0,thousandsSep:".", decimalSep:","});
-
-		$("#pivot").pivotUI(<?php echo $statistik->db_getResultJSON($statistik->data) ?>,options,false,lang);
-
-		// Check if Browser is IE -> Then hide ExcelExportButton
-		var ua = window.navigator.userAgent;
-		var msie = ua.indexOf("MSIE ");
-
-		if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))  // If Internet Explorer, return version number
-		{
-			$("#excelExportButton").hide();
 		}
-	});
 
-
-		</script>
-		<script type="text/javascript">
-		var tableToExcel = (function() {
-			var uri = 'data:application/vnd.ms-excel;base64,'
-				, template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">'
-						+ 	'	<head>'
-						+ '			<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name>'
-						+ '			<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->'
-						+ '			<meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">'
-						+ '		</head>'
-						+ '		<body>'
-						+ '			<table>{table}</table>'
-						+'		</body>'
-						+	'</html>'
-				, base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
-				, format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) };
-
-			return function(name, filename) {
-				var table = $("#pivot .pvtUi .pvtTable");
-				var ctx = {worksheet: name || 'Worksheet', table: table.html()};
-
-				$(this).prop("download", filename);
-				var dlink = $("#dlink");
-				dlink.prop("href", uri + base64(format(template, ctx)));
-				dlink.prop("download", filename);
-				dlink[0].click();
-			}
-			})();
-
-		</script>
-		<br>
-		<!--<a onclick="exportChartCSV()" style="cursor:pointer" target="_blank">CSV Rohdaten herunterladen</a><br>-->
-		<button style="display: inline; height:30px;" onclick="exportChartCSV()" class="btn btn-default" type="button">CSV Rohdaten herunterladen</button><br>
-		<button id="excelExportButton" style="display: inline; height:30px;" onclick="tableToExcel('Statistik', '<?php echo $statistik_kurzbz; ?>.xls')" class="btn btn-default" type="button">Excel-Export</button>
-		<a id="dlink" href="#pvtTableID" style="display:none;"></a>
-
-		<?php endif; ?>
-
-		<?php
-		//display description if content_id is set
-		if (!is_null($statistik->content_id))
+		$(function()
 		{
-			echo '	
-				<br><br><br><br>					
-				<div class="panel panel-default" style="width: 80%;">			
-					<iframe style="border-style: none; padding: 20px; width: 100%; overflow: hidden; min-height: 500px;" src="'. APP_ROOT . 'cms/content.php?content_id=' . $statistik->content_id .'" />
-				</div>
-			';
+			drawPivotUI();
+		});
+	</script>
+	<script type="text/javascript">
+	var tableToExcel = (function() {
+		var uri = 'data:application/vnd.ms-excel;base64,'
+			, template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">'
+					+ 	'	<head>'
+					+ '			<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name>'
+					+ '			<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->'
+					+ '			<meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">'
+					+ '		</head>'
+					+ '		<body>'
+					+ '			<table>{table}</table>'
+					+'		</body>'
+					+	'</html>'
+			, base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+			, format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) };
+
+		return function(name, filename) {
+			var table = $("#pivot .pvtUi .pvtTable");
+			var ctx = {worksheet: name || 'Worksheet', table: table.html()};
+
+			$(this).prop("download", filename);
+			var dlink = $("#dlink");
+			dlink.prop("href", uri + base64(format(template, ctx)));
+			dlink.prop("download", filename);
+			dlink[0].click();
 		}
-		?>
+		})();
+
+	</script>
+	<br>
+	<!--<a onclick="exportChartCSV()" style="cursor:pointer" target="_blank">CSV Rohdaten herunterladen</a><br>-->
+	<button style="display: inline; height:30px;" onclick="exportChartCSV()" class="btn btn-default" type="button">CSV Rohdaten herunterladen</button><br>
+	<button id="excelExportButton" style="display: inline; height:30px;" onclick="tableToExcel('Statistik', '<?php echo $statistik_kurzbz; ?>.xls')" class="btn btn-default" type="button">Excel-Export</button>
+	<a id="dlink" href="#pvtTableID" style="display:none;"></a>
+
+	<?php endif; ?>
+
+	<?php
+	//display description if content_id is set
+	if (!is_null($statistik->content_id))
+	{
+		echo '	
+			<br><br><br><br>					
+			<div class="panel panel-default" style="width: 80%;">			
+				<iframe style="border-style: none; padding: 20px; width: 100%; overflow: hidden; min-height: 500px;" src="'. APP_ROOT . 'cms/content.php?content_id=' . $statistik->content_id .'" />
+			</div>
+		';
+	}
+	?>
 
 <?php if($htmlbody): ?>
 	</body>

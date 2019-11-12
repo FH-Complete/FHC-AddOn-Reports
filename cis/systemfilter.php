@@ -11,13 +11,13 @@ $user = get_uid();
 $rechte = new benutzerberechtigung();
 $rechte->getBerechtigungen($user);
 
-if (!$rechte->isBerechtigt('system/filters'))
+if (!$rechte->isBerechtigt('system/filters', null, 'suid'))
 	die($rechte->errormsg);
 
-if (!isset($_POST["action"]))
+if (!isset($_REQUEST["action"]))
 	die("Keine Aktion spezifiziert!");
 
-$action = $_POST['action'];
+$action = $_REQUEST['action'];
 
 $logged_person_id = null;
 $person = new person();
@@ -31,6 +31,15 @@ $json = false;
 
 switch($action)
 {
+	case 'getPreferences':
+		if (isset($_GET["statistik_kurzbz"]) && isset($_GET['systemfilter_id']))
+		{
+			$systemfilter->load($_GET["statistik_kurzbz"], $logged_person_id, $_GET['systemfilter_id']);
+			$json = $systemfilter->getPreferencesString();
+			echo $json;
+			die();
+		}
+		break;
 	case 'savePrivate':
 		if (isset($_POST["statistik_kurzbz"]) && isset($_POST["filter"]) && isset($logged_person_id))
 		{
@@ -75,3 +84,4 @@ switch($action)
 		break;
 }
 echo json_encode($json);
+die();
