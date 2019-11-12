@@ -43,53 +43,69 @@ if ($systemfilter->load($statistik_kurzbz, $person_id, $systemfilter_id))
 	}
 }
 ?>
-
-<div class="form-inline">
-<?php if (is_array($allstatistikfilter->result) && count($allstatistikfilter->result) > 0): ?>
-	<div class="row">
-	<br><br>
-		<div class="col-xs-12">
-		<select class="form-control" id ="systemfilter">
-			<option value="defaultoption">Ansicht wählen...</option>";
-			<?php
-			if (isset($allstatistikfilter->result))
-			{
-				foreach ($allstatistikfilter->result as $sysf)
-				{
-					$selected = $systemfilter->filter_id === $sysf->filter_id ? " selected='selected'" : "";
-					$private = isset($sysf->person_id) ? " (p)" : "";
-					echo "<option value = '".$sysf->filter_id."' $selected>".$sysf->getFilterName().$private."</option>";
-				}
-			}
-			?>
-		</select>
-		<?php if ($isprivate): ?>
-		<<?php echo ($isdefault ? "label" : "span");?> id="standardsysfilterlabel">
-			<input type="checkbox" name="standardsysfilter" id="standardsysfilter"<?php echo ($isdefault ? " checked='checked'" : "");?>>
-			Standard
-		<?php echo ($isdefault ? "</label>" : "</span>");?>
-		<?php endif; ?>
-		</div>
-	</div>
-<?php endif; ?>
-	<br>
-	<div class="row">
-		<div class="col-xs-8">
-			<?php if ($isprivate): ?>
-				<button class="btn btn-default" id="updateprivatesysfilterbtn">Ansicht überschreiben</button>
-			<?php endif; ?>
-			<div class="input-group" id="addprvfiltergroup">
-				<input type="text" placeholder="Ansichtname" class="form-control" id="privatesysfiltername">
-				<span class="input-group-btn">
-					<button class="btn btn-default" id="addprivatesysfilterbtn">Ansicht anlegen</button>
-				</span>
+<br>
+<div class="row">
+	<div class="col-xs-8">
+		<div class="panel-group">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-toggle="collapse" href="#collapseSysFilterHeader">Ansichten</a>
+					</h4>
+				</div>
+				<div class="panel-collapse collapse<?php echo (isset($collapseFilterBlock) && $collapseFilterBlock === true ? "" : " in") ?>" id="collapseSysFilterHeader">
+					<div class="panel-body form-inline">
+					<?php if (is_array($allstatistikfilter->result) && count($allstatistikfilter->result) > 0): ?>
+						<div class="row">
+							<div class="col-xs-12 col-md-7">
+							<select class="form-control" id ="systemfilter">
+								<option value="defaultoption">Ansicht wählen...</option>";
+								<?php
+								if (isset($allstatistikfilter->result))
+								{
+									foreach ($allstatistikfilter->result as $sysf)
+									{
+										$selected = $systemfilter->filter_id === $sysf->filter_id ? " selected='selected'" : "";
+										$private = isset($sysf->person_id) ? " (privat)" : "";
+										echo "<option value = '".$sysf->filter_id."' $selected>".$sysf->getFilterName().$private."</option>";
+									}
+								}
+								?>
+							</select>
+							<?php if ($isprivate): ?>
+							<<?php echo ($isdefault ? "label" : "span");?> id="standardsysfilterlabel">
+								<input type="checkbox" name="standardsysfilter" id="standardsysfilter"<?php echo ($isdefault ? " checked='checked'" : "");?>>
+								Standard
+							<?php echo ($isdefault ? "</label>" : "</span>");?>
+							<?php endif; ?>
+							</div>
+							<?php if ($isprivate): ?>
+							<div class="col-xs-12 col-md-5 text-right">
+								<button class="btn btn-default" id="updateprivatesysfilterbtn">Ansicht überschreiben</button>
+							</div>
+							<?php endif; ?>
+						</div>
+					<?php endif; ?>
+						<br>
+						<div class="row">
+							<div class="col-xs-12 col-md-8">
+								<div class="input-group" id="addprvfiltergroup">
+									<input type="text" placeholder="Ansichtname" class="form-control" id="privatesysfiltername">
+									<span class="input-group-btn">
+										<button class="btn btn-default" id="addprivatesysfilterbtn">Ansicht anlegen</button>
+									</span>
+								</div>
+							</div>
+							<?php if ($isprivate): ?>
+							<div class="col-xs-12 col-md-4 text-right">
+								<button class="btn btn-default" id="deleteprivatesysfilterbtn">Ansicht löschen</button>
+							</div>
+							<?php endif; ?>
+						</div>
+						<div id="sysfiltermsg" class="text-center"></div>
+					</div>
+				</div>
 			</div>
 		</div>
-		<?php if ($isprivate): ?>
-		<div class="col-xs-1">
-			<button class="btn btn-default" id="deleteprivatesysfilterbtn">Ansicht löschen</button>
-		</div>
-		<?php endif; ?>
 	</div>
 </div>
-<hr>

@@ -43,21 +43,21 @@ switch($action)
 	case 'savePrivate':
 		if (isset($_POST["statistik_kurzbz"]) && isset($_POST["filter"]) && isset($logged_person_id))
 		{
-				$systemfilter->person_id = $logged_person_id;
-				$systemfilter->statistik_kurzbz = $_POST["statistik_kurzbz"];
-				$systemfilter->filter = $_POST["filter"];
+			$systemfilter->person_id = $logged_person_id;
+			$systemfilter->statistik_kurzbz = $_POST["statistik_kurzbz"];
+			$systemfilter->filter = $_POST["filter"];
 
-				//update wenn systemfilter_id gesetzt
-				if (isset($_POST["systemfilter_id"]))
-				{
-					$systemfilter_id = $_POST["systemfilter_id"];
-					$systemfilterupdate = new rp_system_filter();
-					$systemfilterupdate->load($systemfilter->statistik_kurzbz, $logged_person_id, $systemfilter_id);
-					$systemfilterupdate->setPreferencesString($systemfilter->getPreferencesString());
-					$json = $systemfilterupdate->save();
-				}
-				else
-					$json = $systemfilter->save();
+			//update wenn systemfilter_id gesetzt
+			if (isset($_POST["systemfilter_id"]))
+			{
+				$systemfilter_id = $_POST["systemfilter_id"];
+				$systemfilterupdate = new rp_system_filter();
+				$systemfilterupdate->load($systemfilter->statistik_kurzbz, $logged_person_id, $systemfilter_id);
+				$systemfilterupdate->setPreferencesString($systemfilter->getPreferencesString());
+				$json = $systemfilterupdate->save();
+			}
+			else
+				$json = $systemfilter->save();
 		}
 		break;
 	case 'deletePrivate':

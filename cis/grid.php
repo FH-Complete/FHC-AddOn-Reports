@@ -131,15 +131,17 @@ $statistik->loadData();
 	</head>
 	<body>
 <?php endif; ?>
+<?php if($statistik->data): ?>
 	<div id="sysfilterblock">
-		<?php include('./systemfilter_block_view.php'); ?>
+		<?php
+			$collapseFilterBlock = true;
+			include('./systemfilter_block_view.php')
+		?>
 	</div>
 	<div id="pivot">
 	</div>
-	<?php if($statistik->data): ?>
 
-
-		<!-- Pivot Renderers -->
+	<!-- Pivot Renderers -->
 	<script type="text/javascript" src="../vendor/c3js/c3/c3.min.js"></script>
   	<script type="text/javascript" src="../vendor/d3/d3/d3.min.js"></script>
     <script type="text/javascript" src="../../../vendor/nicolaskruchten/pivottable/dist/c3_renderers.min.js"></script>

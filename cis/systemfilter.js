@@ -14,7 +14,7 @@ function setSysFilterEvents(get_params)
 				return;*/
 
 			getSysFilterPreferences(get_params, function () {
-				alert("Fehler beim Setzten der Ansicht!");
+				showMsg("Fehler beim Setzten der Ansicht!", "text-danger");
 			});
 		}
 	);
@@ -27,7 +27,7 @@ function setSysFilterEvents(get_params)
 				var systemfilter_id = $("#systemfilter").val();
 
 				setDefaultSysFilter(systemfilter_id, checked, function () {
-					alert("Fehler beim Setzten der Standardansicht!");
+					showMsg("Fehler beim Setzten der Standardansicht!", "text-danger");
 				});
 			}
 		);
@@ -38,13 +38,13 @@ function setSysFilterEvents(get_params)
 			if (validateFilterName())
 			{
 				saveSysFilter(get_params, function () {
-					alert("Fehler beim Speichern der Ansicht!");
+					showMsg("Fehler beim Speichern der Ansicht!", "text-danger");
 				}, false);
 			}
 			else
 			{
 				$("#addprvfiltergroup").addClass("has-error");
-				alert("Ansichtname muss alphanumerisch, unverwendet und mind. 1 Zeichen sein!");
+				showMsg("Ansichtname muss alphanumerisch, unverwendet und mind. 1 Zeichen sein!", "text-danger");
 			}
 		}
 	);
@@ -52,7 +52,7 @@ function setSysFilterEvents(get_params)
 	$("#updateprivatesysfilterbtn").click(
 		function() {
 			saveSysFilter(get_params, function () {
-				alert("Fehler beim Speichern der Ansicht!");
+				showMsg("Fehler beim Speichern der Ansicht!", "text-danger");
 			}, true);
 		}
 	);
@@ -61,7 +61,7 @@ function setSysFilterEvents(get_params)
 		function() {
 			get_params.systemfilter_id = $("#systemfilter").val();
 			deleteSysFilter(get_params, function(){
-				alert("Fehler beim Löschen der Ansicht!")
+				showMsg("Fehler beim Löschen der Ansicht!", "text-danger")
 			});
 		}
 	);
@@ -86,11 +86,20 @@ function getSysFilterPreferences(get_params, errorcallback)
 			success: function (data) {
 				if (typeof data === "string")
 				{
-					loadSysFilterBlock(get_params);
 					var preferences = null;
-					if (data !== '')
-						preferences = JSON.parse(data);
-					drawPivotUI(preferences);
+					try
+					{
+						if (data !== '')
+						{
+							preferences = JSON.parse(data);
+						}
+						drawPivotUI(preferences);
+						loadSysFilterBlock(get_params);
+					}
+					catch(e)
+					{
+						errorcallback();
+					}
 				} else
 					errorcallback();
 			},
@@ -111,14 +120,20 @@ function saveSysFilter(get_params, errorcallback, update)
 			datatype: 'json',
 			data: data,
 			success: function(data) {
-				var systemfilter_id = JSON.parse(data);
-				if ($.isNumeric(systemfilter_id))
+				try
 				{
-					get_params.systemfilter_id = systemfilter_id;
-					loadSysFilterBlock(get_params);
+					var systemfilter_id = JSON.parse(data);
+					if ($.isNumeric(systemfilter_id))
+					{
+						get_params.systemfilter_id = systemfilter_id;
+						loadSysFilterBlock(get_params, "Ansicht erfolgreich gespeichert!");
+					} else
+						errorcallback();
 				}
-				else
+				catch(e)
+				{
 					errorcallback();
+				}
 			},
 			error: errorcallback
 		}
@@ -173,7 +188,6 @@ function deleteSysFilter(get_params, errorcallback)
 				if (data === 'true')
 				{
 					get_params.systemfilter_id = 'undefined';
-					loadSysFilterBlock(get_params);
 					getSysFilterPreferences(get_params, errorcallback);
 
 				} else
@@ -184,7 +198,7 @@ function deleteSysFilter(get_params, errorcallback)
 	);
 }
 
-function loadSysFilterBlock(get_params)
+function loadSysFilterBlock(get_params, message)
 {
 	$("#sysfilterblock").load(
 		'systemfilter_block_view.php',
@@ -194,6 +208,15 @@ function loadSysFilterBlock(get_params)
 		},
 		function (response){
 			setSysFilterEvents(get_params);
+			if (typeof message == 'string')
+			{
+				setTimeout(
+					function () {
+						showMsg(message, 'text-success')
+					},
+					50
+				);
+			}
 		}
 	);
 }
@@ -275,4 +298,9 @@ function appendSystemfilterToUrl(get_params)
 		}
 		window.history.pushState({systemfilter_id: get_params.systemfilter_id}, "", sysfilterurl);
 	}
+}
+
+function showMsg(message, cssclass)
+{
+	$("#sysfiltermsg").html("<br><span class='" + cssclass + "'>" + message + "</span>");
 }
