@@ -18,21 +18,42 @@
  * Authors: Andreas Österreicher <oesi@technikum-wien.at>
  */
 require_once('../../../config/vilesci.config.inc.php');
+require_once('../reports.config.inc.php');
 require_once('../../../include/functions.inc.php');
 require_once('../include/rp_chart.class.php');
 
 $uid = get_uid();
-$chart_obj = new chart();
-$chart_obj->getDashboard();
-
 $data = array();
 
-foreach($chart_obj->result as $row)
+if(isset($_GET['page']))
 {
-	$chart = new stdClass();
-	$chart->chart_id = $row->chart_id;
-	$chart->layout = $row->dashboard_layout;
-	$data[] = $chart;
+	if(defined('CUSTOM_DASHBOARD'))
+	{
+		$custom_dashboard = unserialize(CUSTOM_DASHBOARD);
+		if(is_array($custom_dashboard) && isset($custom_dashboard[$_GET['page']]))
+		{
+			foreach($custom_dashboard[$_GET['page']] as $row)
+			{
+				$chart = new stdClass();
+				$chart->chart_id = $row['chart_id'];
+				$chart->layout = $row['dashboard_layout'];
+				$data[] = $chart;
+			}
+		}
+	}
+}
+else
+{
+	$chart_obj = new chart();
+	$chart_obj->getDashboard();
+
+	foreach($chart_obj->result as $row)
+	{
+		$chart = new stdClass();
+		$chart->chart_id = $row->chart_id;
+		$chart->layout = $row->dashboard_layout;
+		$data[] = $chart;
+	}
 }
 
 echo json_encode($data);
