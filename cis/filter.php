@@ -66,7 +66,6 @@ if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
 
 	$vars = $statistik->parseVars($statistik->sql);
 
-
 	if($htmlbody)
 	{
 		$html = '
@@ -97,7 +96,7 @@ if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
 			$html .= '<span style="margin-left: 5px">';
 			$html .= $var;
 			$html .= ': </span>';
-			$html .= ': <input type="text" id="' . $var . '" name="' . $var . '" value="">';
+			$html .= ' <input type="text" id="' . $var . '" name="' . $var . '" value="">';
 		}
 		$html .= '</div>';
 	}
