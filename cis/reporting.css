@@ -59,13 +59,31 @@ li.hide-button {
 }
 
 /* Systemfilters */
-.panel-heading
+
+#sysfilterblockheading
 {
 	padding: 5px 15px;
 }
 
-.panel-title
+#sysfilterblockheading a
+{
+	color: black;
+}
+
+#sysfilterblockheading h4.panel-title
 {
 	font-size: 14px;
-	text-align: center;
+}
+
+/*arrow toggle for panels*/
+.panel-heading .accordion-toggle.arrowcollapse #ansichtenverwaltentext:before{
+	/* symbol for "opening" panels */
+	font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+	content: "\e114";    /* adjust as needed, taken from bootstrap.css */
+	color: grey;         /* adjust as needed */
+}
+
+.panel-heading .accordion-toggle.collapsed.arrowcollapse #ansichtenverwaltentext:before{
+	/* symbol for "collapsed" panels */
+	content: "\e080";    /* adjust as needed, taken from bootstrap.css */
 }

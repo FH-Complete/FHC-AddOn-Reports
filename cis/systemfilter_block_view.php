@@ -37,8 +37,8 @@ if ($systemfilter->load($statistik_kurzbz, $person_id, $systemfilter_id))
 	{
 		if ($systemfilter->default_filter === true)
 			$isdefault = true;
-		$isprivate = isset($systemfilter->filter_id) &&
-			isset($systemfilter->person_id) && is_numeric($systemfilter->person_id)
+		$isprivate = isset($systemfilter->filter_id)
+			&& isset($systemfilter->person_id) && is_numeric($systemfilter->person_id)
 			&& $systemfilter->person_id === $person_id;
 	}
 }
@@ -48,10 +48,29 @@ if ($systemfilter->load($statistik_kurzbz, $person_id, $systemfilter_id))
 	<div class="col-xs-8">
 		<div class="panel-group">
 			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h4 class="panel-title">
-						<a data-toggle="collapse" href="#collapseSysFilterHeader">Ansichten</a>
-					</h4>
+				<div class="panel-heading" id="sysfilterblockheading">
+					<a class="accordion-toggle arrowcollapse<?php echo isset($_POST['systemfilter_id']) ? '' : ' collapsed' ?>" data-toggle="collapse" href="#collapseSysFilterHeader">
+						<div class="row">
+							<div class="col-xs-6">
+								<h4 class="panel-title" id="ansichtenverwaltentext">
+									Ansichten verwalten
+								</h4>
+							</div>
+							<div class="col-xs-6 text-right">
+								<h4 class="panel-title">
+									<?php
+										$filtername = $systemfilter->getFilterName();
+
+										if (!empty($filtername)):
+									?>
+										aktiv: <?php echo $filtername ?>
+									<?php
+										endif;
+									?>
+								</h4>
+							</div>
+						</div>
+					</a>
 				</div>
 				<div class="panel-collapse collapse<?php echo (isset($collapseFilterBlock) && $collapseFilterBlock === true ? "" : " in") ?>" id="collapseSysFilterHeader">
 					<div class="panel-body form-inline">

@@ -126,7 +126,7 @@ function saveSysFilter(get_params, errorcallback, update)
 					if ($.isNumeric(systemfilter_id))
 					{
 						get_params.systemfilter_id = systemfilter_id;
-						loadSysFilterBlock(get_params, "Ansicht erfolgreich gespeichert!");
+						loadSysFilterBlock(get_params, "Ansicht erfolgreich gespeichert");
 					} else
 						errorcallback();
 				}
@@ -254,11 +254,11 @@ function getSysFilterSaveData(statistik_kurzbz, update)
 function validateFilterName()
 {
 	var filtername = $("#privatesysfiltername").val();
-	var filtername_priv = filtername + " (p)";
+	var filtername_priv = filtername + " (privat)";
 	var filternamefound = false;
 	var regex = new RegExp(/^[a-z0-9]+$/i);
 
-	$("#systemfilter").children("option").each(
+	$("#systemfilter option").each(
 		function () {
 			if ($(this).text() === filtername_priv)
 				filternamefound = true;

@@ -281,19 +281,22 @@ class rp_system_filter extends basis_db
 	/**
 	 * Speichert den aktuellen Datensatz in die Datenbank
 	 * Wenn $new auf true gesetzt ist wird ein neuer Datensatz angelegt
-	 * andernfalls wird der Datensatz mit der ID in $attribut_id aktualisiert
-	 * Aktualisiert nur private Filter mit person_id!
+	 * andernfalls wird der Datensatz aktualisiert
+	 * Speichert nur private Filter mit person_id!
 	 * @return true wenn ok, false im Fehlerfall
 	 */
 	public function save()
 	{
+		if (!$this->_validateFilterJson($this->filter) || !isset($this->person_id))
+			return false;
 
 		if($this->new)
 		{
-			if (!$this->_validateFiltername($this->getFilterName()))
+			$filtername = $this->getFilterName();
+			if (!$this->_validateFiltername($filtername))
 				return false;
 
-			$description = str_replace('%desc%', $this->getFilterName(), '{"%desc%", "%desc%", "%desc%", "%desc%"}');
+			$description = str_replace('%desc%', $filtername, '{"%desc%", "%desc%", "%desc%", "%desc%"}');
 
 			$qry='INSERT INTO system.tbl_filters (app, dataset_name, filter_kurzbz, person_id, description, sort, default_filter, filter, oe_kurzbz, statistik_kurzbz)
 			VALUES('.
@@ -311,9 +314,6 @@ class rp_system_filter extends basis_db
 		}
 		else
 		{
-			if (!isset($this->person_id))
-				return false;
-
 			$qry = 'UPDATE system.tbl_filters SET
 					filter='.$this->db_add_param($this->filter).
 					' WHERE app='.$this->db_add_param(self::APP).'
@@ -356,6 +356,23 @@ class rp_system_filter extends basis_db
 			return false;
 		}
 		return $this->filter_id;
+	}
+
+	/**
+	 * Prüft ob Filter valides JSON ist und korrekte Objektstruktur hat
+	 * @param $filter JSON string des Filters
+	 * @return bool
+	 */
+	private function _validateFilterJson($filter)
+	{
+		$valid = false;
+		$obj = json_decode($filter);
+		if ($obj !== null)
+		{
+			$valid = isset($obj->name) && isset($obj->preferences);
+		}
+
+		return $valid;
 	}
 
 	/**
