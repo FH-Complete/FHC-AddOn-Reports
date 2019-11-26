@@ -156,8 +156,8 @@ $statistik->loadData();
 	<script type="text/javascript" src="./systemfilter.js"></script>
 	<script type="text/javascript">
 		var GLOBAL_OPTIONS_STORAGE = null;//options for pivot are stored here and retrieved in systemfilter.js
-
-		function drawPivotUI(options){
+		//useInitialOptions - if true, ignore any systemfilters and use options from tbl_statistik
+		function drawPivotUI(options, useInitialOptions){
 
 			var lang = "de";
 			var derivers = $.pivotUtilities.derivers;
@@ -179,20 +179,29 @@ $statistik->loadData();
 
 			var dataset = <?php echo $statistik->db_getResultJSON($statistik->data); ?>;
 			var initialOptions = <?php echo $initialPreferences ? : '{}' ?>;
-			options = options ? options : <?php echo $statistik->preferences ? : '{}' ?>;
 
-			options.renderers = renderers;
+			if (useInitialOptions)
+				options = initialOptions;
+			else
+			{
+				options = options ? options : <?php echo $statistik->preferences ?: '{}' ?>;
 
-			if (initialOptions.aggregators)
-				options.aggregators = initialOptions.aggregators;
+				options.renderers = renderers;
 
-			if (initialOptions.sorters)
-				options.sorters = initialOptions.sorters;
+				if (initialOptions.aggregators)
+					options.aggregators = initialOptions.aggregators;
+
+				if (initialOptions.sorters)
+					options.sorters = initialOptions.sorters;
+
+				if (initialOptions.rendererOptions)
+					options.rendererOptions = initialOptions.rendererOptions;
+			}
 
 			GLOBAL_OPTIONS_STORAGE = options;
 
 			//executed for each user action, new options are saved globally
-			options.onRefresh = function(config) {
+			options.onRefresh = function (config) {
 				var config_copy = JSON.parse(JSON.stringify(config));
 
 				//delete some values which are functions

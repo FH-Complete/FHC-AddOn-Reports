@@ -10,12 +10,17 @@ function setSysFilterEvents(get_params)
 		function() {
 			get_params.systemfilter_id = $("#systemfilter").val();
 
-/*			if (!$.isNumeric(get_params.systemfilter_id))
-				return;*/
-
-			getSysFilterPreferences(get_params, function () {
-				showMsg("Fehler beim Setzten der Ansicht!", "text-danger");
-			});
+			if (get_params.systemfilter_id === 'originview')
+			{
+				drawPivotUI(null, true);
+				loadSysFilterBlock(get_params);
+			}
+			else
+			{
+				getSysFilterPreferences(get_params, function () {
+					showMsg("Fehler beim Setzten der Ansicht!", "text-danger");
+				});
+			}
 		}
 	);
 
@@ -223,7 +228,7 @@ function loadSysFilterBlock(get_params, message)
 
 /*--------------------------------------------- Systemfilters AJAX calls Ende---------------------------------------------*/
 
-//Get data for saving a systemfilter (Ansicht)
+//Get data object for saving a systemfilter (Ansicht)
 function getSysFilterSaveData(statistik_kurzbz, update)
 {
 	if (GLOBAL_OPTIONS_STORAGE == null)

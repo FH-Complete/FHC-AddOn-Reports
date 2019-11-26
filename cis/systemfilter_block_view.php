@@ -30,16 +30,21 @@ $allstatistikfilter->loadAll($statistik_kurzbz, $person_id);
 
 $systemfilter = new rp_system_filter();
 $isdefault = $isprivate = false;
+const ORIGINVIEWNAME = 'originview';
+$originview = $systemfilter_id === ORIGINVIEWNAME;
 
-if ($systemfilter->load($statistik_kurzbz, $person_id, $systemfilter_id))
+if (!$originview)
 {
-	if (isset($systemfilter->filter_id) && is_numeric($systemfilter->filter_id))
+	if ($systemfilter->load($statistik_kurzbz, $person_id, $systemfilter_id))
 	{
-		if ($systemfilter->default_filter === true)
-			$isdefault = true;
-		$isprivate = isset($systemfilter->filter_id)
-			&& isset($systemfilter->person_id) && is_numeric($systemfilter->person_id)
-			&& $systemfilter->person_id === $person_id;
+		if (isset($systemfilter->filter_id) && is_numeric($systemfilter->filter_id))
+		{
+			if ($systemfilter->default_filter === true)
+				$isdefault = true;
+			$isprivate = isset($systemfilter->filter_id)
+				&& isset($systemfilter->person_id) && is_numeric($systemfilter->person_id)
+				&& $systemfilter->person_id === $person_id;
+		}
 	}
 }
 ?>
@@ -78,7 +83,9 @@ if ($systemfilter->load($statistik_kurzbz, $person_id, $systemfilter_id))
 						<div class="row">
 							<div class="col-xs-12 col-md-7">
 							<select class="form-control" id ="systemfilter">
-								<option value="defaultoption">Ansicht wählen...</option>";
+								<option value="originview"<?php echo ($originview ? " selected='selected'" : ""); ?>>
+									--Ursprungsansicht--
+								</option>";
 								<?php
 								if (isset($allstatistikfilter->result))
 								{

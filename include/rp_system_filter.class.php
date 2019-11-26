@@ -34,7 +34,7 @@ class rp_system_filter extends basis_db
 	{
 		parent::__construct();
 
-		if(!is_null($statistik_kurzbz))
+		if (!is_null($statistik_kurzbz))
 		{
 			$this->load($statistik_kurzbz, null, $filter_id);
 		}
@@ -55,7 +55,7 @@ class rp_system_filter extends basis_db
 	public function load($statistik_kurzbz, $person_id = null, $filter_id=null)
 	{
 		// statistik_kurzbz prüfen
-		if(!is_string($statistik_kurzbz))
+		if (!is_string($statistik_kurzbz))
 		{
 			$this->errormsg = 'statistik_kurzbz muss eine Zeichenkette sein';
 			return false;
@@ -95,7 +95,7 @@ class rp_system_filter extends basis_db
 			$this->oe_kurzbz = $row->oe_kurzbz;
 			$this->statistik_kurzbz		= $row->statistik_kurzbz;
 		}
-		$this->new=false;
+		$this->new = false;
 		return true;
 	}
 
@@ -142,7 +142,7 @@ class rp_system_filter extends basis_db
 	}
 
 	/**
-	 * Sets einen privaten Filter als default für einen User.
+	 * Setzt einen privaten Filter als default für einen User.
 	 * @param $filter_id
 	 * @param $person_id
 	 * @param $default_filter
@@ -187,7 +187,7 @@ class rp_system_filter extends basis_db
 			$qry = "UPDATE system.tbl_filters SET default_filter = ".$this->db_add_param($default_filter, FHC_BOOLEAN)."
 					WHERE filter_id = ".$this->db_add_param($filter_id, FHC_INTEGER).";";
 
-			if($this->db_query($qry))
+			if ($this->db_query($qry))
 			{
 				return true;
 			}
@@ -223,12 +223,12 @@ class rp_system_filter extends basis_db
 
 		$qry .= " ORDER BY person_id NULLS FIRST, filter->'name', filter_id DESC;";
 
-		if(!$this->db_query($qry))
+		if (!$this->db_query($qry))
 		{
 			$this->errormsg = 'Fehler bei einer Datenbankabfrage';
 			return false;
 		}
-		while($row = $this->db_fetch_object())
+		while ($row = $this->db_fetch_object())
 		{
 			$obj = new rp_system_filter();
 
@@ -265,7 +265,7 @@ class rp_system_filter extends basis_db
 				AND filter_id=".$this->db_add_param($filter_id, FHC_INTEGER).
 				" AND person_id=".$this->db_add_param($person_id, FHC_INTEGER).";";
 
-		if($this->db_query($qry))
+		if ($this->db_query($qry))
 		{
 			$this->db_query("COMMIT");
 			return true;
@@ -273,7 +273,7 @@ class rp_system_filter extends basis_db
 		else
 		{
 			$this->db_query("ROLLBACK");
-			$this->errormsg='Fehler beim Löschen des Eintrages';
+			$this->errormsg = 'Fehler beim Löschen des Eintrages';
 			return false;
 		}
 	}
@@ -290,7 +290,7 @@ class rp_system_filter extends basis_db
 		if (!$this->_validateFilterJson($this->filter) || !isset($this->person_id))
 			return false;
 
-		if($this->new)
+		if ($this->new)
 		{
 			$filtername = $this->getFilterName();
 			if (!$this->_validateFiltername($filtername))
@@ -298,7 +298,7 @@ class rp_system_filter extends basis_db
 
 			$description = str_replace('%desc%', $filtername, '{"%desc%", "%desc%", "%desc%", "%desc%"}');
 
-			$qry='INSERT INTO system.tbl_filters (app, dataset_name, filter_kurzbz, person_id, description, sort, default_filter, filter, oe_kurzbz, statistik_kurzbz)
+			$qry = 'INSERT INTO system.tbl_filters (app, dataset_name, filter_kurzbz, person_id, description, sort, default_filter, filter, oe_kurzbz, statistik_kurzbz)
 			VALUES('.
 				$this->db_add_param(self::APP).', '.
 				$this->db_add_param(self::DATASET_NAME).', '.
@@ -322,15 +322,15 @@ class rp_system_filter extends basis_db
 					AND filter_id='.$this->db_add_param($this->filter_id).';';
 		}
 
-		if($this->db_query($qry))
+		if ($this->db_query($qry))
 		{
-			if($this->new)
+			if ($this->new)
 			{
 				//naechste ID aus der Sequence holen
-				$qry="SELECT currval('system.tbl_filters_id_seq') as id;";
-				if($this->db_query($qry))
+				$qry = "SELECT currval('system.tbl_filters_id_seq') as id;";
+				if ($this->db_query($qry))
 				{
-					if($row = $this->db_fetch_object())
+					if ($row = $this->db_fetch_object())
 					{
 						$this->filter_id = $row->id;
 						$this->db_query('COMMIT');
