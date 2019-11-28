@@ -49,7 +49,7 @@ function setSysFilterEvents(get_params)
 			else
 			{
 				$("#addprvfiltergroup").addClass("has-error");
-				showMsg("Ansichtname muss alphanumerisch, unverwendet und mind. 1 Zeichen sein!", "text-danger");
+				showMsg("Ansichtname muss ohne Sonderzeichen (ausser _ -), unverwendet und mind. 1 Zeichen sein!", "text-danger");
 			}
 		}
 	);
@@ -261,7 +261,7 @@ function validateFilterName()
 	var filtername = $("#privatesysfiltername").val();
 	var filtername_priv = filtername + " (privat)";
 	var filternamefound = false;
-	var regex = new RegExp(/^[a-z0-9]+$/i);
+	var regex = new RegExp(/^[a-z0-9\u00f6\u00fc\u00e4_\-\s]+$/i);
 
 	$("#systemfilter option").each(
 		function () {

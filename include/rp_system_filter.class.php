@@ -124,7 +124,7 @@ class rp_system_filter extends basis_db
 
 		$preferences_obj = json_decode($this->filter);
 		if (isset($preferences_obj->name))
-			$result =  json_encode($preferences_obj->name);
+			$result = $preferences_obj->name;
 
 		return str_replace('"', '', $result);
 	}
@@ -383,7 +383,7 @@ class rp_system_filter extends basis_db
 	 */
 	private function _validateFiltername($filtername)
 	{
-		$regex = '/^[a-z0-9]+$/i';
+		$regex = '/^[a-z0-9äöüÄÖÜ_\-\s]+$/i';
 
 		if (preg_match($regex, $filtername) !== 1)
 			return false;
