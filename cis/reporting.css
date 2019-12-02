@@ -57,3 +57,33 @@ li.hide-button {
 {
 	float:right;
 }
+
+/* Systemfilters */
+
+#sysfilterblockheading
+{
+	padding: 5px 15px;
+}
+
+#sysfilterblockheading a
+{
+	color: black;
+}
+
+#sysfilterblockheading h4.panel-title
+{
+	font-size: 14px;
+}
+
+/*arrow toggle for panels*/
+.panel-heading .accordion-toggle.arrowcollapse #ansichtenverwaltentext:before{
+	/* symbol for "opening" panels */
+	font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+	content: "\e114";    /* adjust as needed, taken from bootstrap.css */
+	color: grey;         /* adjust as needed */
+}
+
+.panel-heading .accordion-toggle.collapsed.arrowcollapse #ansichtenverwaltentext:before{
+	/* symbol for "collapsed" panels */
+	content: "\e080";    /* adjust as needed, taken from bootstrap.css */
+}
