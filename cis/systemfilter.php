@@ -11,7 +11,7 @@ $user = get_uid();
 $rechte = new benutzerberechtigung();
 $rechte->getBerechtigungen($user);
 
-if (!$rechte->isBerechtigt('system/filters', null, 'suid'))
+if (!$rechte->isBerechtigt('addon/reports', null, 'suid'))
 	die($rechte->errormsg);
 
 if (!isset($_REQUEST["action"]))
