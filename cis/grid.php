@@ -213,6 +213,21 @@ $statistik->loadData();
 				delete config_copy["localeStrings"];
 
 				GLOBAL_OPTIONS_STORAGE = config_copy;
+
+				//Parse HTML-Elements
+				$('th.pvtRowLabel').each(function()
+				{
+					$(this).html($(this).text());
+				});
+
+				// Wenn die Option "hideTotals" true ist, Total-Zeile und Spalten verstecken
+				if (options.hideTotals == true)
+				{
+					$(".pvtTable").find('.rowTotal').addClass('hidden');
+					$(".pvtTable").find('.colTotal').addClass('hidden');
+					$(".pvtTable").find('.pvtGrandTotal').addClass('hidden');
+					$(".pvtTable").find('.pvtTotalLabel').addClass('hidden');
+				}
 			};
 
 			$("#pivot").pivotUI(dataset,options,true,lang);// true - rerender on repeat call
