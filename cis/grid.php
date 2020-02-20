@@ -214,11 +214,13 @@ $statistik->loadData();
 
 				GLOBAL_OPTIONS_STORAGE = config_copy;
 
-				//Parse HTML-Elements
-				$('th.pvtRowLabel').each(function()
+				// Wenn die Option "parseHTML" true ist, werden HTML-Elements als solche ausgegeben
+				if (options.parseHTML == true)
 				{
-					$(this).html($(this).text());
-				});
+					$('th.pvtRowLabel').each(function () {
+						$(this).html($(this).text());
+					})
+				}
 
 				// Wenn die Option "hideTotals" true ist, Total-Zeile und Spalten verstecken
 				if (options.hideTotals == true)
@@ -227,6 +229,39 @@ $statistik->loadData();
 					$(".pvtTable").find('.colTotal').addClass('hidden');
 					$(".pvtTable").find('.pvtGrandTotal').addClass('hidden');
 					$(".pvtTable").find('.pvtTotalLabel').addClass('hidden');
+				}
+
+				// Wenn die Option "showLineNumber" true ist, wird als erste Spalte die Zeilennummer angezeigt
+				if (options.showLineNumber == true)
+				{
+					$('.pvtTable > thead').find('th').eq(0).before('<th class="pvtAxisLabel">#</th>');
+					$('.pvtTable > tbody  > tr').each(function (index) {
+						zeilennummer = index+1;
+						rowspan = $(this).find('th').eq(0).attr('rowspan');
+						if (!$(this).find('th').eq(0).hasClass('hidden'))
+						{
+							$(this).find('th').eq(0).before('<th class="pvtRowLabel" rowspan="' + rowspan + '">' + zeilennummer + '</th>');
+						}
+					});
+				}
+
+				// Wenn die Option "showLineCount" true ist, wird die Summe der Zeilen angezeigt
+				if (options.showLineCount == true)
+				{
+					rowCount = $('.pvtTable > tbody  > tr').length;
+					// Wenn die Option "hideTotals" true ist, eine Zeile abziehen
+					if (options.hideTotals == true)
+					{
+						rowCount = rowCount-1;
+					}
+					if ( $( "#rowCount" ).length )
+					{
+						$('#rowCount').html(rowCount + ' Zeilen');
+					}
+					else
+					{
+						$('.pvtUiCell').eq(0).append('<p id="rowCount" style="color: grey; font-size: small; text-align: center; padding-top: 5px;">' + rowCount + ' Zeilen</p>');
+					}
 				}
 			};
 
