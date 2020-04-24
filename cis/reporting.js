@@ -35,9 +35,9 @@ function loadReport(report_id, putlog)
 	showFilter(undefined, report_id, undefined, putlog);
 }
 
-function loadStatistik(statistik_kurzbz, putlog, systemfilter_id)
+function loadStatistik(statistik_kurzbz, putlog, systemfilter_id, getParams)
 {
-	showFilter(statistik_kurzbz, undefined, undefined, putlog, systemfilter_id);
+	showFilter(statistik_kurzbz, undefined, undefined, putlog, systemfilter_id, getParams);
 }
 
 function loadData(statistik_kurzbz, report_id, chart_id, get_params)
@@ -126,7 +126,7 @@ function loadData(statistik_kurzbz, report_id, chart_id, get_params)
 		alert("Es wurden keine korrekten Daten angegeben!")
 }
 
-function showFilter(statistik_kurzbz, report_id, chart_id, putlog, systemfilter_id)
+function showFilter(statistik_kurzbz, report_id, chart_id, putlog, systemfilter_id, getParams)
 {
 	$('#filter').show();
 	$(window).trigger('resize');
@@ -137,8 +137,12 @@ function showFilter(statistik_kurzbz, report_id, chart_id, putlog, systemfilter_
 	$('#glossar').hide();
 	$("#filter-PdfLink").hide();
 	$("#filter-debugLink").hide();
-
-	$('#filter-input').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz + '&report_id=' + report_id + "&putlog=" + putlog + "&systemfilter_id=" + systemfilter_id, function()
+	var getSring = ''
+	$.each(getParams, function( index, value )
+	{
+		getSring += "&" + index + "=" + value;
+	});
+	$('#filter-input').load('filter.php?type=data&statistik_kurzbz=' + statistik_kurzbz + '&report_id=' + report_id + "&putlog=" + putlog + "&systemfilter_id=" + systemfilter_id + getSring, function()
 	{
 		if(typeof debug !== "undefined")
 			$("#filter-debugLink").show();

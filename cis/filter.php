@@ -93,10 +93,16 @@ if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
 		}
 		else
 		{
+			// Checken, ob ein Filter mit diesem Namen als GET-Parameter übergeben wurde und diesen verwenden
+			$val = '';
+			if (isset($_GET[$var]))
+			{
+				$val = $_GET[$var];
+			}
 			$html .= '<span style="margin-left: 5px">';
 			$html .= $var;
 			$html .= ': </span>';
-			$html .= ' <input type="text" id="' . $var . '" name="' . $var . '" value="">';
+			$html .= ' <input type="text" id="' . $var . '" name="' . $var . '" value="'.$val.'">';
 		}
 		$html .= '</div>';
 	}

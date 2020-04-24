@@ -93,8 +93,33 @@
 			<?php
 			if(isset($_GET["statistik_kurzbz"]))
 			{
-				$systemfilter_id = isset($_GET['systemfilter_id']) ? $_GET['systemfilter_id'] : null;
-				echo "loadStatistik('".$_GET['statistik_kurzbz']."', false, ".$systemfilter_id.");";
+				$systemfilter_id = isset($_GET['systemfilter_id']) ? $_GET['systemfilter_id'] : 'false';
+				// GET-Parameter auslesen und übergeben
+				$getString = '';
+				foreach ($_GET AS $key=>$value)
+				{
+					// Vordefinierte Parameter entfernen
+					if ($key != 'type' &&
+						$key != 'statistik_kurzbz' &&
+						$key != 'report_id' &&
+						$key != 'putlog' &&
+						$key != 'systemfilter_id' &&
+						$key != 'debug')
+					{
+						$getString .= $key.':'.$value.',';
+					}
+				}
+				$getString = substr($getString, 0, -1);
+				// Wenn $getString leer ist, false ausgeben, ansonsten Umklammern
+				if ($getString == '')
+				{
+					$getString = 'false';
+				}
+				else
+				{
+					$getString = '{'.$getString.'}';
+				}
+				echo "loadStatistik('".$_GET['statistik_kurzbz']."', false, ".$systemfilter_id.", ".$getString.");";
 			}
 
 			else if(isset($_GET["report_id"]))

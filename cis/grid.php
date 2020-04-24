@@ -219,6 +219,9 @@ $statistik->loadData();
 				{
 					$('th.pvtRowLabel').each(function () {
 						$(this).html($(this).text());
+					});
+					$('td.pvtVal').each(function () {
+						$(this).html($(this).text());
 					})
 				}
 
