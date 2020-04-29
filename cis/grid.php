@@ -222,6 +222,9 @@ $statistik->loadData();
 					});
 					$('td.pvtVal').each(function () {
 						$(this).html($(this).text());
+					});
+					$('th.pvtColLabel').each(function () {
+						$(this).html($(this).text());
 					})
 				}
 
