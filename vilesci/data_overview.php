@@ -101,12 +101,11 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 				<tr>
 					<th>Gruppe</th>
 					<th>Kurzbz</th>
-					<th>Pub</th>
 					<th>Bezeichnung</th>
+					<th>Pub</th>
 					<th>URL</th>
-					<th>SQL</th>
-					<th>Publish</th>
-					<th>Beschr.</th>
+					<th>Insert</th>
+					<th>Update</th>
 					<th colspan="2">Aktion</th>
 				</tr>
 			</thead>
@@ -122,25 +121,20 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 								<?php echo $row->statistik_kurzbz; ?>
 							</a>
 						</td>
-						<td align="center">
-							<?php echo $row->publish; ?>
-						</td>
 						<td>
 							<?php echo $row->bezeichnung; ?>
+						</td>
+						<td align="center">
+							<?php echo ($row->publish ?  "Ja" : "");?>
 						</td>
 						<td>
 							<?php if($row->url != null)echo substr($row->url, 0, 25)."..." ?>
 						</td>
 						<td>
-							<?php if($row->sql != null)echo substr($row->sql, 0, 25)."..." ?>
+							<?php echo $row->insertamum.' von '.$row->insertvon; ?>
 						</td>
 						<td>
-							<?php echo ($row->publish ?  "✓" : "");?>
-						</td>
-						<td>
-							<a href="#" onclick="window.open('../../cms/content.php?content_id=<?php echo $row->content_id ?>', 'Beschreibung', 'width=600,height=600, scrollbars=yes');">
-								<?php echo $row->content_id ?>
-							</a>
+							<?php echo $row->updateamum.' von '.$row->updatevon; ?>
 						</td>
 						<td>
 							<a href="../../../vilesci/stammdaten/statistik_details.php?action=update&statistik_kurzbz=<?php echo $row->statistik_kurzbz ?>" target="detail_statistik">
