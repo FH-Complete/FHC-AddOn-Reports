@@ -73,12 +73,12 @@
 					</div>
 			</div>
 		</div>
-
-		<div style="display: none;margin-top:50px;margin-bottom:2%;" id="filter">
+		<?php $systemfilter_id = isset($_GET['systemfilter_id']) ? intval($_GET['systemfilter_id']) : 'false';  ?>
+		<div style="display: none; margin-top:20px; margin-bottom:2%;" id="filter">
 			<div class="col-xs-12 col-sm-9">
 				<form class="form-inline" onsubmit="return false">
 					<span id="filter-input"></span>
-					<button style="display: inline;height:40px;" onclick="runFilter('html')" class="btn btn-default" type="submit">Ausf&uuml;hren</button>
+					<button style="display: inline;height:40px;" onclick="runFilter('html',false,<?php echo $systemfilter_id ?>)" class="btn btn-default" type="submit">Ausf&uuml;hren</button>
 					<button style="display: inline;height:40px;" onclick="runFilter('pdf')" class="btn btn-default" id="filter-PdfLink" ><img src="../include/images/Pdf.svg" width="20" alt="pdf"/></button>
 					<button style="display: inline;height:40px;" onclick="runFilter('debug')" class="btn btn-warning" id="filter-debugLink">DEBUG</button>
 				</form>
