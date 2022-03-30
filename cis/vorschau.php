@@ -78,7 +78,7 @@
 			<div class="col-xs-12 col-sm-9">
 				<form class="form-inline" onsubmit="return false">
 					<span id="filter-input"></span>
-					<button style="display: inline;height:40px;" onclick="runFilter('html',false,<?php echo $systemfilter_id ?>)" class="btn btn-default" type="submit">Ausf&uuml;hren</button>
+					<button style="display: inline;height:40px;" onclick="runFilter('html',true,<?php echo $systemfilter_id ?>)" class="btn btn-default" type="submit">Ausf&uuml;hren</button>
 					<button style="display: inline;height:40px;" onclick="runFilter('pdf')" class="btn btn-default" id="filter-PdfLink" ><img src="../include/images/Pdf.svg" width="20" alt="pdf"/></button>
 					<button style="display: inline;height:40px;" onclick="runFilter('debug')" class="btn btn-warning" id="filter-debugLink">DEBUG</button>
 				</form>
@@ -119,7 +119,7 @@
 				{
 					$getString = '{'.$getString.'}';
 				}
-				echo "loadStatistik('".$_GET['statistik_kurzbz']."', false, ".$systemfilter_id.", ".$getString.");";
+				echo "loadStatistik('".$_GET['statistik_kurzbz']."', true, ".$systemfilter_id.", ".$getString.");";
 			}
 
 			else if(isset($_GET["report_id"]))
@@ -129,14 +129,14 @@
 				if(isset($_GET["debug"]))
 					echo "debug = true;";
 
-				echo "loadReport('".$_GET['report_id']."');";
+				echo "loadReport('".$_GET['report_id']."', true);";
 			}
 
 			else if(isset($_GET["chart_id"]))
 			{
 				$cid = $_GET["chart_id"];
 				$c = new chart($_GET["chart_id"]);
-				echo "loadChart('".$cid."','".$c->statistik_kurzbz."');";
+				echo "loadChart('".$cid."','".$c->statistik_kurzbz."',true);";
 			}
 			?>
 
