@@ -25,7 +25,7 @@ require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../../../include/person.class.php');
 require_once('../../../include/filter.class.php');
 require_once('../../../include/statistik.class.php');
-require_once('../../../include/webservicelog.class.php');
+	require_once('../../../include/webservicelog.class.php');
 require_once('../include/rp_system_filter.class.php');
 
 ini_set('memory_limit', '1024M');
@@ -157,8 +157,8 @@ $statistik->loadData();
 	<script type="text/javascript">
 		var GLOBAL_OPTIONS_STORAGE = null;//options for pivot are stored here and retrieved in systemfilter.js
 		//useInitialOptions - if true, ignore any systemfilters and use options from tbl_statistik
-		function drawPivotUI(options, useInitialOptions){
-
+		function drawPivotUI(options, useInitialOptions)
+		{
 			var lang = "de";
 			var derivers = $.pivotUtilities.derivers;
 			var renderers =
@@ -228,6 +228,37 @@ $statistik->loadData();
 					})
 				}
 
+				// Wenn die Option "disableRowspan" true ist, wird das Zusammenfassen gleicher Elemente in einer Row verhindert
+				if (options.disableRowspan == true)
+				{
+					$('th.pvtRowLabel').filter(function () {
+						return this.rowSpan > 1;
+					}).each(function () {
+						let rowspan = $(this).attr("rowspan");
+						let index = $(this).index();
+						let row = $(this).parent().index();
+
+						// change this elements rowspan
+						$(this).attr("rowspan", "1");
+						// copy element and it's index for reference later
+						var that = $(this).clone(true);
+						that.index = $(this).index();
+
+						// get rows that are between the elems rowspan
+						$('tbody tr:not(:last-of-type)').filter(function () {
+							return $(this).index() > row && $(this).index() - row < rowspan;
+						}).each(function () {
+							// either insert at front or row, or at index...
+							if (that.index === 0) $(this).prepend(that);
+							else $(that).insertAfter($('th:nth-child(' + that.index + ')', this));
+							// clone that, index for next iteration
+							let index = that.index;
+							that = that.clone(true);
+							that.index = index;
+						});
+					});
+				}
+
 				// Wenn die Option "hideTotals" true ist, Total-Zeile und Spalten verstecken
 				if (options.hideTotals == true)
 				{
@@ -269,6 +300,17 @@ $statistik->loadData();
 						$('.pvtUiCell').eq(0).append('<p id="rowCount" style="color: grey; font-size: small; text-align: center; padding-top: 5px;">' + rowCount + ' Zeilen</p>');
 					}
 				}
+
+				// Wenn die Option "showEmailButton" true ist, wird der Button zum senden von E-Mails angezeigt
+				// -> Muss an andere Stelle, weil die Buttons erst nach den script geladen werden
+				if (options.showEmailButton == true)
+				{
+					$("#sendPivotMailButton").show();
+				}
+				else
+				{
+					$("#sendPivotMailButton").show();
+				}
 			};
 
 			$("#pivot").pivotUI(dataset,options,true,lang);// true - rerender on repeat call
@@ -286,7 +328,51 @@ $statistik->loadData();
 		$(function()
 		{
 			drawPivotUI();
+
+			$('#sendPivotMailButton').on('click', function()
+			{
+				var mailstring = '';
+				var submailstring = '';
+				var splitposition = 0;
+				var idx = 0;
+				$('.pvtRowLabel').each(function()
+				{
+					function extractEmails(text)
+					{
+						return text.match(/([a-zA-Z0-9._+-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
+					}
+
+					var emails = extractEmails($(this).text());
+
+					$.each(emails, function(index, email)
+					{
+						var divHtml = email + ';';
+						mailstring += divHtml;
+						if(mailstring.length > 2048)//2048
+						{
+							// Alert nur einmalig ausgeben
+							if (idx == 0)
+							{
+								alert('Aufgrund der großen Anzahl an EmpfängerInnen, muss die Nachricht auf mehrere E-Mails aufgeteilt werden!');
+								idx = 1;
+							}
+							splitposition = mailstring.indexOf(';',1900);//1900
+							submailstring = mailstring.substring(0,splitposition);
+							window.location = 'mailto:<?php echo $uid.'@'.DOMAIN;?>?bcc= ' + submailstring;
+							mailstring = mailstring.substring(splitposition);
+						}
+						else
+						{
+
+						}
+					});
+				});
+				//console.log(mailstring);
+				window.location = 'mailto:<?php echo $uid.'@'.DOMAIN;?>?bcc= ' + mailstring;
+			});
+
 		});
+
 	</script>
 	<script type="text/javascript">
 	var tableToExcel = (function() {
@@ -319,24 +405,25 @@ $statistik->loadData();
 	</script>
 	<br>
 	<!--<a onclick="exportChartCSV()" style="cursor:pointer" target="_blank">CSV Rohdaten herunterladen</a><br>-->
-	<button style="display: inline; height:30px;" onclick="exportChartCSV()" class="btn btn-default" type="button">CSV Rohdaten herunterladen</button><br>
-	<button id="excelExportButton" style="display: inline; height:30px;" onclick="tableToExcel('Statistik', '<?php echo $statistik_kurzbz; ?>.xls')" class="btn btn-default" type="button">Excel-Export</button>
+	<p><button style="display: inline; height:30px;" onclick="exportChartCSV()" class="btn btn-default" type="button">CSV Rohdaten herunterladen</button></p>
+	<p><button id="excelExportButton" style="display: inline; height:30px;" onclick="tableToExcel('Statistik', '<?php echo $statistik_kurzbz; ?>.xls')" class="btn btn-default" type="button">Excel-Export</button></p>
+	<p><button id="sendPivotMailButton" style="display: inline; height:30px;" class="btn btn-default" type="button">E-Mail senden</button></p>
 	<a id="dlink" href="#pvtTableID" style="display:none;"></a>
 
 	<?php endif; ?>
 
-	<?php
-	//display description if content_id is set
-	if (!is_null($statistik->content_id))
-	{
-		echo '	
+<?php
+//display description if content_id is set
+if (!is_null($statistik->content_id))
+{
+	echo '	
 			<br><br><br><br>					
 			<div class="panel panel-default" style="width: 80%;">			
 				<iframe style="border-style: none; padding: 20px; width: 100%; overflow: hidden; min-height: 500px;" src="'. APP_ROOT . 'cms/content.php?content_id=' . $statistik->content_id .'" />
 			</div>
 		';
-	}
-	?>
+}
+?>
 
 <?php if($htmlbody): ?>
 	</body>
