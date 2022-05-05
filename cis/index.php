@@ -304,7 +304,7 @@ function addZuordnungen($entity,$rechte)
 							<?php endif;?>
 						<?php endforeach;?>
 						<li>
-							<a href="#data" id="glossar_link">Glossar</a>
+							<a href="#data" id="glossar_link">Erläuterungen</a>
 						</li>
 					</ul>
 				</div>
@@ -339,7 +339,7 @@ function addZuordnungen($entity,$rechte)
 						</div>
 					</div>
 					<div id="filter" style="display: none;">
-						<div class="col-xs-12 text-center">
+						<div class="col-xs-12 text-left" style="padding-left: 0">
 							<form class="form-inline" onsubmit="return false">
 								<span id="filter-input"></span>
 								<button style="display: inline;height:40px;" onclick="runFilter('html', true)" class="btn btn-default" type="submit">Ausf&uuml;hren</button>
@@ -353,8 +353,7 @@ function addZuordnungen($entity,$rechte)
 
 					<div id="glossar" style="display:none;">
 						<div class="page-header">
-							<h2>Glossar</h2>
-							<p>Begriffsdefinitionen</p>
+							<h2>Erläuterungen</h2>
 							<ul class="pagination">
 							<?php
 								// Create an array with letters from A-Z
