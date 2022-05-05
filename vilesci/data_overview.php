@@ -51,13 +51,13 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 				{
 					sortList: [[1,0]],
 					widgets: ["saveSort", "zebra", "filter", "stickyHeaders"],
-					headers: {8: {sorter: false, filter: false}},
+					headers: {9: {sorter: false, filter: false}},
 					widgetOptions : {filter_saveFilters : true}
 				});
 
 				$('.resetsaved').click(function()
 				{
-					$("#t1").trigger("filterReset");
+					$("#myTable").trigger("filterReset");
 					location.reload();
 					return false;
 				});
@@ -96,17 +96,19 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 		if(!$statistik->getAll())
 			die($statistik->errormsg);
 		?>
-		<table class="tablesorter" id="myTable">
+		<table class="tablesorter" id="myTable" style="table-layout: fixed">
 			<thead>
 				<tr>
 					<th>Gruppe</th>
 					<th>Kurzbz</th>
 					<th>Bezeichnung</th>
-					<th>Pub</th>
+					<th style="width: max-content">Pub</th>
 					<th>URL</th>
+					<th>SQL</th>
+					<th>Preferences</th>
 					<th>Insert</th>
 					<th>Update</th>
-					<th colspan="2">Aktion</th>
+					<th>Aktion</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -125,21 +127,22 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 							<?php echo $row->bezeichnung; ?>
 						</td>
 						<td align="center">
-							<?php echo ($row->publish ?  "Ja" : "");?>
+							<?php echo ($row->publish ?  "Ja" : "Nein");?>
 						</td>
 						<td>
 							<?php if($row->url != null)echo substr($row->url, 0, 25)."..." ?>
 						</td>
-						<td>
-							<?php echo $row->insertamum.' von '.$row->insertvon; ?>
+						<td style="text-overflow: ellipsis; white-space: nowrap; overflow:hidden;">
+							<?php echo $row->sql ?>
 						</td>
-						<td>
-							<?php echo $row->updateamum.' von '.$row->updatevon; ?>
+						<td style="text-overflow: ellipsis; white-space: nowrap; overflow:hidden;">
+							<?php echo $row->preferences ?>
 						</td>
-						<td>
-							<a href="../../../vilesci/stammdaten/statistik_details.php?action=update&statistik_kurzbz=<?php echo $row->statistik_kurzbz ?>" target="detail_statistik">
-								bearbeiten
-							</a>
+						<td title="von <?php echo $row->insertvon; ?>">
+							<?php echo $row->insertamum; ?>
+						</td>
+						<td title="von <?php echo $row->updatevon; ?>">
+							<?php echo $row->updateamum; ?>
 						</td>
 						<td>
 							<a href="../../../vilesci/stammdaten/statistik_uebersicht.php?action=delete&statistik_kurzbz=<?php echo $row->statistik_kurzbz ?>" onclick="return confdel()">
