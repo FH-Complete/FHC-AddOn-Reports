@@ -325,19 +325,6 @@ $statistik->loadData();
 
 	<?php endif; ?>
 
-	<?php
-	//display description if content_id is set
-	if (!is_null($statistik->content_id))
-	{
-		echo '	
-			<br><br><br><br>					
-			<div class="panel panel-default" style="width: 80%;">			
-				<iframe style="border-style: none; padding: 20px; width: 100%; overflow: hidden; min-height: 500px;" src="'. APP_ROOT . 'cms/content.php?content_id=' . $statistik->content_id .'" />
-			</div>
-		';
-	}
-	?>
-
 <?php if($htmlbody): ?>
 	</body>
 </html>

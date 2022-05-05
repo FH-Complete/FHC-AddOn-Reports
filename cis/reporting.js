@@ -213,8 +213,8 @@ function resizeContent()
  // $('.pvtRendererArea').width("100%");
   $('.pvtRendererArea').css("overflow","auto");
 
-  $('#content').css("overflow-y", "visible");
-  $('#content').css("overflow-x", "auto");
+  //$('#content').css("overflow-y", "visible");
+  //($('#content').css("overflow-x", "auto");
 }
 
 function showSidebar(num, type, reference_bezeichnung)
