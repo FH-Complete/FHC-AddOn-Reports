@@ -92,13 +92,13 @@ function drawMenuGruppenRec($gruppen, $level = 0)
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">
 		<link rel="stylesheet" href="../../../vendor/twbs/bootstrap/dist/css/bootstrap.min.css" type="text/css">
-		<link rel="stylesheet" href="../../../vendor/components/font-awesome/css/font-awesome.min.css" type="text/css">
-		<link rel="stylesheet" href="../../../vendor/BlackrockDigital/startbootstrap-sb-admin-2/dist/css/sb-admin-2.min.css" type="text/css">
+		<link rel="stylesheet" href="../../../vendor/fortawesome/font-awesome4/css/font-awesome.min.css" type="text/css">
+		<link rel="stylesheet" href="../../../vendor/blackrockdigital/startbootstrap-sb-admin-2/dist/css/sb-admin-2.min.css" type="text/css">
 		<link rel="stylesheet" href="../../../public/css/sbadmin2/admintemplate_contentonly.css" type="text/css">
 		<link rel="stylesheet" href="../include/css/problemcheck/dependency_overview.css" type="text/css">
 		<?php require_once("../../../include/meta/jquery.php"); ?>
-		<script type="text/javascript" src="../../../vendor/BlackrockDigital/startbootstrap-sb-admin-2/vendor/metisMenu/metisMenu.min.js"></script>
-		<script type="text/javascript" src="../../../vendor/BlackrockDigital/startbootstrap-sb-admin-2/dist/js/sb-admin-2.min.js"></script>
+		<script type="text/javascript" src="../../../vendor/blackrockdigital/startbootstrap-sb-admin-2/vendor/metisMenu/metisMenu.min.js"></script>
+		<script type="text/javascript" src="../../../vendor/blackrockdigital/startbootstrap-sb-admin-2/dist/js/sb-admin-2.min.js"></script>
 		<?php require_once("../include/meta/highcharts.php"); ?>
 		<script type="text/javascript" src="../include/js/problemcheck/dependency_overview.js"></script>
 	</head>

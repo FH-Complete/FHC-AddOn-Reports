@@ -170,7 +170,7 @@ function addZuordnungen($entity,$rechte)
 
 		<link rel="stylesheet" type="text/css" href="../../../vendor/components/jqueryui/themes/base/jquery-ui.min.css">
 
-		<!--<script type="text/javascript" src="../../../vendor/jquery/jqueryV1/jquery-1.12.4.min.js"></script>-->
+		<!--<script type="text/javascript" src="../../../vendor/jquery/jquery1/jquery-1.12.4.min.js"></script>-->
 		<script type="text/javascript" src="../../../vendor/components/jquery/jquery.min.js"></script>
 		<script type="text/javascript" src="../../../vendor/components/jqueryui/jquery-ui.min.js"></script>
 
