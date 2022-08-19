@@ -160,7 +160,7 @@ function addZuordnungen($entity,$rechte)
 
 		<title>Reports</title>
 
-		<link rel="stylesheet" type="text/css" href="../../../vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="../../../vendor/twbs/bootstrap3/dist/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="../include/css/offcanvas.css">
 		<link rel="stylesheet" type="text/css" href="../include/css/multilevel_dropdown.css">
 		<link rel="stylesheet" type="text/css" href="reporting.css">
@@ -179,7 +179,7 @@ function addZuordnungen($entity,$rechte)
 
 		<?php require_once("../include/meta/highcharts.php"); ?>
 		<script type="text/javascript" src="../vendor/furf/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
-		<script src="../../../vendor/twbs/bootstrap/dist/js/bootstrap.min.js"></script>
+		<script src="../../../vendor/twbs/bootstrap3/dist/js/bootstrap.min.js"></script>
 		<script src="../include/js/offcanvas.js"></script>
 		<script type="text/javascript" src="reporting.js"></script>
 		<script type="text/javascript">

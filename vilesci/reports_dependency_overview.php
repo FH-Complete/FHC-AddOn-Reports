@@ -91,7 +91,7 @@ function drawMenuGruppenRec($gruppen, $level = 0)
 		<title>Reporting Abhängigkeiten Übersicht</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<link rel="stylesheet" href="../../../skin/vilesci.css" type="text/css">
-		<link rel="stylesheet" href="../../../vendor/twbs/bootstrap/dist/css/bootstrap.min.css" type="text/css">
+		<link rel="stylesheet" href="../../../vendor/twbs/bootstrap3/dist/css/bootstrap.min.css" type="text/css">
 		<link rel="stylesheet" href="../../../vendor/fortawesome/font-awesome4/css/font-awesome.min.css" type="text/css">
 		<link rel="stylesheet" href="../../../vendor/blackrockdigital/startbootstrap-sb-admin-2/dist/css/sb-admin-2.min.css" type="text/css">
 		<link rel="stylesheet" href="../../../public/css/sbadmin2/admintemplate_contentonly.css" type="text/css">

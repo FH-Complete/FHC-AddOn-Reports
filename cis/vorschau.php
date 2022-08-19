@@ -34,7 +34,7 @@
 
 		<title>Reports</title>
 
-		<link rel="stylesheet" type="text/css" href="../../../vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="../../../vendor/twbs/bootstrap3/dist/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="../include/css/offcanvas.css">
 		<link rel="stylesheet" type="text/css" href="../include/css/multilevel_dropdown.css">
 		<link rel="stylesheet" type="text/css" href="../cis/reporting.css">
@@ -86,7 +86,7 @@
 		</div>
 
 		<div id="content" style="display:none;"></div>
-		<script src="../../../vendor/twbs/bootstrap/dist/js/bootstrap.min.js"></script>
+		<script src="../../../vendor/twbs/bootstrap3/dist/js/bootstrap.min.js"></script>
 		<script src="../include/js/offcanvas.js"></script>
 		<script type="text/javascript" src="../cis/reporting.js"></script>
 		<script>
