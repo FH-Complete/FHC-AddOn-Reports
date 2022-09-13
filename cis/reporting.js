@@ -335,7 +335,10 @@ function runFilter(type, putlog, systemfilter_id)
 	{
 		var input = $(inputs[i]);
 		if(input.attr("id") !== undefined)
+		{
+
 			get_params[input.attr('id')] = input.val();
+		}
 	}
 
 	loadData(statistik_kurzbz, report_id, chart_id, get_params);

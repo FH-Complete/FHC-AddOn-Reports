@@ -118,8 +118,8 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 							<?php echo $row->gruppe ;?>
 							<a href="../cis/vorschau.php?statistik_kurzbz=<?php echo $row->statistik_kurzbz ?>&debug=true" target="_blank"><img style="float:right;" title="<?php echo $row->gruppe ?> anzeigen" src="../include/images/Statistik.svg" class="mini-icon" /></a>
 						</td>
-						<td>
-							<a href="../../../vilesci/stammdaten/statistik_details.php?action=update&statistik_kurzbz=<?php echo $row->statistik_kurzbz ?>" target="detail_statistik">
+						<td style="text-overflow: ellipsis; white-space: nowrap; overflow:hidden;">
+							<a href="../../../vilesci/stammdaten/statistik_details.php?action=update&statistik_kurzbz=<?php echo $row->statistik_kurzbz ?>" target="detail_statistik" title="<?php echo $row->statistik_kurzbz; ?>">
 								<?php echo $row->statistik_kurzbz; ?>
 							</a>
 						</td>
