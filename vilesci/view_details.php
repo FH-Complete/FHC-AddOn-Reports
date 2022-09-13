@@ -75,22 +75,34 @@
 		{
 			if ($_REQUEST["action"]=='save')
 			{
-				$view->view_id = $_POST["view_id"];
+				$table_kurzbz = $_POST["table_kurzbz"];
 
-				if($view->view_id == 0)
+				// Name für Tabelle für statische Views darf nur aus Kleinbuchstaben und Unterstrich bestehen
+				// Ansonsten kann bei Generierung der statischen Tabelle zu Namenskonflikten (z.B. Groß- vs Kleinbuchstaben) kommen
+				if (!preg_match('/^[a-z_]+$/', $table_kurzbz))
+				{
+					$errorstr .= 'Ungültiger Tabellenname, muss aus Kleinbuschstaben und "_" bestehen.';
+				}
+				else
+				{
+					$view->view_id = $_POST["view_id"];
+
+					if($view->view_id == 0)
 					$view->new = true;
 
-				$view->view_kurzbz = $_POST["view_kurzbz"];
-				$view->table_kurzbz = $_POST["table_kurzbz"];
-				$view->sql = $_POST["sql"];
-				$view->static =isset($_POST["static"]);
-				$view->postcreation_sql = $_POST["postcreation_sql"];
+					$view->view_kurzbz = $_POST["view_kurzbz"];
+					$view->table_kurzbz = $table_kurzbz;
+					$view->sql = $_POST["sql"];
+					$view->static =isset($_POST["static"]);
+					$view->postcreation_sql = $_POST["postcreation_sql"];
 
-				if(!$view->save())
-				{
-					$errorstr .= $view->errormsg;
+					if(!$view->save())
+					{
+						$errorstr .= $view->errormsg;
+					}
+					$reload = true;
 				}
-				$reload = true;
+
 			}
 			else if ($_REQUEST["action"]=='View anlegen/speichern')
 			{
