@@ -227,38 +227,7 @@ $statistik->loadData();
 						$(this).html($(this).text());
 					})
 				}
-
-				// Wenn die Option "disableRowspan" true ist, wird das Zusammenfassen gleicher Elemente in einer Row verhindert
-				if (options.disableRowspan == true)
-				{
-					$('th.pvtRowLabel').filter(function () {
-						return this.rowSpan > 1;
-					}).each(function () {
-						let rowspan = $(this).attr("rowspan");
-						let index = $(this).index();
-						let row = $(this).parent().index();
-
-						// change this elements rowspan
-						$(this).attr("rowspan", "1");
-						// copy element and it's index for reference later
-						var that = $(this).clone(true);
-						that.index = $(this).index();
-
-						// get rows that are between the elems rowspan
-						$('tbody tr:not(:last-of-type)').filter(function () {
-							return $(this).index() > row && $(this).index() - row < rowspan;
-						}).each(function () {
-							// either insert at front or row, or at index...
-							if (that.index === 0) $(this).prepend(that);
-							else $(that).insertAfter($('th:nth-child(' + that.index + ')', this));
-							// clone that, index for next iteration
-							let index = that.index;
-							that = that.clone(true);
-							that.index = index;
-						});
-					});
-				}
-
+				
 				// Wenn die Option "hideTotals" true ist, Total-Zeile und Spalten verstecken
 				if (options.hideTotals == true)
 				{
