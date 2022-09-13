@@ -78,6 +78,39 @@ if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
 			</head>
 			<body>';
 	}
+	echo '<h4>Statistik '.$statistik->bezeichnung.'</h4>';
+
+	//display description if content_id is set
+	if (!is_null($statistik->content_id))
+	{
+		echo '	
+				<div class="row">
+					<div class="col-xs-8">
+						<div class="panel-group">
+							<div class="panel panel-default">
+								<div class="panel-heading" id="sysfilterblockheading">
+									<a class="accordion-toggle arrowcollapse collapsed" data-toggle="collapse" href="#collapseLegende">
+										<div class="row">
+											<div class="col-xs-12">
+												<h4 class="panel-title" id="ansichtenverwaltentext">
+													Details
+												</h4>
+											</div>
+										</div>
+									</a>
+								</div>
+								<div class="panel-collapse collapse" id="collapseLegende">
+									<div class="panel-body">
+										<div class="embed-responsive embed-responsive-16by9">
+											<iframe class="embed-responsive-item" src="'. APP_ROOT . 'cms/content.php?content_id=' . $statistik->content_id .'"></iframe>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>';
+	}
 
 	// Filter parsen
 	foreach($vars as $var)
@@ -86,7 +119,7 @@ if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
 		if($filter->isFilter($var))
 		{
 			$bezeichnung = $filter->getBezeichnungFromKurzbz($var);
-			$html .= '<span style="margin-left: 5px">';
+			$html .= '<span style="margin-left: 0px">';
 			$html .= empty($bezeichnung) ? $var : $bezeichnung;
 			$html .= ': </span>';
 			$html .= $filter->getHtmlWidget($var);
@@ -132,7 +165,7 @@ else if(isset($report_id) && $report_id != 'undefined')
 			</head>
 			<body>';
 	}
-
+	echo '<h4>Report '.$report->title.'</h4>';
 	$rp_report_chart = new rp_report_chart();
 
 	$rp_report_statistik = new rp_report_statistik();

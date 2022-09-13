@@ -50,7 +50,7 @@ if (!$originview)
 ?>
 <br>
 <div class="row">
-	<div class="col-xs-8">
+	<div class="col-xs-8" style="padding-top: 10px">
 		<div class="panel-group">
 			<div class="panel panel-default">
 				<div class="panel-heading" id="sysfilterblockheading">
@@ -68,7 +68,7 @@ if (!$originview)
 
 										if (!empty($filtername)):
 									?>
-										aktiv: <?php echo $filtername ?>
+									<span class="label label-default">Aktive Ansicht: <?php echo $filtername ?></span>
 									<?php
 										endif;
 									?>
