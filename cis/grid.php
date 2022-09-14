@@ -277,7 +277,7 @@ $statistik->loadData();
 				}
 				else
 				{
-					$("#sendPivotMailButton").show();
+					$("#sendPivotMailButton").hide();
 				}
 			};
 
@@ -375,7 +375,7 @@ $statistik->loadData();
 	<!--<a onclick="exportChartCSV()" style="cursor:pointer" target="_blank">CSV Rohdaten herunterladen</a><br>-->
 	<p><button style="display: inline; height:30px;" onclick="exportChartCSV()" class="btn btn-default" type="button">CSV Rohdaten herunterladen</button></p>
 	<p><button id="excelExportButton" style="display: inline; height:30px;" onclick="tableToExcel('Statistik', '<?php echo $statistik_kurzbz; ?>.xls')" class="btn btn-default" type="button">Excel-Export</button></p>
-	<p><button id="sendPivotMailButton" style="display: inline; height:30px;" class="btn btn-default" type="button">E-Mail senden</button></p>
+	<p><button id="sendPivotMailButton" style="display: none; height:30px;" class="btn btn-default" type="button">E-Mail senden</button></p>
 	<a id="dlink" href="#pvtTableID" style="display:none;"></a>
 
 	<?php endif; ?>
