@@ -271,7 +271,6 @@ $statistik->loadData();
 				}
 
 				// Wenn die Option "showEmailButton" true ist, wird der Button zum senden von E-Mails angezeigt
-				// -> Muss an andere Stelle, weil die Buttons erst nach den script geladen werden
 				if (options.showEmailButton == true)
 				{
 					$("#sendPivotMailButton").show();
