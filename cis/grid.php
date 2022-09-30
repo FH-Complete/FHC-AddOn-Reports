@@ -25,7 +25,7 @@ require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../../../include/person.class.php');
 require_once('../../../include/filter.class.php');
 require_once('../../../include/statistik.class.php');
-require_once('../../../include/webservicelog.class.php');
+	require_once('../../../include/webservicelog.class.php');
 require_once('../include/rp_system_filter.class.php');
 
 ini_set('memory_limit', '1024M');
@@ -157,8 +157,8 @@ $statistik->loadData();
 	<script type="text/javascript">
 		var GLOBAL_OPTIONS_STORAGE = null;//options for pivot are stored here and retrieved in systemfilter.js
 		//useInitialOptions - if true, ignore any systemfilters and use options from tbl_statistik
-		function drawPivotUI(options, useInitialOptions){
-
+		function drawPivotUI(options, useInitialOptions)
+		{
 			var lang = "de";
 			var derivers = $.pivotUtilities.derivers;
 			var renderers =
@@ -227,7 +227,7 @@ $statistik->loadData();
 						$(this).html($(this).text());
 					})
 				}
-
+				
 				// Wenn die Option "hideTotals" true ist, Total-Zeile und Spalten verstecken
 				if (options.hideTotals == true)
 				{
@@ -269,6 +269,16 @@ $statistik->loadData();
 						$('.pvtUiCell').eq(0).append('<p id="rowCount" style="color: grey; font-size: small; text-align: center; padding-top: 5px;">' + rowCount + ' Zeilen</p>');
 					}
 				}
+
+				// Wenn die Option "showEmailButton" true ist, wird der Button zum senden von E-Mails angezeigt
+				if (options.showEmailButton == true)
+				{
+					$("#sendPivotMailButton").show();
+				}
+				else
+				{
+					$("#sendPivotMailButton").show();
+				}
 			};
 
 			$("#pivot").pivotUI(dataset,options,true,lang);// true - rerender on repeat call
@@ -286,7 +296,51 @@ $statistik->loadData();
 		$(function()
 		{
 			drawPivotUI();
+
+			$('#sendPivotMailButton').on('click', function()
+			{
+				var mailstring = '';
+				var submailstring = '';
+				var splitposition = 0;
+				var idx = 0;
+				$('.pvtRowLabel').each(function()
+				{
+					function extractEmails(text)
+					{
+						return text.match(/([a-zA-Z0-9._+-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
+					}
+
+					var emails = extractEmails($(this).text());
+
+					$.each(emails, function(index, email)
+					{
+						var divHtml = email + ';';
+						mailstring += divHtml;
+						if(mailstring.length > 2048)//2048
+						{
+							// Alert nur einmalig ausgeben
+							if (idx == 0)
+							{
+								alert('Aufgrund der großen Anzahl an EmpfängerInnen, muss die Nachricht auf mehrere E-Mails aufgeteilt werden!');
+								idx = 1;
+							}
+							splitposition = mailstring.indexOf(';',1900);//1900
+							submailstring = mailstring.substring(0,splitposition);
+							window.location = 'mailto:<?php echo $uid.'@'.DOMAIN;?>?bcc= ' + submailstring;
+							mailstring = mailstring.substring(splitposition);
+						}
+						else
+						{
+
+						}
+					});
+				});
+				//console.log(mailstring);
+				window.location = 'mailto:<?php echo $uid.'@'.DOMAIN;?>?bcc= ' + mailstring;
+			});
+
 		});
+
 	</script>
 	<script type="text/javascript">
 	var tableToExcel = (function() {
@@ -319,8 +373,9 @@ $statistik->loadData();
 	</script>
 	<br>
 	<!--<a onclick="exportChartCSV()" style="cursor:pointer" target="_blank">CSV Rohdaten herunterladen</a><br>-->
-	<button style="display: inline; height:30px;" onclick="exportChartCSV()" class="btn btn-default" type="button">CSV Rohdaten herunterladen</button><br>
-	<button id="excelExportButton" style="display: inline; height:30px;" onclick="tableToExcel('Statistik', '<?php echo $statistik_kurzbz; ?>.xls')" class="btn btn-default" type="button">Excel-Export</button>
+	<p><button style="display: inline; height:30px;" onclick="exportChartCSV()" class="btn btn-default" type="button">CSV Rohdaten herunterladen</button></p>
+	<p><button id="excelExportButton" style="display: inline; height:30px;" onclick="tableToExcel('Statistik', '<?php echo $statistik_kurzbz; ?>.xls')" class="btn btn-default" type="button">Excel-Export</button></p>
+	<p><button id="sendPivotMailButton" style="display: inline; height:30px;" class="btn btn-default" type="button">E-Mail senden</button></p>
 	<a id="dlink" href="#pvtTableID" style="display:none;"></a>
 
 	<?php endif; ?>
