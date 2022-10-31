@@ -18,15 +18,13 @@
  * Authors: Andreas Moik <moik@technikum-wien.at>
  */
 
-$dr = isset($_SERVER['CONTEXT_PREFIX']) ? $_SERVER["CONTEXT_PREFIX"].'/' : '/';
-
 // Originaldateien des Herstellers
-echo '<script src="'.$dr.'addons/reports/vendor/highcharts/highcharts-dist/highcharts.js"></script>';
-echo '<script src="'.$dr.'addons/reports/vendor/highcharts/highcharts-dist/highcharts-more.js"></script>';
-echo '<script src="'.$dr.'addons/reports/vendor/highcharts/highcharts-dist/highcharts-3d.js"></script>';
-echo '<script src="'.$dr.'addons/reports/vendor/highcharts/highcharts-dist/modules/exporting.js"></script>';
-echo '<script src="'.$dr.'addons/reports/vendor/highcharts/highcharts-dist/modules/drilldown.js"></script>';
-echo '<script src="'.$dr.'addons/reports/vendor/highcharts/highcharts-dist/modules/no-data-to-display.js"></script>';
-echo '<script src="'.$dr.'addons/reports/vendor/highcharts/highcharts-dist/modules/networkgraph.js"></script>';
+echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/highcharts/highcharts-dist/highcharts.js"></script>';
+echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/highcharts/highcharts-dist/highcharts-more.js"></script>';
+echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/highcharts/highcharts-dist/highcharts-3d.js"></script>';
+echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/highcharts/highcharts-dist/modules/exporting.js"></script>';
+echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/highcharts/highcharts-dist/modules/drilldown.js"></script>';
+echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/highcharts/highcharts-dist/modules/no-data-to-display.js"></script>';
+echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/highcharts/highcharts-dist/modules/networkgraph.js"></script>';
 
 ?>
