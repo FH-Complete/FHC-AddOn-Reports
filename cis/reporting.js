@@ -219,6 +219,12 @@ function resizeContent()
 
 function showSidebar(num, type, reference_bezeichnung)
 {
+        var event = event || window.event;
+        if( typeof event !== 'undefined') 
+        {
+            event.preventDefault();
+        }
+        
 	resizeContent();
 	$('#sidebar').show();
 	$('#titel_div').html(reference_bezeichnung);
@@ -237,6 +243,13 @@ function showSidebar(num, type, reference_bezeichnung)
 	$('#sidebar').attr('data-menu', type);
 
 	$(window).trigger('resize');
+        
+        if( !history_state_popped ) {
+            const url = new URL(window.location);
+            url.searchParams.set('reportgruppe_id', num);
+
+            window.history.pushState({}, '', url);
+        }
 }
 
 
@@ -264,6 +277,13 @@ $(function()
 		$(window).trigger('resize');
 		$('#glossar').show();
 	});
+        
+        $(window).bind('popstate', function() {
+            history_state_popped = true;
+            openReportOnPageLoad();
+            history_state_popped = false;
+        });
+        openReportOnPageLoad();
 });
 
 function hideSidebar()
@@ -346,4 +366,23 @@ function runFilter(type, putlog, systemfilter_id)
 	// if available, clean up tmp folder
 	if(typeof reportsCleanup == "function")
 		reportsCleanup();
+}
+
+var history_state_popped = false;
+
+function openReportOnPageLoad() {
+    const params = new URLSearchParams(window.location.search);
+    
+    const num    = params.get("reportgruppe_id");
+    const type   = 'all';
+    const refbez = (typeof rpgrps[num] !== 'undefined') ? rpgrps[num] : false;
+    
+    if(num && type && refbez) 
+    {
+       showSidebar(num, type, refbez); 
+    } 
+    else
+    {
+        hideSidebar();
+    }
 }
