@@ -17,27 +17,11 @@
  *
  * Authors: Andreas Moik <moik@technikum-wien.at>
  */
-//require_once(dirname(__FILE__).'/config/vilesci.config.inc.php'); Muss vor dieser Datei eingebunden werden!
-
-$dr = DOC_ROOT;
-$dr = str_replace($_SERVER["DOCUMENT_ROOT"], "", $dr);
-if($dr=='')
-	$dr='/';
-
 //Originaldateien des Herstellers
-echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/highcharts.js"></script>';
-echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/highcharts-more.js"></script>';
-echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/highcharts-3d.js"></script>';
-echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/modules/exporting.js"></script>';
-echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/modules/drilldown.js"></script>';
-echo '<script src="'.$dr.'addons/reports/vendor/FHC-vendor/highcharts/js/modules/no-data-to-display.js"></script>';
-
-
-//Anpassungen
-/*
- * ...
- * ...
- * ...
- */
-
+echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/FHC-vendor/highcharts/js/highcharts.js"></script>';
+echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/FHC-vendor/highcharts/js/highcharts-more.js"></script>';
+echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/FHC-vendor/highcharts/js/highcharts-3d.js"></script>';
+echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/FHC-vendor/highcharts/js/modules/exporting.js"></script>';
+echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/FHC-vendor/highcharts/js/modules/drilldown.js"></script>';
+echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/FHC-vendor/highcharts/js/modules/no-data-to-display.js"></script>';
 ?>

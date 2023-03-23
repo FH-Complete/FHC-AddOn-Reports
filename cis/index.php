@@ -37,7 +37,15 @@ if (!$rechte->isBerechtigt('addon/reports', null, 's'))
 	die ($rechte->errormsg);
 
 $rp_gruppe = new rp_gruppe();
-$rp_gruppe->loadAll();
+$rpgrps = array();
+if($rp_gruppe->loadAll())
+{
+	foreach($rp_gruppe->result AS $rpgrp) 
+	{
+		$rpgrps[$rpgrp->reportgruppe_id] = $rpgrp->bezeichnung;
+	}
+}
+
 $rp_gruppe->loadRecursive();
 $daten = $rp_gruppe->recursive;
 
@@ -83,7 +91,9 @@ function getHtmlMenue($data, $rechte)
 			if(isset($d->reports))
 				$anzahl += count($d->reports);
 
-			$htmlstr.='<li><a style="font-weight: bold;" class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'all\', \''.$d->bezeichnung.'\')"> '.$d->bezeichnung.'<span class="badge" style="margin-left:10px;">'.($anzahl).'</span></a></li>';
+			$href = APP_ROOT . 'addons/reports/cis/index.php?reportgruppe_id=' 
+				. urlencode($d->reportgruppe_id);
+			$htmlstr.='<li><a style="font-weight: bold;" href="' . $href . '" class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'all\', \''.$d->bezeichnung.'\')"> '.$d->bezeichnung.'<span class="badge" style="margin-left:10px;">'.($anzahl).'</span></a></li>';
 /*
 			if(isset($d->charts) && count($d->charts)>0)
 			{
@@ -160,7 +170,7 @@ function addZuordnungen($entity,$rechte)
 
 		<title>Reports</title>
 
-		<link rel="stylesheet" type="text/css" href="../../../vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="../../../vendor/twbs/bootstrap3/dist/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="../include/css/offcanvas.css">
 		<link rel="stylesheet" type="text/css" href="../include/css/multilevel_dropdown.css">
 		<link rel="stylesheet" type="text/css" href="reporting.css">
@@ -170,7 +180,7 @@ function addZuordnungen($entity,$rechte)
 
 		<link rel="stylesheet" type="text/css" href="../../../vendor/components/jqueryui/themes/base/jquery-ui.min.css">
 
-		<!--<script type="text/javascript" src="../../../vendor/jquery/jqueryV1/jquery-1.12.4.min.js"></script>-->
+		<!--<script type="text/javascript" src="../../../vendor/jquery/jquery1/jquery-1.12.4.min.js"></script>-->
 		<script type="text/javascript" src="../../../vendor/components/jquery/jquery.min.js"></script>
 		<script type="text/javascript" src="../../../vendor/components/jqueryui/jquery-ui.min.js"></script>
 
@@ -179,8 +189,11 @@ function addZuordnungen($entity,$rechte)
 
 		<?php require_once("../include/meta/highcharts.php"); ?>
 		<script type="text/javascript" src="../vendor/furf/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
-		<script src="../../../vendor/twbs/bootstrap/dist/js/bootstrap.min.js"></script>
+		<script src="../../../vendor/twbs/bootstrap3/dist/js/bootstrap.min.js"></script>
 		<script src="../include/js/offcanvas.js"></script>
+		<script type="text/javascript">
+		  const rpgrps = <?php echo json_encode($rpgrps); ?>;
+		</script>
 		<script type="text/javascript" src="reporting.js"></script>
 		<script type="text/javascript">
 		$(function()
@@ -267,7 +280,7 @@ function addZuordnungen($entity,$rechte)
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="">
+					<a class="navbar-brand" href="<?php echo APP_ROOT . 'addons/reports/cis/index.php' ?>">
 						<div id="logo"></div>
 						<div id="navBrand">Reporting</div>
 					</a>
