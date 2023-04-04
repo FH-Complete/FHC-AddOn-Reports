@@ -43,11 +43,10 @@
 	$chk = '';
 	$explain_output = '';
 
-
 	$view = new view();
 	$view->view_id		= 0;
-	$view->view_kurzbz		= 'vw_';
-	$view->table_kurzbz 		= 'tbl_';
+	$view->view_kurzbz		= defined('VIEW_BEGIN')?VIEW_BEGIN:'';
+	$view->table_kurzbz 		= defined('TABLE_BEGIN')?TABLE_BEGIN:'';
 	$view->sql		= 'SELECT ';
 	$view->insertvon		= $user;
 	$view->updatevon		= $user;
@@ -82,6 +81,10 @@
 				if (!preg_match('/^[a-z_]+$/', $table_kurzbz))
 				{
 					$errorstr .= 'Ungültiger Tabellenname, muss aus Kleinbuschstaben und "_" bestehen.';
+				}
+				elseif (isset($_POST["static"]) && $table_kurzbz == (defined('TABLE_BEGIN')?TABLE_BEGIN:''))
+				{
+					$errorstr .= 'Die Tabelle muss eine Bezeichnung haben.';
 				}
 				else
 				{

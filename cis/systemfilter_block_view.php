@@ -29,9 +29,12 @@ $allstatistikfilter = new rp_system_filter();
 $allstatistikfilter->loadAll($statistik_kurzbz, $person_id);
 
 $systemfilter = new rp_system_filter();
-$isdefault = $isprivate = false;
+$isdefault = $isprivate = $isadmin = $isglobal = false;
 const ORIGINVIEWNAME = 'originview';
 $originview = $systemfilter_id === ORIGINVIEWNAME;
+
+if($rechte->isBerechtigt('admin', null, 'suid'))
+	$isadmin = true;
 
 if (!$originview)
 {
@@ -41,6 +44,9 @@ if (!$originview)
 		{
 			if ($systemfilter->default_filter === true)
 				$isdefault = true;
+			if ($systemfilter->person_id == '')
+				$isglobal = true;
+
 			$isprivate = isset($systemfilter->filter_id)
 				&& isset($systemfilter->person_id) && is_numeric($systemfilter->person_id)
 				&& $systemfilter->person_id === $person_id;
@@ -98,14 +104,20 @@ if (!$originview)
 								}
 								?>
 							</select>
-							<?php if ($isprivate): ?>
+							<?php if ($isprivate || $isadmin): ?>
 							<<?php echo ($isdefault ? "label" : "span");?> id="standardsysfilterlabel">
 								<input type="checkbox" name="standardsysfilter" id="standardsysfilter"<?php echo ($isdefault ? " checked='checked'" : "");?>>
 								Standard
 							<?php echo ($isdefault ? "</label>" : "</span>");?>
 							<?php endif; ?>
+							<?php if ($isprivate || $isadmin): ?>
+							<<?php echo ($isglobal ? "label" : "span");?> id="globalsysfilterlabel">
+								&nbsp;&nbsp;<input type="checkbox" name="globalsysfilter" id="globalsysfilter"<?php echo ($isglobal ? " checked='checked'" : "");?>>
+								Global
+							<?php echo ($isglobal ? "</label>" : "</span>");?>
+							<?php endif; ?>
 							</div>
-							<?php if ($isprivate): ?>
+							<?php if ($isprivate || $isadmin): ?>
 							<div class="col-xs-12 col-md-5 text-right">
 								<button class="btn btn-default" id="updateprivatesysfilterbtn">Ansicht überschreiben</button>
 								<a class="btn btn-default" href="mailto:?body=<?php echo CIS_ROOT.'addons/reports/cis/vorschau.php?statistik_kurzbz='.$statistik_kurzbz.'%26debug=true%26systemfilter_id='.$systemfilter->filter_id; ?>" role="button" title="Ansicht per Mail teilen">

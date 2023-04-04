@@ -82,6 +82,25 @@ switch($action)
 				$json = true;
 		}
 		break;
+	case 'setGlobal':
+		if (!$rechte->isBerechtigt('admin', null, 'sui'))
+			die($rechte->errormsg);
+
+		if (isset($_POST["systemfilter_id"]) && isset($_POST["global_filter"]) && isset($logged_person_id))
+		{
+			$global_filter = $_POST["global_filter"];
+			if (!is_bool($global_filter))
+			{
+				if ($global_filter === 'true')
+					$global_filter = true;
+				else
+					$global_filter = false;
+			}
+
+			if ($systemfilter->setGlobal($_POST["systemfilter_id"], $global_filter, $logged_person_id))
+				$json = true;
+		}
+		break;
 }
 echo json_encode($json);
 die();

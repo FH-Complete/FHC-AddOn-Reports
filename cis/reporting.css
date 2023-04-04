@@ -87,3 +87,34 @@ li.hide-button {
 	/* symbol for "collapsed" panels */
 	content: "\e080";    /* adjust as needed, taken from bootstrap.css */
 }
+.accordion-toggle:not(.collapsed) .rotate-icon
+{
+    transform: rotate(180deg);
+}
+.rotate-icon
+{
+	transition: 0.3s ease-in-out;
+}
+.embed-responsive-16by9
+{
+	padding-bottom: 25%;
+}
+@keyframes rotateIcon
+{
+	0% 
+	{
+		transform: rotate(0deg);
+	}
+	50%
+	{
+		transform: rotate(180deg);
+	}
+	100% 
+	{
+		transform: rotate(0deg);
+	}
+}
+.rotate-icon
+{
+	animation: 2s ease-in-out 0s 1 rotateIcon;
+}

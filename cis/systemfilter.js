@@ -18,7 +18,7 @@ function setSysFilterEvents(get_params)
 			else
 			{
 				getSysFilterPreferences(get_params, function () {
-					showMsg("Fehler beim Setzten der Ansicht!", "text-danger");
+					showMsg("Fehler beim Setzen der Ansicht!", "text-danger");
 				});
 			}
 		}
@@ -32,7 +32,21 @@ function setSysFilterEvents(get_params)
 				var systemfilter_id = $("#systemfilter").val();
 
 				setDefaultSysFilter(systemfilter_id, checked, function () {
-					showMsg("Fehler beim Setzten der Standardansicht!", "text-danger");
+					showMsg("Fehler beim Setzen der Standardansicht!", "text-danger");
+				});
+			}
+		);
+	}
+
+	if ($("#globalsysfilter").length)
+	{
+		$("#globalsysfilter").change(
+			function() {
+				var checked = $(this).prop("checked");
+				var systemfilter_id = $("#systemfilter").val();
+
+				setGlobalSysFilter(systemfilter_id, checked, function () {
+					showMsg("Fehler beim Setzen des Globalfilters!", "text-danger");
 				});
 			}
 		);
@@ -167,6 +181,39 @@ function setDefaultSysFilter(systemfilter_id, checked, errorcallback)
 					else
 					{
 						$("#standardsysfilterlabel").css("font-weight", "normal");
+					}
+
+				} else
+					errorcallback();
+			},
+			error:
+			errorcallback
+		}
+	);
+}
+
+function setGlobalSysFilter(systemfilter_id, checked, errorcallback)
+{
+	$.ajax(
+		{
+			url: './systemfilter.php',
+			type: 'POST',
+			datatype: 'json',
+			data: {
+				"action": "setGlobal",
+				"systemfilter_id": systemfilter_id,
+				"global_filter": checked
+			},
+			success: function (data) {
+				if (data === 'true')
+				{
+					if (checked)
+					{
+						$("#globalsysfilterlabel").css("font-weight", 700);
+					}
+					else
+					{
+						$("#globalsysfilterlabel").css("font-weight", "normal");
 					}
 
 				} else

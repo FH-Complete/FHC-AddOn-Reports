@@ -401,8 +401,8 @@ class view extends basis_db
 
 	public function generateTable()
 	{
-		//nur statische
-		if($this->static)
+		// Auch nicht statisch Tabellen können generiert werden
+		//if($this->static)
 		{
 			//pruefen, ob bereits vorhanden
 			$qry = ' SELECT table_name FROM INFORMATION_SCHEMA.tables WHERE table_name='.

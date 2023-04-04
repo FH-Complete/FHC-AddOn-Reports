@@ -78,24 +78,53 @@ if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
 			</head>
 			<body>';
 	}
-	echo '<h4>Statistik '.$statistik->bezeichnung.'</h4>';
+	//echo '<h4>Statistik '.$statistik->bezeichnung.'</h4>';
 
 	//display description if content_id is set
 	if (!is_null($statistik->content_id))
 	{
-		echo '	
+		/*echo '
 				<div class="row">
 					<div class="col-xs-8">
 						<div class="panel-group">
 							<div class="panel panel-default">
 								<div class="panel-heading" id="sysfilterblockheading">
-									<a class="accordion-toggle arrowcollapse collapsed" data-toggle="collapse" href="#collapseLegende">
+									<a class="accordion-toggle collapsed" data-toggle="collapse" href="#collapseLegende">
 										<div class="row">
-											<div class="col-xs-12">
-												<h4 class="panel-title" id="ansichtenverwaltentext">
-													Details
-												</h4>
+											<div class="col-xs-9">
+												<h1 class="panel-title" id="ansichtenverwaltentext">
+													Statistik '.$statistik->bezeichnung.'
+												</h1>
 											</div>
+											<div class="col-xs-3 text-right" style="white-space: nowrap">Details <span><i class="glyphicon glyphicon-chevron-down rotate-icon"></i></span></div>
+										</div>
+									</a>
+								</div>
+								<div class="panel-collapse collapse" id="collapseLegende">
+									<div class="panel-body">
+										<div class="embed-responsive embed-responsive-16by9">
+											<iframe class="embed-responsive-item" src="'. APP_ROOT . 'cms/content.php?content_id=' . $statistik->content_id .'"></iframe>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>';*/
+		echo '	
+				<div class="row">
+					<div class="col-xs-8">
+						<div class="panel-group">
+							<div class="panel" style="box-shadow: 0 1px 1px rgba(0,0,0,.10);">
+								<div class="" id="sysfilterblockheading">
+									<a class="accordion-toggle collapsed" data-toggle="collapse" href="#collapseLegende" style="color: inherit">
+										<div class="row">
+											<div class="col-xs-9">
+												<h1 class="panel-title" id="ansichtenverwaltentext">
+													Statistik '.$statistik->bezeichnung.'
+												</h1>
+											</div>
+											<div class="col-xs-3 text-right" style="white-space: nowrap">Details <span><i class="glyphicon glyphicon-chevron-down rotate-icon"></i></span></div>
 										</div>
 									</a>
 								</div>
@@ -111,17 +140,42 @@ if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
 					</div>
 				</div>';
 	}
+	else
+	{
+		//echo '<h4>Statistik '.$statistik->bezeichnung.'</h4>';
+		echo '	
+				<div class="row">
+					<div class="col-xs-8">
+						<div class="panel" style="box-shadow: 0 1px 1px rgba(0,0,0,.10);">
+							<div class="" id="sysfilterblockheading">
+								<div class="row">
+									<div class="col-xs-9">
+										<h1 class="panel-title" id="ansichtenverwaltentext">
+											Statistik '.$statistik->bezeichnung.'
+										</h1>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>';
+	}
 
 	// Filter parsen
+	$filteranzahl = count($vars);
+	if ($filteranzahl > 0)
+	{
+		$html .=  '<div class="row"><div class="col-sm-12">';
+	}
 	foreach($vars as $var)
 	{
-		$html .= '<div class="form-group">';
+		$html .= '<div class="form-group col-sm-2" style="float: left">';
 		if($filter->isFilter($var))
 		{
 			$bezeichnung = $filter->getBezeichnungFromKurzbz($var);
-			$html .= '<span style="margin-left: 0px">';
+			$html .= '<label for="'.$var.'">';
 			$html .= empty($bezeichnung) ? $var : $bezeichnung;
-			$html .= ': </span>';
+			$html .= ': </label>';
 			$html .= $filter->getHtmlWidget($var);
 		}
 		else
@@ -132,12 +186,16 @@ if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
 			{
 				$val = $_GET[$var];
 			}
-			$html .= '<span style="margin-left: 5px">';
+			$html .= '<label for="'.$var.'">';
 			$html .= $var;
-			$html .= ': </span>';
-			$html .= ' <input type="text" id="' . $var . '" name="' . $var . '" value="'.$val.'">';
+			$html .= ': </label>';
+			$html .= ' <input class="form-control" type="text" id="'.$var.'" name="'.$var.'" value="'.$val.'">';
 		}
 		$html .= '</div>';
+	}
+	if ($filteranzahl > 0)
+	{
+		$html .=  '</div></div>';
 	}
 
 	if($htmlbody)

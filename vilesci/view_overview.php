@@ -54,7 +54,15 @@ if(isset($_REQUEST['action']))
 		if (isset($_REQUEST["view_id"]))
 		{
 			$gv = new view($_REQUEST["view_id"]);
-			$gv->generateTable();
+			// Check, ob Tabellenname gesetz ist
+			if ($gv->table_kurzbz != '' && $gv->table_kurzbz != (defined('TABLE_BEGIN')?TABLE_BEGIN:''))
+			{
+				$gv->generateTable();
+			}
+			else
+			{
+				echo '<script>alert("Die Tabelle muss eine Bezeichnung haben");</script>';
+			}
 		}
 	}
 	else if($_REQUEST["action"]=='Statische Tabellen generieren')
@@ -119,6 +127,10 @@ if (!$view->loadAll())
 		{
 			return confirm("Wollen Sie diesen Eintrag wirklich löschen?");
 		}
+		function loading(id)
+		{
+			$('#'+id).text('Loading [...]');
+		}
 
 		</script>
 	</head>
@@ -134,7 +146,7 @@ if (!$view->loadAll())
 			<input type="hidden" name="check" value="">
 		</form>
 
-		<table class="tablesorter" id="t1">
+		<table class="tablesorter" id="t1" style="table-layout: fixed">
 			<thead>
 				<tr>
 					<th title="ID der View">
@@ -147,7 +159,7 @@ if (!$view->loadAll())
 						Table
 					</th>
 					<th align="center">
-						Stat
+						Static
 					</th>
 					<th>
 						LastCopy
@@ -181,24 +193,27 @@ if (!$view->loadAll())
 						</td>
 						<td align="center">
 							<?php
-							if($view->static)
+							//if($view->static)
 							{
-								echo '<a href="view_overview.php?action=generateTable&view_id='.$view->view_id.'">';
+								echo '<a href="view_overview.php?action=generateTable&view_id='.$view->view_id.'" onclick="return loading(\''.$view->view_id.'lastCopyDate\')">';
 								echo '<img title="Tabelle generieren" anzeigen" src="../include/images/View.svg" class="mini-icon" />';
 								echo '</a> ';
 
 								if(!isset($view->lastcopy))
-									echo '<span class="notGenerated"></span>';
+								{
+									//echo '<span class="notGenerated"></span>';
+									echo '<span id="'.$view->view_id.'lastCopyDate"></span>';
+								}
 								else
 								{
 									$dt = new datum();
-									echo $dt->formatDatum($view->lastcopy);
+									echo '<span id="'.$view->view_id.'lastCopyDate">'.$dt->formatDatum($view->lastcopy).'</span>';
 								}
 							}
 							?>
 						</td>
-						<td>
-							<?php echo $db->convert_html_chars(substr($view->sql,0,32)) ?>...
+						<td style="text-overflow: ellipsis; white-space: nowrap; overflow:hidden;">
+							<?php echo $db->convert_html_chars($view->sql) ?>
 						</td>
 						<td>
 							<a href="view_overview.php?action=delete&view_id=<?php echo $view->view_id ?>" onclick="return confdel()">entfernen</a>

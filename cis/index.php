@@ -353,8 +353,12 @@ function addZuordnungen($entity,$rechte)
 					</div>
 					<div id="filter" style="display: none;">
 						<div class="col-xs-12 text-left" style="padding-left: 0">
-							<form class="form-inline" onsubmit="return false">
-								<span id="filter-input"></span>
+							<form class="" onsubmit="return false">
+								<div class="row">
+									<div class="col-xs12">
+										<span id="filter-input"></span>
+									</div>
+								</div>
 								<button style="display: inline;height:40px;" onclick="runFilter('html', true)" class="btn btn-default" type="submit">Ausf&uuml;hren</button>
 								<button style="display: inline;height:40px;" onclick="runFilter('pdf', true)" id="filter-PdfLink" ><img src="../include/images/Pdf.svg" width="20" alt="pdf"/></button>
 								<button style="display: inline;height:40px;color:red;" onclick="runFilter('debug', true)" id="filter-debugLink">DEBUG</button>

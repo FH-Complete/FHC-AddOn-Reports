@@ -148,7 +148,7 @@ class rp_system_filter extends basis_db
 	 * @param $default_filter
 	 * @return bool
 	 */
-	public function setDefault($filter_id, $person_id, $default_filter)
+	public function setDefault($filter_id, $person_id = null, $default_filter)
 	{
 		if (!is_numeric($filter_id) || !is_numeric($person_id) || !is_bool($default_filter))
 			return false;
@@ -156,9 +156,16 @@ class rp_system_filter extends basis_db
 		$stastik_kurzbz = '';
 		$statistikqry = "SELECT statistik_kurzbz FROM system.tbl_filters
 						WHERE app='".self::APP."'
-                		AND dataset_name='".self::DATASET_NAME."'
-                		AND person_id = ".$this->db_add_param($person_id, FHC_INTEGER)."
-                		AND filter_id = ".$this->db_add_param($filter_id, FHC_INTEGER).";";
+						AND dataset_name='".self::DATASET_NAME."'";
+						if ($person_id != '')
+						{
+							$statistikqry .= " AND person_id = ".$this->db_add_param($person_id, FHC_INTEGER);
+						}
+						else
+						{
+							$statistikqry .= " AND person_id IS NULL ";
+						}
+		$statistikqry .= " AND filter_id = ".$this->db_add_param($filter_id, FHC_INTEGER).";";
 
 		if ($this->db_query($statistikqry))
 		{
@@ -175,9 +182,12 @@ class rp_system_filter extends basis_db
 		if ($default_filter)
 		{
 			$clearqry = "UPDATE system.tbl_filters SET default_filter = false
-				WHERE default_filter = true
-				AND person_id = ".$this->db_add_param($person_id, FHC_INTEGER)."
-				AND statistik_kurzbz = ".$this->db_add_param($stastik_kurzbz).";";
+				WHERE default_filter = true";
+				if ($person_id != '')
+				{
+					$statistikqry .= " AND person_id = ".$this->db_add_param($person_id, FHC_INTEGER);
+				}
+			$clearqry .= " AND statistik_kurzbz = ".$this->db_add_param($stastik_kurzbz).";";
 
 			$clear = $this->db_query($clearqry);
 		}
@@ -198,6 +208,33 @@ class rp_system_filter extends basis_db
 		}
 		else
 			return false;
+	}
+
+	/**
+		 * Setzt einen globalen Filter.
+		 * @param $filter_id
+		 * @param $global_filter
+		 * @return bool
+		 */
+	public function setGlobal($filter_id, $global_filter, $person_id = '')
+	{
+		if (!is_numeric($filter_id) || !is_bool($global_filter))
+			return false;
+
+		if ($global_filter == true)
+			$person_id = 'NULL';
+
+		$qry = "UPDATE system.tbl_filters SET person_id = $person_id 
+				WHERE filter_id = ".$this->db_add_param($filter_id, FHC_INTEGER).";";
+
+		if ($this->db_query($qry))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	/**
