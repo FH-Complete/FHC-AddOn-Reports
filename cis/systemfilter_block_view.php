@@ -54,7 +54,6 @@ if (!$originview)
 	}
 }
 ?>
-<br>
 <div class="row">
 	<div class="col-xs-8" style="padding-top: 10px">
 		<div class="panel-group">

@@ -74,7 +74,7 @@
 			</div>
 		</div>
 		<?php $systemfilter_id = isset($_GET['systemfilter_id']) ? intval($_GET['systemfilter_id']) : 'false';  ?>
-		<div style="display: none; margin-top:20px; margin-bottom:2%;" id="filter">
+		<div style="display: none; margin-top:20px; margin-bottom: 1%;" id="filter">
 			<div >
 				<form class="" onsubmit="return false">
 					<div class="row">
