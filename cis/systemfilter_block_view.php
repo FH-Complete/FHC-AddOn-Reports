@@ -16,6 +16,7 @@ if (isset($_POST['statistik_kurzbz']))
 if (isset($_POST['systemfilter_id']))
 	$systemfilter_id = $_POST['systemfilter_id'];
 
+
 $person_id = null;
 $person = new person();
 if ($person->getPersonFromBenutzer($uid))
@@ -27,6 +28,14 @@ $allstatistikfilter = new rp_system_filter();
 
 // alle Systemfilter holen für Dropdownauswahl
 $allstatistikfilter->loadAll($statistik_kurzbz, $person_id);
+$filterresults = $allstatistikfilter->result;
+
+//Get-Filter in Dropdown hinzufügen, falls einer übergeben wird
+if (isset($_GET['systemfilter_id']) && $_GET['systemfilter_id'] != '' && $_GET['systemfilter_id'] != 'false')
+{
+	$getstatistikfilter = new rp_system_filter($statistik_kurzbz,$_GET['systemfilter_id']);
+	$filterresults[] = $getstatistikfilter;
+}
 
 $systemfilter = new rp_system_filter();
 $isdefault = $isprivate = $isadmin = $isglobal = false;
@@ -70,7 +79,11 @@ if (!$originview)
 								<h4 class="panel-title">
 									<?php
 										$filtername = $systemfilter->getFilterName();
-
+										if ($systemfilter->person_id != '' && $systemfilter->person_id != $person_id)
+										{
+											$fremdfilterPerson = new person($systemfilter->person_id);
+											$filtername .= " (".$fremdfilterPerson->vorname." ".$fremdfilterPerson->nachname."). FILTER NICHT GESPEICHERT!";
+										}
 										if (!empty($filtername)):
 									?>
 									<span class="label label-default">Aktive Ansicht: <?php echo $filtername ?></span>
@@ -92,13 +105,25 @@ if (!$originview)
 									--Ursprungsansicht--
 								</option>";
 								<?php
-								if (isset($allstatistikfilter->result))
+								$filterarray = array();
+								if (isset($filterresults))
 								{
-									foreach ($allstatistikfilter->result as $sysf)
+									foreach ($filterresults as $sysf)
 									{
+										//Doppelte Filter überspringen
+										if (in_array($sysf->filter_id, $filterarray))
+											continue;
+
 										$selected = $systemfilter->filter_id === $sysf->filter_id ? " selected='selected'" : "";
 										$private = isset($sysf->person_id) ? " (privat)" : "";
+										if ($sysf->person_id != '' && $sysf->person_id != $person_id)
+										{
+											$fremdfilterPerson = new person($sysf->person_id);
+											$private =" (".$fremdfilterPerson->vorname." ".$fremdfilterPerson->nachname.") NICHT GESPEICHERT!";
+										}
 										echo "<option value = '".$sysf->filter_id."' $selected>".$sysf->getFilterName().$private."</option>";
+
+										$filterarray[] = $sysf->filter_id;
 									}
 								}
 								?>
