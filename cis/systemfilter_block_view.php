@@ -97,7 +97,7 @@ if (!$originview)
 				</div>
 				<div class="panel-collapse collapse<?php echo (isset($collapseFilterBlock) && $collapseFilterBlock === true ? "" : " in") ?>" id="collapseSysFilterHeader">
 					<div class="panel-body form-inline">
-					<?php if (is_array($allstatistikfilter->result) && count($allstatistikfilter->result) > 0): ?>
+					<?php if (is_array($allstatistikfilter->result) && numberOfElements($allstatistikfilter->result) > 0): ?>
 						<div class="row">
 							<div class="col-xs-12 col-md-7">
 							<select class="form-control" id ="systemfilter">

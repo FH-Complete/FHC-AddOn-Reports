@@ -243,7 +243,7 @@ class rp_gruppenzuordnung extends basis_db
 		}
 		//Lesen der Daten aus der Datenbank
 		$qry = '
-				SELECT count(1)
+				SELECT COUNT(1)
 				FROM addon.tbl_rp_gruppenzuordnung
 				WHERE reportgruppe_id='.$reportgruppe_id.';';
 

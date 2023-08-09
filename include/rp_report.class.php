@@ -185,7 +185,7 @@ class report extends basis_db
 	 */
 	public function getAnzahlGruppe($publish = null)
 	{
-		$qry = 'SELECT gruppe, count(*) AS anzahl FROM addon.tbl_rp_report ';
+		$qry = 'SELECT gruppe, COUNT(*) AS anzahl FROM addon.tbl_rp_report ';
 
 		if($publish === true)
 		{

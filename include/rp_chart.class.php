@@ -303,7 +303,7 @@ class chart extends basis_db
 	 */
 	public function getAnzahlGruppe($publish = null)
 	{
-		$qry = 'SELECT gruppe, count(*) AS anzahl FROM public.tbl_statistik JOIN addon.tbl_rp_chart USING (statistik_kurzbz) ';
+		$qry = 'SELECT gruppe, COUNT(*) AS anzahl FROM public.tbl_statistik JOIN addon.tbl_rp_chart USING (statistik_kurzbz) ';
 
 		if($publish === true)
 		{
@@ -1241,7 +1241,7 @@ EOT;
 		{
 			$phantomData["xAxis"]["categories"] = array_keys($phantomData["xAxis"]["categories"]);
 			$phantomData["xAxis"]["min"] = 0;
-			$phantomData["xAxis"]["max"] = count($categories)-1;
+			$phantomData["xAxis"]["max"] = numberOfElements($categories)-1;
 		}
 
 		$data = json_encode($phantomData);

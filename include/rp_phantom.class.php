@@ -49,7 +49,7 @@ class phantom
 		curl_setopt($ch, CURLOPT_URL, constant('PHANTOM_SERVER'));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_HEADER, false);
-		curl_setopt($ch, CURLOPT_POST, count($json));
+		curl_setopt($ch, CURLOPT_POST, numberOfElements($json));
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
 
 		$ret = curl_exec($ch);

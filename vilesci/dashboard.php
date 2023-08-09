@@ -32,7 +32,7 @@ $rechte->getBerechtigungen($uid);
 $chart=new chart();
 $chart->getDashboard();
 
-if(count($chart->result)>0)
+if(numberOfElements($chart->result)>0)
 {
 	echo $chart->getAllHtmlHead('seamonkey');
 

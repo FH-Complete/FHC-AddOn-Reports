@@ -965,7 +965,7 @@ function removeCommentsFromJson($jsonString)
 			$commentCount --;
 			if($commentCount == 0)	//wenn alle kommentare beendet wurden
 			{
-				$Array[$key] = substr($Array[$key], $posMzE+2, count($Array[$key]));
+				$Array[$key] = substr($Array[$key], $posMzE+2, numberOfElements($Array[$key]));
 			}
 			else
 				$posMzE = false;
