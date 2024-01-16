@@ -99,10 +99,16 @@
 					$view->static =isset($_POST["static"]);
 					$view->postcreation_sql = $_POST["postcreation_sql"];
 
-					if(!$view->save())
+					// Checks if the SQL string has a decryption function inside
+					if (hasSQLDecryption($view->sql))
 					{
-						$errorstr .= $view->errormsg;
+						$errorstr .= 'It is not possible to use the function PGP_SYM_DECRYPT to create a view';
 					}
+					else
+					{
+						if (!$view->save()) $errorstr .= $view->errormsg;
+					}
+
 					$reload = true;
 				}
 
