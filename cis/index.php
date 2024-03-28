@@ -353,9 +353,12 @@ function addZuordnungen($entity,$rechte)
 					</div>
 					<div id="filter" style="display: none;">
 						<div class="col-xs-12 text-left" style="padding-left: 0">
-							<form class="" onsubmit="return false">
+							<form id="filterForm" class="" onsubmit="return false">
 								<div class="row">
-									<div class="col-xs12">
+									<div class="col-xs-1 pull-right">
+										<a id="vorschauLink" href="#" target="_blank" class="btn btn-default" role="button"><span class="glyphicon glyphicon-new-window"></span></a>
+									</div>
+									<div class="col-xs11">
 										<span id="filter-input"></span>
 									</div>
 								</div>

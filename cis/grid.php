@@ -254,11 +254,12 @@ $statistik->loadData();
 				// Wenn die Option "showLineCount" true ist, wird die Summe der Zeilen angezeigt
 				if (options.showLineCount == true)
 				{
-					rowCount = $('.pvtTable > tbody  > tr').length;
-					// Wenn die Option "hideTotals" true ist, eine Zeile abziehen
+					// Eine Zeile für Summenzeile abziehen
+					rowCount = $('.pvtTable > tbody  > tr').length -1 ;
+					// Wenn die Option "hideTotals" true ist, wieder eine Zeile dazuzählen
 					if (options.hideTotals == true)
 					{
-						rowCount = rowCount-1;
+						rowCount = rowCount+1;
 					}
 					if ( $( "#rowCount" ).length )
 					{

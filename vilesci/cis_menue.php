@@ -350,7 +350,7 @@ require_once('../../../config/vilesci.config.inc.php');
 			<input id="menueAdd" placeholder="neuer Menuepunkt"></input>
 			<input type="button" onclick="add()" value="Hinzufügen"/>
 		</div>
-		<div class="easyui-panel">
+		<div class="easyui-panel" style="margin-top:10px; margin-bottom:10px; height: 500px; overflow: scroll;">
 			<ul id="menueTree" class="easyui-tree" data-options="animate:true,dnd:true"></ul>
 		</div>
 		<div>
@@ -366,10 +366,10 @@ require_once('../../../config/vilesci.config.inc.php');
 		</div>
 	</div>
 	<div id="zuordnung" style="float:right;width:47%;">
-		<div>
+		<div style="margin-bottom:10px;">
 			Neue Reports, Statistiken oder Charts können von hier aus per Drag&Drop zum Menü hinzugefügt werden.
 		</div>
-		<div class="easyui-panel" style="padding:5px;margin-top:10px;margin-bottom:10px;">
+		<div class="easyui-panel" style="margin-top:10px; margin-bottom:10px; height: 500px; overflow: scroll;">
 			<ul id="entityTree" class="easyui-tree" data-options="animate:true,dnd:true"></ul>
 		</div>
 	</div>

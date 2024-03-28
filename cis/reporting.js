@@ -131,6 +131,7 @@ function showFilter(statistik_kurzbz, report_id, chart_id, putlog, systemfilter_
 	$('#filter').show();
 	$(window).trigger('resize');
 
+	$("#vorschauLink").hide();
 	$('#spinner').hide();
 	$('#welcome').hide();
 	$('#content').hide();
@@ -166,12 +167,18 @@ function showFilter(statistik_kurzbz, report_id, chart_id, putlog, systemfilter_
 	{
 		$('.list-group-item').removeClass('itemActive');
 		$('#list_item_chart_'+chart_id).addClass('itemActive');
+		// Set Vorschau-Link to correct URL
+		$("#vorschauLink").show();
+		$("#vorschauLink").attr("href", "vorschau.php?chart_id="+chart_id);
 	}
 	//pivots
 	else if(statistik_kurzbz !== undefined  && chart_id == undefined)
 	{
 		$('.list-group-item').removeClass('itemActive');
 		$('#list_item_statistik_'+statistik_kurzbz).addClass('itemActive');
+		// Set Vorschau-Link to correct URL
+		$("#vorschauLink").show();
+		$("#vorschauLink").attr("href", "vorschau.php?statistik_kurzbz="+statistik_kurzbz);
 	}
 	//reports
 	else if(report_id !== undefined)
@@ -350,6 +357,39 @@ function runFilter(type, putlog, systemfilter_id)
 		url;
 
 	get_params.type = type;
+
+	// Get params from Pre-Filter and append it to URL
+	var form = document.getElementById('filterForm');
+	var inputs = form.querySelectorAll('input[type=text], select, select[multiple]');
+	var params = {};
+
+	inputs.forEach(function(input) {
+		var name = input.name.replace(/\[\]$/, ''); // Remove brackets from name
+		var value = input.value;
+		if (input.type === 'select-multiple') {
+			var selectedValues = [];
+			for (var i = 0; i < input.selectedOptions.length; i++) {
+				selectedValues.push(input.selectedOptions[i].value);
+			}
+			value = selectedValues.join(',');
+		}
+		params[name] = value;
+	});
+
+	var currentUrl = window.location.href;
+	var url = new URL(currentUrl);
+	var searchParams = new URLSearchParams(url.search);
+
+	for (var key in params) {
+		if (params.hasOwnProperty(key)) {
+			searchParams.set(key, params[key]);
+		}
+	}
+
+	var newUrl = currentUrl.split('?')[0] + '?' + searchParams.toString();
+	history.pushState(null, '', newUrl); // Update URL using History API
+
+
 
 	for(var i = 0; i < inputs.length; i++)
 	{

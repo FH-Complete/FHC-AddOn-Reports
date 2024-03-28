@@ -76,9 +76,9 @@
 		<?php $systemfilter_id = isset($_GET['systemfilter_id']) ? intval($_GET['systemfilter_id']) : 'false';  ?>
 		<div style="display: none; margin-top:20px; margin-bottom: 1%;" id="filter">
 			<div >
-				<form class="" onsubmit="return false">
+				<form class="" id="filterForm" onsubmit="return false">
 					<div class="row">
-						<div class="col-xs12">
+						<div class="col-xs11">
 							<span id="filter-input"></span>
 						</div>
 					</div>
@@ -92,7 +92,7 @@
 		<div id="content" style="display:none;"></div>
 		<script src="../../../vendor/twbs/bootstrap3/dist/js/bootstrap.min.js"></script>
 		<script src="../include/js/offcanvas.js"></script>
-		<script type="text/javascript" src="../cis/reporting.js"></script>
+		<script type="text/javascript" src="../cis/reporting.js?timestamp=<?php echo time() ?>"></script>
 		<script>
 			<?php
 			if(isset($_GET["statistik_kurzbz"]))
@@ -110,7 +110,7 @@
 						$key != 'systemfilter_id' &&
 						$key != 'debug')
 					{
-						$getString .= $key.':'.$value.',';
+						$getString .= '"'.$key.'":"'.$value.'",';
 					}
 				}
 				$getString = substr($getString, 0, -1);

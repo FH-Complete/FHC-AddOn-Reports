@@ -115,7 +115,7 @@ if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
 				<div class="row">
 					<div class="col-xs-8">
 						<div class="panel-group">
-							<div class="panel" style="box-shadow: 0 1px 1px rgba(0,0,0,.10);">
+							<div class="panel" style="box-shadow: 0 1px 1px rgba(0,0,0,.20);">
 								<div class="" id="sysfilterblockheading">
 									<a class="accordion-toggle collapsed" data-toggle="collapse" href="#collapseLegende" style="color: inherit">
 										<div class="row">
@@ -131,13 +131,14 @@ if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
 								<div class="panel-collapse collapse" id="collapseLegende">
 									<div class="panel-body">
 										<div class="embed-responsive embed-responsive-16by9">
-											<iframe class="embed-responsive-item" src="'. APP_ROOT . 'cms/content.php?content_id=' . $statistik->content_id .'"></iframe>
+											<iframe class="embed-responsive-item" src="'.APP_ROOT.'cms/content.php?content_id='.$statistik->content_id.'"></iframe>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
+					
 				</div>';
 	}
 	else
@@ -146,7 +147,7 @@ if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
 		echo '	
 				<div class="row">
 					<div class="col-xs-8">
-						<div class="panel" style="box-shadow: 0 1px 1px rgba(0,0,0,.10);">
+						<div class="panel" style="box-shadow: 0 1px 1px rgba(0,0,0,.20);">
 							<div class="" id="sysfilterblockheading">
 								<div class="row">
 									<div class="col-xs-9">
@@ -169,7 +170,7 @@ if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
 	}
 	foreach($vars as $var)
 	{
-		$html .= '<div class="form-group col-sm-2" style="float: left">';
+		$html .= '<div class="form-group col-sm-2" style="float: left; width: auto">';
 		if($filter->isFilter($var))
 		{
 			$bezeichnung = $filter->getBezeichnungFromKurzbz($var);

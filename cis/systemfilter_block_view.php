@@ -134,7 +134,7 @@ if (!$originview)
 								Standard
 							<?php echo ($isdefault ? "</label>" : "</span>");?>
 							<?php endif; ?>
-							<?php if ($isprivate || $isadmin): ?>
+							<?php if ($isadmin): ?>
 							<<?php echo ($isglobal ? "label" : "span");?> id="globalsysfilterlabel">
 								&nbsp;&nbsp;<input type="checkbox" name="globalsysfilter" id="globalsysfilter"<?php echo ($isglobal ? " checked='checked'" : "");?>>
 								Global
