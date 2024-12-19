@@ -19,12 +19,12 @@
  */
 
 // Originaldateien des Herstellers
-echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/highcharts/highcharts-dist/highcharts.js"></script>';
-echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/highcharts/highcharts-dist/highcharts-more.js"></script>';
-echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/highcharts/highcharts-dist/highcharts-3d.js"></script>';
-echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/highcharts/highcharts-dist/modules/exporting.js"></script>';
-echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/highcharts/highcharts-dist/modules/drilldown.js"></script>';
-echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/highcharts/highcharts-dist/modules/no-data-to-display.js"></script>';
-echo '<script src="'.BASE_LOCATION.'addons/reports/vendor/highcharts/highcharts-dist/modules/networkgraph.js"></script>';
+echo '<script src="'.BASE_LOCATION.'vendor/highcharts/highcharts-dist/highcharts.js"></script>';
+echo '<script src="'.BASE_LOCATION.'vendor/highcharts/highcharts-dist/highcharts-more.js"></script>';
+echo '<script src="'.BASE_LOCATION.'vendor/highcharts/highcharts-dist/highcharts-3d.js"></script>';
+echo '<script src="'.BASE_LOCATION.'vendor/highcharts/highcharts-dist/modules/exporting.js"></script>';
+echo '<script src="'.BASE_LOCATION.'vendor/highcharts/highcharts-dist/modules/drilldown.js"></script>';
+echo '<script src="'.BASE_LOCATION.'vendor/highcharts/highcharts-dist/modules/no-data-to-display.js"></script>';
+echo '<script src="'.BASE_LOCATION.'vendor/highcharts/highcharts-dist/modules/networkgraph.js"></script>';
 
 ?>
