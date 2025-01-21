@@ -23,6 +23,7 @@ require_once(dirname(__FILE__).'/../../../include/basis_db.class.php');
 require_once(dirname(__FILE__).'/../include/rp_phantom.class.php');
 require_once(dirname(__FILE__).'/../../../include/statistik.class.php');
 require_once(dirname(__FILE__).'/../../../vendor/autoload.php');
+require_once(dirname(__FILE__).'/../../../include/functions.inc.php');
 
 class chart extends basis_db
 {
@@ -303,7 +304,7 @@ class chart extends basis_db
 	 */
 	public function getAnzahlGruppe($publish = null)
 	{
-		$qry = 'SELECT gruppe, count(*) AS anzahl FROM public.tbl_statistik JOIN addon.tbl_rp_chart USING (statistik_kurzbz) ';
+		$qry = 'SELECT gruppe, numberOfElements(*) AS anzahl FROM public.tbl_statistik JOIN addon.tbl_rp_chart USING (statistik_kurzbz) ';
 
 		if($publish === true)
 		{
@@ -827,9 +828,11 @@ EOT;
 		{
 			foreach($data as $zeile)
 			{
-				$l1_bezeichnung = current($zeile);
-				$l1_dd = next($zeile);
-				$l1_sum = (int) end($zeile);
+				$ai = new ArrayIterator($zeile);
+
+				$l1_bezeichnung = current($ai);
+				$l1_dd = next($ai);
+				$l1_sum = (int) end($ai);
 				if(!isset($l1_dd))
 					$l1_dd = " ";
 
@@ -881,11 +884,13 @@ EOT;
 
 			foreach($data as $zeile)
 			{
+				$ai = new ArrayIterator($zeile);
+
 				//loop every entry
-				$category = current($zeile);if(!isset($category)){$category = " ";}
-				$stack = next($zeile);if(!isset($stack)){$stack = " ";}
-				$name = next($zeile);if(!isset($name)){$name = " ";}
-				$partValue = (int) end($zeile);if(!isset($partValue)){$partValue = 0;}
+				$category = current($ai);if(!isset($category)){$category = " ";}
+				$stack = next($ai);if(!isset($stack)){$stack = " ";}
+				$name = next($ai);if(!isset($name)){$name = " ";}
+				$partValue = (int) end($ai);if(!isset($partValue)){$partValue = 0;}
 
 				//to add all categories
 				$categories[$category] = "";
@@ -923,10 +928,12 @@ EOT;
 			//loop everything again and add the data to the correct group/category
 			foreach($data as $zeile)
 			{
-				$category = reset($zeile);if(!isset($category)){$category = " ";}
-				$stack = next($zeile);if(!isset($stack)){$stack = " ";}
-				$name = next($zeile);if(!isset($name)){$name = " ";}
-				$partValue = (int) end($zeile);if(!$partValue){$partValue = 0;}
+				$ai = new ArrayIterator($zeile);
+
+				$category = reset($ai);if(!isset($category)){$category = " ";}
+				$stack = next($ai);if(!isset($stack)){$stack = " ";}
+				$name = next($ai);if(!isset($name)){$name = " ";}
+				$partValue = (int) end($ai);if(!$partValue){$partValue = 0;}
 
 				$groups[$name."_".$stack]["name"] = $name;
 				$groups[$name."_".$stack]["stack"] = $stack;
@@ -1241,7 +1248,7 @@ EOT;
 		{
 			$phantomData["xAxis"]["categories"] = array_keys($phantomData["xAxis"]["categories"]);
 			$phantomData["xAxis"]["min"] = 0;
-			$phantomData["xAxis"]["max"] = count($categories)-1;
+			$phantomData["xAxis"]["max"] = numberOfElements($categories)-1;
 		}
 
 		$data = json_encode($phantomData);

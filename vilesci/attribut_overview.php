@@ -46,7 +46,7 @@ if(isset($_REQUEST['action']))
 		$zuweisungen = new rp_attribut_zuweisungen();
 		$zuweisungen->loadAllFromAttribut($_REQUEST['attribut_id']);
 
-		if(count($zuweisungen->result) > 0)
+		if(numberOfElements($zuweisungen->result) > 0)
 		{
 			echo "<script>alert('Es gibt noch Zuweisungen!');</script>";
 		}

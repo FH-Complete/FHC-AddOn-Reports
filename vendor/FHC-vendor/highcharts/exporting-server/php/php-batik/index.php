@@ -16,9 +16,6 @@
 // Options
 define ('BATIK_PATH', 'batik-rasterizer.jar');
 
-///////////////////////////////////////////////////////////////////////////////
-ini_set('magic_quotes_gpc', 'off');
-
 $type = $_POST['type'];
 $svg = (string) $_POST['svg'];
 $filename = (string) $_POST['filename'];
@@ -26,9 +23,6 @@ $filename = (string) $_POST['filename'];
 // prepare variables
 if (!$filename or !preg_match('/^[A-Za-z0-9\-_ ]+$/', $filename)) {
 	$filename = 'chart';
-}
-if (get_magic_quotes_gpc()) {
-	$svg = stripslashes($svg);	
 }
 
 // check for malicious attack in SVG

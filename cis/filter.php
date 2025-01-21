@@ -163,7 +163,7 @@ if(isset($statistik_kurzbz) && $statistik_kurzbz != 'undefined')
 	}
 
 	// Filter parsen
-	$filteranzahl = count($vars);
+	$filteranzahl = numberOfElements($vars);
 	if ($filteranzahl > 0)
 	{
 		$html .=  '<div class="row"><div class="col-sm-12">';

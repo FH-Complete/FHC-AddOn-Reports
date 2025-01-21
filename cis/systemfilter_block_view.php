@@ -1,4 +1,5 @@
 <?php
+require_once('../../../include/functions.inc.php');
 require_once('../../../config/vilesci.config.inc.php');
 require_once('../../../include/benutzerberechtigung.class.php');
 require_once('../../../include/person.class.php');
@@ -97,7 +98,7 @@ if (!$originview)
 				</div>
 				<div class="panel-collapse collapse<?php echo (isset($collapseFilterBlock) && $collapseFilterBlock === true ? "" : " in") ?>" id="collapseSysFilterHeader">
 					<div class="panel-body form-inline">
-					<?php if (is_array($allstatistikfilter->result) && count($allstatistikfilter->result) > 0): ?>
+					<?php if (is_array($allstatistikfilter->result) && numberOfElements($allstatistikfilter->result) > 0): ?>
 						<div class="row">
 							<div class="col-xs-12 col-md-7">
 							<select class="form-control" id ="systemfilter">

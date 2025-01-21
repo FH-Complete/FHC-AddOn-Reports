@@ -341,7 +341,7 @@
 
 		cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
 	}
-	if(count($out) > 0)
+	if(numberOfElements($out) > 0)
 	{
 		addOutput($errstr, 2, "Asciidoc Warnungen:");
 		foreach($out as $o)
@@ -365,7 +365,7 @@
 
 		cleanUpAndDie("Der Report konnte nicht erstellt werden!", $errstr, $reportsTmpDir, $type);
 	}
-	if(count($out) > 0)
+	if(numberOfElements($out) > 0)
 	{
 		addOutput($errstr, 2, "asciidoc Warnungen:");
 		foreach($out as $o)

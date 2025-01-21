@@ -297,12 +297,12 @@ function processMenueLevel($data)
 	{
 		$ent = array();
 
-		if(isset($d->children) && count($d->children) > 0)
+		if(isset($d->children) && numberOfElements($d->children) > 0)
 			$d->children = processMenueLevel($d->children);
 
 		addZuordnungen($d);
 
-		if(isset($d->children) && count($d->children) > 0)
+		if(isset($d->children) && numberOfElements($d->children) > 0)
 			$ent["children"] = $d->children;
 
 		$ent["text"] = $d->bezeichnung;

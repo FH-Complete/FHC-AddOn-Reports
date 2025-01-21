@@ -21,6 +21,8 @@
  * Dieses Skript prueft die Datenbank auf aktualitaet, dabei werden fehlende Attribute angelegt.
  */
 
+require_once(dirname(__FILE__).'/../../../include/functions.inc.php');
+
 if(!defined("CHECKSYSTEM"))
 	die("<span style='color:red;'>Dieses Skript sollte nicht direkt aufgerufen werden!</span>");
 
@@ -965,7 +967,7 @@ function removeCommentsFromJson($jsonString)
 			$commentCount --;
 			if($commentCount == 0)	//wenn alle kommentare beendet wurden
 			{
-				$Array[$key] = substr($Array[$key], $posMzE+2, count($Array[$key]));
+				$Array[$key] = substr($Array[$key], $posMzE+2, numberOfElements($Array[$key]));
 			}
 			else
 				$posMzE = false;

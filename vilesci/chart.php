@@ -33,7 +33,7 @@ $chart_id = filter_input(INPUT_GET, 'chart_id');
 $htmlbody = filter_input(INPUT_GET, 'htmlbody', FILTER_VALIDATE_BOOLEAN);
 
 $chart_ids = explode(',', $chart_id);
-$chart_anz = count($chart_ids);
+$chart_anz = numberOfElements($chart_ids);
 $class = '';
 
 if($chart_anz > 1 && $chart_anz < 5) {

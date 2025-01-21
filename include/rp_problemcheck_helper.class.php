@@ -1,6 +1,7 @@
 <?php
 require_once('rp_dependency_overview.class.php');
 require_once(dirname(__FILE__).'/../../../include/webservicelog.class.php');
+require_once(dirname(__FILE__).'/../../../include/functions.inc.php');
 
 /**
  * Class problemcheck_helper
@@ -55,7 +56,7 @@ class problemcheck_helper extends basis_db
 	 */
 	public function findOutliers($dataset)
 	{
-		$count = count($dataset);
+		$count = numberOfElements($dataset);
 		$mean = array_sum($dataset) / $count; // Calculate the mean
 		$deviation = sqrt(array_sum(array_map(array($this, "sdSquare"), $dataset, array_fill(0, $count, $mean))) / $count) * self::OUTLIER_MAGNITUDE; // Calculate standard deviation and times by magnitude
 

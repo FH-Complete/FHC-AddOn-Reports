@@ -21,7 +21,7 @@
  * Klasse zur Verwaltung des zugriffs auf den PhantomJS Server
  */
 require_once(dirname(__FILE__).'/../../../include/basis_db.class.php');
-
+require_once(dirname(__FILE__).'/../../../include/functions.inc.php');
 
 
 class rp_gruppenzuordnung extends basis_db
@@ -243,7 +243,7 @@ class rp_gruppenzuordnung extends basis_db
 		}
 		//Lesen der Daten aus der Datenbank
 		$qry = '
-				SELECT count(1)
+				SELECT numberOfElements(1)
 				FROM addon.tbl_rp_gruppenzuordnung
 				WHERE reportgruppe_id='.$reportgruppe_id.';';
 

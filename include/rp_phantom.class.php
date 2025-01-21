@@ -21,6 +21,7 @@
  * Klasse zur Verwaltung des zugriffs auf den PhantomJS Server
  */
 require_once(dirname(__FILE__).'/../reports.config.inc.php');
+require_once(dirname(__FILE__).'/../../../include/functions.inc.php');
 
 class phantom
 {
@@ -49,7 +50,7 @@ class phantom
 		curl_setopt($ch, CURLOPT_URL, constant('PHANTOM_SERVER'));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_HEADER, false);
-		curl_setopt($ch, CURLOPT_POST, count($json));
+		curl_setopt($ch, CURLOPT_POST, numberOfElements($json));
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
 
 		$ret = curl_exec($ch);

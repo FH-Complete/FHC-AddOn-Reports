@@ -18,6 +18,7 @@
  * Authors: Christian Paminger,
  */
 require_once(dirname(__FILE__).'/../../../include/basis_db.class.php');
+require_once(dirname(__FILE__).'/../../../include/functions.inc.php');
 
 class report extends basis_db
 {
@@ -185,7 +186,7 @@ class report extends basis_db
 	 */
 	public function getAnzahlGruppe($publish = null)
 	{
-		$qry = 'SELECT gruppe, count(*) AS anzahl FROM addon.tbl_rp_report ';
+		$qry = 'SELECT gruppe, numberOfElements(*) AS anzahl FROM addon.tbl_rp_report ';
 
 		if($publish === true)
 		{

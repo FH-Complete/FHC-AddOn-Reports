@@ -18,6 +18,7 @@
  * Authors: Andreas Moik <moik@technikum-wien.at>
  */
 require_once(dirname(__FILE__).'/../../../include/basis_db.class.php');
+require_once(dirname(__FILE__).'/../../../include/functions.inc.php');
 
 
 class rp_gruppe extends basis_db
@@ -327,7 +328,7 @@ class rp_gruppe extends basis_db
 
 		//Lesen der Daten aus der Datenbank
 		$qry = '
-				SELECT count(1)
+				SELECT numberOfElements(1)
 				FROM addon.tbl_rp_gruppe
 				WHERE reportgruppe_parent_id='.$reportgruppe_id.';';
 

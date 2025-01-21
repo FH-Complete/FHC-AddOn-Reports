@@ -85,27 +85,27 @@ function getHtmlMenue($data, $rechte)
 		{
 			$anzahl=0;
 			if(isset($d->charts))
-				$anzahl += count($d->charts);
+				$anzahl += numberOfElements($d->charts);
 			if(isset($d->statistiken))
-				$anzahl += count($d->statistiken);
+				$anzahl += numberOfElements($d->statistiken);
 			if(isset($d->reports))
-				$anzahl += count($d->reports);
+				$anzahl += numberOfElements($d->reports);
 
 			$href = APP_ROOT . 'addons/reports/cis/index.php?reportgruppe_id=' 
 				. urlencode($d->reportgruppe_id);
 			$htmlstr.='<li><a style="font-weight: bold;" href="' . $href . '" class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'all\', \''.$d->bezeichnung.'\')"> '.$d->bezeichnung.'<span class="badge" style="margin-left:10px;">'.($anzahl).'</span></a></li>';
 /*
-			if(isset($d->charts) && count($d->charts)>0)
+			if(isset($d->charts) && numberOfElements($d->charts)>0)
 			{
-				$htmlstr.='<li class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'charts\', \''.$d->bezeichnung.'\')">&emsp;Charts<span class="badge" style="float:right; margin-right:10px;">'.count($d->charts).'</span></li>';
+				$htmlstr.='<li class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'charts\', \''.$d->bezeichnung.'\')">&emsp;Charts<span class="badge" style="float:right; margin-right:10px;">'.numberOfElements($d->charts).'</span></li>';
 			}
-			if(isset($d->statistiken) && count($d->statistiken)>0)
+			if(isset($d->statistiken) && numberOfElements($d->statistiken)>0)
 			{
-				$htmlstr.='<li class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'data\', \''.$d->bezeichnung.'\')">&emsp;Pivots<span class="badge" style="float:right; margin-right:10px;">'.count($d->statistiken).'</span></li>';
+				$htmlstr.='<li class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'data\', \''.$d->bezeichnung.'\')">&emsp;Pivots<span class="badge" style="float:right; margin-right:10px;">'.numberOfElements($d->statistiken).'</span></li>';
 			}
-			if(isset($d->reports) && count($d->reports)>0)
+			if(isset($d->reports) && numberOfElements($d->reports)>0)
 			{
-				$htmlstr.='<li class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'reports\', \''.$d->bezeichnung.'\')">&emsp;Reports<span class="badge" style="float:right; margin-right:10px;">'.count($d->reports).'</span></li>';
+				$htmlstr.='<li class="ddEntry" onclick="showSidebar('.$d->reportgruppe_id.', \'reports\', \''.$d->bezeichnung.'\')">&emsp;Reports<span class="badge" style="float:right; margin-right:10px;">'.numberOfElements($d->reports).'</span></li>';
 			}*/
 		}
 	}
@@ -451,7 +451,7 @@ function addZuordnungen($entity,$rechte)
 							<?php foreach($daten as $l1):?>
 								<?php if(isset($l1->children)):?>
 									<?php foreach($l1->children as $l2):?>
-										<?php if(isset($l2->statistiken) && count($l2->statistiken) > 0):?>
+										<?php if(isset($l2->statistiken) && numberOfElements($l2->statistiken) > 0):?>
 										<?php usort($l2->statistiken, "bezeichnungSort");?>
 											<?php foreach($l2->statistiken as $st): ?>
 												<div class="report_<?php echo $l2->reportgruppe_id ?>_data reports_sidebar_entry" style="display: none;">
@@ -466,7 +466,7 @@ function addZuordnungen($entity,$rechte)
 												</div>
 											<?php endforeach; ?>
 										<?php endif;?>
-										<?php if(isset($l2->charts) && count($l2->charts) > 0):?>
+										<?php if(isset($l2->charts) && numberOfElements($l2->charts) > 0):?>
 										<?php usort($l2->charts, "titleSort");?>
 											<?php foreach($l2->charts as $ch):?>
 												<div class="report_<?php echo $l2->reportgruppe_id ;?>_charts reports_sidebar_entry" style="display: none;">
@@ -481,7 +481,7 @@ function addZuordnungen($entity,$rechte)
 												</div>
 											<?php endforeach; ?>
 										<?php endif;?>
-										<?php if(isset($l2->reports) && count($l2->reports) > 0):?>
+										<?php if(isset($l2->reports) && numberOfElements($l2->reports) > 0):?>
 										<?php usort($l2->reports, "titleSort");?>
 											<?php foreach($l2->reports as $re): ?>
 												<div class="report_<?php echo $l2->reportgruppe_id ?>_reports reports_sidebar_entry" style="display: none;">
