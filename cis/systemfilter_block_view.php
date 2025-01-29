@@ -8,7 +8,8 @@ $uid = get_uid();
 $rechte = new benutzerberechtigung();
 $rechte->getBerechtigungen($uid);
 
-if(!$rechte->isBerechtigt('addon/reports', null, 's'))
+if(!$rechte->isBerechtigt('addon/reports', null, 's') &&
+	!$rechte->isBerechtigt('addons/reports:begrenzt', null, 's'))
 	die($rechte->errormsg);
 
 if (isset($_POST['statistik_kurzbz']))
