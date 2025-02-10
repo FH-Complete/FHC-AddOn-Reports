@@ -106,6 +106,7 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 					<th>URL</th>
 					<th>SQL</th>
 					<th>Preferences</th>
+					<th>Berechtigungen</th>
 					<th>Insert</th>
 					<th>Update</th>
 					<th>Aktion</th>
@@ -137,6 +138,9 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 						</td>
 						<td style="text-overflow: ellipsis; white-space: nowrap; overflow:hidden;">
 							<?php echo $row->preferences ?>
+						</td>
+						<td style="text-overflow: ellipsis; white-space: nowrap; overflow:hidden;">
+							<?php echo $row->berechtigung_kurzbz ?>
 						</td>
 						<td title="von <?php echo $row->insertvon; ?>">
 							<?php echo $row->insertamum; ?>
