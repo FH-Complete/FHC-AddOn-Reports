@@ -51,7 +51,7 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 				{
 					sortList: [[1,0]],
 					widgets: ["saveSort", "zebra", "filter", "stickyHeaders"],
-					headers: {9: {sorter: false, filter: false}},
+					headers: {10: {sorter: false, filter: false}},
 					widgetOptions : {filter_saveFilters : true}
 				});
 
