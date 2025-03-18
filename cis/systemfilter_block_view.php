@@ -174,6 +174,15 @@ if (!$originview)
 							</div>
 							<?php endif; ?>
 						</div>
+						<?php if ($isadmin): ?>
+							<br>
+							<div class="row">
+								<div class="col-xs-12">
+									<a class="btn btn-default" href="systemFilterOverview.php?statistik_kurzbz=<?php echo $statistik_kurzbz ?>" target="_blank">Filter Übersicht</a>
+								</div>
+							</div>
+
+						<?php endif; ?>
 						<div id="sysfiltermsg" class="text-center"></div>
 					</div>
 				</div>
