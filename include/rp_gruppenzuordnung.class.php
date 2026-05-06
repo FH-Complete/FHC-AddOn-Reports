@@ -95,6 +95,36 @@ class rp_gruppenzuordnung extends basis_db
 	}
 
 	/**
+	 * Lädt alle Gruppenzuordnungen inklusive der Daten aus der Bezeichung aus tbl_gruppe
+	 * @return true wenn ok, false im Fehlerfall
+	 */
+	public function loadAll()
+	{
+		//Lesen der Daten aus der Datenbank
+		$qry = "SELECT 
+ 					grz.chart_id,
+       				grz.report_id,
+   					grz.statistik_kurzbz,
+       				grz.reportgruppe_id,
+       				grp.bezeichnung
+   				FROM addon.tbl_rp_gruppenzuordnung grz
+				JOIN addon.tbl_rp_gruppe grp USING (reportgruppe_id)";
+
+		if(!$this->db_query($qry))
+		{
+			$this->errormsg = 'Fehler beim Laden der Daten';
+			return false;
+		}
+
+		while($row = $this->db_fetch_object())
+		{
+			$this->result[] = $row;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Lädt alle Gruppenzuordnungen einer Reportgruppe
 	 * @param $reportgruppe_id
 	 * @return true wenn ok, false im Fehlerfall

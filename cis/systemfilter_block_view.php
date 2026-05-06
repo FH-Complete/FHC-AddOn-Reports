@@ -17,6 +17,13 @@ if (isset($_POST['statistik_kurzbz']))
 if (isset($_POST['systemfilter_id']))
 	$systemfilter_id = $_POST['systemfilter_id'];
 
+$systemfilter = new rp_system_filter();
+$isdefault = $isprivate = $isadmin = $isglobal = false;
+const ORIGINVIEWNAME = 'originview';
+$originview = $systemfilter_id === ORIGINVIEWNAME;
+
+if($rechte->isBerechtigt('admin', null, 'suid'))
+	$isadmin = true;
 
 $person_id = null;
 $person = new person();
@@ -28,7 +35,16 @@ if ($person->getPersonFromBenutzer($uid))
 $allstatistikfilter = new rp_system_filter();
 
 // alle Systemfilter holen für Dropdownauswahl
-$allstatistikfilter->loadAll($statistik_kurzbz, $person_id);
+// Admins sehen alle gespeicherten Filter
+if ($isadmin)
+{
+	$allstatistikfilter->loadAll($statistik_kurzbz, NULL, true);
+}
+else
+{
+	$allstatistikfilter->loadAll($statistik_kurzbz, $person_id);
+}
+
 $filterresults = $allstatistikfilter->result;
 
 //Get-Filter in Dropdown hinzufügen, falls einer übergeben wird
@@ -37,14 +53,6 @@ if (isset($_GET['systemfilter_id']) && $_GET['systemfilter_id'] != '' && $_GET['
 	$getstatistikfilter = new rp_system_filter($statistik_kurzbz,$_GET['systemfilter_id']);
 	$filterresults[] = $getstatistikfilter;
 }
-
-$systemfilter = new rp_system_filter();
-$isdefault = $isprivate = $isadmin = $isglobal = false;
-const ORIGINVIEWNAME = 'originview';
-$originview = $systemfilter_id === ORIGINVIEWNAME;
-
-if($rechte->isBerechtigt('admin', null, 'suid'))
-	$isadmin = true;
 
 if (!$originview)
 {

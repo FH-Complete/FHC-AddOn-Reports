@@ -370,12 +370,49 @@ $statistik->loadData();
 			dlink[0].click();
 		}
 		})();
+	function exportToExcel() {
+	  const select = document.querySelector('select.pvtRenderer');
+	  const originalValue = select.value;
 
+	  // Nur wechseln wenn nötig
+	  if (originalValue !== 'TSV Export') {
+	    select.value = 'TSV Export';
+	    select.dispatchEvent(new Event('change'));
+	  }
+
+	  // Warten bis der Renderer fertig gerendert hat
+	  const waitForTextarea = (retries = 10) => {
+	    const textarea = document.querySelector('.pvtRendererArea textarea');
+	    if (textarea) {
+	      doExport(textarea.value);
+	      // Zurück zum ursprünglichen Renderer
+	      if (originalValue !== 'TSV Export') {
+	        select.value = originalValue;
+	        select.dispatchEvent(new Event('change'));
+	      }
+	    } else if (retries > 0) {
+	      setTimeout(() => waitForTextarea(retries - 1), 100);
+	    } else {
+	      alert('Export fehlgeschlagen: Renderer hat nicht reagiert.');
+	    }
+	  };
+
+	  setTimeout(() => waitForTextarea(), 100);
+	}
+
+	function doExport(tsvContent) {
+	  const blob = new Blob(['\uFEFF' + tsvContent], { type: 'text/tab-separated-values;charset=utf-8;' });
+	  const url = URL.createObjectURL(blob);
+	  const a = Object.assign(document.createElement('a'), { href: url, download: 'export.csv' });
+	  a.click();
+	  URL.revokeObjectURL(url);
+	}
 	</script>
 	<br>
 	<!--<a onclick="exportChartCSV()" style="cursor:pointer" target="_blank">CSV Rohdaten herunterladen</a><br>-->
 	<p><button style="display: inline; height:30px;" onclick="exportChartCSV()" class="btn btn-default" type="button">CSV Rohdaten herunterladen</button></p>
-	<p><button id="excelExportButton" style="display: inline; height:30px;" onclick="tableToExcel('Statistik', '<?php echo $statistik_kurzbz; ?>.xls')" class="btn btn-default" type="button">Excel-Export</button></p>
+	<!--<p><button id="excelExportButton" style="display: inline; height:30px;" onclick="tableToExcel('Statistik', '<?php echo $statistik_kurzbz; ?>.xls')" class="btn btn-default" type="button">Excel-Export</button></p>-->
+	<p><button id="excelExportButton" style="display: inline; height:30px;" onclick="exportToExcel()" class="btn btn-default" type="button">Excel-Export</button></p>
 	<p><button id="sendPivotMailButton" style="display: none; height:30px;" class="btn btn-default" type="button">E-Mail senden</button></p>
 	<a id="dlink" href="#pvtTableID" style="display:none;"></a>
 

@@ -23,6 +23,7 @@
 require_once('../../../config/vilesci.config.inc.php');
 require_once('../../../include/statistik.class.php');
 require_once('../../../include/benutzerberechtigung.class.php');
+require_once('../include/rp_gruppenzuordnung.class.php');
 
 $user = get_uid();
 
@@ -92,9 +93,24 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 		}
 
 		$statistik = new statistik();
+		$rp_gruppenzuordnung = new rp_gruppenzuordnung();
+		$reportgruppe = array();
 
 		if(!$statistik->getAll())
 			die($statistik->errormsg);
+
+		if($rp_gruppenzuordnung->loadAll())
+		{
+			foreach($rp_gruppenzuordnung->result as $row)
+			{
+				$reportgruppe[$row->statistik_kurzbz][] = array('bezeichnung' => $row->bezeichnung, 'reportgruppe_id' => $row->reportgruppe_id);
+			}
+		}
+		else
+		{
+			die($rp_gruppenzuordnung->errormsg);
+		}
+
 		?>
 		<table class="tablesorter" id="myTable" style="table-layout: fixed">
 			<thead>
@@ -107,6 +123,7 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 					<th>SQL</th>
 					<th>Preferences</th>
 					<th>Berechtigungen</th>
+					<th>Verwendet in</th>
 					<th>Insert</th>
 					<th>Update</th>
 					<th>Aktion</th>
@@ -141,6 +158,24 @@ if(!$rechte->isBerechtigt('basis/statistik'))
 						</td>
 						<td style="text-overflow: ellipsis; white-space: nowrap; overflow:hidden;">
 							<?php echo $row->berechtigung_kurzbz ?>
+						</td>
+						<td style="">
+							<?php
+								if (isset($reportgruppe[$row->statistik_kurzbz]))
+								{
+									echo '<ul style="padding-left: 5px;">';
+									foreach($reportgruppe[$row->statistik_kurzbz] as $key => $value)
+									{
+										echo '<li><a href="../cis/index.php?reportgruppe_id='.$value['reportgruppe_id'].'" target="_blank">
+												'.$value['bezeichnung'].'</a></li>';
+									}
+									echo '</ul>';
+								}
+								else
+								{
+									echo '<a href="cis_menue.php" target="_parent">Zuordnen...</a>';
+								}
+							?>
 						</td>
 						<td title="von <?php echo $row->insertvon; ?>">
 							<?php echo $row->insertamum; ?>

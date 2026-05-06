@@ -240,22 +240,26 @@ class rp_system_filter extends basis_db
 	/**
 	 * Laedt alle Systemfilter einer Statistik aus DB.
 	 * @param $statistik_kurzbz
-	 * @param null $person_id for getting private filters of a user
+	 * @param $person_id null for getting private filters of a user
+	 * @param $all false Wenn true, werden alle Filter der Statistik geliedert, unabhängig von der Person ID
 	 * @return true wenn ok, false im Fehlerfall
 	 */
-	public function loadAll($statistik_kurzbz, $person_id = null)
+	public function loadAll($statistik_kurzbz, $person_id = null, $all = false)
 	{
 		//Lesen der Daten aus der Datenbank
 		$qry = "SELECT * FROM system.tbl_filters
 				WHERE statistik_kurzbz=".$this->db_add_param($statistik_kurzbz);
 
-		if (isset($person_id))
+		if ($all == false)
 		{
-			$qry .= " AND (person_id=".$this->db_add_param($person_id, FHC_INTEGER)." OR person_id IS NULL)";
-		}
-		else
-		{
-			$qry .= " AND person_id IS NULL";
+			if (isset($person_id))
+			{
+				$qry .= " AND (person_id=".$this->db_add_param($person_id, FHC_INTEGER)." OR person_id IS NULL)";
+			}
+			else
+			{
+				$qry .= " AND person_id IS NULL";
+			}
 		}
 
 		$qry .= " ORDER BY person_id NULLS FIRST, filter->'name', filter_id DESC;";

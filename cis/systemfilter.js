@@ -63,7 +63,7 @@ function setSysFilterEvents(get_params)
 			else
 			{
 				$("#addprvfiltergroup").addClass("has-error");
-				showMsg("Ansichtname muss ohne Sonderzeichen (ausser _ -), unverwendet und mind. 1 Zeichen sein!", "text-danger");
+				showMsg("Erlaubte Sonderzeichen sind: _ - und der Name muss mind. 1 Zeichen lang sein!", "text-danger");
 			}
 		}
 	);
