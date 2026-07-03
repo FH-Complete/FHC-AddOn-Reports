@@ -70,7 +70,17 @@ while(isset($_GET['varname' . $i]))
 
 
 if($statistik->publish !== true)
-	die("Diese Statistik ist nicht Oeffentlich");
+{
+	if($rechte->isBerechtigt('addon/reports_verwaltung'))
+	{
+		echo '<div class="alert alert-warning" role="alert">
+			  Diese Statistik ist nicht veröffentlicht
+			</div>';
+	}
+	else
+		die("Diese Statistik ist nicht veroeffentlicht");
+}
+
 
 
 if(isset($statistik->berechtigung_kurzbz))
@@ -370,6 +380,21 @@ $statistik->loadData();
 			dlink[0].click();
 		}
 		})();
+
+	function exportToCSV() {
+	  const rows = [...document.querySelectorAll('#pivot-table tr')]
+	    .map(row =>
+	      [...row.querySelectorAll('th, td')]
+	        .map(cell => `"${cell.innerText.replace(/"/g, '""')}"`)
+	        .join(',')
+	    ).join('\n');
+
+	  const blob = new Blob(['\uFEFF' + rows], { type: 'text/csv;charset=utf-8;' });
+	  const url = URL.createObjectURL(blob);
+	  const a = Object.assign(document.createElement('a'), { href: url, download: 'export.csv' });
+	  a.click();
+	}
+
 	function exportToExcel() {
 	  const select = document.querySelector('select.pvtRenderer');
 	  const originalValue = select.value;
@@ -401,7 +426,12 @@ $statistik->loadData();
 	}
 
 	function doExport(tsvContent) {
-	  const blob = new Blob(['\uFEFF' + tsvContent], { type: 'text/tab-separated-values;charset=utf-8;' });
+	  const csvContent = tsvContent
+	    .split('\n')
+	    .map(row => row.split('\t').join(';'))
+	    .join('\n');
+
+	  const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
 	  const url = URL.createObjectURL(blob);
 	  const a = Object.assign(document.createElement('a'), { href: url, download: 'export.csv' });
 	  a.click();
@@ -411,8 +441,9 @@ $statistik->loadData();
 	<br>
 	<!--<a onclick="exportChartCSV()" style="cursor:pointer" target="_blank">CSV Rohdaten herunterladen</a><br>-->
 	<p><button style="display: inline; height:30px;" onclick="exportChartCSV()" class="btn btn-default" type="button">CSV Rohdaten herunterladen</button></p>
-	<!--<p><button id="excelExportButton" style="display: inline; height:30px;" onclick="tableToExcel('Statistik', '<?php echo $statistik_kurzbz; ?>.xls')" class="btn btn-default" type="button">Excel-Export</button></p>-->
-	<p><button id="excelExportButton" style="display: inline; height:30px;" onclick="exportToExcel()" class="btn btn-default" type="button">Excel-Export</button></p>
+<!--	<p><button id="excelExportButton" style="display: inline; height:30px;" onclick="tableToExcel('Statistik', '<?php //echo $statistik_kurzbz; ?>//.xls')" class="btn btn-default" type="button">Excel-Export</button></p>-->
+	<p><button id="excelExportButton" style="display: inline; height:30px;" onclick="exportToExcel()" class="btn btn-default" type="button">CSV-Export der Ansicht (Excel, LibreOffice, ...)</button></p>
+<!--	<p><button id="excelExportButton" style="display: inline; height:30px;" onclick="exportToCSV()" class="btn btn-default" type="button">CSV-Export</button></p>-->
 	<p><button id="sendPivotMailButton" style="display: none; height:30px;" class="btn btn-default" type="button">E-Mail senden</button></p>
 	<a id="dlink" href="#pvtTableID" style="display:none;"></a>
 
